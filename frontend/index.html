@@ -16,6 +16,7 @@
 
     <nav class="sidebar-nav">
       <button class="nav-btn active" data-view="home">Início</button>
+      <button class="nav-btn" data-view="quickrun">Nova análise</button>
       <button class="nav-btn" data-view="corpus">Corpora</button>
       <button class="nav-btn" data-view="tagging">Tagging</button>
       <button class="nav-btn" data-view="analysis">KFA</button>
@@ -36,19 +37,99 @@
 
     <!-- HOME -->
     <section id="view-home" class="view active">
-      <h1>Bem-vindo ao ttwtools</h1>
-      <p>Crie ou abra um projeto <code>.ttwa</code> para começar.</p>
+      <h1>ttwtools</h1>
+      <p class="subtitle">Análise de features linguísticas Biber</p>
       <div class="card-grid">
-        <div class="card" id="card-new">
-          <h3>Novo projeto</h3>
-          <p>Cria um arquivo <code>.ttwa</code> vazio.</p>
-          <button class="btn-primary" id="btn-home-new">Criar</button>
+        <div class="card card-accent" id="card-new-analysis">
+          <div class="card-icon">▶</div>
+          <h3>Nova análise</h3>
+          <p>Aponte duas pastas de corpus e execute o pipeline completo: tagging → normalização → KFA → salva <code>.ttwa</code>.</p>
+          <button class="btn-primary" id="btn-home-newanalysis">Iniciar</button>
         </div>
         <div class="card" id="card-open">
+          <div class="card-icon">📂</div>
           <h3>Abrir projeto</h3>
-          <p>Abre um arquivo <code>.ttwa</code> existente.</p>
-          <button class="btn-primary" id="btn-home-open">Abrir</button>
+          <p>Carrega um arquivo <code>.ttwa</code> existente e exibe os resultados de análise já salvos.</p>
+          <button class="btn-secondary" id="btn-home-open">Abrir .ttwa</button>
         </div>
+      </div>
+    </section>
+
+    <!-- NOVA ANÁLISE (quickrun) -->
+    <section id="view-quickrun" class="view">
+      <h1>Nova análise</h1>
+      <form id="form-quickrun" class="form-panel">
+        <div class="form-row">
+          <label>
+            Corpus 1 — nome
+            <input type="text" id="qr-c1-name" placeholder="ex: corpus_A" />
+          </label>
+          <label class="grow">
+            Corpus 1 — pasta
+            <div class="input-browse">
+              <input type="text" id="qr-c1-folder" placeholder="/caminho/para/corpus1" />
+              <button type="button" class="btn-browse" data-target="qr-c1-folder" title="Procurar pasta">📁</button>
+            </div>
+          </label>
+        </div>
+        <div class="form-row">
+          <label>
+            Corpus 2 — nome
+            <input type="text" id="qr-c2-name" placeholder="ex: corpus_B" />
+          </label>
+          <label class="grow">
+            Corpus 2 — pasta
+            <div class="input-browse">
+              <input type="text" id="qr-c2-folder" placeholder="/caminho/para/corpus2" />
+              <button type="button" class="btn-browse" data-target="qr-c2-folder" title="Procurar pasta">📁</button>
+            </div>
+          </label>
+        </div>
+        <label>
+          Salvar resultados em (.ttwa)
+          <div class="input-browse">
+            <input type="text" id="qr-output" placeholder="/caminho/meu_projeto.ttwa" />
+            <button type="button" class="btn-browse" data-target="qr-output" data-mode="file" title="Procurar pasta">📁</button>
+          </div>
+        </label>
+        <div class="form-row">
+          <label>
+            Modo
+            <select id="qr-mode">
+              <option value="full">full — com textos originais</option>
+              <option value="compact">compact — apenas tagueados</option>
+            </select>
+          </label>
+          <label>
+            Método KFA
+            <select id="qr-join">
+              <option value="union" selected>union</option>
+              <option value="intersection">intersection</option>
+            </select>
+          </label>
+          <label>
+            Effect size mín.
+            <input type="number" id="qr-effect" value="0.2" min="0" step="0.05" style="width:90px" />
+          </label>
+        </div>
+        <label class="toggle-row">
+          <input type="checkbox" id="qr-usenlp" /> Usar spaCy para tokenização
+        </label>
+        <button type="submit" class="btn-primary" id="btn-qr-run">Executar pipeline</button>
+      </form>
+
+      <!-- Progresso -->
+      <div id="qr-progress" class="progress-panel hidden">
+        <div class="progress-steps" id="qr-steps">
+          <span class="progress-step" data-step="queued">Na fila</span>
+          <span class="progress-step" data-step="tagging">Tagging</span>
+          <span class="progress-step" data-step="normalizing">Normalização</span>
+          <span class="progress-step" data-step="kfa">KFA</span>
+          <span class="progress-step" data-step="saving">Salvando</span>
+          <span class="progress-step" data-step="done">Concluído</span>
+        </div>
+        <div class="progress-msg" id="qr-msg"></div>
+        <button class="btn-primary hidden" id="btn-qr-results">Ver resultados →</button>
       </div>
     </section>
 

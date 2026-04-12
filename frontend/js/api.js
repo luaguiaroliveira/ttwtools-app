@@ -55,6 +55,17 @@ const API = (() => {
       status: jobId   => request('GET',  `/api/tagging/status/${jobId}`),
     },
 
+    // Utils
+    utils: {
+      pickFolder: () => request('GET', '/api/utils/pick-folder'),
+    },
+
+    // Quickrun
+    quickrun: {
+      start:  body  => request('POST', '/api/quickrun/start',           body),
+      status: jobId => request('GET',  `/api/quickrun/status/${jobId}`),
+    },
+
     // Analysis
     analysis: {
       runKfa:         body         => request('POST', '/api/analysis/kfa', body),

@@ -37,12 +37,14 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # ------------------------------------------------------------------
     # Rotas da API
     # ------------------------------------------------------------------
-    from app.routes import corpus, tagging, analysis, project as project_routes
+    from app.routes import corpus, tagging, analysis, project as project_routes, quickrun, utils
 
-    app.include_router(corpus.router,          prefix="/api/corpus",   tags=["corpus"])
-    app.include_router(tagging.router,         prefix="/api/tagging",  tags=["tagging"])
-    app.include_router(analysis.router,        prefix="/api/analysis", tags=["analysis"])
-    app.include_router(project_routes.router,  prefix="/api/project",  tags=["project"])
+    app.include_router(corpus.router,          prefix="/api/corpus",    tags=["corpus"])
+    app.include_router(tagging.router,         prefix="/api/tagging",   tags=["tagging"])
+    app.include_router(analysis.router,        prefix="/api/analysis",  tags=["analysis"])
+    app.include_router(project_routes.router,  prefix="/api/project",   tags=["project"])
+    app.include_router(quickrun.router,        prefix="/api/quickrun",  tags=["quickrun"])
+    app.include_router(utils.router,           prefix="/api/utils",     tags=["utils"])
 
     # ------------------------------------------------------------------
     # Estado global mínimo: arquivo .ttwa aberto
