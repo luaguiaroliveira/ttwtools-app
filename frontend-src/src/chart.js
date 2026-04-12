@@ -97,7 +97,7 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
   const paletteColors = (PALETTES[palette] ?? PALETTES.biber).fn(rows, metric)
   const isEffect = metric === 'Effect_Size'
   const margin   = { top: 6, right: 28, bottom: 32, left: 170 }
-  const totalW   = Math.max(wrapper.clientWidth || 700, 320)
+  const totalW   = Math.max(wrapper.getBoundingClientRect().width || 600, 320)
   const w        = totalW - margin.left - margin.right
   const rowH     = barHeight + 4
   const h        = rows.length * rowH
@@ -180,9 +180,23 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
     .call(sel => sel.selectAll('line').attr('stroke', '#363b4a'))
 
   // Y axis
-  g.append('g')
+  const yAxisG = g.append('g')
     .call(d3.axisLeft(y).tickSize(3))
     .call(sel => sel.select('.domain').attr('stroke', '#363b4a'))
-    .call(sel => sel.selectAll('text').attr('fill', '#e2e6f0').attr('font-size', '11px'))
     .call(sel => sel.selectAll('line').attr('stroke', '#363b4a'))
+
+  yAxisG.selectAll('.tick text')
+    .attr('fill', '#e2e6f0')
+    .attr('font-size', '11px')
+    .attr('dy', '0.32em')
+
+  // Tooltip on y-axis tick labels (feature names)
+  yAxisG.selectAll('.tick')
+    .style('cursor', feat => tagDefs[feat] ? 'help' : 'default')
+    .on('mouseover', (event, feat) => {
+      const row = rows.find(r => r.Feature === feat)
+      if (row) showTip(event, row)
+    })
+    .on('mousemove', (event) => moveTip(event))
+    .on('mouseout', () => hideTip())
 }

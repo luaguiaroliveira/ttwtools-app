@@ -38,12 +38,12 @@ function visibleRows() {
 function renderChart() {
   const wrapper = document.getElementById('chart-wrapper')
   drawChart(wrapper, visibleRows(), {
-    metric:    state.chartMetric,
-    barHeight: state.barHeight,
-    c1:        state.kfaC1,
-    c2:        state.kfaC2,
-    palette:   state.palette,
-    tagDefs:   state.tagDefs,
+    metric:      state.chartMetric,
+    barHeight:   state.barHeight,
+    c1:          state.kfaC1,
+    c2:          state.kfaC2,
+    palette:     state.palette,
+    tagDefs:     state.tagDefs,
   })
 }
 
@@ -77,8 +77,10 @@ function renderTable() {
   const rows = visibleRows()
   document.querySelector('#kfa-table tbody').innerHTML = rows.map(r => {
     const cls = r.Effect_Size >= 0 ? 'effect-positive' : 'effect-negative'
+    const def = state.tagDefs[r.Feature]
+    const titleAttr = def ? ` title="${def.replace(/"/g, "'")}"` : ''
     return `<tr>
-      <td>${r.Feature}</td>
+      <td${titleAttr}>${r.Feature}</td>
       <td class="${cls}">${r.Effect_Size.toFixed(3)}</td>
       <td>${r.Mean_Corpus1.toFixed(3)}</td>
       <td>${r.Mean_Corpus2.toFixed(3)}</td>

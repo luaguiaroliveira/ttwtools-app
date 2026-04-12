@@ -427,7 +427,7 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
 
 #chart-wrapper {
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: hidden;
   max-height: 55vh;
   padding: .5rem 0 .5rem;
   position: relative;
@@ -589,3 +589,5 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   color: #8892a4;
   font-size: .75rem;
 }
+
+
