@@ -88,9 +88,27 @@ export function initHome({ loadCorpusList, refreshCorpusSelects, refreshKfaSelec
           const btn = document.getElementById('btn-modal-browse')
           btn.disabled = true; btn.textContent = '…'
           try {
+            // osascript via server API — returns full absolute path
             const res = await api.utils.pickFile()
             if (res?.path) document.getElementById('modal-open-path').value = res.path
-          } catch (_) {}
+          } catch (err) {
+            // Server-side picker unavailable (e.g. running headless): show inline file input
+            btn.textContent = '📁'; btn.disabled = false
+            const container = btn.closest('.input-browse')
+            if (container && !container.querySelector('input[type=file]')) {
+              const fi = document.createElement('input')
+              fi.type = 'file'; fi.accept = '.ttwa'
+              fi.style.cssText = 'position:absolute;opacity:0;width:1px;height:1px'
+              container.appendChild(fi)
+              fi.addEventListener('change', () => {
+                const f = fi.files?.[0]
+                if (f?.path) document.getElementById('modal-open-path').value = f.path
+                else if (f?.name) document.getElementById('modal-open-path').value = f.name
+              })
+              fi.click()
+            }
+            return
+          }
           btn.textContent = '📁'; btn.disabled = false
         })
       },

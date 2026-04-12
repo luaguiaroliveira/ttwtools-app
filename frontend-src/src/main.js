@@ -12,6 +12,8 @@ import { initTagging }                       from './views/tagging.js'
 import { initAnalysis }                      from './views/analysis.js'
 import { initResults, refreshKfaSelect }     from './views/results.js'
 import { updateProjectLabel }                from './views/home.js'
+import { api }                               from './api.js'
+import { state }                             from './state.js'
 
 // Shared callbacks passed to views that need cross-view coordination
 const shared = { loadCorpusList, refreshCorpusSelects, refreshKfaSelect }
@@ -32,3 +34,10 @@ document.addEventListener('project-changed', () => updateProjectLabel())
 
 // Boot: check if a project is already open (e.g. launched with --open flag)
 checkInitialProject(shared)
+
+// Load tag definitions from ttwtools (non-blocking)
+api.tags.list().then(list => {
+  if (Array.isArray(list)) {
+    state.tagDefs = Object.fromEntries(list.map(t => [t.tag, t.definition]))
+  }
+}).catch(() => {})

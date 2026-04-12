@@ -430,6 +430,7 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   overflow-x: auto;
   max-height: 55vh;
   padding: .5rem 0 .5rem;
+  position: relative;
 }
 
 /* D3 SVG text/axis styles — set via attribute in JS, but also here as fallback */
@@ -563,3 +564,28 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
    =================================================================== */
 
 .hidden { display: none !important; }
+
+/* ===================================================================
+   Chart tooltip
+   =================================================================== */
+
+.chart-tooltip {
+  display: none;
+  position: absolute;
+  background: #1a1d23;
+  border: 1px solid #e07b39;
+  border-radius: 6px;
+  padding: .55rem .85rem;
+  font-size: .8rem;
+  color: #e2e6f0;
+  line-height: 1.5;
+  max-width: 280px;
+  pointer-events: none;
+  z-index: 50;
+  box-shadow: 0 4px 16px rgba(0,0,0,.5);
+}
+
+.chart-tooltip .tip-val {
+  color: #8892a4;
+  font-size: .75rem;
+}

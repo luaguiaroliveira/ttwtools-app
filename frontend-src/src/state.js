@@ -13,9 +13,13 @@ export const state = {
   // Chart options
   chartMetric: 'Effect_Size',
   barHeight:   18,
+  palette:     'biber',
 
   // Table sort/filter
   sortCol: 'Effect_Size',
   sortDir: -1,
   filter:  '',
+
+  // Tag definitions from ttwtools (tag → definition string)
+  tagDefs: {},
 }

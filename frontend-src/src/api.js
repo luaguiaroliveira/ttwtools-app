@@ -60,6 +60,10 @@ export const api = {
     status: jobId => request('GET',  `/api/quickrun/status/${jobId}`),
   },
 
+  tags: {
+    list: () => request('GET', '/api/tags'),
+  },
+
   analysis: {
     runKfa:       body              => request('POST', '/api/analysis/kfa', body),
     listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),

@@ -5,7 +5,7 @@
 import { api }          from '../api.js'
 import { showToast }    from '../ui.js'
 import { state }        from '../state.js'
-import { drawChart }    from '../chart.js'
+import { drawChart, PALETTES } from '../chart.js'
 
 // Column definitions
 const COLS = [
@@ -42,6 +42,8 @@ function renderChart() {
     barHeight: state.barHeight,
     c1:        state.kfaC1,
     c2:        state.kfaC2,
+    palette:   state.palette,
+    tagDefs:   state.tagDefs,
   })
 }
 
@@ -119,6 +121,16 @@ export async function refreshKfaSelect() {
 // ---------------------------------------------------------------------------
 
 export function initResults() {
+  // Populate palette select from PALETTES definition
+  const paletteSelect = document.getElementById('chart-palette')
+  Object.entries(PALETTES).forEach(([key, { label }]) => {
+    const opt = document.createElement('option')
+    opt.value = key
+    opt.textContent = label
+    if (key === state.palette) opt.selected = true
+    paletteSelect.appendChild(opt)
+  })
+
   // Load button
   document.getElementById('btn-load-result')?.addEventListener('click', async () => {
     const sel = document.getElementById('results-kfa-select')
@@ -158,6 +170,12 @@ export function initResults() {
     state.barHeight = parseInt(e.target.value, 10)
     const lbl = document.getElementById('chart-thickness-val')
     if (lbl) lbl.textContent = state.barHeight
+    if (state.kfaData) renderChart()
+  })
+
+  // Palette selector
+  document.getElementById('chart-palette')?.addEventListener('change', e => {
+    state.palette = e.target.value
     if (state.kfaData) renderChart()
   })
 

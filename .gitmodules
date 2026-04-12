@@ -1,0 +1,3 @@
+[submodule "libs/ttwtools"]
+	path = libs/ttwtools
+	url = https://github.com/luaguiaroliveira/ttwtools
