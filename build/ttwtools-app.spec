@@ -15,10 +15,26 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 ROOT = Path(SPECPATH).parent  # pasta raiz do repositório
 
+# ttwtools source: o install editável usa PEP 660 e o PyInstaller não consegue
+# rastrear o mecanismo de import customizado, então incluímos os fontes diretamente.
+# Tenta primeiro o submodule local, depois o repositório irmão.
+for _candidate in [
+    ROOT / 'libs' / 'ttwtools' / 'ttwtools',          # submodule dentro do app
+    ROOT.parent / 'ttwtools' / 'ttwtools',             # repositório irmão (dev)
+]:
+    if _candidate.exists() and (_candidate / '__init__.py').exists():
+        TTWTOOLS_SRC = _candidate
+        break
+else:
+    raise SystemExit("ttwtools source not found — ajuste TTWTOOLS_SRC no spec")
+
 # ---------------------------------------------------------------------------
 # Dados a incluir no bundle
 # ---------------------------------------------------------------------------
 datas = []
+
+# ttwtools: fontes Python + dados (tags_biber.json)
+datas += [(str(TTWTOOLS_SRC), 'ttwtools')]
 
 # Frontend (HTML/CSS/JS)
 datas += [(str(ROOT / 'frontend'), 'frontend')]
@@ -40,7 +56,8 @@ except Exception:
 # Hidden imports (pacotes que PyInstaller não detecta automaticamente)
 # ---------------------------------------------------------------------------
 hidden = []
-hidden += collect_submodules('ttwtools')
+# ttwtools: lista explícita pois collect_submodules falha com install editável PEP 660
+hidden += ['ttwtools', 'ttwtools.analysis', 'ttwtools.tagging', 'ttwtools.project']
 hidden += collect_submodules('fastapi')
 hidden += collect_submodules('uvicorn')
 hidden += collect_submodules('starlette')
@@ -56,7 +73,7 @@ hidden += ['en_core_web_sm', 'en_core_web_sm.about']
 # ---------------------------------------------------------------------------
 a = Analysis(
     [str(ROOT / 'app' / '__main__.py')],
-    pathex=[str(ROOT)],
+    pathex=[str(ROOT), str(TTWTOOLS_SRC.parent)],  # TTWTOOLS_SRC.parent contém o pacote ttwtools/
     binaries=[],
     datas=datas,
     hiddenimports=hidden,
@@ -85,8 +102,8 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,     # sem janela de console; mudar para True para debug
-    icon=str(ROOT / 'build' / 'icon.icns') if sys.platform == 'darwin'
-         else str(ROOT / 'build' / 'icon.ico'),
+    icon=str(ROOT / 'build' / 'icon.icns') if (sys.platform == 'darwin' and (ROOT / 'build' / 'icon.icns').exists())
+         else (str(ROOT / 'build' / 'icon.ico') if (sys.platform == 'win32' and (ROOT / 'build' / 'icon.ico').exists()) else None),
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,
@@ -109,7 +126,7 @@ if sys.platform == 'darwin':
     app = BUNDLE(
         coll,
         name='ttwtools.app',
-        icon=str(ROOT / 'build' / 'icon.icns'),
+        icon=str(ROOT / 'build' / 'icon.icns') if (ROOT / 'build' / 'icon.icns').exists() else None,
         bundle_identifier='br.edu.ttwtools.app',
         info_plist={
             'NSHighResolutionCapable': True,
