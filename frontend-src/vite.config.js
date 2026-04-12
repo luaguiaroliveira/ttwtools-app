@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   root: '.',
@@ -6,6 +7,14 @@ export default defineConfig({
     outDir: '../frontend',
     emptyOutDir: true,
   },
+  plugins: [
+    viteStaticCopy({
+      targets: [{
+        src: 'node_modules/@shoelace-style/shoelace/dist/assets',
+        dest: 'shoelace',
+      }],
+    }),
+  ],
   server: {
     port: 5173,
     proxy: {

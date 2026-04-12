@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="sl-theme-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-QsyA-st8.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DjTlR8qE.css">
+  <script type="module" crossorigin src="/assets/index-qqOlVF36.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-AqnV8vzj.css">
 </head>
 <body>
 
@@ -63,12 +63,12 @@
         <div class="form-row">
           <label>
             Corpus 1 — nome
-            <input type="text" id="qr-c1-name" placeholder="ex: corpus_A" />
+            <sl-input id="qr-c1-name" placeholder="ex: corpus_A" size="small"></sl-input>
           </label>
           <label class="grow">
             Corpus 1 — pasta
             <div class="input-browse">
-              <input type="text" id="qr-c1-folder" placeholder="/caminho/para/corpus1" />
+              <sl-input id="qr-c1-folder" placeholder="/caminho/para/corpus1" size="small"></sl-input>
               <button type="button" class="btn-browse" data-target="qr-c1-folder" title="Procurar pasta">📁</button>
             </div>
           </label>
@@ -76,12 +76,12 @@
         <div class="form-row">
           <label>
             Corpus 2 — nome
-            <input type="text" id="qr-c2-name" placeholder="ex: corpus_B" />
+            <sl-input id="qr-c2-name" placeholder="ex: corpus_B" size="small"></sl-input>
           </label>
           <label class="grow">
             Corpus 2 — pasta
             <div class="input-browse">
-              <input type="text" id="qr-c2-folder" placeholder="/caminho/para/corpus2" />
+              <sl-input id="qr-c2-folder" placeholder="/caminho/para/corpus2" size="small"></sl-input>
               <button type="button" class="btn-browse" data-target="qr-c2-folder" title="Procurar pasta">📁</button>
             </div>
           </label>
@@ -89,33 +89,31 @@
         <label>
           Salvar resultados em (.ttwa)
           <div class="input-browse">
-            <input type="text" id="qr-output" placeholder="/caminho/meu_projeto.ttwa" />
+            <sl-input id="qr-output" placeholder="/caminho/meu_projeto.ttwa" size="small"></sl-input>
             <button type="button" class="btn-browse" data-target="qr-output" data-mode="file" title="Procurar pasta">📁</button>
           </div>
         </label>
         <div class="form-row">
           <label>
             Modo
-            <select id="qr-mode">
-              <option value="full">full — com textos originais</option>
-              <option value="compact">compact — apenas tagueados</option>
-            </select>
+            <sl-select id="qr-mode" value="full" size="small">
+              <sl-option value="full">full — com textos originais</sl-option>
+              <sl-option value="compact">compact — apenas tagueados</sl-option>
+            </sl-select>
           </label>
           <label>
             Método KFA
-            <select id="qr-join">
-              <option value="union" selected>union</option>
-              <option value="intersection">intersection</option>
-            </select>
+            <sl-select id="qr-join" value="union" size="small">
+              <sl-option value="union">union</sl-option>
+              <sl-option value="intersection">intersection</sl-option>
+            </sl-select>
           </label>
           <label>
             Effect size mín.
-            <input type="number" id="qr-effect" value="0.2" min="0" step="0.05" style="width:90px" />
+            <sl-input type="number" id="qr-effect" value="0.2" min="0" step="0.05" size="small" style="width:110px"></sl-input>
           </label>
         </div>
-        <label class="toggle-row">
-          <input type="checkbox" id="qr-usenlp" /> Usar spaCy para tokenização
-        </label>
+        <sl-checkbox id="qr-usenlp">Usar spaCy para tokenização</sl-checkbox>
         <button type="submit" class="btn-primary" id="btn-qr-run">Executar pipeline</button>
       </form>
 
@@ -152,17 +150,13 @@
       <form id="form-tagging" class="form-panel">
         <label>
           Corpus
-          <select id="tag-corpus-select"><option value="">-- selecione --</option></select>
+          <sl-select id="tag-corpus-select" placeholder="-- selecione --" size="small"></sl-select>
         </label>
-        <label class="toggle-row">
-          <input type="checkbox" id="tag-usenlp" /> Usar spaCy (mais preciso, mais lento)
-        </label>
-        <label class="toggle-row">
-          <input type="checkbox" id="tag-save-tagged" checked /> Salvar tokens tagueados no .ttwa
-        </label>
+        <sl-checkbox id="tag-usenlp">Usar spaCy (mais preciso, mais lento)</sl-checkbox>
+        <sl-checkbox id="tag-save-tagged" checked>Salvar tokens tagueados no .ttwa</sl-checkbox>
         <label>
           Processos paralelos
-          <input type="number" id="tag-nprocesses" value="4" min="1" max="16" />
+          <sl-input type="number" id="tag-nprocesses" value="4" min="1" max="16" size="small" style="width:110px"></sl-input>
         </label>
         <button type="submit" class="btn-primary">Executar tagging</button>
       </form>
@@ -175,22 +169,22 @@
       <form id="form-kfa" class="form-panel">
         <label>
           Corpus 1
-          <select id="kfa-corpus1"><option value="">-- selecione --</option></select>
+          <sl-select id="kfa-corpus1" placeholder="-- selecione --" size="small"></sl-select>
         </label>
         <label>
           Corpus 2
-          <select id="kfa-corpus2"><option value="">-- selecione --</option></select>
+          <sl-select id="kfa-corpus2" placeholder="-- selecione --" size="small"></sl-select>
         </label>
         <label>
           Effect size mínimo (Cohen's d)
-          <input type="number" id="kfa-effect" value="0.2" min="0" step="0.05" />
+          <sl-input type="number" id="kfa-effect" value="0.2" min="0" step="0.05" size="small" style="width:110px"></sl-input>
         </label>
         <label>
           Método de junção
-          <select id="kfa-join">
-            <option value="union">union</option>
-            <option value="intersection">intersection</option>
-          </select>
+          <sl-select id="kfa-join" value="union" size="small">
+            <sl-option value="union">union</sl-option>
+            <sl-option value="intersection">intersection</sl-option>
+          </sl-select>
         </label>
         <button type="submit" class="btn-primary">Executar KFA</button>
       </form>
@@ -200,12 +194,10 @@
     <section id="view-results" class="view">
       <h1>Resultados</h1>
       <div class="toolbar">
-        <select id="results-kfa-select"><option value="">-- selecione uma KFA --</option></select>
+        <sl-select id="results-kfa-select" placeholder="-- selecione uma KFA --" style="min-width:320px"></sl-select>
         <button id="btn-load-result" class="btn-secondary">Carregar</button>
-        <input type="text" id="results-filter" placeholder="Filtrar feature…"
-          style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);
-                 border-radius:6px;color:var(--text);padding:.4rem .75rem;
-                 font-size:.85rem;width:180px;" />
+        <sl-input id="results-filter" placeholder="Filtrar feature…" size="small"
+          style="margin-left:auto; width:200px;"></sl-input>
       </div>
 
       <!-- Gráfico D3 -->
@@ -213,23 +205,23 @@
         <div class="chart-toolbar">
           <label class="chart-ctrl">
             Visualizar
-            <select id="chart-metric">
-              <option value="Effect_Size" selected>Effect size (d)</option>
-              <option value="Mean_Corpus1">Média Corpus 1</option>
-              <option value="Mean_Corpus2">Média Corpus 2</option>
-              <option value="Std_Corpus1">DP Corpus 1</option>
-              <option value="Std_Corpus2">DP Corpus 2</option>
-              <option value="N_Corpus1">N Corpus 1</option>
-              <option value="N_Corpus2">N Corpus 2</option>
-            </select>
+            <sl-select id="chart-metric" value="Effect_Size" size="small" style="min-width:160px">
+              <sl-option value="Effect_Size">Effect size (d)</sl-option>
+              <sl-option value="Mean_Corpus1">Média Corpus 1</sl-option>
+              <sl-option value="Mean_Corpus2">Média Corpus 2</sl-option>
+              <sl-option value="Std_Corpus1">DP Corpus 1</sl-option>
+              <sl-option value="Std_Corpus2">DP Corpus 2</sl-option>
+              <sl-option value="N_Corpus1">N Corpus 1</sl-option>
+              <sl-option value="N_Corpus2">N Corpus 2</sl-option>
+            </sl-select>
           </label>
           <label class="chart-ctrl">
             Paleta
-            <select id="chart-palette"><!-- populated by results.js --></select>
+            <sl-select id="chart-palette" size="small" style="min-width:160px"><!-- populated by results.js --></sl-select>
           </label>
           <label class="chart-ctrl">
             Espessura
-            <input type="range" id="chart-thickness" min="8" max="40" value="18" step="2" />
+            <sl-range id="chart-thickness" min="8" max="40" value="18" step="2"></sl-range>
             <span id="chart-thickness-val">18</span>px
           </label>
         </div>

@@ -106,15 +106,18 @@ export async function refreshKfaSelect() {
   try {
     const { kfa_results } = await api.analysis.listKfa()
     const sel = document.getElementById('results-kfa-select')
-    sel.innerHTML = '<option value="">-- selecione uma KFA --</option>'
+    sel.innerHTML = ''
     kfa_results.forEach(r => {
-      const opt = document.createElement('option')
+      const opt = document.createElement('sl-option')
       opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name, d: r.min_effect, join: r.join_method })
       opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (d≥${r.min_effect}, ${r.join_method})`
       sel.appendChild(opt)
     })
-    // Auto-select last result if only one
-    if (kfa_results.length === 1) sel.selectedIndex = 1
+    // Auto-select if only one result
+    if (kfa_results.length === 1) {
+      const firstOpt = sel.querySelector('sl-option')
+      if (firstOpt) sel.value = firstOpt.value
+    }
   } catch (_) {}
 }
 
@@ -123,15 +126,16 @@ export async function refreshKfaSelect() {
 // ---------------------------------------------------------------------------
 
 export function initResults() {
-  // Populate palette select from PALETTES definition
+  // Populate palette select with sl-option elements
   const paletteSelect = document.getElementById('chart-palette')
   Object.entries(PALETTES).forEach(([key, { label }]) => {
-    const opt = document.createElement('option')
+    const opt = document.createElement('sl-option')
     opt.value = key
     opt.textContent = label
-    if (key === state.palette) opt.selected = true
     paletteSelect.appendChild(opt)
   })
+  // Set default value after options are added
+  paletteSelect.value = state.palette
 
   // Load button
   document.getElementById('btn-load-result')?.addEventListener('click', async () => {
@@ -156,19 +160,19 @@ export function initResults() {
   })
 
   // Filter
-  document.getElementById('results-filter')?.addEventListener('input', e => {
+  document.getElementById('results-filter')?.addEventListener('sl-input', e => {
     state.filter = e.target.value.trim().toLowerCase()
     if (state.kfaData) { renderTable(); renderChart() }
   })
 
   // Metric selector
-  document.getElementById('chart-metric')?.addEventListener('change', e => {
+  document.getElementById('chart-metric')?.addEventListener('sl-change', e => {
     state.chartMetric = e.target.value
     if (state.kfaData) renderChart()
   })
 
   // Bar thickness slider
-  document.getElementById('chart-thickness')?.addEventListener('input', e => {
+  document.getElementById('chart-thickness')?.addEventListener('sl-input', e => {
     state.barHeight = parseInt(e.target.value, 10)
     const lbl = document.getElementById('chart-thickness-val')
     if (lbl) lbl.textContent = state.barHeight
@@ -176,7 +180,7 @@ export function initResults() {
   })
 
   // Palette selector
-  document.getElementById('chart-palette')?.addEventListener('change', e => {
+  document.getElementById('chart-palette')?.addEventListener('sl-change', e => {
     state.palette = e.target.value
     if (state.kfaData) renderChart()
   })
