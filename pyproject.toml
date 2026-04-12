@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ttwtools-app"
+version = "0.1.0"
+description = "Web/desktop application for ttwtools linguistic analysis."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "ttwtools",
+  "fastapi>=0.111",
+  "uvicorn[standard]>=0.29",
+  "pywebview>=5.1",
+  "python-multipart",   # upload de arquivos no FastAPI
+  "aiofiles",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "httpx",   # cliente assíncrono para testes do FastAPI
+]
+build = [
+  "pyinstaller>=6.6",
+  "pyinstaller-hooks-contrib",
+]
+
+[project.scripts]
+ttwtools-app = "app.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]

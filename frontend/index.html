@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ttwtools</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+
+  <!-- ===== Sidebar ===== -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <span class="app-logo">ttw<strong>tools</strong></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-view="home">Início</button>
+      <button class="nav-btn" data-view="corpus">Corpora</button>
+      <button class="nav-btn" data-view="tagging">Tagging</button>
+      <button class="nav-btn" data-view="analysis">KFA</button>
+      <button class="nav-btn" data-view="results">Resultados</button>
+    </nav>
+
+    <div class="sidebar-project">
+      <div id="project-label" class="project-name">Nenhum projeto</div>
+      <div class="project-actions">
+        <button id="btn-new-project" class="btn-sm">Novo</button>
+        <button id="btn-open-project" class="btn-sm">Abrir</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== Main content ===== -->
+  <main id="main">
+
+    <!-- HOME -->
+    <section id="view-home" class="view active">
+      <h1>Bem-vindo ao ttwtools</h1>
+      <p>Crie ou abra um projeto <code>.ttwa</code> para começar.</p>
+      <div class="card-grid">
+        <div class="card" id="card-new">
+          <h3>Novo projeto</h3>
+          <p>Cria um arquivo <code>.ttwa</code> vazio.</p>
+          <button class="btn-primary" id="btn-home-new">Criar</button>
+        </div>
+        <div class="card" id="card-open">
+          <h3>Abrir projeto</h3>
+          <p>Abre um arquivo <code>.ttwa</code> existente.</p>
+          <button class="btn-primary" id="btn-home-open">Abrir</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CORPORA -->
+    <section id="view-corpus" class="view">
+      <h1>Corpora</h1>
+      <div class="toolbar">
+        <button class="btn-primary" id="btn-import-folder">Importar pasta</button>
+        <button class="btn-secondary" id="btn-upload-file">Upload arquivo</button>
+      </div>
+      <div id="corpus-list" class="list-container">
+        <p class="placeholder">Nenhum corpus carregado.</p>
+      </div>
+    </section>
+
+    <!-- TAGGING -->
+    <section id="view-tagging" class="view">
+      <h1>Tagging BiberPlus</h1>
+      <form id="form-tagging" class="form-panel">
+        <label>
+          Corpus
+          <select id="tag-corpus-select"><option value="">-- selecione --</option></select>
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="tag-usenlp" /> Usar spaCy (mais preciso, mais lento)
+        </label>
+        <label class="toggle-row">
+          <input type="checkbox" id="tag-save-tagged" checked /> Salvar tokens tagueados no .ttwa
+        </label>
+        <label>
+          Processos paralelos
+          <input type="number" id="tag-nprocesses" value="4" min="1" max="16" />
+        </label>
+        <button type="submit" class="btn-primary">Executar tagging</button>
+      </form>
+      <div id="tagging-status" class="status-box hidden"></div>
+    </section>
+
+    <!-- ANALYSIS (KFA) -->
+    <section id="view-analysis" class="view">
+      <h1>Key Feature Analysis</h1>
+      <form id="form-kfa" class="form-panel">
+        <label>
+          Corpus 1
+          <select id="kfa-corpus1"><option value="">-- selecione --</option></select>
+        </label>
+        <label>
+          Corpus 2
+          <select id="kfa-corpus2"><option value="">-- selecione --</option></select>
+        </label>
+        <label>
+          Effect size mínimo (Cohen's d)
+          <input type="number" id="kfa-effect" value="0.2" min="0" step="0.05" />
+        </label>
+        <label>
+          Método de junção
+          <select id="kfa-join">
+            <option value="union">union</option>
+            <option value="intersection">intersection</option>
+          </select>
+        </label>
+        <button type="submit" class="btn-primary">Executar KFA</button>
+      </form>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="view-results" class="view">
+      <h1>Resultados</h1>
+      <div class="toolbar">
+        <select id="results-kfa-select"><option value="">-- selecione uma KFA --</option></select>
+        <button id="btn-load-result" class="btn-secondary">Carregar</button>
+      </div>
+
+      <!-- Gráfico de barras -->
+      <div id="chart-container" class="chart-box hidden">
+        <canvas id="kfa-chart"></canvas>
+      </div>
+
+      <!-- Tabela -->
+      <div id="table-container" class="table-box hidden">
+        <table id="kfa-table">
+          <thead><tr></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Modais ===== -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal-box">
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+      <div class="modal-footer">
+        <button id="modal-cancel" class="btn-secondary">Cancelar</button>
+        <button id="modal-confirm" class="btn-primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Toast ===== -->
+  <div id="toast" class="hidden"></div>
+
+  <!-- Chart.js (CDN; substituir por vendor/ no build offline) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/views/corpus.js"></script>
+  <script src="js/views/tagging.js"></script>
+  <script src="js/views/analysis.js"></script>
+  <script src="js/views/results.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
