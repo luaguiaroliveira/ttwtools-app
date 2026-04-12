@@ -58,3 +58,37 @@ def pick_folder():
         return JSONResponse(status_code=204, content={"path": ""})
     except Exception as exc:
         return JSONResponse(status_code=500, content={"detail": str(exc)})
+
+
+@router.get("/pick-file")
+def pick_file():
+    """Abre o seletor de arquivo nativo do macOS e retorna o caminho escolhido."""
+    try:
+        if platform.system() == "Darwin":
+            script = (
+                'POSIX path of (choose file '
+                'with prompt "Selecione um arquivo .ttwa:" '
+                'of type {"ttwa", "public.data"})'
+            )
+            result = subprocess.run(
+                ["osascript", "-e", script],
+                capture_output=True, text=True, timeout=120,
+            )
+            path = result.stdout.strip().rstrip("/") if result.returncode == 0 else ""
+        else:
+            script = (
+                "import tkinter as tk; from tkinter import filedialog; "
+                "root = tk.Tk(); root.withdraw(); root.wm_attributes('-topmost', True); "
+                "p = filedialog.askopenfilename(filetypes=[('TTWA','*.ttwa'),('Todos','*')]); print(p)"
+            )
+            result = subprocess.run(
+                [sys.executable, "-c", script],
+                capture_output=True, text=True, timeout=120,
+            )
+            path = result.stdout.strip()
+
+        if path:
+            return {"path": path}
+        return JSONResponse(status_code=204, content={"path": ""})
+    except Exception as exc:
+        return JSONResponse(status_code=500, content={"detail": str(exc)})
