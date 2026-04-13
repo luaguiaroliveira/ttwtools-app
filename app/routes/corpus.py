@@ -110,6 +110,51 @@ def list_corpus_files(corpus_name: str):
         return {"corpus_name": corpus_name, "files": proj.list_corpus_files(corpus_name)}
 
 
+@router.get("/{corpus_name}/tagged-tokens/{filename}")
+def get_tagged_tokens(corpus_name: str, filename: str):
+    """Returns token+tag list for the tagged version of a corpus file."""
+    _require_project()
+    import pathlib
+    from ttwtools.project import TTWAProject
+
+    stem        = pathlib.Path(filename).stem           # strip .txt
+    tagged_name = f"{stem}_tagged.tsv"
+
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        row = proj._con.execute(
+            "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=?",
+            (corpus_name, tagged_name),
+        ).fetchone()
+
+        raw_row = proj._con.execute(
+            "SELECT content FROM corpus_files WHERE corpus_name=? AND filename=?",
+            (corpus_name, filename),
+        ).fetchone()
+
+    if not row:
+        raise HTTPException(status_code=404, detail=f"Arquivo tagueado não encontrado para '{filename}'.")
+
+    # Parse TSV: skip comment lines + header row "token\ttags"
+    tokens: list[dict] = []
+    past_header = False
+    for line in row[0].splitlines():
+        if not past_header:
+            if line.startswith("token") and "\t" in line:
+                past_header = True
+            continue
+        if "\t" in line:
+            word, tags_str = line.split("\t", 1)
+            tags = [t for t in tags_str.split() if t]
+        else:
+            word = line
+            tags = []
+        tokens.append({"word": word, "tags": tags})
+
+    raw_text = raw_row[0] if raw_row else None
+
+    return {"corpus_name": corpus_name, "filename": filename, "tokens": tokens, "raw_text": raw_text}
+
+
 @router.get("/{corpus_name}/file/{filename}")
 def get_corpus_file(corpus_name: str, filename: str):
     """Retorna o conteúdo de um arquivo do corpus."""
