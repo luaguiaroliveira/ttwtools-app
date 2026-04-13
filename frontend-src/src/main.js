@@ -24,6 +24,7 @@ import { initCorpus, loadCorpusList, refreshCorpusSelects } from './views/corpus
 import { initTagging }                       from './views/tagging.js'
 import { initAnalysis }                      from './views/analysis.js'
 import { initResults, refreshKfaSelect }     from './views/results.js'
+import { initFeatureDetail }                 from './views/feature-detail.js'
 import { updateProjectLabel }                from './views/home.js'
 import { api }                               from './api.js'
 import { state }                             from './state.js'
@@ -41,6 +42,7 @@ initCorpus()
 initTagging()
 initAnalysis(shared)
 initResults()
+initFeatureDetail()
 
 // Listen for project-changed event (dispatched by quickrun on completion)
 document.addEventListener('project-changed', () => updateProjectLabel())

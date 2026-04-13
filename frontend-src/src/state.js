@@ -22,4 +22,7 @@ export const state = {
 
   // Tag definitions from ttwtools (tag → definition string)
   tagDefs: {},
+
+  // Feature detail drill-down
+  currentFeature: '',
 }

@@ -69,6 +69,8 @@ export const api = {
     listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),
     getKfa:       (c1, c2, d, join) =>
       request('GET', `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}`),
+    featureFiles: (c1, c2, feature) =>
+      request('GET', `/api/analysis/feature-files/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}/${encodeURIComponent(feature)}`),
     featureTable: (name, type)      =>
       request('GET', `/api/analysis/features/${encodeURIComponent(name)}/${type}`),
     listFeatures: ()                => request('GET',  '/api/analysis/features/list'),

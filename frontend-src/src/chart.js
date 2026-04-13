@@ -61,7 +61,7 @@ export const PALETTES = {
   },
 }
 
-export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', palette = 'biber', tagDefs = {} }) {
+export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', palette = 'biber', tagDefs = {}, onBarClick = null }) {
   wrapper.innerHTML = ''
 
   if (!rows || rows.length === 0) return
@@ -157,10 +157,11 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
     .attr('fill',   (_, i) => paletteColors[i])
     .attr('rx', 3)
     .attr('opacity', 0.88)
-    .style('cursor', d => tagDefs[d.Feature] ? 'help' : 'default')
+    .style('cursor', d => onBarClick ? 'pointer' : (tagDefs[d.Feature] ? 'help' : 'default'))
     .on('mouseover', (event, d) => { showTip(event, d); d3.select(event.currentTarget).attr('opacity', 1) })
     .on('mousemove', (event)    => { moveTip(event) })
     .on('mouseout',  (event)    => { hideTip();        d3.select(event.currentTarget).attr('opacity', 0.88) })
+    .on('click',     (event, d) => { if (onBarClick) onBarClick(d) })
 
   // Zero line
   if (xMin < 0 || (isEffect && valMax > 0 && valMin < 0)) {
@@ -192,7 +193,13 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
 
   // Tooltip on y-axis tick labels (feature names)
   yAxisG.selectAll('.tick')
-    .style('cursor', feat => tagDefs[feat] ? 'help' : 'default')
+    .style('cursor', feat => onBarClick ? 'pointer' : (tagDefs[feat] ? 'help' : 'default'))
+    .on('click',     (event, feat) => {
+      if (onBarClick) {
+        const row = rows.find(r => r.Feature === feat)
+        if (row) onBarClick(row)
+      }
+    })
     .on('mouseover', (event, feat) => {
       const row = rows.find(r => r.Feature === feat)
       if (row) showTip(event, row)

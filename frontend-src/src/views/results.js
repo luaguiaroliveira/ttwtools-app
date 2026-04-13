@@ -2,10 +2,11 @@
  * views/results.js — KFA results: D3 bar chart + sortable table.
  */
 
-import { api }          from '../api.js'
-import { showToast }    from '../ui.js'
-import { state }        from '../state.js'
+import { api }              from '../api.js'
+import { showToast }        from '../ui.js'
+import { state }            from '../state.js'
 import { drawChart, PALETTES } from '../chart.js'
+import { showFeatureDetail } from './feature-detail.js'
 
 // Column definitions
 const COLS = [
@@ -44,6 +45,7 @@ function renderChart() {
     c2:          state.kfaC2,
     palette:     state.palette,
     tagDefs:     state.tagDefs,
+    onBarClick:  (row) => showFeatureDetail(row.Feature),
   })
 }
 
@@ -80,7 +82,7 @@ function renderTable() {
     const def = state.tagDefs[r.Feature]
     const titleAttr = def ? ` title="${def.replace(/"/g, "'")}"` : ''
     return `<tr>
-      <td${titleAttr}>${r.Feature}</td>
+      <td class="feature-link" data-feature="${r.Feature}"${titleAttr}>${r.Feature}</td>
       <td class="${cls}">${r.Effect_Size.toFixed(3)}</td>
       <td>${r.Mean_Corpus1.toFixed(3)}</td>
       <td>${r.Mean_Corpus2.toFixed(3)}</td>
@@ -183,6 +185,12 @@ export function initResults() {
   document.getElementById('chart-palette')?.addEventListener('sl-change', e => {
     state.palette = e.target.value
     if (state.kfaData) renderChart()
+  })
+
+  // Click on Feature column cells → drill-down
+  document.querySelector('#kfa-table')?.addEventListener('click', e => {
+    const td = e.target.closest('td.feature-link')
+    if (td) showFeatureDetail(td.dataset.feature)
   })
 
   // ResizeObserver: redraw chart when container width changes
