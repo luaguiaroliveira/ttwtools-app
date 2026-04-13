@@ -1,12 +1,13 @@
 /**
- * views/text-viewer.js — Full-text viewer with per-token Rough Notation highlights.
+ * views/text-viewer.js — Full-text viewer with per-token CSS highlights.
+ * Pagination and print layout handled by Paged.js.
  *
  * Entry points:
  *   initTextViewer()                        — call once at startup
  *   showTextViewer(files, index, activeTag) — navigate to this view
  */
 
-import { annotate }  from 'rough-notation'
+import { Previewer }  from 'pagedjs'
 import { api }       from '../api.js'
 import { showView }  from '../ui.js'
 import { state }     from '../state.js'
@@ -23,7 +24,7 @@ const PALETTE_STROKE = [
   '#e07b39', '#5b9cf6', '#3ecf8e', '#e05555', '#9b5de5', '#ffca3a', '#1a97c8', '#52b788',
 ]
 const N_SLOTS = PALETTE_FILL.length          // 8
-const RN_TYPES = [
+const ANN_TYPES = [
   ['highlight', 'highlight'],
   ['underline', 'underline'],
   ['box',       'box'],
@@ -31,13 +32,17 @@ const RN_TYPES = [
 ]
 
 // ---------------------------------------------------------------------------
-// Per-file state
+// Module state
 // ---------------------------------------------------------------------------
-let _annotations    = {}   // tagName → RoughAnnotation[]
-let _tagColorIdx    = {}   // tagName → palette index (0–7)
-let _tagTypes       = {}   // tagName → RN type string (persists across files)
-let _tagCustomColors = {}  // tagName → { fill: string, stroke: string } (user override)
-let _paletteNext    = 0    // counter for non-active-feature slots
+let _annotationStyles = {}  // tagName → <style> element in document.head
+let _tagColorIdx      = {}  // tagName → palette index (0–7)
+let _tagTypes         = {}  // tagName → annotation type (persists across files)
+let _tagCustomColors  = {}  // tagName → { fill: string, stroke: string } (user override)
+let _paletteNext      = 0
+let _lastLines        = []  // cached merged lines
+let _lastFilename     = ''  // cached filename for footer
+let _legendVisible    = true
+let _pagedStyles      = []  // <style> elements injected by Paged.js — removed on re-render
 
 // ---------------------------------------------------------------------------
 // Init (once)
@@ -55,12 +60,12 @@ export function initTextViewer() {
     if (state.tvIndex < state.tvFiles.length - 1) { state.tvIndex++; _loadFile() }
   })
 
-  document.getElementById('tv-font-slider')?.addEventListener('input', e => {
+  document.getElementById('tv-font-slider')?.addEventListener('input', async e => {
     const v = e.target.value
     document.getElementById('tv-font-val').textContent = `${v}px`
-    document.getElementById('tv-text-content').style.fontSize = `${v}px`
-    // Rough Notation SVGs are positioned at show() time — redraw after reflow
-    requestAnimationFrame(_redrawAnnotations)
+    if (!_lastLines.length) return
+    await _renderText(_lastLines, _lastFilename)
+    _updateLegend()
   })
 
   // Print / Save PDF
@@ -68,18 +73,16 @@ export function initTextViewer() {
     window.print()
   })
 
-  // Legend shown by default
+  // Legend shown by default; toggling via button affects a module-level flag
+  // (the actual #tv-legend element is created dynamically per render)
   const legendBtn = document.getElementById('btn-tv-legend')
-  const _legEl = document.getElementById('tv-legend')
-  if (_legEl) _legEl.hidden = false
   legendBtn?.classList.add('active')
 
   legendBtn?.addEventListener('click', () => {
+    _legendVisible = !_legendVisible
+    legendBtn.classList.toggle('active', _legendVisible)
     const leg = document.getElementById('tv-legend')
-    if (!leg) return
-    const showing = !leg.hidden
-    leg.hidden = showing
-    legendBtn.classList.toggle('active', !showing)
+    if (leg) leg.hidden = !_legendVisible
   })
 
   // Hidden color-picker input — opened programmatically when a swatch is clicked
@@ -123,7 +126,7 @@ export function initTextViewer() {
   // Token tooltip (delegated on document — paper content changes per file)
   const tooltip = document.getElementById('tv-tooltip')
   document.addEventListener('mouseover', e => {
-    const span = e.target.closest('#tv-text-content span[data-tags]')
+    const span = e.target.closest('#tv-pages span[data-tags]')
     if (!span || !tooltip) return
     const tags = (span.dataset.tags || '').split(/\s+/).filter(Boolean)
     if (!tags.length) return
@@ -137,14 +140,14 @@ export function initTextViewer() {
   })
   document.addEventListener('mousemove', e => {
     if (!tooltip || tooltip.hidden) return
-    if (!e.target.closest('#tv-text-content span[data-tags]')) {
+    if (!e.target.closest('#tv-pages span[data-tags]')) {
       tooltip.hidden = true
       return
     }
     _positionTooltip(tooltip, e)
   })
   document.addEventListener('mouseout', e => {
-    if (!e.target.closest('#tv-text-content span[data-tags]') && tooltip) {
+    if (!e.target.closest('#tv-pages span[data-tags]') && tooltip) {
       tooltip.hidden = true
     }
   })
@@ -198,30 +201,33 @@ async function _loadFile() {
   if (btnPrev) btnPrev.disabled = (state.tvIndex === 0)
   if (btnNext) btnNext.disabled = (state.tvIndex >= state.tvFiles.length - 1)
 
-  document.getElementById('tv-text-content').innerHTML =
-    '<span style="color:#aaa">Carregando…</span>'
+  document.getElementById('tv-pages').innerHTML =
+    '<div style="padding:2rem;color:#aaa">Carregando…</div>'
   document.getElementById('tv-tag-list').innerHTML = ''
 
   try {
     const { tokens, raw_text } = await api.corpus.taggedTokens(file.corpus, file.filename)
     const lines = _mergeLines(raw_text, tokens)
-    _renderText(lines)
+    _lastLines    = lines
+    _lastFilename = file.filename
+    await _renderText(lines, file.filename)
     _renderTagSidebar(tokens)
 
-    // Auto-apply the feature that was active in feature-detail
+    // Pages are painted (renderText awaited a RAF). Apply annotations now.
     if (state.tvFeature) {
-      const cb = document.querySelector(
-        `#tv-tag-list input.tv-tag-cb[data-tag="${CSS.escape(state.tvFeature)}"]`
+      const tag = state.tvFeature
+      const cb  = document.querySelector(
+        `#tv-tag-list input.tv-tag-cb[data-tag="${CSS.escape(tag)}"]`
       )
       if (cb && !cb.disabled) {
         cb.checked = true
-        _applyTag(state.tvFeature)
+        _applyTag(tag)
         _updateLegend()
       }
     }
   } catch (err) {
-    document.getElementById('tv-text-content').innerHTML =
-      `<span style="color:#e05555">Erro: ${err.message}</span>`
+    document.getElementById('tv-pages').innerHTML =
+      `<div style="padding:2rem;color:#e05555">Erro: ${err.message}</div>`
   }
 }
 
@@ -239,8 +245,13 @@ function _mergeLines(rawText, tokens) {
   let qi = 0
 
   if (!rawText) {
-    // Fallback: render TSV tokens as a single paragraph
-    return [queue.map(t => ({ word: t.word, tags: t.tags }))]
+    // Fallback: split tokens into lines of ~15 words so pagination works
+    const WORDS_PER_LINE = 15
+    const result = []
+    for (let i = 0; i < queue.length; i += WORDS_PER_LINE) {
+      result.push(queue.slice(i, i + WORDS_PER_LINE).map(t => ({ word: t.word, tags: t.tags })))
+    }
+    return result.length ? result : [[]]
   }
 
   return rawText.split('\n').map(line => {
@@ -280,45 +291,109 @@ function _mergeLines(rawText, tokens) {
 }
 
 // ---------------------------------------------------------------------------
-// Render lines onto the A4 paper
+// Render — build HTML flow, run Paged.js Previewer
 // ---------------------------------------------------------------------------
-const PUNCT_BEFORE = new Set(['.', ',', '!', '?', ';', ':', ')', ']', '}', "'", '\u2019', '\u201d', '...', '…'])
+const PUNCT_BEFORE = new Set(['.', ',', '!', '?', ';', ':', ')', ']', '}', "'", '\u2019', '\u201d', '...', '\u2026'])
 
-function _renderText(lines) {
-  const container = document.getElementById('tv-text-content')
-  container.innerHTML = ''
-  // Restore font size from slider
+function _escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+async function _renderText(lines, filename) {
+  const pagesEl = document.getElementById('tv-pages')
+  if (!pagesEl) return
+
+  // Remove styles injected by the previous Paged.js run
+  _pagedStyles.forEach(el => el.remove())
+  _pagedStyles = []
+
   const sliderEl = document.getElementById('tv-font-slider')
-  if (sliderEl) container.style.fontSize = `${sliderEl.value}px`
+  const fontSize = sliderEl ? `${sliderEl.value}px` : '14px'
 
-  const frag = document.createDocumentFragment()
+  // ── Build HTML content ───────────────────────────────────────────────────
+  let html = `<div class="tv-text" style="font-size:${fontSize}">`
 
   lines.forEach(words => {
     if (!words.length) {
-      const spacer = document.createElement('div')
-      spacer.className = 'tv-blank-line'
-      frag.appendChild(spacer)
+      html += '<div class="tv-blank-line"> </div>'
       return
     }
-
-    const lineDiv = document.createElement('div')
-    lineDiv.className = 'tv-line'
-
+    html += '<div class="tv-line">'
     words.forEach((tok, wi) => {
-      if (wi > 0 && !PUNCT_BEFORE.has(tok.word)) {
-        lineDiv.appendChild(document.createTextNode(' '))
+      if (wi > 0 && !PUNCT_BEFORE.has(tok.word)) html += '<span class="tv-sp"> </span>'
+      const esc = _escHtml(tok.word)
+      if (tok.tags.length) {
+        const tagsAttr = tok.tags.map(_escHtml).join(' ')
+        html += `<span class="tv-token tagged" data-tags="${tagsAttr}">${esc}</span>`
+      } else {
+        html += `<span class="tv-token">${esc}</span>`
       }
-      const span = document.createElement('span')
-      span.className   = tok.tags.length ? 'tv-token tagged' : 'tv-token'
-      span.textContent = tok.word
-      if (tok.tags.length) span.dataset.tags = tok.tags.join(' ')
-      lineDiv.appendChild(span)
     })
-
-    frag.appendChild(lineDiv)
+    html += '</div>'
   })
 
-  container.appendChild(frag)
+  html += '<div id="tv-legend" class="tv-legend"></div>'
+  html += '</div>'
+
+  // ── Paged.js @page CSS — filename baked in ───────────────────────────────
+  const safeFilename = (filename || '').replace(/[\\"\n\r]/g, '')
+
+  const pagedCSS = `
+@page {
+  size: A4;
+  margin: 20mm 22mm 28mm;
+
+  @bottom-center {
+    content: counter(page) " / " counter(pages);
+    font-size: 9pt;
+    color: #555;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @bottom-left {
+    content: "TTWTOOLS \\2013  ${safeFilename}";
+    font-size: 7.5pt;
+    color: #888;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+}
+
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+.tv-text      { line-height: 1.85; color: #111; word-break: break-word; }
+.tv-line      { display: block; white-space: pre-wrap; }
+.tv-blank-line { height: 0.75em; display: block; }
+.tv-token     { font-family: inherit; }
+.tv-sp        { white-space: pre; }
+
+.tv-legend {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 0.5pt solid #ccc;
+}
+.tv-legend-title {
+  font-size: 8pt; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: #555; margin-bottom: .5em;
+}
+.tv-legend-grid  { display: flex; flex-wrap: wrap; gap: .4em 1.2em; }
+.tv-legend-item  { display: flex; align-items: baseline; gap: .4em; }
+.tv-legend-sample { font-weight: 600; font-size: 8.5pt; }
+.tv-legend-def   { color: #555; font-size: 8pt; }
+`
+
+  // Snapshot existing head <style> elements to detect what Paged.js injects
+  const stylesBefore = new Set(document.head.querySelectorAll('style'))
+
+  pagesEl.innerHTML = ''
+  const previewer = new Previewer()
+  await previewer.preview(html, [{ text: pagedCSS }], pagesEl)
+
+  _pagedStyles = Array.from(document.head.querySelectorAll('style'))
+    .filter(s => !stylesBefore.has(s))
+
+  // Respect legend visibility flag after the new DOM is in place
+  const leg = document.getElementById('tv-legend')
+  if (leg) leg.hidden = !_legendVisible
 }
 
 // ---------------------------------------------------------------------------
@@ -356,7 +431,7 @@ function _renderTagSidebar(tokens) {
       ? ` title="${state.tagDefs[tag].replace(/"/g, "'")}"` : ''
     const swatch  = zero ? '#3a3f50' : _getStroke(tag)
     const curType = _getType(tag)
-    const typeOpts = RN_TYPES.map(([val, lbl]) =>
+    const typeOpts = ANN_TYPES.map(([val, lbl]) =>
       `<option value="${val}"${val === curType ? ' selected' : ''}>${lbl}</option>`
     ).join('')
 
@@ -393,7 +468,7 @@ function _renderTagSidebar(tokens) {
 }
 
 // ---------------------------------------------------------------------------
-// Rough Notation
+// Colour helpers
 // ---------------------------------------------------------------------------
 function _getColorIdx(tagName) {
   if (tagName === state.tvFeature) return 0
@@ -421,44 +496,46 @@ function _hexFromColor(color) {
   return m ? '#' + m[1] : '#e07b39'
 }
 
-// Return the RN type for a tag, assigning a random one on first call
 function _getType(tagName) {
   if (!_tagTypes[tagName]) {
-    _tagTypes[tagName] = RN_TYPES[Math.floor(Math.random() * RN_TYPES.length)][0]
+    _tagTypes[tagName] = ANN_TYPES[Math.floor(Math.random() * ANN_TYPES.length)][0]
   }
   return _tagTypes[tagName]
 }
 
-function _applyTag(tagName) {
-  if (_annotations[tagName]) return
-  const els = Array.from(
-    document.querySelectorAll(`#tv-text-content span[data-tags~="${CSS.escape(tagName)}"]`)
-  )
-  if (!els.length) return
-
+// ---------------------------------------------------------------------------
+// CSS-based annotations — injected into document.head, apply across all pages
+// ---------------------------------------------------------------------------
+function _annCSS(tagName) {
   const type   = _getType(tagName)
-  const color  = type === 'highlight' ? _getFill(tagName) : _getStroke(tagName)
-  const list   = els.map(el => annotate(el, { type, color, animate: false, padding: 1, multiline: true }))
-  list.forEach(a => a.show())
-  _annotations[tagName] = list
-}
-
-function _removeTag(tagName) {
-  if (_annotations[tagName]) {
-    _annotations[tagName].forEach(a => a.hide())
-    delete _annotations[tagName]
+  const fill   = _getFill(tagName)
+  const stroke = _getStroke(tagName)
+  const sel    = `span.tv-token[data-tags~="${tagName.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`
+  switch (type) {
+    case 'highlight': return `${sel} { background:${fill}; border-radius:2px; padding:0 2px }`
+    case 'underline': return `${sel} { border-bottom:2px solid ${stroke}; padding-bottom:1px }`
+    case 'box':       return `${sel} { outline:1.5px solid ${stroke}; border-radius:2px; padding:0 2px }`
+    case 'circle':    return `${sel} { outline:2px solid ${stroke}; border-radius:50%; padding:0 4px }`
+    default:          return `${sel} { background:${fill}; border-radius:2px }`
   }
 }
 
-function _clearAnnotations() {
-  Object.values(_annotations).forEach(list => list.forEach(a => a.hide()))
-  _annotations = {}
+function _applyTag(tagName) {
+  if (_annotationStyles[tagName]) return
+  const styleEl = document.createElement('style')
+  styleEl.textContent = _annCSS(tagName)
+  document.head.appendChild(styleEl)
+  _annotationStyles[tagName] = styleEl
 }
 
-function _redrawAnnotations() {
-  Object.values(_annotations).forEach(list =>
-    list.forEach(a => { a.hide(); a.show() })
-  )
+function _removeTag(tagName) {
+  _annotationStyles[tagName]?.remove()
+  delete _annotationStyles[tagName]
+}
+
+function _clearAnnotations() {
+  Object.values(_annotationStyles).forEach(el => el.remove())
+  _annotationStyles = {}
 }
 
 // ---------------------------------------------------------------------------
@@ -488,13 +565,11 @@ function _updateLegend() {
     // Sample span styled to echo the annotation type
     let sampleStyle = ''
     switch (type) {
-      case 'highlight':     sampleStyle = `background:${fill}; padding:0 4px`; break
-      case 'underline':     sampleStyle = `border-bottom:2.5px solid ${stroke}; padding-bottom:1px`; break
-      case 'box':           sampleStyle = `outline:2px solid ${stroke}; padding:0 3px`; break
-      case 'circle':        sampleStyle = `border:2px solid ${stroke}; border-radius:50%; padding:0 4px`; break
-      case 'strike-through':sampleStyle = `text-decoration:line-through; text-decoration-color:${stroke}; text-decoration-thickness:2px`; break
-      case 'bracket':       sampleStyle = `border-left:2.5px solid ${stroke}; padding-left:3px`; break
-      default:              sampleStyle = `background:${fill}; padding:0 4px`
+      case 'highlight': sampleStyle = `background:${fill};border-radius:2px;padding:0 4px`; break
+      case 'underline': sampleStyle = `border-bottom:2px solid ${stroke};padding-bottom:1px`; break
+      case 'box':       sampleStyle = `outline:1.5px solid ${stroke};border-radius:2px;padding:0 3px`; break
+      case 'circle':    sampleStyle = `outline:2px solid ${stroke};border-radius:50%;padding:0 4px`; break
+      default:          sampleStyle = `background:${fill};padding:0 4px`
     }
 
     return `<div class="tv-legend-item">
@@ -503,9 +578,9 @@ function _updateLegend() {
     </div>`
   }).join('')
 
-  leg.innerHTML = `<div class="tv-legend-rule"></div>
-    <div class="tv-legend-title">Legenda</div>
-    <div class="tv-legend-grid">${items}</div>`
+  leg.innerHTML =
+    `<div class="tv-legend-title">Legenda</div>` +
+    `<div class="tv-legend-grid">${items}</div>`
 }
 
 // ---------------------------------------------------------------------------

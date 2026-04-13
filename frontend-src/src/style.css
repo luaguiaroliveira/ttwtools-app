@@ -998,46 +998,40 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   padding: 2rem 3rem;
   background: #1e2130;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
 }
 
-.tv-paper {
-  background: #fff;
-  color: #111;
+/* Pages container — Paged.js renders into this element */
+#tv-pages {
   width: 100%;
-  max-width: 210mm;
-  min-height: 297mm;
-  padding: 20mm 22mm;
+}
+
+/* Screen view: stack A4 pages vertically with spacing */
+#tv-pages .pagedjs_pages {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: transparent;
+}
+
+#tv-pages .pagedjs_page {
   box-shadow: 0 4px 28px rgba(0,0,0,0.50), 0 1px 5px rgba(0,0,0,0.30);
   border-radius: 2px;
-  flex-shrink: 0;
-}
-
-/* Force all descendants of the paper to dark text */
-.tv-paper, .tv-paper * {
-  color: #111;
+  background: #fff;
 }
 
 .tv-text {
-  position: relative;    /* required for rough-notation SVG overlay */
   font-size: 14px;       /* default; overridden inline by slider */
   line-height: 1.85;
   color: #111;
   word-break: break-word;
 }
 
-.tv-line {
-  display: block;
-}
-
-.tv-blank-line {
-  height: .75em;
-}
-
-.tv-token {
-  /* rough-notation adds its own SVG — no base styling needed */
-}
+.tv-line   { display: block; white-space: pre-wrap; }
+.tv-sp     { white-space: pre; }
 
 /* ── Tag sidebar ─────────────────────────────────────────────────── */
 .tv-sidebar {
@@ -1193,16 +1187,12 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
 }
 
 /* ===================================================================
-   PAPER LEGEND  (shown at bottom of .tv-paper when toggled)
+   PAPER LEGEND  (shown inside Paged.js output)
+   Full print styles live in the @page CSS injected by _renderText.
+   These screen rules ensure the legend also looks good on-screen.
    =================================================================== */
 .tv-legend {
   margin-top: 12mm;
-}
-
-.tv-legend-rule {
-  border: none;
-  border-top: 1px solid #bbb;
-  margin-bottom: 4mm;
 }
 
 .tv-legend-title {
@@ -1242,51 +1232,50 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
 }
 
 /* ===================================================================
-   PRINT  (@media print hides everything except the paper)
+   PRINT  — hide all app chrome; Paged.js handles page layout/margins
    =================================================================== */
+/* Default paper size — Paged.js @page rule (injected at runtime) overrides this */
+@page { size: A4 portrait; }
+
 @media print {
-  /* Hide all UI chrome */
+  /* Hide all app chrome */
   aside, nav, .tv-header, .tv-sidebar,
-  #sidebar, #toast, #modal-overlay, #tv-tooltip,
-  .tv-text-wrap > *:not(.tv-paper) {
+  #sidebar, #toast, #modal-overlay, #tv-tooltip {
     display: none !important;
   }
 
-  html, body {
-    background: #fff !important;
-    margin: 0;
-    padding: 0;
-  }
-
-  main, #main, #view-text-viewer, .tv-body, .tv-text-wrap {
+  /* Un-clip the scroll containers that would otherwise crop the print output */
+  html, body,
+  main, #main,
+  #view-text-viewer,
+  .tv-body,
+  .tv-text-wrap,
+  #tv-pages {
     display: block !important;
     overflow: visible !important;
     height: auto !important;
-    width: 100% !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    background: #fff !important;
     padding: 0 !important;
     margin: 0 !important;
-    background: #fff !important;
+    flex: none !important;
   }
 
-  .tv-paper {
+  /* Paged.js handles everything inside #tv-pages — don't force widths/breaks on it */
+  #tv-pages .pagedjs_pages {
     display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: auto !important;
-    padding: 15mm 18mm !important;
-    margin: 0 !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+    padding: 0 !important;
   }
 
-  .tv-paper svg { display: block !important; }
-
-  /* Legend: force visible if it has content (hidden attr is removed when shown) */
-  .tv-legend:not(:empty) { display: block !important; }
-
-  @page {
-    margin: 0;
-    size: A4;
+  #tv-pages .pagedjs_page,
+  #tv-pages .pagedjs_sheet,
+  #tv-pages .pagedjs_pagebox,
+  #tv-pages .pagedjs_area {
+    overflow: visible !important;
+    box-shadow: none !important;
   }
 }
 

@@ -8,18 +8,62 @@ Interface gráfica para análise linguística com [ttwtools](https://github.com/
 
 ### Pré-requisitos
 
-- Conda com o ambiente `ttw314` (Python 3.12) configurado
-- Dependências instaladas:
+#### 1. Node.js e npm
+
+Instale o Node.js (18+) com npm:
+
+- **macOS** (com Homebrew):
+  ```bash
+  brew install node
+  ```
+
+- **Windows**: Baixe de [nodejs.org](https://nodejs.org/) e execute o instalador.
+
+- **Linux** (apt):
+  ```bash
+  sudo apt update && sudo apt install nodejs npm
+  ```
+
+Verifique a instalação:
+```bash
+node --version
+npm --version
+```
+
+#### 2. Python 3.12 e Conda
+
+- Instale o Conda (Miniconda ou Anaconda) de [conda.io](https://conda.io/)
+- Crie e ative o ambiente:
 
 ```bash
-conda activate ttw314
+conda create -n ttw313 python=3.12
+conda activate ttw313
+```
+
+#### 3. Dependências Python
+
+```bash
+conda activate ttw313
 pip install -e .
 ```
 
+Este comando instala as dependências listadas em `requirements.txt` e `pyproject.toml`.
+
 ### Iniciar o servidor
 
+Antes da primeira execução, compile o frontend:
+
 ```bash
-conda activate ttw314
+cd /caminho/para/ttwtools-app/frontend-src
+npm install
+npm run build
+cd ..
+```
+
+Depois, inicie o servidor:
+
+```bash
+conda activate ttw313
 cd /caminho/para/ttwtools-app
 python -m app --mode web --port 8765
 ```
@@ -53,40 +97,43 @@ Usa [pywebview](https://pywebview.flowrl.com/) para abrir a interface em janela 
 
 ---
 
-## Build — app autônomo (distribución sem Python)
+## Build — app autônomo (distribuição sem Python)
 
 Gera um executável autocontido que embarca Python, todas as bibliotecas, os modelos spaCy e o frontend compilado. Não requer instalação de Python nem de dependências no computador do usuário final.
 
 ### Pré-requisitos (em todos os sistemas)
 
-1. **Ativar o ambiente** com todas as dependências instaladas.
-2. **Modelos spaCy** devem estar baixados no ambiente:
+1. **Node.js + npm** instalados (veja seção de Execução local acima)
 
-```bash
-python -m spacy download en_core_web_sm
-```
+2. **Ativar o ambiente Python** com todas as dependências instaladas:
+   ```bash
+   conda activate ttw313
+   ```
 
-3. **Instalar PyInstaller**:
+3. **Modelos spaCy** devem estar baixados no ambiente:
+   ```bash
+   python -m spacy download en_core_web_sm
+   ```
 
-```bash
-pip install pyinstaller pyinstaller-hooks-contrib
-```
+4. **Instalar PyInstaller**:
+   ```bash
+   pip install pyinstaller pyinstaller-hooks-contrib
+   ```
 
-4. **Compilar o frontend** (se ainda não foi feito ou após alterações):
-
-```bash
-cd frontend-src
-npm install
-npm run build
-cd ..
-```
+5. **Compilar o frontend** (se ainda não foi feito ou após alterações):
+   ```bash
+   cd frontend-src
+   npm install
+   npm run build
+   cd ..
+   ```
 
 ---
 
 ### macOS
 
 ```bash
-conda activate ttw314
+conda activate ttw313
 cd /caminho/para/ttwtools-app
 bash build/build_mac.sh
 ```
@@ -104,7 +151,7 @@ Resultado:
 Executar no **Prompt de Comando** ou **PowerShell** (não use Git Bash):
 
 ```bat
-conda activate ttw314
+conda activate ttw313
 cd C:\caminho\para\ttwtools-app
 build\build_win.bat
 ```
@@ -121,7 +168,7 @@ Resultado:
 Não há script pronto; executar o PyInstaller diretamente:
 
 ```bash
-conda activate ttw314
+conda activate ttw313
 cd /caminho/para/ttwtools-app
 pyinstaller build/ttwtools-app.spec \
     --distpath dist \
