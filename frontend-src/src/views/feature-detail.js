@@ -3,9 +3,10 @@
  */
 
 import * as d3   from 'd3'
-import { api }      from '../api.js'
-import { showView } from '../ui.js'
-import { state }    from '../state.js'
+import { api }         from '../api.js'
+import { showView }    from '../ui.js'
+import { state }       from '../state.js'
+import { showTextViewer } from './text-viewer.js'
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -181,6 +182,18 @@ export function initFeatureDetail() {
     showView('results')
   })
 
+  // File-row click → open text viewer
+  document.getElementById('fd-table')?.addEventListener('click', e => {
+    const tr = e.target.closest('tbody tr')
+    if (!tr) return
+    const cells = tr.querySelectorAll('td')
+    if (cells.length < 2) return
+    const filename = cells[0].textContent.trim()
+    const corpus   = cells[1].textContent.trim()
+    const idx = _fdAllFiles.findIndex(f => f.filename === filename && f.corpus === corpus)
+    if (idx >= 0) showTextViewer(_fdAllFiles, idx, state.currentFeature)
+  })
+
   document.getElementById('fd-perpage')?.addEventListener('change', () => {
     _fdPage = 0
     renderFileTable()
@@ -251,7 +264,7 @@ function renderFileTable() {
 
   tbody.innerHTML = slice.map(f => {
     const cls = f.corpus === state.kfaC1 ? 'fd-corpus1' : 'fd-corpus2'
-    return `<tr>
+    return `<tr style="cursor:pointer">
       <td style="font-size:.8rem">${f.filename}</td>
       <td class="${cls}">${f.corpus}</td>
       <td>${f.value.toFixed(3)}</td>

@@ -25,6 +25,7 @@ import { initTagging }                       from './views/tagging.js'
 import { initAnalysis }                      from './views/analysis.js'
 import { initResults, refreshKfaSelect }     from './views/results.js'
 import { initFeatureDetail }                 from './views/feature-detail.js'
+import { initTextViewer }                    from './views/text-viewer.js'
 import { updateProjectLabel }                from './views/home.js'
 import { api }                               from './api.js'
 import { state }                             from './state.js'
@@ -43,6 +44,7 @@ initTagging()
 initAnalysis(shared)
 initResults()
 initFeatureDetail()
+initTextViewer()
 
 // Listen for project-changed event (dispatched by quickrun on completion)
 document.addEventListener('project-changed', () => updateProjectLabel())

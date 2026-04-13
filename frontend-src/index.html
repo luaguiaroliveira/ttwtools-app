@@ -286,10 +286,54 @@
       </div>
     </section>
 
+    <!-- TEXT VIEWER -->
+    <section id="view-text-viewer" class="view">
+      <div class="tv-header">
+        <button id="btn-tv-back" class="btn-secondary">← Detalhamento</button>
+        <div class="tv-nav">
+          <button id="btn-tv-prev" class="btn-sm">‹ Anterior</button>
+          <span id="tv-file-label" class="tv-nav-label"></span>
+          <button id="btn-tv-next" class="btn-sm">Próximo ›</button>
+        </div>
+        <div class="tv-font-ctrl">
+          <span class="tv-font-a-sm">A</span>
+          <input type="range" id="tv-font-slider" min="10" max="24" step="1" value="14">
+          <span class="tv-font-a-lg">A</span>
+          <span id="tv-font-val" class="tv-font-val">14px</span>
+        </div>
+        <button id="btn-tv-print" class="btn-sm tv-print-btn" title="Imprimir / Salvar PDF">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
+        <button id="btn-tv-legend" class="btn-sm tv-legend-btn" title="Mostrar/ocultar legenda na folha">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Legenda
+        </button>
+        <div class="tv-title-block">
+          <h2 id="tv-filename" class="tv-title"></h2>
+          <span id="tv-corpus-label" class="tv-corpus"></span>
+        </div>
+      </div>
+      <div class="tv-body">
+        <div class="tv-text-wrap">
+          <div class="tv-paper">
+            <div id="tv-text-content" class="tv-text"></div>
+            <div id="tv-legend" class="tv-legend"></div>
+          </div>
+        </div>
+        <aside class="tv-sidebar">
+          <div class="tv-sidebar-hdr">Tags (contagem)</div>
+          <div id="tv-tag-list" class="tv-tag-list"></div>
+        </aside>
+      </div>
+    </section>
+
   </main>
 
   <!-- ===== Modais ===== -->
   <div id="modal-overlay" class="hidden">
+
+  <!-- TOKEN TOOLTIP -->
+  <div id="tv-tooltip" class="tv-tooltip" hidden></div>
     <div id="modal-box">
       <h3 id="modal-title"></h3>
       <div id="modal-body"></div>

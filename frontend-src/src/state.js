@@ -25,4 +25,9 @@ export const state = {
 
   // Feature detail drill-down
   currentFeature: '',
+
+  // Text viewer
+  tvFiles:   [],
+  tvIndex:   0,
+  tvFeature: '',
 }
