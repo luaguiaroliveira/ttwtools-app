@@ -156,6 +156,45 @@ def list_feature_tables():
         return {"feature_tables": proj.list_feature_tables()}
 
 
+@router.get("/feature-files/{corpus1}/{corpus2}/{feature}")
+def get_feature_files(corpus1: str, corpus2: str, feature: str):
+    """Returns files from both corpora ranked by feature value (norm1000) descending."""
+    _require_project()
+    import math
+    from ttwtools.project import TTWAProject
+
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        df1 = proj.load_feature_table(corpus1, "norm1000")
+        df2 = proj.load_feature_table(corpus2, "norm1000")
+
+    if df1 is None:
+        raise HTTPException(status_code=404, detail=f"Feature table não encontrada para '{corpus1}'.")
+    if df2 is None:
+        raise HTTPException(status_code=404, detail=f"Feature table não encontrada para '{corpus2}'.")
+    if feature not in df1.columns and feature not in df2.columns:
+        raise HTTPException(status_code=404, detail=f"Feature '{feature}' não encontrada.")
+
+    file_col1 = "filename" if "filename" in df1.columns else df1.columns[0]
+    file_col2 = "filename" if "filename" in df2.columns else df2.columns[0]
+
+    def _val(v):
+        f = float(v)
+        return None if (math.isnan(f) or math.isinf(f)) else round(f, 3)
+
+    rows = []
+    for _, row in df1.iterrows():
+        v = _val(row[feature] if feature in df1.columns else float('nan'))
+        if v is not None and v > 0:
+            rows.append({"filename": str(row[file_col1]), "corpus": corpus1, "value": v})
+    for _, row in df2.iterrows():
+        v = _val(row[feature] if feature in df2.columns else float('nan'))
+        if v is not None and v > 0:
+            rows.append({"filename": str(row[file_col2]), "corpus": corpus2, "value": v})
+
+    rows.sort(key=lambda r: r["value"], reverse=True)
+    return {"feature": feature, "corpus1": corpus1, "corpus2": corpus2, "files": rows}
+
+
 # ---------------------------------------------------------------------------
 # Helper
 # ---------------------------------------------------------------------------

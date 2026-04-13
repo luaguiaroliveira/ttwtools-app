@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-qqOlVF36.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-AqnV8vzj.css">
+  <script type="module" crossorigin src="/assets/index-BoVHXXI_.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-M0ZZpG4o.css">
 </head>
 <body>
 
@@ -18,7 +18,6 @@
     <nav class="sidebar-nav">
       <button class="nav-btn active" data-view="home">Início</button>
       <button class="nav-btn" data-view="quickrun">Nova análise</button>
-      <button class="nav-btn" data-view="corpus">Corpora</button>
       <button class="nav-btn" data-view="tagging">Tagging</button>
       <button class="nav-btn" data-view="analysis">KFA</button>
       <button class="nav-btn" data-view="results">Resultados</button>
@@ -236,6 +235,56 @@
           <thead><tr></tr></thead>
           <tbody></tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- FEATURE DETAIL (Detalhamento) -->
+    <section id="view-feature-detail" class="view">
+      <div class="fd-header">
+        <button id="btn-back-results" class="btn-secondary">← KFA Results</button>
+        <div class="fd-title-block">
+          <h2 id="fd-feature-name" class="fd-title"></h2>
+          <p id="fd-feature-def" class="fd-def"></p>
+        </div>
+      </div>
+      <div class="fd-body">
+        <!-- Main: file ranking table -->
+        <div class="fd-main">
+          <div class="fd-table-toolbar">
+            <span id="fd-count-label" class="fd-count-label"></span>
+            <div class="fd-pagination">
+              <button id="fd-prev" class="btn-sm">‹</button>
+              <span id="fd-page-label" class="fd-page-label"></span>
+              <button id="fd-next" class="btn-sm">›</button>
+            </div>
+            <label class="fd-perpage-label">
+              Por página
+              <select id="fd-perpage">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </label>
+          </div>
+          <div class="table-box">
+            <table id="fd-table">
+              <thead>
+                <tr>
+                  <th>Arquivo</th>
+                  <th>Corpus</th>
+                  <th>Valor (norm/1000)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Right sidebar: feature switcher -->
+        <aside class="fd-sidebar">
+          <div class="fd-sidebar-hdr">Features (effect size)</div>
+          <div id="fd-feat-list" class="fd-feat-list"></div>
+        </aside>
       </div>
     </section>
 
