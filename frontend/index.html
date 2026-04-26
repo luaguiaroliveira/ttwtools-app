@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-BgYODEah.js"></script>
+  <script type="module" crossorigin src="/assets/index-D6635f8V.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-CPsRVXnK.css">
 </head>
 <body>
@@ -21,6 +21,7 @@
       <button class="nav-btn" data-view="tagging">Tagging</button>
       <button class="nav-btn" data-view="analysis">KFA</button>
       <button class="nav-btn" data-view="results">Resultados</button>
+      <button class="nav-btn" data-view="export">Exportar</button>
     </nav>
 
     <div class="sidebar-project">
@@ -121,6 +122,7 @@
           </label>
         </div>
         <sl-checkbox id="qr-usenlp">Usar spaCy para tokenização</sl-checkbox>
+        <sl-checkbox id="qr-auto-export" checked>Exportar arquivos ao concluir</sl-checkbox>
         <button type="submit" class="btn-primary" id="btn-qr-run">Executar pipeline</button>
       </form>
 
@@ -136,6 +138,30 @@
         </div>
         <div class="progress-msg" id="qr-msg"></div>
         <button class="btn-primary hidden" id="btn-qr-results">Ver resultados →</button>
+      </div>
+    </section>
+
+    <!-- EXPORTAR PROJETO -->
+    <section id="view-export" class="view">
+      <h1>Exportar Projeto</h1>
+      <div class="form-panel" style="max-width:560px">
+        <p class="subtitle" style="margin-bottom:1rem">Exporta os dados internos do <code>.ttwa</code> para uma pasta no disco.</p>
+        <div id="export-project-info" class="status-box" style="margin-bottom:1rem;border-color:var(--border);color:var(--text-muted)">Nenhum projeto aberto.</div>
+        <label>
+          Pasta de destino
+          <div class="input-browse">
+            <sl-input id="export-dest" placeholder="padrão: pasta ao lado do .ttwa" size="small"></sl-input>
+            <button type="button" class="btn-browse" id="btn-export-browse" title="Procurar pasta">📁</button>
+          </div>
+        </label>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin:1rem 0">
+          <sl-checkbox id="export-corpora" checked>Textos originais dos corpora</sl-checkbox>
+          <sl-checkbox id="export-tagged" checked>Arquivos tagueados (JSONL)</sl-checkbox>
+          <sl-checkbox id="export-tables" checked>Feature tables (CSV)</sl-checkbox>
+          <sl-checkbox id="export-kfa" checked>Resultados KFA (CSV)</sl-checkbox>
+        </div>
+        <button class="btn-primary" id="btn-export-run">Exportar</button>
+        <div id="export-status" class="status-box hidden"></div>
       </div>
     </section>
 

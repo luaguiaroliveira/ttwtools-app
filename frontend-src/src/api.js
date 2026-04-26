@@ -30,6 +30,7 @@ export const api = {
     open:    body   => request('POST', '/api/project/open',   body),
     summary: ()     => request('GET',  '/api/project/summary'),
     meta:    ()     => request('GET',  '/api/project/meta'),
+    export:  body   => request('POST', '/api/project/export', body),
   },
 
   corpus: {

@@ -40,10 +40,24 @@ async function poll(refreshKfaSelect) {
 
     if (r.status === 'done') {
       clearInterval(_pollTimer); _pollTimer = null
-      showToast('Análise concluída!')
       // update project label via custom event
       document.dispatchEvent(new CustomEvent('project-changed'))
       try { await refreshKfaSelect() } catch (_) {}
+
+      // Auto-export if checkbox is checked
+      const autoExport = document.getElementById('qr-auto-export')?.checked
+      if (autoExport) {
+        setMsg('Exportando arquivos…')
+        try {
+          const exp = await api.project.export({})
+          showToast(`Análise concluída! Exportado para ${exp.dest}`)
+        } catch (e) {
+          showToast(`Análise concluída, mas exportação falhou: ${e.message}`, 'error')
+        }
+      } else {
+        showToast('Análise concluída!')
+      }
+
       document.getElementById('btn-qr-results')?.classList.remove('hidden')
       return
     }
