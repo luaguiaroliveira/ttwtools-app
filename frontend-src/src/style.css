@@ -1294,3 +1294,128 @@ sl-option[data-active]::part(base) {
 sl-option::part(checked-icon) {
   color: var(--accent) !important;
 }
+
+/* ── Quickrun — inline export category selector ─────────────────────────── */
+.qr-export-section {
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+}
+
+.qr-export-cats {
+  padding: .6rem .85rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  transition: opacity .15s;
+}
+
+.qr-export-cats--hidden {
+  display: none;
+}
+
+.qr-export-cats-label {
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  margin-bottom: .1rem;
+}
+
+.qr-cat-checks {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+
+/* ── Export Tree ────────────────────────────────────────────────────────── */
+.exp-tree {
+  font-size: .85rem;
+  line-height: 1.6;
+  user-select: none;
+}
+
+.exp-tree label {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  cursor: pointer;
+  padding: .15rem .25rem;
+  border-radius: 4px;
+}
+.exp-tree label:hover {
+  background: rgba(255,255,255,.04);
+}
+
+.exp-tree input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.exp-tree-root {
+  font-size: .9rem;
+  padding: .35rem .25rem;
+  margin-bottom: .25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.exp-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform .15s ease;
+}
+
+.exp-tree-cat {
+  margin-top: .25rem;
+}
+
+.exp-tree-cat-label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.exp-tree-body {
+  padding-left: 1.4rem;
+  overflow: hidden;
+  max-height: 5000px;
+  transition: max-height .2s ease;
+}
+.exp-tree-body--collapsed {
+  max-height: 0;
+}
+
+.exp-tree-group {
+  margin-top: .1rem;
+}
+
+.exp-tree-grp-label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.exp-tree-leaf {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.exp-leaf-name {
+  word-break: break-all;
+}
+
+.exp-count {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: .78rem;
+}

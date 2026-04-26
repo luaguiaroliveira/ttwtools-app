@@ -32,6 +32,30 @@ function setMsg(msg, tqdm) {
   }
 }
 
+/** Read which categories are checked in the inline export panel */
+function _getSelectedCats() {
+  return Array.from(document.querySelectorAll('.qr-cat-cb:checked'))
+    .map(cb => cb.dataset.cat)
+}
+
+/** Export using the pre-selected categories (no modal needed) */
+async function _doAutoExport() {
+  const selectedCats = _getSelectedCats()
+  if (!selectedCats.length) return
+
+  setMsg('Exportando arquivos…')
+  try {
+    const { items } = await api.project.manifest()
+    const filtered = items.filter(i => selectedCats.includes(i.category))
+    const body = filtered.length < items.length ? { items: filtered.map(i => i.path) } : {}
+    const exp = await api.project.export(body)
+    const total = exp.corpora + exp.tagged + exp.tables + exp.kfa
+    showToast(`Exportado ${total} arquivo(s) para ${exp.dest}`)
+  } catch (e) {
+    showToast(`Exportação falhou: ${e.message}`, 'error')
+  }
+}
+
 async function poll(refreshKfaSelect) {
   try {
     const r = await api.quickrun.status(_jobId)
@@ -44,16 +68,10 @@ async function poll(refreshKfaSelect) {
       document.dispatchEvent(new CustomEvent('project-changed'))
       try { await refreshKfaSelect() } catch (_) {}
 
-      // Auto-export if checkbox is checked
+      // Auto-export using the inline category selection
       const autoExport = document.getElementById('qr-auto-export')?.checked
       if (autoExport) {
-        setMsg('Exportando arquivos…')
-        try {
-          const exp = await api.project.export({})
-          showToast(`Análise concluída! Exportado para ${exp.dest}`)
-        } catch (e) {
-          showToast(`Análise concluída, mas exportação falhou: ${e.message}`, 'error')
-        }
+        await _doAutoExport()
       } else {
         showToast('Análise concluída!')
       }
@@ -72,6 +90,19 @@ async function poll(refreshKfaSelect) {
 }
 
 export function initQuickrun({ refreshKfaSelect }) {
+  // Toggle category panel when "Exportar ao concluir" checkbox changes
+  const autoExportCb = document.getElementById('qr-auto-export')
+  const catsPanel    = document.getElementById('qr-export-cats')
+
+  function _syncCatsPanel() {
+    if (!catsPanel) return
+    catsPanel.classList.toggle('qr-export-cats--hidden', !autoExportCb?.checked)
+  }
+
+  autoExportCb?.addEventListener('sl-change', _syncCatsPanel)
+  // Sync on init (checkbox starts checked, so panel visible)
+  _syncCatsPanel()
+
   // Browse buttons (📁) inside the quickrun form
   document.querySelectorAll('#form-quickrun .btn-browse').forEach(btn => {
     btn.addEventListener('click', async () => {

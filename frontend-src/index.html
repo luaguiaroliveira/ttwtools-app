@@ -120,7 +120,31 @@
           </label>
         </div>
         <sl-checkbox id="qr-usenlp">Usar spaCy para tokenização</sl-checkbox>
-        <sl-checkbox id="qr-auto-export" checked>Exportar arquivos ao concluir</sl-checkbox>
+
+        <!-- Export section: toggle + category tree -->
+        <div class="qr-export-section">
+          <sl-checkbox id="qr-auto-export" checked>Exportar ao concluir</sl-checkbox>
+          <div id="qr-export-cats" class="qr-export-cats">
+            <span class="qr-export-cats-label">O que exportar:</span>
+            <label class="toggle-row">
+              <input type="checkbox" class="qr-cat-cb" data-cat="corpora" checked>
+              📄 Textos originais
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" class="qr-cat-cb" data-cat="tagged" checked>
+              🏷️ Arquivos tagueados
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" class="qr-cat-cb" data-cat="tables" checked>
+              📊 Feature tables (CSV)
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" class="qr-cat-cb" data-cat="kfa" checked>
+              📈 Resultados KFA
+            </label>
+          </div>
+        </div>
+
         <button type="submit" class="btn-primary" id="btn-qr-run">Executar pipeline</button>
       </form>
 
@@ -142,9 +166,8 @@
     <!-- EXPORTAR PROJETO -->
     <section id="view-export" class="view">
       <h1>Exportar Projeto</h1>
-      <div class="form-panel" style="max-width:560px">
-        <p class="subtitle" style="margin-bottom:1rem">Exporta os dados internos do <code>.ttwa</code> para uma pasta no disco.</p>
-        <div id="export-project-info" class="status-box" style="margin-bottom:1rem;border-color:var(--border);color:var(--text-muted)">Nenhum projeto aberto.</div>
+      <div class="form-panel" style="max-width:640px">
+        <p class="subtitle" style="margin-bottom:1rem">Selecione quais dados do <code>.ttwa</code> exportar para disco.</p>
         <label>
           Pasta de destino
           <div class="input-browse">
@@ -152,13 +175,8 @@
             <button type="button" class="btn-browse" id="btn-export-browse" title="Procurar pasta">📁</button>
           </div>
         </label>
-        <div style="display:flex;flex-direction:column;gap:.5rem;margin:1rem 0">
-          <sl-checkbox id="export-corpora" checked>Textos originais dos corpora</sl-checkbox>
-          <sl-checkbox id="export-tagged" checked>Arquivos tagueados (JSONL)</sl-checkbox>
-          <sl-checkbox id="export-tables" checked>Feature tables (CSV)</sl-checkbox>
-          <sl-checkbox id="export-kfa" checked>Resultados KFA (CSV)</sl-checkbox>
-        </div>
-        <button class="btn-primary" id="btn-export-run">Exportar</button>
+        <div id="export-tree" class="exp-tree" style="margin:1rem 0"></div>
+        <button class="btn-primary" id="btn-export-run">Exportar selecionados</button>
         <div id="export-status" class="status-box hidden"></div>
       </div>
     </section>

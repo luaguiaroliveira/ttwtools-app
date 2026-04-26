@@ -170,7 +170,12 @@ def get_tagged_tokens(corpus_name: str, filename: str):
             word = obj.get("word", "")
             tags = obj.get("tags", [])
             if word:
-                tokens.append({"word": word, "tags": tags})
+                tokens.append({
+                    "word": word,
+                    "tags": tags,
+                    "start_char": obj.get("start_char"),
+                    "end_char": obj.get("end_char"),
+                })
     else:
         # ── Legacy TSV format ───────────────────────────────────────────
         past_header = False

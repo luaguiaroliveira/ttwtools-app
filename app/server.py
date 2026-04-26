@@ -13,6 +13,28 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 
+def _ensure_ttwtools_importable() -> None:
+    """Adds local development paths so `import ttwtools` works reliably.
+
+    Priority:
+    1. Submodule in this repo: libs/ttwtools/
+    2. Sibling repo during local development: ../ttwtools/
+    """
+    base = Path(__file__).resolve().parent.parent
+    candidates = [
+        base / "libs" / "ttwtools",
+        base.parent / "ttwtools",
+    ]
+
+    for path in candidates:
+        package_dir = path / "ttwtools"
+        if package_dir.is_dir() and (package_dir / "__init__.py").is_file():
+            path_str = str(path)
+            if path_str not in sys.path:
+                sys.path.insert(0, path_str)
+            return
+
+
 def _frontend_dir() -> Path:
     """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller."""
     base = Path(getattr(sys, "_MEIPASS", Path(__file__).parent.parent))
@@ -20,6 +42,8 @@ def _frontend_dir() -> Path:
 
 
 def build_app(open_file: str | None = None) -> FastAPI:
+    _ensure_ttwtools_importable()
+
     app = FastAPI(
         title="ttwtools-app",
         version="0.1.0",

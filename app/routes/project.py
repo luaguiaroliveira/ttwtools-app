@@ -1,5 +1,5 @@
 """
-routes/project.py — Gerenciamento de arquivos .ttwa (abrir, criar, resumo).
+routes/project.py — Gerenciamento de arquivos .ttwa (abrir, criar, resumo, exportar).
 """
 
 from __future__ import annotations
@@ -31,11 +31,13 @@ class OpenProjectRequest(BaseModel):
 
 
 class ExportRequest(BaseModel):
-    export_corpora: bool = True
-    export_tagged: bool = True
-    export_tables: bool = True
-    export_kfa: bool = True
-    dest_folder: str | None = None   # defaults to <ttwa_stem>/ next to the .ttwa
+    """Selective export — items is a list of paths like:
+    'corpora/CorpusA/file.txt', 'tagged/CorpusA/file.jsonl',
+    'tables/Corpus_mfte_rawcount.csv', 'kfa/kfa_A_vs_B_d0.2_union.csv'
+    If items is empty or None, exports everything.
+    """
+    items: list[str] | None = None
+    dest_folder: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -100,11 +102,70 @@ def current_project():
     return {"path": app_state.current_project_path}
 
 
+@router.get("/manifest")
+def project_manifest():
+    """Returns a flat list of all exportable items in the project, grouped
+    by category.  The frontend uses this to build the selection tree."""
+    _require_project()
+    from ttwtools.project import TTWAProject
+
+    items: list[dict] = []
+
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        corpus_names = proj.list_corpus_names()
+
+        for cname in corpus_names:
+            for fn in proj.list_corpus_files(cname):
+                items.append({
+                    "category": "corpora",
+                    "corpus": cname,
+                    "filename": fn,
+                    "path": f"corpora/{cname}/{fn}",
+                })
+
+            for fn in proj.list_tagged_files(cname):
+                items.append({
+                    "category": "tagged",
+                    "corpus": cname,
+                    "filename": fn,
+                    "path": f"tagged/{cname}/{fn}",
+                })
+
+        for ft in proj.list_feature_tables():
+            csv_name = f"{ft['corpus_name']}_{ft['tagger_type']}_{ft['table_type']}.csv"
+            items.append({
+                "category": "tables",
+                "corpus": ft["corpus_name"],
+                "tagger_type": ft["tagger_type"],
+                "table_type": ft["table_type"],
+                "filename": csv_name,
+                "path": f"tables/{csv_name}",
+            })
+
+        for kfa in proj.list_kfa_results():
+            csv_name = (
+                f"kfa_{kfa['corpus1_name']}_vs_{kfa['corpus2_name']}"
+                f"_d{kfa['min_effect']}_{kfa['join_method']}.csv"
+            )
+            items.append({
+                "category": "kfa",
+                "corpus1": kfa["corpus1_name"],
+                "corpus2": kfa["corpus2_name"],
+                "min_effect": kfa["min_effect"],
+                "join_method": kfa["join_method"],
+                "filename": csv_name,
+                "path": f"kfa/{csv_name}",
+            })
+
+    return {"items": items}
+
+
 @router.post("/export")
 def export_project(req: ExportRequest):
-    """Exporta conteúdos do projeto .ttwa para uma pasta no disco."""
+    """Exporta conteúdos do projeto .ttwa para uma pasta no disco.
+    If req.items is provided, only those items are exported.
+    Otherwise everything is exported."""
     _require_project()
-    import io
     from ttwtools.project import TTWAProject
 
     ttwa_path = Path(app_state.current_project_path)
@@ -116,66 +177,71 @@ def export_project(req: ExportRequest):
 
     dest.mkdir(parents=True, exist_ok=True)
 
+    selected = set(req.items) if req.items else None
+
     counts = {"corpora": 0, "tagged": 0, "tables": 0, "kfa": 0}
 
     with TTWAProject.open(app_state.current_project_path) as proj:
         corpus_names = proj.list_corpus_names()
 
         for cname in corpus_names:
-            # ── Original corpus files ──────────────────────────────────
-            if req.export_corpora:
-                corpus_dir = dest / "corpora" / cname
-                corpus_dir.mkdir(parents=True, exist_ok=True)
-                rows = proj._con.execute(
-                    "SELECT filename, content FROM corpus_files WHERE corpus_name = ?",
-                    (cname,),
-                ).fetchall()
-                for row in rows:
-                    (corpus_dir / row["filename"]).write_text(row["content"], encoding="utf-8")
-                    counts["corpora"] += 1
+            rows = proj._con.execute(
+                "SELECT filename, content FROM corpus_files WHERE corpus_name = ?",
+                (cname,),
+            ).fetchall()
+            for row in rows:
+                path_key = f"corpora/{cname}/{row['filename']}"
+                if selected is not None and path_key not in selected:
+                    continue
+                out = dest / "corpora" / cname
+                out.mkdir(parents=True, exist_ok=True)
+                (out / row["filename"]).write_text(row["content"], encoding="utf-8")
+                counts["corpora"] += 1
 
-            # ── Tagged files (JSONL / TSV) ─────────────────────────────
-            if req.export_tagged:
-                tagged_dir = dest / "tagged" / cname
-                tagged_dir.mkdir(parents=True, exist_ok=True)
-                rows = proj._con.execute(
-                    "SELECT filename, content FROM tagged_files WHERE corpus_name = ?",
-                    (cname,),
-                ).fetchall()
-                for row in rows:
-                    (tagged_dir / row["filename"]).write_text(row["content"], encoding="utf-8")
-                    counts["tagged"] += 1
+            rows = proj._con.execute(
+                "SELECT filename, content FROM tagged_files WHERE corpus_name = ?",
+                (cname,),
+            ).fetchall()
+            for row in rows:
+                path_key = f"tagged/{cname}/{row['filename']}"
+                if selected is not None and path_key not in selected:
+                    continue
+                out = dest / "tagged" / cname
+                out.mkdir(parents=True, exist_ok=True)
+                (out / row["filename"]).write_text(row["content"], encoding="utf-8")
+                counts["tagged"] += 1
 
-            # ── Feature tables (CSV) ───────────────────────────────────
-            if req.export_tables:
+        for ft in proj.list_feature_tables():
+            csv_name = f"{ft['corpus_name']}_{ft['tagger_type']}_{ft['table_type']}.csv"
+            path_key = f"tables/{csv_name}"
+            if selected is not None and path_key not in selected:
+                continue
+            df = proj.load_feature_table(
+                ft["corpus_name"], ft["table_type"], tagger_type=ft["tagger_type"]
+            )
+            if df is not None:
                 tables_dir = dest / "tables"
                 tables_dir.mkdir(parents=True, exist_ok=True)
-                ft_list = proj.list_feature_tables()
-                for ft in ft_list:
-                    if ft["corpus_name"] != cname:
-                        continue
-                    df = proj.load_feature_table(cname, ft["table_type"], tagger_type=ft["tagger_type"])
-                    if df is not None:
-                        csv_name = f"{cname}_{ft['tagger_type']}_{ft['table_type']}.csv"
-                        df.to_csv(tables_dir / csv_name, index=False)
-                        counts["tables"] += 1
+                df.to_csv(tables_dir / csv_name, index=False)
+                counts["tables"] += 1
 
-        # ── KFA results (CSV) ─────────────────────────────────────────
-        if req.export_kfa:
-            kfa_dir = dest / "kfa"
-            kfa_dir.mkdir(parents=True, exist_ok=True)
-            for kfa in proj.list_kfa_results():
-                df = proj.load_kfa_result(
-                    kfa["corpus1_name"], kfa["corpus2_name"],
-                    min_effect=kfa["min_effect"], join_method=kfa["join_method"],
-                )
-                if df is not None:
-                    csv_name = (
-                        f"kfa_{kfa['corpus1_name']}_vs_{kfa['corpus2_name']}"
-                        f"_d{kfa['min_effect']}_{kfa['join_method']}.csv"
-                    )
-                    df.to_csv(kfa_dir / csv_name, index=False)
-                    counts["kfa"] += 1
+        for kfa in proj.list_kfa_results():
+            csv_name = (
+                f"kfa_{kfa['corpus1_name']}_vs_{kfa['corpus2_name']}"
+                f"_d{kfa['min_effect']}_{kfa['join_method']}.csv"
+            )
+            path_key = f"kfa/{csv_name}"
+            if selected is not None and path_key not in selected:
+                continue
+            df = proj.load_kfa_result(
+                kfa["corpus1_name"], kfa["corpus2_name"],
+                min_effect=kfa["min_effect"], join_method=kfa["join_method"],
+            )
+            if df is not None:
+                kfa_dir = dest / "kfa"
+                kfa_dir.mkdir(parents=True, exist_ok=True)
+                df.to_csv(kfa_dir / csv_name, index=False)
+                counts["kfa"] += 1
 
     return {
         "status": "exported",

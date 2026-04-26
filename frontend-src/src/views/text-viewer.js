@@ -240,6 +240,10 @@ async function _loadFile() {
 // concatenated tokens always reconstruct the original word exactly.
 // ---------------------------------------------------------------------------
 function _mergeLines(rawText, tokens) {
+  if (_hasUsableOffsets(tokens) && rawText) {
+    return _mergeLinesByOffsets(rawText, tokens)
+  }
+
   // Queue of non-blank tokens from TSV
   const queue = tokens.filter(t => t.word && t.word.trim())
   let qi = 0
@@ -288,6 +292,66 @@ function _mergeLines(rawText, tokens) {
       return { word, tags: [...new Set(collectedTags)] }
     })
   })
+}
+
+function _hasUsableOffsets(tokens) {
+  return tokens.some(t =>
+    Number.isInteger(t.start_char) &&
+    Number.isInteger(t.end_char) &&
+    t.start_char >= 0 &&
+    t.end_char > t.start_char,
+  )
+}
+
+function _mergeLinesByOffsets(rawText, tokens) {
+  const queue = tokens
+    .filter(t =>
+      t.word &&
+      t.word.trim() &&
+      Number.isInteger(t.start_char) &&
+      Number.isInteger(t.end_char) &&
+      t.start_char >= 0 &&
+      t.end_char > t.start_char,
+    )
+    .sort((a, b) => a.start_char - b.start_char)
+
+  const lines = []
+  const rawLines = rawText.split('\n')
+  let tokenIdx = 0
+  let globalPos = 0
+
+  for (const line of rawLines) {
+    const words = []
+    const re = /\S+/g
+    let m
+
+    while ((m = re.exec(line)) !== null) {
+      const word = m[0]
+      const wordStart = globalPos + m.index
+      const wordEnd = wordStart + word.length
+      const collectedTags = []
+
+      while (tokenIdx < queue.length && queue[tokenIdx].end_char <= wordStart) {
+        tokenIdx++
+      }
+
+      let scan = tokenIdx
+      while (scan < queue.length && queue[scan].start_char < wordEnd) {
+        const tok = queue[scan]
+        if (tok.end_char > wordStart && Array.isArray(tok.tags)) {
+          collectedTags.push(...tok.tags)
+        }
+        scan++
+      }
+
+      words.push({ word, tags: [...new Set(collectedTags)] })
+    }
+
+    lines.push(words)
+    globalPos += line.length + 1
+  }
+
+  return lines
 }
 
 // ---------------------------------------------------------------------------
