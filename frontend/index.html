@@ -102,12 +102,12 @@
             </sl-select>
           </label>
           <label>
-            Tagger
-            <sl-select id="qr-tagger" value="biberplus" size="small">
-              <sl-option value="biberplus">BiberPlus</sl-option>
-              <sl-option value="mfte">MFTE</sl-option>
-              <sl-option value="stanza">Stanza</sl-option>
-            </sl-select>
+            Taggers
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <sl-checkbox class="qr-tagger-cb" value="biberplus" checked>BiberPlus</sl-checkbox>
+              <sl-checkbox class="qr-tagger-cb" value="mfte">MFTE</sl-checkbox>
+              <sl-checkbox class="qr-tagger-cb" value="mfte_ext">MFTE Estendido</sl-checkbox>
+            </div>
           </label>
           <label>
             Método KFA

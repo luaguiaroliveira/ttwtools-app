@@ -43,18 +43,11 @@ def run_kfa(req: KFARequest):
     from pathlib import Path
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        # Auto-detect tagger when not specified
         if req.tagger1 is None or req.tagger2 is None:
-            ft_list = proj.list_feature_tables()
-            def _detect(corpus_name):
-                for ft in ft_list:
-                    if ft["corpus_name"] == corpus_name and ft["table_type"] == "norm1000":
-                        return ft["tagger_type"]
-                return "biberplus"
-            if req.tagger1 is None:
-                req.tagger1 = _detect(req.corpus1_name)
-            if req.tagger2 is None:
-                req.tagger2 = _detect(req.corpus2_name)
+            raise HTTPException(
+                status_code=400,
+                detail="É necessário especificar tagger1 e tagger2 explicitamente.",
+            )
 
         df1 = proj.load_feature_table(req.corpus1_name, "norm1000", tagger_type=req.tagger1)
         df2 = proj.load_feature_table(req.corpus2_name, "norm1000", tagger_type=req.tagger2)

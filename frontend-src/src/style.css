@@ -179,7 +179,7 @@ html, body {
 
 .project-name {
   color: var(--text-muted);
-  word-break: break-all;
+  word-break: normal;
   margin-bottom: .5rem;
   min-height: 1.2em;
 }
@@ -1032,7 +1032,9 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   font-size: 14px;       /* default; overridden inline by slider */
   line-height: 1.85;
   color: #111;
-  word-break: break-word;
+  word-break: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .tv-line   { display: block; white-space: pre-wrap; }
@@ -1414,7 +1416,7 @@ sl-option::part(checked-icon) {
   font-weight: 400;
 }
 .exp-leaf-name {
-  word-break: break-all;
+  word-break: normal;
 }
 
 .exp-count {

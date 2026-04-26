@@ -156,7 +156,7 @@ export function initQuickrun({ refreshKfaSelect }) {
       corpus2_folder: get('qr-c2-folder'),
       output_ttwa:    outputPath,
       mode:           get('qr-mode'),
-      tagger:         get('qr-tagger'),
+      taggers:        Array.from(document.querySelectorAll('.qr-tagger-cb:checked')).map(cb => cb.value),
       join:           get('qr-join'),
       min_effect:     0,
       usenlp:         document.getElementById('qr-usenlp')?.checked ?? false,

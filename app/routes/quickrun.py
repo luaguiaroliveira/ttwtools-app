@@ -62,7 +62,7 @@ class QuickRunRequest(BaseModel):
     usenlp: bool = False
     n_processes: int = 4
     overwrite: bool = True
-    tagger: str = "biberplus"
+    taggers: list[str] = ["biberplus"]
 
 
 # ---------------------------------------------------------------------------
@@ -123,104 +123,113 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
         old_stderr = sys.stderr
         sys.stderr = TqdmCatcher(job_id, old_stderr, _jobs)
         try:
-            with tempfile.TemporaryDirectory() as tmpdir:
-                tmp = Path(tmpdir)
+            from ttwtools.project import TTWAProject, TTWA_MODE_FULL, TTWA_MODE_COMPACT
+            mode = TTWA_MODE_FULL if req.mode == "full" else TTWA_MODE_COMPACT
 
-                # ── Tagging corpus 1 ────────────────────────────────────────────
-                _upd("tagging", f"Tagueando {req.corpus1_name}…")
-                if req.tagger in ("biberplus", "stanza"):
-                    ttwtools.biberplus(
-                        folder_path_str=str(c1_folder),
-                        configdict={"n_processes": req.n_processes, "function_words": False},
-                        usenlp=(req.usenlp or req.tagger == "stanza") or None,
-                        save_tagged=True,
-                        output_dir=str(tmp),
-                    )
-                else:
-                    ttwtools.mfte(
-                        folder_path_str=str(c1_folder),
-                        output_dir=str(tmp),
-                        save_tagged=True,
-                        extended=(req.tagger == "mfte_ext"),
+            proj = TTWAProject.create(out_ttwa, name=f"{req.corpus1_name} vs {req.corpus2_name}", overwrite=req.overwrite)
+            proj.set_meta("project_mode", mode)
+
+            if req.mode == "full":
+                if c1_folder.is_dir():
+                    proj.add_corpus_folder(req.corpus1_name, c1_folder)
+                if c2_folder.is_dir():
+                    proj.add_corpus_folder(req.corpus2_name, c2_folder)
+
+            total_features = 0
+
+            for current_tagger in req.taggers:
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    tmp = Path(tmpdir)
+                    # ── Tagging corpus 1 ────────────────────────────────────────────
+                    _upd("tagging", f"[{current_tagger}] Tagueando {req.corpus1_name}…")
+                    if current_tagger in ("biberplus", "stanza"):
+                        ttwtools.biberplus(
+                            folder_path_str=str(c1_folder),
+                            configdict={"n_processes": req.n_processes, "function_words": False},
+                            usenlp=(req.usenlp or current_tagger == "stanza") or None,
+                            save_tagged=True,
+                            output_dir=str(tmp),
+                        )
+                    else:
+                        ttwtools.mfte(
+                            folder_path_str=str(c1_folder),
+                            output_dir=str(tmp),
+                            save_tagged=True,
+                            extended=(current_tagger == "mfte_ext"),
+                        )
+
+                    # ── Tagging corpus 2 ────────────────────────────────────────────
+                    _upd("tagging", f"[{current_tagger}] Tagueando {req.corpus2_name}…")
+                    if current_tagger in ("biberplus", "stanza"):
+                        ttwtools.biberplus(
+                            folder_path_str=str(c2_folder),
+                            configdict={"n_processes": req.n_processes, "function_words": False},
+                            usenlp=(req.usenlp or current_tagger == "stanza") or None,
+                            save_tagged=True,
+                            output_dir=str(tmp),
+                        )
+                    else:
+                        ttwtools.mfte(
+                            folder_path_str=str(c2_folder),
+                            output_dir=str(tmp),
+                            save_tagged=True,
+                            extended=(current_tagger == "mfte_ext"),
+                        )
+
+                    # ── Normalização ────────────────────────────────────────────────
+                    _upd("normalizing", f"[{current_tagger}] Normalizando features…")
+                    tag_suffix = "biberfeatures" if current_tagger in ("biberplus", "stanza") else "mfte"
+
+                    raw1 = tmp / f"{c1_folder.name}_{tag_suffix}_rawcount.csv"
+                    raw2 = tmp / f"{c2_folder.name}_{tag_suffix}_rawcount.csv"
+
+                    if current_tagger in ("biberplus", "stanza"):
+                        ttwtools.normalize_biber_features(str(raw1))
+                        ttwtools.normalize_biber_features(str(raw2))
+                    else:
+                        ttwtools.normalize_mfte_features(str(raw1))
+                        ttwtools.normalize_mfte_features(str(raw2))
+
+                    norm1 = tmp / f"{c1_folder.name}_{tag_suffix}_norm1000.csv"
+                    norm2 = tmp / f"{c2_folder.name}_{tag_suffix}_norm1000.csv"
+
+                    # ── KFA ─────────────────────────────────────────────────────────
+                    _upd("kfa", f"[{current_tagger}] Calculando Key Feature Analysis…")
+                    kfa_df = ttwtools.kfa(
+                        str(norm1), str(norm2),
+                        min_effect_size=0.0,   # sempre salva todos os d
+                        join=req.join,
                     )
 
-                # ── Tagging corpus 2 ────────────────────────────────────────────
-                _upd("tagging", f"Tagueando {req.corpus2_name}…")
-                if req.tagger in ("biberplus", "stanza"):
-                    ttwtools.biberplus(
-                        folder_path_str=str(c2_folder),
-                        configdict={"n_processes": req.n_processes, "function_words": False},
-                        usenlp=(req.usenlp or req.tagger == "stanza") or None,
-                        save_tagged=True,
-                        output_dir=str(tmp),
-                    )
-                else:
-                    ttwtools.mfte(
-                        folder_path_str=str(c2_folder),
-                        output_dir=str(tmp),
-                        save_tagged=True,
-                        extended=(req.tagger == "mfte_ext"),
-                    )
+                    # ── Salvar no Projeto ─────────────────────────────────────────────────
+                    _upd("saving", f"[{current_tagger}] Salvando dados no projeto…")
 
-                # ── Normalização ────────────────────────────────────────────────
-                _upd("normalizing", "Normalizando features…")
-                tag_suffix = "biberfeatures" if req.tagger in ("biberplus", "stanza") else "mfte"
-                
-                raw1 = tmp / f"{c1_folder.name}_{tag_suffix}_rawcount.csv"
-                raw2 = tmp / f"{c2_folder.name}_{tag_suffix}_rawcount.csv"
-                
-                if req.tagger in ("biberplus", "stanza"):
-                    ttwtools.normalize_biber_features(str(raw1))
-                    ttwtools.normalize_biber_features(str(raw2))
-                else:
-                    ttwtools.normalize_mfte_features(str(raw1))
-                    ttwtools.normalize_mfte_features(str(raw2))
+                    tagged1 = tmp / f"{c1_folder.name}_tagged"
+                    tagged2 = tmp / f"{c2_folder.name}_tagged"
                     
-                norm1 = tmp / f"{c1_folder.name}_{tag_suffix}_norm1000.csv"
-                norm2 = tmp / f"{c2_folder.name}_{tag_suffix}_norm1000.csv"
+                    for cname, raw_csv, norm_csv, folder, tagged_folder in [
+                        (req.corpus1_name, raw1, norm1, c1_folder, tagged1),
+                        (req.corpus2_name, raw2, norm2, c2_folder, tagged2),
+                    ]:
+                        # add_corpus_folder was moved outside this loop
+                        if tagged_folder.exists():
+                            proj.save_tagged_folder(cname, tagged_folder, glob="*.jsonl", tagger_type=current_tagger)
+                        proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
+                        proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
 
-                # ── KFA ─────────────────────────────────────────────────────────
-                _upd("kfa", "Calculando Key Feature Analysis…")
-                kfa_df = ttwtools.kfa(
-                    str(norm1), str(norm2),
-                    min_effect_size=0.0,   # sempre salva todos os d
-                    join=req.join,
-                )
+                    if kfa_df is not None:
+                        proj.save_kfa_result(
+                            req.corpus1_name,
+                            req.corpus2_name,
+                            kfa_df,
+                            min_effect=0.0,    # sempre salva todos os d
+                            join_method=req.join,
+                            tagger_type=current_tagger,
+                        )
+                        total_features += len(kfa_df)
 
-                # ── Salvar .ttwa ─────────────────────────────────────────────────
-                _upd("saving", f"Salvando {out_ttwa.name}…")
-                from ttwtools.project import TTWAProject, TTWA_MODE_FULL, TTWA_MODE_COMPACT
-                mode = TTWA_MODE_FULL if req.mode == "full" else TTWA_MODE_COMPACT
-                
-                proj = TTWAProject.create(out_ttwa, name=f"{req.corpus1_name} vs {req.corpus2_name}", overwrite=req.overwrite)
-                proj.set_meta("project_mode", mode)
-                
-                tagged1 = tmp / f"{c1_folder.name}_tagged"
-                tagged2 = tmp / f"{c2_folder.name}_tagged"
-                
-                for cname, raw_csv, norm_csv, folder, tagged_folder in [
-                    (req.corpus1_name, raw1, norm1, c1_folder, tagged1),
-                    (req.corpus2_name, raw2, norm2, c2_folder, tagged2),
-                ]:
-                    if req.mode == "full" and folder:
-                        proj.add_corpus_folder(cname, folder)
-                    if tagged_folder.exists():
-                        proj.save_tagged_folder(cname, tagged_folder, glob="*.jsonl")
-                    proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=req.tagger)
-                    proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=req.tagger)
-                
-                if kfa_df is not None:
-                    proj.save_kfa_result(
-                        req.corpus1_name,
-                        req.corpus2_name,
-                        kfa_df,
-                        min_effect=0.0,    # sempre salva todos os d
-                        join_method=req.join,
-                        tagger_type=req.tagger,
-                    )
-                
-                n_features = len(kfa_df)
-                proj.close()
+            proj.close()
+
         finally:
             sys.stderr = old_stderr
 
