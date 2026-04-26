@@ -114,17 +114,30 @@ def list_corpus_files(corpus_name: str):
 def get_tagged_tokens(corpus_name: str, filename: str):
     """Returns token+tag list for the tagged version of a corpus file."""
     _require_project()
+    import json as _json
     import pathlib
     from ttwtools.project import TTWAProject
 
-    stem        = pathlib.Path(filename).stem           # strip .txt
-    tagged_name = f"{stem}_tagged.tsv"
+    stem = pathlib.Path(filename).stem           # strip .txt
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        row = proj._con.execute(
-            "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=?",
-            (corpus_name, tagged_name),
-        ).fetchone()
+        # Find the tagged file by stem prefix — supports both new JSONL
+        # naming (e.g. "file_mfte.jsonl") and legacy TSV ("file_tagged.tsv")
+        tagged_files = proj.list_tagged_files(corpus_name)
+        tagged_name = None
+        for tf in tagged_files:
+            tf_stem = pathlib.Path(tf).stem       # e.g. "file_mfte"
+            # Match: stem is a prefix of tf_stem (covers _mfte, _biberplus, _tagged, etc.)
+            if tf_stem == stem or tf_stem.startswith(stem + "_"):
+                tagged_name = tf
+                break
+
+        row = None
+        if tagged_name:
+            row = proj._con.execute(
+                "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=?",
+                (corpus_name, tagged_name),
+            ).fetchone()
 
         raw_row = proj._con.execute(
             "SELECT content FROM corpus_files WHERE corpus_name=? AND filename=?",
@@ -132,23 +145,47 @@ def get_tagged_tokens(corpus_name: str, filename: str):
         ).fetchone()
 
     if not row:
-        raise HTTPException(status_code=404, detail=f"Arquivo tagueado não encontrado para '{filename}'.")
+        raise HTTPException(
+            status_code=404,
+            detail=f"Arquivo tagueado não encontrado para '{filename}'.",
+        )
 
-    # Parse TSV: skip comment lines + header row "token\ttags"
+    content = row[0]
     tokens: list[dict] = []
-    past_header = False
-    for line in row[0].splitlines():
-        if not past_header:
-            if line.startswith("token") and "\t" in line:
-                past_header = True
-            continue
-        if "\t" in line:
-            word, tags_str = line.split("\t", 1)
-            tags = [t for t in tags_str.split() if t]
-        else:
-            word = line
-            tags = []
-        tokens.append({"word": word, "tags": tags})
+
+    # Detect format: JSONL (starts with '{') or legacy TSV
+    first_line = content.split('\n', 1)[0].strip()
+    if first_line.startswith('{'):
+        # ── JSONL format ────────────────────────────────────────────────
+        for line in content.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                obj = _json.loads(line)
+            except _json.JSONDecodeError:
+                continue
+            if obj.get("type") == "metadata":
+                continue  # skip metadata line
+            word = obj.get("word", "")
+            tags = obj.get("tags", [])
+            if word:
+                tokens.append({"word": word, "tags": tags})
+    else:
+        # ── Legacy TSV format ───────────────────────────────────────────
+        past_header = False
+        for line in content.splitlines():
+            if not past_header:
+                if line.startswith("token") and "\t" in line:
+                    past_header = True
+                continue
+            if "\t" in line:
+                word, tags_str = line.split("\t", 1)
+                tags = [t for t in tags_str.split() if t]
+            else:
+                word = line
+                tags = []
+            tokens.append({"word": word, "tags": tags})
 
     raw_text = raw_row[0] if raw_row else None
 

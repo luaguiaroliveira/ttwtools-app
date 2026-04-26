@@ -22,8 +22,8 @@ class KFARequest(BaseModel):
     min_effect_size: float = 0.2
     join: str = "union"
     save_to_project: bool = True
-    tagger1: str = "biberplus"
-    tagger2: str = "biberplus"
+    tagger1: str | None = None
+    tagger2: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -43,6 +43,19 @@ def run_kfa(req: KFARequest):
     from pathlib import Path
 
     with TTWAProject.open(app_state.current_project_path) as proj:
+        # Auto-detect tagger when not specified
+        if req.tagger1 is None or req.tagger2 is None:
+            ft_list = proj.list_feature_tables()
+            def _detect(corpus_name):
+                for ft in ft_list:
+                    if ft["corpus_name"] == corpus_name and ft["table_type"] == "norm1000":
+                        return ft["tagger_type"]
+                return "biberplus"
+            if req.tagger1 is None:
+                req.tagger1 = _detect(req.corpus1_name)
+            if req.tagger2 is None:
+                req.tagger2 = _detect(req.corpus2_name)
+
         df1 = proj.load_feature_table(req.corpus1_name, "norm1000", tagger_type=req.tagger1)
         df2 = proj.load_feature_table(req.corpus2_name, "norm1000", tagger_type=req.tagger2)
 
@@ -125,7 +138,7 @@ def get_kfa_result(
 
 
 @router.get("/features/{corpus_name}/{table_type}")
-def get_feature_table(corpus_name: str, table_type: str = "norm1000", tagger_type: str = "biberplus"):
+def get_feature_table(corpus_name: str, table_type: str = "norm1000", tagger_type: str | None = None):
     """Retorna a feature table de um corpus como JSON."""
     _require_project()
     from ttwtools.project import TTWAProject
@@ -134,6 +147,15 @@ def get_feature_table(corpus_name: str, table_type: str = "norm1000", tagger_typ
         raise HTTPException(status_code=400, detail="table_type deve ser 'rawcount' ou 'norm1000'.")
 
     with TTWAProject.open(app_state.current_project_path) as proj:
+        # Auto-detect tagger when not specified
+        if tagger_type is None:
+            for ft in proj.list_feature_tables():
+                if ft["corpus_name"] == corpus_name and ft["table_type"] == table_type:
+                    tagger_type = ft["tagger_type"]
+                    break
+            else:
+                tagger_type = "biberplus"
+
         df = proj.load_feature_table(corpus_name, table_type, tagger_type=tagger_type)
 
     if df is None:
@@ -159,13 +181,26 @@ def list_feature_tables():
 
 
 @router.get("/feature-files/{corpus1}/{corpus2}/{feature}")
-def get_feature_files(corpus1: str, corpus2: str, feature: str, tagger1: str = "biberplus", tagger2: str = "biberplus"):
+def get_feature_files(corpus1: str, corpus2: str, feature: str, tagger1: str | None = None, tagger2: str | None = None):
     """Returns files from both corpora ranked by feature value (norm1000) descending."""
     _require_project()
     import math
     from ttwtools.project import TTWAProject
 
     with TTWAProject.open(app_state.current_project_path) as proj:
+        # Auto-detect tagger from available feature tables when not specified
+        if tagger1 is None or tagger2 is None:
+            ft_list = proj.list_feature_tables()
+            def _detect(corpus_name):
+                for ft in ft_list:
+                    if ft["corpus_name"] == corpus_name and ft["table_type"] == "norm1000":
+                        return ft["tagger_type"]
+                return "biberplus"
+            if tagger1 is None:
+                tagger1 = _detect(corpus1)
+            if tagger2 is None:
+                tagger2 = _detect(corpus2)
+
         df1 = proj.load_feature_table(corpus1, "norm1000", tagger_type=tagger1)
         df2 = proj.load_feature_table(corpus2, "norm1000", tagger_type=tagger2)
 
