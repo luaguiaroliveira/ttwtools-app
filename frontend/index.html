@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-BxTVpNZv.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-DC53XfIM.css">
+  <script type="module" crossorigin src="/assets/index-BgYODEah.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CPsRVXnK.css">
 </head>
 <body>
 
@@ -101,6 +101,14 @@
             </sl-select>
           </label>
           <label>
+            Tagger
+            <sl-select id="qr-tagger" value="biberplus" size="small">
+              <sl-option value="biberplus">BiberPlus</sl-option>
+              <sl-option value="mfte">MFTE</sl-option>
+              <sl-option value="stanza">Stanza</sl-option>
+            </sl-select>
+          </label>
+          <label>
             Método KFA
             <sl-select id="qr-join" value="union" size="small">
               <sl-option value="union">union</sl-option>
@@ -145,11 +153,19 @@
 
     <!-- TAGGING -->
     <section id="view-tagging" class="view">
-      <h1>Tagging BiberPlus</h1>
+      <h1>Tagging</h1>
       <form id="form-tagging" class="form-panel">
         <label>
           Corpus
           <sl-select id="tag-corpus-select" placeholder="-- selecione --" size="small"></sl-select>
+        </label>
+        <label>
+          Tagger
+          <sl-select id="tag-tagger-select" value="biberplus" size="small">
+            <sl-option value="biberplus">BiberPlus</sl-option>
+            <sl-option value="mfte">MFTE</sl-option>
+            <sl-option value="stanza">Stanza</sl-option>
+          </sl-select>
         </label>
         <sl-checkbox id="tag-usenlp">Usar spaCy (mais preciso, mais lento)</sl-checkbox>
         <sl-checkbox id="tag-save-tagged" checked>Salvar tokens tagueados no .ttwa</sl-checkbox>
@@ -166,14 +182,34 @@
     <section id="view-analysis" class="view">
       <h1>Key Feature Analysis</h1>
       <form id="form-kfa" class="form-panel">
-        <label>
-          Corpus 1
-          <sl-select id="kfa-corpus1" placeholder="-- selecione --" size="small"></sl-select>
-        </label>
-        <label>
-          Corpus 2
-          <sl-select id="kfa-corpus2" placeholder="-- selecione --" size="small"></sl-select>
-        </label>
+        <div class="form-row">
+          <label class="grow">
+            Corpus 1
+            <sl-select id="kfa-corpus1" placeholder="-- selecione --" size="small"></sl-select>
+          </label>
+          <label>
+            Tagger 1
+            <sl-select id="kfa-tagger1" value="biberplus" size="small">
+              <sl-option value="biberplus">BiberPlus</sl-option>
+              <sl-option value="mfte">MFTE</sl-option>
+              <sl-option value="stanza">Stanza</sl-option>
+            </sl-select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="grow">
+            Corpus 2
+            <sl-select id="kfa-corpus2" placeholder="-- selecione --" size="small"></sl-select>
+          </label>
+          <label>
+            Tagger 2
+            <sl-select id="kfa-tagger2" value="biberplus" size="small">
+              <sl-option value="biberplus">BiberPlus</sl-option>
+              <sl-option value="mfte">MFTE</sl-option>
+              <sl-option value="stanza">Stanza</sl-option>
+            </sl-select>
+          </label>
+        </div>
         <label>
           Effect size mínimo (Cohen's d)
           <sl-input type="number" id="kfa-effect" value="0.2" min="0" step="0.05" size="small" style="width:110px"></sl-input>

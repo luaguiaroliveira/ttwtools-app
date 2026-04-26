@@ -22,6 +22,8 @@ class KFARequest(BaseModel):
     min_effect_size: float = 0.2
     join: str = "union"
     save_to_project: bool = True
+    tagger1: str = "biberplus"
+    tagger2: str = "biberplus"
 
 
 # ---------------------------------------------------------------------------
@@ -41,8 +43,8 @@ def run_kfa(req: KFARequest):
     from pathlib import Path
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        df1 = proj.load_feature_table(req.corpus1_name, "norm1000")
-        df2 = proj.load_feature_table(req.corpus2_name, "norm1000")
+        df1 = proj.load_feature_table(req.corpus1_name, "norm1000", tagger_type=req.tagger1)
+        df2 = proj.load_feature_table(req.corpus2_name, "norm1000", tagger_type=req.tagger2)
 
     if df1 is None:
         raise HTTPException(
@@ -123,7 +125,7 @@ def get_kfa_result(
 
 
 @router.get("/features/{corpus_name}/{table_type}")
-def get_feature_table(corpus_name: str, table_type: str = "norm1000"):
+def get_feature_table(corpus_name: str, table_type: str = "norm1000", tagger_type: str = "biberplus"):
     """Retorna a feature table de um corpus como JSON."""
     _require_project()
     from ttwtools.project import TTWAProject
@@ -132,7 +134,7 @@ def get_feature_table(corpus_name: str, table_type: str = "norm1000"):
         raise HTTPException(status_code=400, detail="table_type deve ser 'rawcount' ou 'norm1000'.")
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        df = proj.load_feature_table(corpus_name, table_type)
+        df = proj.load_feature_table(corpus_name, table_type, tagger_type=tagger_type)
 
     if df is None:
         raise HTTPException(status_code=404, detail="Feature table não encontrada.")
@@ -157,15 +159,15 @@ def list_feature_tables():
 
 
 @router.get("/feature-files/{corpus1}/{corpus2}/{feature}")
-def get_feature_files(corpus1: str, corpus2: str, feature: str):
+def get_feature_files(corpus1: str, corpus2: str, feature: str, tagger1: str = "biberplus", tagger2: str = "biberplus"):
     """Returns files from both corpora ranked by feature value (norm1000) descending."""
     _require_project()
     import math
     from ttwtools.project import TTWAProject
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        df1 = proj.load_feature_table(corpus1, "norm1000")
-        df2 = proj.load_feature_table(corpus2, "norm1000")
+        df1 = proj.load_feature_table(corpus1, "norm1000", tagger_type=tagger1)
+        df2 = proj.load_feature_table(corpus2, "norm1000", tagger_type=tagger2)
 
     if df1 is None:
         raise HTTPException(status_code=404, detail=f"Feature table não encontrada para '{corpus1}'.")

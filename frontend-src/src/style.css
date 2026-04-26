@@ -398,6 +398,7 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   font-size: .82rem;
   color: var(--text-muted);
   max-width: 520px;
+  white-space: pre-wrap;
 }
 .status-box.running { border-color: var(--accent); color: var(--accent); }
 .status-box.done    { border-color: var(--success); color: var(--success); }
@@ -443,6 +444,7 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   color: var(--text-muted);
   min-height: 1.4em;
   margin-bottom: 1rem;
+  white-space: pre-wrap;
 }
 
 /* ===================================================================
@@ -1279,3 +1281,16 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   }
 }
 
+/* Fix text visibility on Shoelace options */
+sl-option::part(base) {
+  color: var(--text) !important;
+  background-color: transparent !important;
+}
+sl-option:hover::part(base),
+sl-option[focused]::part(base),
+sl-option[data-active]::part(base) {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+sl-option::part(checked-icon) {
+  color: var(--accent) !important;
+}

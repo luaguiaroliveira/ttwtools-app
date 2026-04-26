@@ -24,16 +24,19 @@ function setStep(step, isError) {
   })
 }
 
-function setMsg(msg) {
+function setMsg(msg, tqdm) {
   const el = document.getElementById('qr-msg')
-  if (el) el.textContent = msg || ''
+  if (el) {
+    el.textContent = msg || ''
+    if (tqdm) el.textContent += '\n' + tqdm
+  }
 }
 
 async function poll(refreshKfaSelect) {
   try {
     const r = await api.quickrun.status(_jobId)
     setStep(r.step, r.status === 'error')
-    setMsg(r.message || '')
+    setMsg(r.msg || r.message || '', r.tqdm || '')
 
     if (r.status === 'done') {
       clearInterval(_pollTimer); _pollTimer = null
@@ -73,6 +76,14 @@ export function initQuickrun({ refreshKfaSelect }) {
               input.value = res.path + '/' + c1 + '_vs_' + c2 + '.ttwa'
             } else {
               input.value = res.path
+              
+              // Auto-fill corpus name based on folder name
+              const nameId = targetId.replace('-folder', '-name')
+              const nameInput = document.getElementById(nameId)
+              if (nameInput) {
+                const folderName = res.path.split(/[/\\]/).filter(Boolean).pop()
+                if (folderName) nameInput.value = folderName
+              }
             }
             input.dispatchEvent(new Event('change'))
           }
@@ -100,6 +111,7 @@ export function initQuickrun({ refreshKfaSelect }) {
       corpus2_folder: get('qr-c2-folder'),
       output_ttwa:    outputPath,
       mode:           get('qr-mode'),
+      tagger:         get('qr-tagger'),
       join:           get('qr-join'),
       min_effect:     parseFloat(get('qr-effect') || '0.2'),
       usenlp:         document.getElementById('qr-usenlp')?.checked ?? false,

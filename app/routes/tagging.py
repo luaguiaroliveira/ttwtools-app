@@ -12,6 +12,28 @@ from pydantic import BaseModel
 
 from app import state as app_state
 
+class TqdmCatcher:
+    def __init__(self, job_id, orig_stderr, jobs_dict):
+        self.job_id = job_id
+        self.orig_stderr = orig_stderr
+        self.jobs_dict = jobs_dict
+        self.buf = ""
+
+    def write(self, s):
+        self.orig_stderr.write(s)
+        self.buf += s
+        if '\r' in s or '\n' in s:
+            lines = self.buf.replace('\r', '\n').split('\n')
+            for line in reversed(lines[:-1]):
+                stripped = line.strip()
+                if stripped and '%' in stripped:
+                    self.jobs_dict[self.job_id]["tqdm"] = stripped
+                    break
+            self.buf = lines[-1]
+
+    def flush(self):
+        self.orig_stderr.flush()
+
 router = APIRouter()
 
 # Registro simples de jobs em background {job_id: status_dict}
@@ -27,6 +49,7 @@ class TagRequest(BaseModel):
     # Ou aponta para pasta no disco, ou usa o corpus já no .ttwa
     source: str = "project"          # "project" | "folder"
     folder_path: str | None = None   # obrigatório se source == "folder"
+    tagger: str = "biberplus"        # "biberplus" | "mfte" | "stanza"
     save_tagged: bool = True
     usenlp: bool = False
     n_processes: int = 4
@@ -74,12 +97,16 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
     import ttwtools
 
     _jobs[job_id]["status"] = "running"
+    _jobs[job_id]["msg"] = f"Tagueando {req.corpus_name}..."
 
+    import sys
+    old_stderr = sys.stderr
+    sys.stderr = TqdmCatcher(job_id, old_stderr, _jobs)
     try:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)
             corpus_dir = tmp / req.corpus_name
-            tagged_dir = tmp / f"{req.corpus_name}_tagged"
+            tagged_dir = tmp / f"{corpus_dir.name}_tagged"
 
             if req.source == "project":
                 # Exporta textos do .ttwa para o temp
@@ -90,37 +117,58 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
                     raise ValueError("folder_path é obrigatório quando source='folder'.")
                 corpus_dir = Path(req.folder_path)
 
-            configdict = {
-                "n_processes": req.n_processes,
-                "function_words": req.function_words,
-            }
-
-            ttwtools.biberplus(
-                folder_path_str=str(corpus_dir),
-                configdict=configdict,
-                usenlp=req.usenlp or None,
-                save_tagged=req.save_tagged,
-                output_dir=str(tmp),
-            )
-
-            # Normaliza
-            raw_csv = tmp / f"{req.corpus_name}_biberfeatures_rawcount.csv"
-            ttwtools.normalize_biber_features(str(raw_csv))
-            norm_csv = tmp / f"{req.corpus_name}_biberfeatures_norm1000.csv"
+            if req.tagger == "biberplus":
+                configdict = {
+                    "n_processes": req.n_processes,
+                    "function_words": req.function_words,
+                }
+                ttwtools.biberplus(
+                    folder_path_str=str(corpus_dir),
+                    configdict=configdict,
+                    usenlp=req.usenlp or None,
+                    save_tagged=req.save_tagged,
+                    output_dir=str(tmp),
+                )
+                
+                raw_csv = tmp / f"{corpus_dir.name}_biberfeatures_rawcount.csv"
+                ttwtools.normalize_biber_features(str(raw_csv))
+                norm_csv = tmp / f"{corpus_dir.name}_biberfeatures_norm1000.csv"
+            
+            else:
+                # mfte ou stanza
+                extended = (req.tagger == "mfte")
+                ttwtools.mfte(
+                    folder_path_str=str(corpus_dir),
+                    output_dir=str(tmp),
+                    save_tagged=req.save_tagged,
+                    extended=extended,
+                )
+                
+                raw_csv = tmp / f"{corpus_dir.name}_mfte_rawcount.csv"
+                ttwtools.normalize_mfte_features(str(raw_csv))
+                norm_csv = tmp / f"{corpus_dir.name}_mfte_norm1000.csv"
 
             # Importa de volta ao .ttwa
             with TTWAProject.open(project_path) as proj:
-                proj.save_feature_table_from_csv(req.corpus_name, raw_csv, "rawcount")
+                proj.save_feature_table_from_csv(
+                    req.corpus_name, raw_csv, "rawcount", tagger_type=req.tagger
+                )
                 if norm_csv.exists():
-                    proj.save_feature_table_from_csv(req.corpus_name, norm_csv, "norm1000")
+                    proj.save_feature_table_from_csv(
+                        req.corpus_name, norm_csv, "norm1000", tagger_type=req.tagger
+                    )
                 if req.save_tagged and tagged_dir.exists():
-                    proj.save_tagged_folder(req.corpus_name, tagged_dir)
+                    proj.save_tagged_folder(req.corpus_name, tagged_dir, glob="*.jsonl")
 
         _jobs[job_id]["status"] = "done"
+        _jobs[job_id]["msg"] = "Tagging concluído com sucesso."
 
     except Exception as exc:
         _jobs[job_id]["status"] = "error"
         _jobs[job_id]["error"] = str(exc)
+        _jobs[job_id]["msg"] = str(exc)
+    finally:
+        sys.stderr = old_stderr
 
 
 # ---------------------------------------------------------------------------

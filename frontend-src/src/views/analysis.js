@@ -11,6 +11,8 @@ export function initAnalysis({ refreshKfaSelect }) {
 
     const c1     = document.getElementById('kfa-corpus1').value
     const c2     = document.getElementById('kfa-corpus2').value
+    const t1     = document.getElementById('kfa-tagger1').value
+    const t2     = document.getElementById('kfa-tagger2').value
     const effect = parseFloat(document.getElementById('kfa-effect').value)
     const join   = document.getElementById('kfa-join').value
 
@@ -29,6 +31,8 @@ export function initAnalysis({ refreshKfaSelect }) {
         min_effect_size: effect,
         join,
         save_to_project: true,
+        tagger1:         t1,
+        tagger2:         t2,
       })
       showToast(`KFA concluída: ${result.n_features} features com |d| ≥ ${effect}.`)
       await refreshKfaSelect()

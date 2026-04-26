@@ -30,7 +30,9 @@ async function pollJob() {
       setStatus('error', `Erro: ${job.error}`)
       showToast(job.error, 'error')
     } else {
-      setStatus('running', `Status: ${job.status}…`)
+      let disp = job.msg || `Status: ${job.status}…`
+      if (job.tqdm) disp += '\n' + job.tqdm
+      setStatus('running', disp)
     }
   } catch (err) {
     clearInterval(_pollTimer); _pollTimer = null
@@ -48,6 +50,7 @@ export function initTagging() {
     const body = {
       corpus_name:    corpus,
       source:         'project',
+      tagger:         document.getElementById('tag-tagger-select').value,
       usenlp:         document.getElementById('tag-usenlp').checked,
       save_tagged:    document.getElementById('tag-save-tagged').checked,
       n_processes:    parseInt(document.getElementById('tag-nprocesses').value, 10),
