@@ -37,7 +37,10 @@ export const api = {
   corpus: {
     list:          ()             => request('GET',  '/api/corpus/list'),
     files:         name          => request('GET',  `/api/corpus/${encodeURIComponent(name)}/files`),
-    taggedTokens:  (corpus, fn) => request('GET',  `/api/corpus/${encodeURIComponent(corpus)}/tagged-tokens/${encodeURIComponent(fn)}`),
+    taggedTokens:  (corpus, fn, tagger) => {
+      const suffix = tagger ? `?tagger_type=${encodeURIComponent(tagger)}` : ''
+      return request('GET',  `/api/corpus/${encodeURIComponent(corpus)}/tagged-tokens/${encodeURIComponent(fn)}${suffix}`)
+    },
     importFolder:  body         => request('POST', '/api/corpus/import-folder', body),
     importTagged:  body         => request('POST', '/api/corpus/import-tagged', body),
     uploadFile:    (name, file) => {

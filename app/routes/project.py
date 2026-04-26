@@ -32,8 +32,8 @@ class OpenProjectRequest(BaseModel):
 
 class ExportRequest(BaseModel):
     """Selective export — items is a list of paths like:
-    'corpora/CorpusA/file.txt', 'tagged/CorpusA/file.jsonl',
-    'tables/Corpus_mfte_rawcount.csv', 'kfa/kfa_A_vs_B_d0.2_union.csv'
+    'corpora/CorpusA/file.txt', 'tagged/mfte/CorpusA/file.jsonl',
+    'tables/Corpus_mfte_rawcount.csv', 'kfa/kfa_A_vs_B_d0.2_union_mfte.csv'
     If items is empty or None, exports everything.
     """
     items: list[str] | None = None
@@ -123,12 +123,15 @@ def project_manifest():
                     "path": f"corpora/{cname}/{fn}",
                 })
 
-            for fn in proj.list_tagged_files(cname):
+            for entry in proj.list_tagged_entries(cname):
+                fn = entry["filename"]
+                tagger = entry["tagger_type"]
                 items.append({
                     "category": "tagged",
                     "corpus": cname,
+                    "tagger_type": tagger,
                     "filename": fn,
-                    "path": f"tagged/{cname}/{fn}",
+                    "path": f"tagged/{tagger}/{cname}/{fn}",
                 })
 
         for ft in proj.list_feature_tables():
@@ -145,7 +148,7 @@ def project_manifest():
         for kfa in proj.list_kfa_results():
             csv_name = (
                 f"kfa_{kfa['corpus1_name']}_vs_{kfa['corpus2_name']}"
-                f"_d{kfa['min_effect']}_{kfa['join_method']}.csv"
+                f"_d{kfa['min_effect']}_{kfa['join_method']}_{kfa['tagger_type']}.csv"
             )
             items.append({
                 "category": "kfa",
@@ -153,6 +156,7 @@ def project_manifest():
                 "corpus2": kfa["corpus2_name"],
                 "min_effect": kfa["min_effect"],
                 "join_method": kfa["join_method"],
+                "tagger_type": kfa["tagger_type"],
                 "filename": csv_name,
                 "path": f"kfa/{csv_name}",
             })
@@ -199,14 +203,14 @@ def export_project(req: ExportRequest):
                 counts["corpora"] += 1
 
             rows = proj._con.execute(
-                "SELECT filename, content FROM tagged_files WHERE corpus_name = ?",
+                "SELECT filename, tagger_type, content FROM tagged_files WHERE corpus_name = ?",
                 (cname,),
             ).fetchall()
             for row in rows:
-                path_key = f"tagged/{cname}/{row['filename']}"
+                path_key = f"tagged/{row['tagger_type']}/{cname}/{row['filename']}"
                 if selected is not None and path_key not in selected:
                     continue
-                out = dest / "tagged" / cname
+                out = dest / "tagged" / row["tagger_type"] / cname
                 out.mkdir(parents=True, exist_ok=True)
                 (out / row["filename"]).write_text(row["content"], encoding="utf-8")
                 counts["tagged"] += 1
@@ -228,7 +232,7 @@ def export_project(req: ExportRequest):
         for kfa in proj.list_kfa_results():
             csv_name = (
                 f"kfa_{kfa['corpus1_name']}_vs_{kfa['corpus2_name']}"
-                f"_d{kfa['min_effect']}_{kfa['join_method']}.csv"
+                f"_d{kfa['min_effect']}_{kfa['join_method']}_{kfa['tagger_type']}.csv"
             )
             path_key = f"kfa/{csv_name}"
             if selected is not None and path_key not in selected:
@@ -236,6 +240,7 @@ def export_project(req: ExportRequest):
             df = proj.load_kfa_result(
                 kfa["corpus1_name"], kfa["corpus2_name"],
                 min_effect=kfa["min_effect"], join_method=kfa["join_method"],
+                tagger_type=kfa["tagger_type"],
             )
             if df is not None:
                 kfa_dir = dest / "kfa"

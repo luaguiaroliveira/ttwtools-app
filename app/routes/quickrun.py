@@ -14,7 +14,7 @@ import uuid
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app import state as app_state
 
@@ -62,7 +62,7 @@ class QuickRunRequest(BaseModel):
     usenlp: bool = False
     n_processes: int = 4
     overwrite: bool = True
-    taggers: list[str] = ["biberplus"]
+    taggers: list[str] = Field(default_factory=lambda: ["biberplus"])
 
 
 # ---------------------------------------------------------------------------
@@ -137,7 +137,19 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
 
             total_features = 0
 
-            for current_tagger in req.taggers:
+            # Be defensive with incoming payloads (e.g., stale frontend sending
+            # an empty selection): always run at least one valid tagger.
+            allowed_taggers = {"biberplus", "stanza", "mfte", "mfte_ext"}
+            selected_taggers: list[str] = []
+            for tagger in (req.taggers or []):
+                normalized = str(tagger).strip().lower().replace("-", "_")
+                if normalized in allowed_taggers and normalized not in selected_taggers:
+                    selected_taggers.append(normalized)
+            if not selected_taggers:
+                selected_taggers = ["biberplus"]
+                _upd("tagging", "Nenhum tagger valido selecionado; usando biberplus.")
+
+            for current_tagger in selected_taggers:
                 with tempfile.TemporaryDirectory() as tmpdir:
                     tmp = Path(tmpdir)
                     # ── Tagging corpus 1 ────────────────────────────────────────────
@@ -239,7 +251,7 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
         _jobs[job_id].update({
             "status": "done",
             "step": "done",
-            "message": f"{n_features} features  |  {out_ttwa.name}",
+            "message": f"{total_features} features  |  {out_ttwa.name}",
             "ttwa_path": str(out_ttwa),
         })
 

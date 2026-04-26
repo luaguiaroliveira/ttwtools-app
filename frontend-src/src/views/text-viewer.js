@@ -206,7 +206,11 @@ async function _loadFile() {
   document.getElementById('tv-tag-list').innerHTML = ''
 
   try {
-    const { tokens, raw_text } = await api.corpus.taggedTokens(file.corpus, file.filename)
+    const { tokens, raw_text } = await api.corpus.taggedTokens(
+      file.corpus,
+      file.filename,
+      state.kfaTagger || undefined,
+    )
     const lines = _mergeLines(raw_text, tokens)
     _lastLines    = lines
     _lastFilename = file.filename

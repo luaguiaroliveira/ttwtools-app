@@ -32,6 +32,12 @@ function setMsg(msg, tqdm) {
   }
 }
 
+function _getSelectedTaggers() {
+  return Array.from(document.querySelectorAll('.qr-tagger-cb'))
+    .filter(cb => cb.checked)
+    .map(cb => cb.value)
+}
+
 /** Read which categories are checked in the inline export panel */
 function _getSelectedCats() {
   return Array.from(document.querySelectorAll('.qr-cat-cb:checked'))
@@ -156,7 +162,7 @@ export function initQuickrun({ refreshKfaSelect }) {
       corpus2_folder: get('qr-c2-folder'),
       output_ttwa:    outputPath,
       mode:           get('qr-mode'),
-      taggers:        Array.from(document.querySelectorAll('.qr-tagger-cb:checked')).map(cb => cb.value),
+      taggers:        _getSelectedTaggers(),
       join:           get('qr-join'),
       min_effect:     0,
       usenlp:         document.getElementById('qr-usenlp')?.checked ?? false,
@@ -167,6 +173,11 @@ export function initQuickrun({ refreshKfaSelect }) {
     const required = ['corpus1_name', 'corpus1_folder', 'corpus2_name', 'corpus2_folder', 'output_ttwa']
     if (required.some(k => !body[k])) {
       showToast('Preencha todos os campos obrigatórios.', 'error')
+      return
+    }
+
+    if (!body.taggers.length) {
+      showToast('Selecione pelo menos um tagger.', 'error')
       return
     }
 

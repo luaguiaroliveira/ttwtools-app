@@ -111,7 +111,7 @@ def list_corpus_files(corpus_name: str):
 
 
 @router.get("/{corpus_name}/tagged-tokens/{filename}")
-def get_tagged_tokens(corpus_name: str, filename: str):
+def get_tagged_tokens(corpus_name: str, filename: str, tagger_type: str | None = None):
     """Returns token+tag list for the tagged version of a corpus file."""
     _require_project()
     import json as _json
@@ -121,22 +121,27 @@ def get_tagged_tokens(corpus_name: str, filename: str):
     stem = pathlib.Path(filename).stem           # strip .txt
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        # Find the tagged file by stem prefix — supports both new JSONL
-        # naming (e.g. "file_mfte.jsonl") and legacy TSV ("file_tagged.tsv")
-        tagged_files = proj.list_tagged_files(corpus_name)
+        # Find the tagged file by stem prefix within the requested tagger layer.
+        tagged_entries = proj.list_tagged_entries(corpus_name)
+        if tagger_type is not None:
+            tagged_entries = [e for e in tagged_entries if e["tagger_type"] == tagger_type]
+
         tagged_name = None
-        for tf in tagged_files:
+        tagged_tagger = None
+        for entry in tagged_entries:
+            tf = entry["filename"]
             tf_stem = pathlib.Path(tf).stem       # e.g. "file_mfte"
             # Match: stem is a prefix of tf_stem (covers _mfte, _biberplus, _tagged, etc.)
             if tf_stem == stem or tf_stem.startswith(stem + "_"):
                 tagged_name = tf
+                tagged_tagger = entry["tagger_type"]
                 break
 
         row = None
-        if tagged_name:
+        if tagged_name and tagged_tagger:
             row = proj._con.execute(
-                "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=?",
-                (corpus_name, tagged_name),
+                "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=? AND tagger_type=?",
+                (corpus_name, tagged_name, tagged_tagger),
             ).fetchone()
 
         raw_row = proj._con.execute(
@@ -194,7 +199,13 @@ def get_tagged_tokens(corpus_name: str, filename: str):
 
     raw_text = raw_row[0] if raw_row else None
 
-    return {"corpus_name": corpus_name, "filename": filename, "tokens": tokens, "raw_text": raw_text}
+    return {
+        "corpus_name": corpus_name,
+        "filename": filename,
+        "tagger_type": tagged_tagger,
+        "tokens": tokens,
+        "raw_text": raw_text,
+    }
 
 
 @router.get("/{corpus_name}/file/{filename}")

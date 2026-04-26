@@ -113,8 +113,8 @@ export async function refreshKfaSelect() {
     kfa_results.forEach(r => {
       const opt = document.createElement('sl-option')
       opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name, d: r.min_effect, join: r.join_method, tagger: r.tagger_type })
-      const taggerLabel = r.tagger_type && r.tagger_type !== 'biberplus' ? `  [${r.tagger_type}]` : ''
-      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (${r.join_method})${taggerLabel}`
+      const taggerLabel = r.tagger_type || 'biberplus'
+      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (${r.join_method})  [${taggerLabel}]`
       sel.appendChild(opt)
     })
     // Auto-select if only one result

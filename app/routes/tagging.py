@@ -158,7 +158,7 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
                         req.corpus_name, norm_csv, "norm1000", tagger_type=req.tagger
                     )
                 if req.save_tagged and tagged_dir.exists():
-                    proj.save_tagged_folder(req.corpus_name, tagged_dir, glob="*.jsonl")
+                    proj.save_tagged_folder(req.corpus_name, tagged_dir, glob="*.jsonl", tagger_type=req.tagger)
 
         _jobs[job_id]["status"] = "done"
         _jobs[job_id]["msg"] = "Tagging concluído com sucesso."
