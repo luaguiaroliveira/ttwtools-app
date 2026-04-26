@@ -114,10 +114,6 @@
               <sl-option value="intersection">intersection</sl-option>
             </sl-select>
           </label>
-          <label>
-            Effect size mín.
-            <sl-input type="number" id="qr-effect" value="0.2" min="0" step="0.05" size="small" style="width:110px"></sl-input>
-          </label>
         </div>
         <sl-checkbox id="qr-usenlp">Usar spaCy para tokenização</sl-checkbox>
 
@@ -253,10 +249,6 @@
           </label>
         </div>
         <label>
-          Effect size mínimo (Cohen's d)
-          <sl-input type="number" id="kfa-effect" value="0.2" min="0" step="0.05" size="small" style="width:110px"></sl-input>
-        </label>
-        <label>
           Método de junção
           <sl-select id="kfa-join" value="union" size="small">
             <sl-option value="union">union</sl-option>
@@ -301,6 +293,10 @@
             <sl-range id="chart-thickness" min="8" max="40" value="18" step="2"></sl-range>
             <span id="chart-thickness-val">18</span>px
           </label>
+          <label class="chart-ctrl">
+            |d| ≥
+            <sl-input type="number" id="results-min-d" value="0" min="0" step="0.05" size="small" style="width:90px"></sl-input>
+          </label>
         </div>
         <div id="chart-wrapper">
           <!-- D3 draws SVG here -->
@@ -330,6 +326,13 @@
         <div class="fd-main">
           <div class="fd-table-toolbar">
             <span id="fd-count-label" class="fd-count-label"></span>
+            <label class="fd-sort-label">
+              Ordenar por
+              <select id="fd-sort">
+                <option value="value">Norm/1000</option>
+                <option value="rawcount">Raw count</option>
+              </select>
+            </label>
             <div class="fd-pagination">
               <button id="fd-prev" class="btn-sm">‹</button>
               <span id="fd-page-label" class="fd-page-label"></span>
@@ -351,7 +354,7 @@
                 <tr>
                   <th>Arquivo</th>
                   <th>Corpus</th>
-                  <th>Valor (norm/1000)</th>
+                  <th id="fd-th-value">Valor (norm/1000)</th>
                 </tr>
               </thead>
               <tbody></tbody>

@@ -822,7 +822,8 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   text-align: center;
 }
 
-.fd-perpage-label {
+.fd-perpage-label,
+.fd-sort-label {
   display: flex;
   align-items: center;
   gap: .4rem;
@@ -830,7 +831,8 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   white-space: nowrap;
 }
 
-.fd-perpage-label select {
+.fd-perpage-label select,
+.fd-sort-label select {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 5px;
@@ -839,7 +841,8 @@ button:disabled          { opacity: .45; cursor: not-allowed; }
   font-size: .78rem;
   cursor: pointer;
 }
-.fd-perpage-label select:focus { outline: none; border-color: var(--accent); }
+.fd-perpage-label select:focus,
+.fd-sort-label select:focus { outline: none; border-color: var(--accent); }
 
 /* Make table-box connect to toolbar without double border */
 .fd-main .table-box {

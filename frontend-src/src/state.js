@@ -9,6 +9,7 @@ export const state = {
   kfaData:    null,
   kfaC1:      '',
   kfaC2:      '',
+  kfaTagger:  null,   // tagger_type salvo com a KFA (null = auto-detect)
 
   // Chart options
   chartMetric: 'Effect_Size',
@@ -16,9 +17,10 @@ export const state = {
   palette:     'biber',
 
   // Table sort/filter
-  sortCol: 'Effect_Size',
-  sortDir: -1,
-  filter:  '',
+  sortCol:   'Effect_Size',
+  sortDir:   -1,
+  filter:    '',
+  minEffect: 0,
 
   // Tag definitions from ttwtools (tag → definition string)
   tagDefs: {},

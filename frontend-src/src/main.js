@@ -49,7 +49,17 @@ initTextViewer()
 initExport()
 
 // Listen for project-changed event (dispatched by quickrun on completion)
-document.addEventListener('project-changed', () => updateProjectLabel())
+document.addEventListener('project-changed', () => {
+  updateProjectLabel()
+  // Clear stale KFA data so the Results view doesn't show data from a previous project
+  state.kfaData  = null
+  state.kfaC1    = ''
+  state.kfaC2    = ''
+  state.kfaTagger = null
+  // Hide chart + table until user explicitly loads a KFA from the new project
+  document.getElementById('chart-container')?.classList.add('hidden')
+  document.getElementById('table-container')?.classList.add('hidden')
+})
 
 // Boot: check if a project is already open (e.g. launched with --open flag)
 checkInitialProject(shared)

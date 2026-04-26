@@ -70,10 +70,16 @@ export const api = {
   analysis: {
     runKfa:       body              => request('POST', '/api/analysis/kfa', body),
     listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),
-    getKfa:       (c1, c2, d, join) =>
-      request('GET', `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}`),
-    featureFiles: (c1, c2, feature) =>
-      request('GET', `/api/analysis/feature-files/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}/${encodeURIComponent(feature)}`),
+    getKfa:       (c1, c2, d, join, tagger) =>
+      request('GET', `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}${tagger ? `&tagger=${encodeURIComponent(tagger)}` : ''}`),
+    featureFiles: (c1, c2, feature, tagger1, tagger2) => {
+      let url = `/api/analysis/feature-files/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}/${encodeURIComponent(feature)}`
+      const params = []
+      if (tagger1) params.push(`tagger1=${encodeURIComponent(tagger1)}`)
+      if (tagger2) params.push(`tagger2=${encodeURIComponent(tagger2)}`)
+      if (params.length) url += '?' + params.join('&')
+      return request('GET', url)
+    },
     featureTable: (name, type)      =>
       request('GET', `/api/analysis/features/${encodeURIComponent(name)}/${type}`),
     listFeatures: ()                => request('GET',  '/api/analysis/features/list'),

@@ -27,7 +27,8 @@ const COLS = [
 function visibleRows() {
   if (!state.kfaData) return []
   let rows = state.kfaData.results.slice()
-  if (state.filter) rows = rows.filter(r => r.Feature.toLowerCase().includes(state.filter))
+  if (state.filter)    rows = rows.filter(r => r.Feature.toLowerCase().includes(state.filter))
+  if (state.minEffect) rows = rows.filter(r => Math.abs(r.Effect_Size) >= state.minEffect)
   rows.sort((a, b) => {
     const av = a[state.sortCol], bv = b[state.sortCol]
     if (typeof av === 'string') return state.sortDir * av.localeCompare(bv)
@@ -111,8 +112,9 @@ export async function refreshKfaSelect() {
     sel.innerHTML = ''
     kfa_results.forEach(r => {
       const opt = document.createElement('sl-option')
-      opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name, d: r.min_effect, join: r.join_method })
-      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (d≥${r.min_effect}, ${r.join_method})`
+      opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name, d: r.min_effect, join: r.join_method, tagger: r.tagger_type })
+      const taggerLabel = r.tagger_type && r.tagger_type !== 'biberplus' ? `  [${r.tagger_type}]` : ''
+      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (${r.join_method})${taggerLabel}`
       sel.appendChild(opt)
     })
     // Auto-select if only one result
@@ -143,27 +145,37 @@ export function initResults() {
   document.getElementById('btn-load-result')?.addEventListener('click', async () => {
     const sel = document.getElementById('results-kfa-select')
     if (!sel.value) { showToast('Selecione uma KFA.', 'error'); return }
-    const { c1, c2, d, join } = JSON.parse(sel.value)
+    const { c1, c2, d, join, tagger } = JSON.parse(sel.value)
     try {
-      const data       = await api.analysis.getKfa(c1, c2, d, join)
-      state.kfaData    = data
-      state.kfaC1      = c1
-      state.kfaC2      = c2
-      state.sortCol    = 'Effect_Size'
-      state.sortDir    = -1
-      state.filter     = ''
+      const data       = await api.analysis.getKfa(c1, c2, d, join, tagger)
+      state.kfaData     = data
+      state.kfaC1       = c1
+      state.kfaC2       = c2
+      state.kfaTagger   = tagger || null
+      state.sortCol     = 'Effect_Size'
+      state.sortDir     = -1
+      state.filter      = ''
+      state.minEffect   = 0
       state.chartMetric = 'Effect_Size'
-      document.getElementById('results-filter').value = ''
-      document.getElementById('chart-metric').value   = 'Effect_Size'
+      document.getElementById('results-filter').value  = ''
+      document.getElementById('chart-metric').value    = 'Effect_Size'
+      const minDEl = document.getElementById('results-min-d')
+      if (minDEl) minDEl.value = '0'
       renderResults()
     } catch (err) {
       showToast(err.message, 'error')
     }
   })
 
-  // Filter
+  // Filter por nome de feature
   document.getElementById('results-filter')?.addEventListener('sl-input', e => {
     state.filter = e.target.value.trim().toLowerCase()
+    if (state.kfaData) { renderTable(); renderChart() }
+  })
+
+  // Filtro mínimo |d|
+  document.getElementById('results-min-d')?.addEventListener('sl-input', e => {
+    state.minEffect = parseFloat(e.target.value) || 0
     if (state.kfaData) { renderTable(); renderChart() }
   })
 

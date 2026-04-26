@@ -158,7 +158,7 @@ export function initQuickrun({ refreshKfaSelect }) {
       mode:           get('qr-mode'),
       tagger:         get('qr-tagger'),
       join:           get('qr-join'),
-      min_effect:     parseFloat(get('qr-effect') || '0.2'),
+      min_effect:     0,
       usenlp:         document.getElementById('qr-usenlp')?.checked ?? false,
       n_processes:    1,
       overwrite:      true,

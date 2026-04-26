@@ -173,13 +173,24 @@ function drawSidebarChart(container, rows, activeFeature, onFeatureClick) {
 // Main table: files ranked by feature value, with pagination
 // ---------------------------------------------------------------------------
 
-// Pagination state (reset on each new feature load)
-let _fdAllFiles = []
-let _fdPage     = 0
+// Pagination + sort state (reset on each new feature load)
+let _fdAllFiles  = []
+let _fdPage      = 0
+let _fdSortField = 'value'   // 'value' (norm/1000) | 'rawcount'
 
 export function initFeatureDetail() {
   document.getElementById('btn-back-results')?.addEventListener('click', () => {
     showView('results')
+  })
+
+  // Sort selector
+  document.getElementById('fd-sort')?.addEventListener('change', e => {
+    _fdSortField = e.target.value
+    // Update column header
+    const th = document.getElementById('fd-th-value')
+    if (th) th.textContent = _fdSortField === 'rawcount' ? 'Raw count' : 'Valor (norm/1000)'
+    _fdPage = 0
+    renderFileTable()
   })
 
   // File-row click → open text viewer
@@ -222,8 +233,19 @@ async function loadFileTable(feature) {
   document.getElementById('fd-count-label').textContent = ''
   document.getElementById('fd-page-label').textContent  = ''
 
+  // Reset sort to norm/1000 on each new feature
+  _fdSortField = 'value'
+  const sortSel = document.getElementById('fd-sort')
+  if (sortSel) sortSel.value = 'value'
+  const th = document.getElementById('fd-th-value')
+  if (th) th.textContent = 'Valor (norm/1000)'
+
   try {
-    const { files } = await api.analysis.featureFiles(state.kfaC1, state.kfaC2, feature)
+    const { files } = await api.analysis.featureFiles(
+      state.kfaC1, state.kfaC2, feature,
+      state.kfaTagger || undefined,   // tagger1
+      state.kfaTagger || undefined,   // tagger2 (same tagger for both corpora)
+    )
     _fdAllFiles = files
     _fdPage     = 0
     renderFileTable()
@@ -241,7 +263,16 @@ function renderFileTable() {
   const pages   = Math.max(1, Math.ceil(total / perPage))
   _fdPage       = Math.min(_fdPage, pages - 1)
 
-  const slice = _fdAllFiles.slice(_fdPage * perPage, (_fdPage + 1) * perPage)
+  // Sort by selected field
+  const sorted = _fdAllFiles.slice().sort((a, b) => {
+    if (_fdSortField === 'rawcount') {
+      const ra = a.rawcount ?? -1
+      const rb = b.rawcount ?? -1
+      return rb - ra
+    }
+    return b.value - a.value
+  })
+  const slice = sorted.slice(_fdPage * perPage, (_fdPage + 1) * perPage)
 
   // Count label
   document.getElementById('fd-count-label').textContent =
@@ -263,11 +294,14 @@ function renderFileTable() {
   }
 
   tbody.innerHTML = slice.map(f => {
-    const cls = f.corpus === state.kfaC1 ? 'fd-corpus1' : 'fd-corpus2'
+    const cls       = f.corpus === state.kfaC1 ? 'fd-corpus1' : 'fd-corpus2'
+    const dispVal   = _fdSortField === 'rawcount'
+      ? (f.rawcount != null ? f.rawcount : '—')
+      : f.value.toFixed(3)
     return `<tr style="cursor:pointer">
       <td style="font-size:.8rem">${f.filename}</td>
       <td class="${cls}">${f.corpus}</td>
-      <td>${f.value.toFixed(3)}</td>
+      <td>${dispVal}</td>
     </tr>`
   }).join('')
 }

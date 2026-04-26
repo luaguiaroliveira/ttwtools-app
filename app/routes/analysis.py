@@ -19,7 +19,7 @@ router = APIRouter()
 class KFARequest(BaseModel):
     corpus1_name: str
     corpus2_name: str
-    min_effect_size: float = 0.2
+    min_effect_size: float = 0.0   # ignorado: análise sempre salva todos os d
     join: str = "union"
     save_to_project: bool = True
     tagger1: str | None = None
@@ -80,9 +80,12 @@ def run_kfa(req: KFARequest):
         results_df = ttwtools.kfa(
             corpus1_path=str(p1),
             corpus2_path=str(p2),
-            min_effect_size=req.min_effect_size,
+            min_effect_size=0.0,   # sempre salva todos os d
             join=req.join,
         )
+
+    # Determine the tagger_type to store with the KFA
+    kfa_tagger = req.tagger1 if req.tagger1 == req.tagger2 else f"{req.tagger1}:{req.tagger2}"
 
     if req.save_to_project:
         with TTWAProject.open(app_state.current_project_path) as proj:
@@ -90,13 +93,15 @@ def run_kfa(req: KFARequest):
                 req.corpus1_name,
                 req.corpus2_name,
                 results_df,
-                min_effect=req.min_effect_size,
+                min_effect=0.0,    # sempre salva todos os d
                 join_method=req.join,
+                tagger_type=kfa_tagger,
             )
 
     return {
         "corpus1": req.corpus1_name,
         "corpus2": req.corpus2_name,
+        "tagger": kfa_tagger,
         "n_features": len(results_df),
         "results": results_df.to_dict(orient="records"),
     }
@@ -116,15 +121,17 @@ def list_kfa_results():
 def get_kfa_result(
     corpus1: str,
     corpus2: str,
-    min_effect: float = 0.2,
+    min_effect: float = 0.0,
     join: str = "union",
+    tagger: str | None = None,
 ):
-    """Retorna uma KFA já armazenada."""
+    """Retorna uma KFA já armazenada. Carrega sempre com min_effect=0 e filtra em Python."""
     _require_project()
     from ttwtools.project import TTWAProject
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        df = proj.load_kfa_result(corpus1, corpus2, min_effect=min_effect, join_method=join)
+        # KFAs são sempre salvas com min_effect=0.0 (todos os d)
+        df = proj.load_kfa_result(corpus1, corpus2, min_effect=0.0, join_method=join, tagger_type=tagger)
 
     if df is None:
         raise HTTPException(status_code=404, detail="KFA não encontrada. Execute /api/analysis/kfa primeiro.")
@@ -132,6 +139,7 @@ def get_kfa_result(
     return {
         "corpus1": corpus1,
         "corpus2": corpus2,
+        "tagger": tagger,
         "n_features": len(df),
         "results": df.to_dict(orient="records"),
     }
@@ -218,15 +226,38 @@ def get_feature_files(corpus1: str, corpus2: str, feature: str, tagger1: str | N
         f = float(v)
         return None if (math.isnan(f) or math.isinf(f)) else round(f, 3)
 
+    # Also load rawcount tables for optional sorting
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        rc1 = proj.load_feature_table(corpus1, "rawcount", tagger_type=tagger1)
+        rc2 = proj.load_feature_table(corpus2, "rawcount", tagger_type=tagger2)
+
+    def _rawcount_map(df_rc, file_col):
+        """Build filename → rawcount dict for the feature."""
+        if df_rc is None or feature not in df_rc.columns:
+            return {}
+        result = {}
+        for _, row in df_rc.iterrows():
+            v = _val(row[feature])
+            if v is not None:
+                result[str(row[file_col])] = int(v)
+        return result
+
+    rc_map1 = _rawcount_map(rc1, file_col1)
+    rc_map2 = _rawcount_map(rc2, file_col2)
+
     rows = []
     for _, row in df1.iterrows():
         v = _val(row[feature] if feature in df1.columns else float('nan'))
         if v is not None and v > 0:
-            rows.append({"filename": str(row[file_col1]), "corpus": corpus1, "value": v})
+            fname = str(row[file_col1])
+            rows.append({"filename": fname, "corpus": corpus1, "value": v,
+                         "rawcount": rc_map1.get(fname)})
     for _, row in df2.iterrows():
         v = _val(row[feature] if feature in df2.columns else float('nan'))
         if v is not None and v > 0:
-            rows.append({"filename": str(row[file_col2]), "corpus": corpus2, "value": v})
+            fname = str(row[file_col2])
+            rows.append({"filename": fname, "corpus": corpus2, "value": v,
+                         "rawcount": rc_map2.get(fname)})
 
     rows.sort(key=lambda r: r["value"], reverse=True)
     return {"feature": feature, "corpus1": corpus1, "corpus2": corpus2, "files": rows}

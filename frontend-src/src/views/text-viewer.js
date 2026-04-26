@@ -562,7 +562,7 @@ function _hexFromColor(color) {
 
 function _getType(tagName) {
   if (!_tagTypes[tagName]) {
-    _tagTypes[tagName] = ANN_TYPES[Math.floor(Math.random() * ANN_TYPES.length)][0]
+    _tagTypes[tagName] = 'highlight'   // padrão sempre highlight
   }
   return _tagTypes[tagName]
 }
