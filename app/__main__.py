@@ -16,7 +16,43 @@ import threading
 from pathlib import Path
 
 
+def _prewarm_torch() -> None:
+    """Pre-import torch and torch.distributed on the main thread.
+
+    When frozen (PyInstaller), importing torch.distributed from a secondary
+    thread triggers a pybind11 duplicate-type-registration abort because
+    torch._C is already loaded on the main thread.  Forcing the import here,
+    on the main thread, avoids the race condition entirely.
+
+    IMPORTANT: torch.distributed.distributed_c10d imports unittest at the
+    module level.  If unittest is excluded from the frozen bundle, the import
+    fails after pybind11 has already registered the C++ types (GradBucket etc.)
+    in libtorch_python.dylib.  Python then removes the module from sys.modules.
+    When a background thread later re-imports torch.distributed, pybind11 tries
+    to register the same types again and calls abort().  The spec must NOT
+    exclude unittest; this function pins the C extension in sys.modules as an
+    additional safety net.
+    """
+    import sys as _sys
+    try:
+        import torch  # noqa: F401
+        import torch.distributed  # noqa: F401
+    except Exception as _e:
+        # Log but continue — the pinning step below still helps.
+        print(f"[prewarm] torch.distributed import warning: {_e}", flush=True)
+    # Pin torch._C._distributed_c10d so it is never removed from sys.modules
+    # and its C-level init (c10d_init / pybind11 type registration) never runs
+    # a second time, even if torch.distributed is evicted from sys.modules.
+    _c10d = _sys.modules.get('torch._C._distributed_c10d')
+    if _c10d is not None:
+        # Re-set unconditionally to prevent any cleanup code from removing it.
+        _sys.modules['torch._C._distributed_c10d'] = _c10d
+    else:
+        print("[prewarm] WARNING: torch._C._distributed_c10d not in sys.modules after prewarm", flush=True)
+
+
 def main() -> None:
+    _prewarm_torch()
     parser = argparse.ArgumentParser(prog="ttwtools-app")
     parser.add_argument(
         "--mode",

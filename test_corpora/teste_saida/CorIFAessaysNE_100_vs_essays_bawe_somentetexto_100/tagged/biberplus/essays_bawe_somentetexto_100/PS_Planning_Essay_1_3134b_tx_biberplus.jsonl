@@ -1,0 +1,1115 @@
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Planning_Essay_1_3134b_tx.txt"}
+{"start_char": 0, "end_char": 12, "word": "Introduction", "xpos": "", "tags": ["NOMZ", "CAP"]}
+{"start_char": 13, "end_char": 17, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 18, "end_char": 23, "word": "essay", "xpos": "", "tags": ["NN"]}
+{"start_char": 24, "end_char": 28, "word": "aims", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 29, "end_char": 31, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 32, "end_char": 40, "word": "identify", "xpos": "", "tags": ["INF"]}
+{"start_char": 41, "end_char": 44, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 45, "end_char": 50, "word": "roles", "xpos": "", "tags": ["NN"]}
+{"start_char": 51, "end_char": 54, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 55, "end_char": 67, "word": "interactions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 68, "end_char": 70, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 71, "end_char": 80, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 81, "end_char": 87, "word": "actors", "xpos": "", "tags": ["NN"]}
+{"start_char": 88, "end_char": 90, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 91, "end_char": 94, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 95, "end_char": 106, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 107, "end_char": 109, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 110, "end_char": 113, "word": "two", "xpos": "", "tags": ["NUM"]}
+{"start_char": 114, "end_char": 123, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 124, "end_char": 129, "word": "urban", "xpos": "", "tags": ["JJ"]}
+{"start_char": 130, "end_char": 135, "word": "areas", "xpos": "", "tags": ["NN"]}
+{"start_char": 137, "end_char": 140, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 141, "end_char": 149, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 150, "end_char": 154, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 155, "end_char": 161, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 162, "end_char": 164, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 165, "end_char": 171, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 173, "end_char": 179, "word": "Oxford", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 180, "end_char": 183, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 184, "end_char": 187, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 188, "end_char": 193, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 194, "end_char": 200, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 201, "end_char": 203, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 204, "end_char": 213, "word": "Newcastle", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 215, "end_char": 218, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 219, "end_char": 227, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 228, "end_char": 232, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 233, "end_char": 239, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 240, "end_char": 242, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 243, "end_char": 244, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 245, "end_char": 252, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 253, "end_char": 264, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 265, "end_char": 267, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 268, "end_char": 274, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 276, "end_char": 279, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 280, "end_char": 284, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 285, "end_char": 294, "word": "developed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 295, "end_char": 302, "word": "rapidly", "xpos": "", "tags": ["RB"]}
+{"start_char": 303, "end_char": 305, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 306, "end_char": 309, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 310, "end_char": 312, "word": "20", "xpos": "", "tags": ["NUM"]}
+{"start_char": 312, "end_char": 314, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 315, "end_char": 318, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 319, "end_char": 321, "word": "30", "xpos": "", "tags": ["NUM"]}
+{"start_char": 321, "end_char": 323, "word": "'s", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 324, "end_char": 328, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 329, "end_char": 332, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 333, "end_char": 340, "word": "arrival", "xpos": "", "tags": ["NN"]}
+{"start_char": 341, "end_char": 343, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 344, "end_char": 347, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 348, "end_char": 354, "word": "Morris", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 355, "end_char": 361, "word": "Motors", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 362, "end_char": 365, "word": "car", "xpos": "", "tags": ["NN"]}
+{"start_char": 366, "end_char": 371, "word": "works", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 373, "end_char": 376, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 377, "end_char": 382, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 383, "end_char": 389, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 390, "end_char": 392, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 393, "end_char": 402, "word": "Newcastle", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 403, "end_char": 405, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 406, "end_char": 407, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 408, "end_char": 415, "word": "planned", "xpos": "", "tags": []}
+{"start_char": 416, "end_char": 422, "word": "social", "xpos": "", "tags": ["JJ"]}
+{"start_char": 423, "end_char": 430, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 431, "end_char": 442, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 443, "end_char": 448, "word": "built", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 449, "end_char": 451, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 452, "end_char": 455, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 456, "end_char": 458, "word": "70", "xpos": "", "tags": ["NUM"]}
+{"start_char": 458, "end_char": 460, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 461, "end_char": 463, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 464, "end_char": 468, "word": "part", "xpos": "", "tags": ["NN"]}
+{"start_char": 469, "end_char": 471, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 472, "end_char": 473, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 474, "end_char": 478, "word": "slum", "xpos": "", "tags": ["NN"]}
+{"start_char": 479, "end_char": 488, "word": "clearance", "xpos": "", "tags": ["NN"]}
+{"start_char": 489, "end_char": 496, "word": "project", "xpos": "", "tags": ["NN"]}
+{"start_char": 498, "end_char": 502, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 503, "end_char": 508, "word": "essay", "xpos": "", "tags": ["NN"]}
+{"start_char": 509, "end_char": 513, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 514, "end_char": 521, "word": "examine", "xpos": "", "tags": ["INF"]}
+{"start_char": 522, "end_char": 526, "word": "each", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 527, "end_char": 534, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 535, "end_char": 537, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 538, "end_char": 542, "word": "turn", "xpos": "", "tags": ["NN"]}
+{"start_char": 543, "end_char": 546, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 547, "end_char": 551, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 552, "end_char": 556, "word": "draw", "xpos": "", "tags": ["INF"]}
+{"start_char": 557, "end_char": 568, "word": "conclusions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 569, "end_char": 574, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 575, "end_char": 578, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 579, "end_char": 586, "word": "varying", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 587, "end_char": 597, "word": "importance", "xpos": "", "tags": ["NN"]}
+{"start_char": 598, "end_char": 600, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 601, "end_char": 610, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 611, "end_char": 617, "word": "actors", "xpos": "", "tags": ["NN"]}
+{"start_char": 618, "end_char": 620, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 621, "end_char": 625, "word": "each", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 626, "end_char": 630, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 632, "end_char": 638, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 640, "end_char": 644, "word": "East", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 645, "end_char": 651, "word": "Oxford", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 652, "end_char": 660, "word": "Boundary", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 661, "end_char": 663, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 664, "end_char": 672, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 673, "end_char": 677, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 678, "end_char": 684, "word": "Estate", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 685, "end_char": 688, "word": "Map", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 689, "end_char": 691, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 692, "end_char": 698, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 700, "end_char": 708, "word": "Ordnance", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 709, "end_char": 715, "word": "survey", "xpos": "", "tags": ["NN"]}
+{"start_char": 717, "end_char": 721, "word": "2003", "xpos": "", "tags": ["NUM"]}
+{"start_char": 723, "end_char": 725, "word": "Up", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 726, "end_char": 731, "word": "until", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 732, "end_char": 735, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 736, "end_char": 741, "word": "1920s", "xpos": "", "tags": ["NN"]}
+{"start_char": 742, "end_char": 748, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 749, "end_char": 752, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 753, "end_char": 754, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 755, "end_char": 768, "word": "predominantly", "xpos": "", "tags": ["RB"]}
+{"start_char": 769, "end_char": 774, "word": "rural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 775, "end_char": 779, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 780, "end_char": 784, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 785, "end_char": 789, "word": "only", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 790, "end_char": 791, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 792, "end_char": 795, "word": "few", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 796, "end_char": 801, "word": "small", "xpos": "", "tags": ["JJ"]}
+{"start_char": 802, "end_char": 811, "word": "clustered", "xpos": "", "tags": []}
+{"start_char": 812, "end_char": 823, "word": "settlements", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 825, "end_char": 831, "word": "Morris", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 832, "end_char": 837, "word": "motor", "xpos": "", "tags": ["NN"]}
+{"start_char": 838, "end_char": 841, "word": "car", "xpos": "", "tags": ["NN"]}
+{"start_char": 842, "end_char": 847, "word": "works", "xpos": "", "tags": ["NN"]}
+{"start_char": 848, "end_char": 851, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 852, "end_char": 863, "word": "established", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 864, "end_char": 866, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 867, "end_char": 870, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 871, "end_char": 875, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 876, "end_char": 878, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 879, "end_char": 883, "word": "1913", "xpos": "", "tags": ["NUM"]}
+{"start_char": 884, "end_char": 887, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 888, "end_char": 891, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 892, "end_char": 899, "word": "Pressed", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 900, "end_char": 905, "word": "Steel", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 906, "end_char": 909, "word": "Co.", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 910, "end_char": 918, "word": "followed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 920, "end_char": 925, "word": "There", "xpos": "", "tags": ["EX", "CAP"]}
+{"start_char": 926, "end_char": 929, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 930, "end_char": 931, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 932, "end_char": 938, "word": "demand", "xpos": "", "tags": ["SUAV", "NN"]}
+{"start_char": 939, "end_char": 942, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 943, "end_char": 950, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 951, "end_char": 956, "word": "close", "xpos": "", "tags": ["RB"]}
+{"start_char": 957, "end_char": 959, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 960, "end_char": 963, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 964, "end_char": 973, "word": "factories", "xpos": "", "tags": ["NN"]}
+{"start_char": 974, "end_char": 977, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 978, "end_char": 981, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 982, "end_char": 989, "word": "workers", "xpos": "", "tags": ["NN"]}
+{"start_char": 991, "end_char": 995, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 996, "end_char": 998, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 999, "end_char": 1003, "word": "whom", "xpos": "", "tags": ["PIRE", "WH"]}
+{"start_char": 1004, "end_char": 1007, "word": "had", "xpos": "", "tags": ["VBD", "PEAS"]}
+{"start_char": 1008, "end_char": 1016, "word": "migrated", "xpos": "", "tags": []}
+{"start_char": 1017, "end_char": 1019, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1020, "end_char": 1023, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1024, "end_char": 1028, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 1030, "end_char": 1033, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1034, "end_char": 1038, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 1039, "end_char": 1048, "word": "developed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1049, "end_char": 1056, "word": "rapidly", "xpos": "", "tags": ["RB"]}
+{"start_char": 1057, "end_char": 1061, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1062, "end_char": 1067, "word": "rural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1068, "end_char": 1070, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1071, "end_char": 1076, "word": "urban", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1078, "end_char": 1081, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1082, "end_char": 1089, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 1090, "end_char": 1095, "word": "built", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1096, "end_char": 1101, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 1102, "end_char": 1109, "word": "remains", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1110, "end_char": 1112, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1113, "end_char": 1119, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1120, "end_char": 1125, "word": "today", "xpos": "", "tags": ["TIME", "NN"]}
+{"start_char": 1127, "end_char": 1135, "word": "although", "xpos": "", "tags": ["CONC", "PIN", "SCONJ", "PREP"]}
+{"start_char": 1136, "end_char": 1140, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 1141, "end_char": 1143, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1144, "end_char": 1147, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1148, "end_char": 1154, "word": "houses", "xpos": "", "tags": ["NN"]}
+{"start_char": 1155, "end_char": 1159, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 1160, "end_char": 1164, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 1165, "end_char": 1173, "word": "extended", "xpos": "", "tags": []}
+{"start_char": 1174, "end_char": 1177, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 1178, "end_char": 1183, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 1184, "end_char": 1187, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 1188, "end_char": 1193, "word": "areas", "xpos": "", "tags": ["NN"]}
+{"start_char": 1194, "end_char": 1196, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1197, "end_char": 1203, "word": "infill", "xpos": "", "tags": ["NN"]}
+{"start_char": 1205, "end_char": 1212, "word": "Private", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 1213, "end_char": 1226, "word": "housebuilders", "xpos": "", "tags": ["NN"]}
+{"start_char": 1227, "end_char": 1233, "word": "bought", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1234, "end_char": 1239, "word": "areas", "xpos": "", "tags": ["NN"]}
+{"start_char": 1240, "end_char": 1242, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1243, "end_char": 1247, "word": "land", "xpos": "", "tags": ["NN"]}
+{"start_char": 1248, "end_char": 1251, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1252, "end_char": 1257, "word": "built", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1258, "end_char": 1263, "word": "large", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1264, "end_char": 1270, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 1271, "end_char": 1273, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1274, "end_char": 1280, "word": "houses", "xpos": "", "tags": ["NN"]}
+{"start_char": 1281, "end_char": 1294, "word": "speculatively", "xpos": "", "tags": ["RB"]}
+{"start_char": 1296, "end_char": 1304, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1305, "end_char": 1309, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1310, "end_char": 1313, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "AUXB"]}
+{"start_char": 1314, "end_char": 1319, "word": "built", "xpos": "", "tags": []}
+{"start_char": 1320, "end_char": 1322, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1323, "end_char": 1327, "word": "1934", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1328, "end_char": 1330, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1331, "end_char": 1333, "word": "N.", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1334, "end_char": 1338, "word": "Moss", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1339, "end_char": 1342, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1343, "end_char": 1346, "word": "Son", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1348, "end_char": 1351, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1352, "end_char": 1358, "word": "houses", "xpos": "", "tags": ["NN"]}
+{"start_char": 1359, "end_char": 1363, "word": "were", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 1364, "end_char": 1367, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 1368, "end_char": 1373, "word": "built", "xpos": "", "tags": []}
+{"start_char": 1374, "end_char": 1376, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1377, "end_char": 1378, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1379, "end_char": 1387, "word": "standard", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1388, "end_char": 1394, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 1395, "end_char": 1398, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1399, "end_char": 1409, "word": "architects", "xpos": "", "tags": ["NN"]}
+{"start_char": 1410, "end_char": 1414, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "SPAU", "AUXB"]}
+{"start_char": 1415, "end_char": 1418, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1419, "end_char": 1423, "word": "used", "xpos": "", "tags": []}
+{"start_char": 1425, "end_char": 1429, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 1430, "end_char": 1434, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1435, "end_char": 1444, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 1445, "end_char": 1448, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1449, "end_char": 1455, "word": "profit", "xpos": "", "tags": ["NN"]}
+{"start_char": 1456, "end_char": 1459, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1460, "end_char": 1464, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 1465, "end_char": 1471, "word": "either", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1472, "end_char": 1476, "word": "sold", "xpos": "", "tags": []}
+{"start_char": 1477, "end_char": 1479, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1480, "end_char": 1483, "word": "let", "xpos": "", "tags": ["INF"]}
+{"start_char": 1485, "end_char": 1492, "word": "Example", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1493, "end_char": 1495, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1496, "end_char": 1501, "word": "style", "xpos": "", "tags": ["NN"]}
+{"start_char": 1502, "end_char": 1504, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1505, "end_char": 1511, "word": "houses", "xpos": "", "tags": ["NN"]}
+{"start_char": 1513, "end_char": 1519, "word": "Outram", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1520, "end_char": 1524, "word": "Road", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1526, "end_char": 1532, "word": "Cowley", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1533, "end_char": 1539, "word": "Estate", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1540, "end_char": 1546, "word": "agents", "xpos": "", "tags": ["NN"]}
+{"start_char": 1547, "end_char": 1551, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1552, "end_char": 1556, "word": "used", "xpos": "", "tags": []}
+{"start_char": 1557, "end_char": 1559, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1560, "end_char": 1564, "word": "sell", "xpos": "", "tags": ["INF"]}
+{"start_char": 1565, "end_char": 1575, "word": "properties", "xpos": "", "tags": ["NN"]}
+{"start_char": 1576, "end_char": 1579, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 1580, "end_char": 1584, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1585, "end_char": 1589, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "SPAU", "AUXB"]}
+{"start_char": 1590, "end_char": 1594, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 1595, "end_char": 1605, "word": "advertised", "xpos": "", "tags": []}
+{"start_char": 1606, "end_char": 1608, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1609, "end_char": 1615, "word": "papers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1616, "end_char": 1619, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1620, "end_char": 1629, "word": "magazines", "xpos": "", "tags": ["NN"]}
+{"start_char": 1631, "end_char": 1638, "word": "Example", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1639, "end_char": 1641, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1642, "end_char": 1644, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1645, "end_char": 1651, "word": "advert", "xpos": "", "tags": ["NN"]}
+{"start_char": 1652, "end_char": 1658, "word": "placed", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1659, "end_char": 1661, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1662, "end_char": 1665, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1666, "end_char": 1670, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 1672, "end_char": 1678, "word": "Oxford", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1679, "end_char": 1686, "word": "Monthly", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1688, "end_char": 1692, "word": "1934", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1694, "end_char": 1699, "word": "There", "xpos": "", "tags": ["EX", "CAP"]}
+{"start_char": 1700, "end_char": 1703, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 1704, "end_char": 1706, "word": "no", "xpos": "", "tags": ["SYNE", "DET"]}
+{"start_char": 1707, "end_char": 1713, "word": "formal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1714, "end_char": 1722, "word": "planning", "xpos": "", "tags": ["NN"]}
+{"start_char": 1723, "end_char": 1729, "word": "system", "xpos": "", "tags": ["NN"]}
+{"start_char": 1730, "end_char": 1732, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1733, "end_char": 1737, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 1738, "end_char": 1742, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 1743, "end_char": 1751, "word": "although", "xpos": "", "tags": ["CONC", "PIN", "SCONJ", "PREP"]}
+{"start_char": 1752, "end_char": 1755, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1756, "end_char": 1763, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 1764, "end_char": 1767, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1768, "end_char": 1770, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1771, "end_char": 1777, "word": "adhere", "xpos": "", "tags": ["INF"]}
+{"start_char": 1778, "end_char": 1780, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1781, "end_char": 1788, "word": "certain", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1789, "end_char": 1795, "word": "bylaws", "xpos": "", "tags": ["NN"]}
+{"start_char": 1797, "end_char": 1800, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1801, "end_char": 1808, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 1809, "end_char": 1812, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1813, "end_char": 1814, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1815, "end_char": 1819, "word": "role", "xpos": "", "tags": ["NN"]}
+{"start_char": 1820, "end_char": 1822, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1823, "end_char": 1831, "word": "checking", "xpos": "", "tags": ["PRIV", "PGAS"]}
+{"start_char": 1832, "end_char": 1835, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1836, "end_char": 1845, "word": "approving", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 1846, "end_char": 1851, "word": "plans", "xpos": "", "tags": ["NN"]}
+{"start_char": 1852, "end_char": 1858, "word": "before", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1859, "end_char": 1870, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1872, "end_char": 1875, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1876, "end_char": 1883, "word": "Housing", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1884, "end_char": 1896, "word": "Subcommittee", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1899, "end_char": 1906, "word": "Tenants", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1907, "end_char": 1910, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1911, "end_char": 1917, "word": "little", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1918, "end_char": 1923, "word": "power", "xpos": "", "tags": ["NN"]}
+{"start_char": 1924, "end_char": 1927, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1928, "end_char": 1937, "word": "conflicts", "xpos": "", "tags": ["NN"]}
+{"start_char": 1938, "end_char": 1943, "word": "arose", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1944, "end_char": 1946, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1947, "end_char": 1951, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1952, "end_char": 1958, "word": "united", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1959, "end_char": 1961, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1962, "end_char": 1969, "word": "protest", "xpos": "", "tags": ["PUBV", "INF"]}
+{"start_char": 1970, "end_char": 1972, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1973, "end_char": 1976, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1977, "end_char": 1981, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1982, "end_char": 1987, "word": "rents", "xpos": "", "tags": ["NN"]}
+{"start_char": 1988, "end_char": 1991, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1992, "end_char": 1996, "word": "poor", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1997, "end_char": 2003, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 2004, "end_char": 2011, "word": "quality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2012, "end_char": 2014, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2015, "end_char": 2018, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2019, "end_char": 2025, "word": "houses", "xpos": "", "tags": ["NN"]}
+{"start_char": 2027, "end_char": 2031, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 2032, "end_char": 2036, "word": "felt", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 2037, "end_char": 2041, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 2042, "end_char": 2046, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2047, "end_char": 2050, "word": "had", "xpos": "", "tags": ["VBD", "PEAS"]}
+{"start_char": 2051, "end_char": 2055, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 2056, "end_char": 2061, "word": "built", "xpos": "", "tags": []}
+{"start_char": 2062, "end_char": 2064, "word": "as", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 2065, "end_char": 2072, "word": "cheaply", "xpos": "", "tags": ["RB"]}
+{"start_char": 2073, "end_char": 2075, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2076, "end_char": 2084, "word": "possible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2085, "end_char": 2088, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2089, "end_char": 2093, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 2095, "end_char": 2097, "word": "so", "xpos": "", "tags": ["RB"]}
+{"start_char": 2098, "end_char": 2103, "word": "badly", "xpos": "", "tags": ["RB"]}
+{"start_char": 2104, "end_char": 2109, "word": "built", "xpos": "", "tags": []}
+{"start_char": 2110, "end_char": 2114, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2115, "end_char": 2118, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 2118, "end_char": 2121, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2122, "end_char": 2124, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 2125, "end_char": 2129, "word": "said", "xpos": "", "tags": ["PUBV"]}
+{"start_char": 2130, "end_char": 2134, "word": "even", "xpos": "", "tags": ["RB"]}
+{"start_char": 2135, "end_char": 2137, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2138, "end_char": 2145, "word": "conform", "xpos": "", "tags": ["INF"]}
+{"start_char": 2146, "end_char": 2150, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2151, "end_char": 2154, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2155, "end_char": 2161, "word": "bylaws", "xpos": "", "tags": ["NN"]}
+{"start_char": 2165, "end_char": 2173, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2174, "end_char": 2178, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2179, "end_char": 2186, "word": "Tenants", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2187, "end_char": 2196, "word": "Committee", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2198, "end_char": 2201, "word": "n.d", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2205, "end_char": 2209, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 2210, "end_char": 2214, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 2215, "end_char": 2219, "word": "felt", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 2220, "end_char": 2224, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 2225, "end_char": 2228, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2229, "end_char": 2236, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 2237, "end_char": 2240, "word": "had", "xpos": "", "tags": ["VBD", "PEAS"]}
+{"start_char": 2241, "end_char": 2245, "word": "done", "xpos": "", "tags": ["PROD"]}
+{"start_char": 2246, "end_char": 2252, "word": "little", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2253, "end_char": 2255, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2256, "end_char": 2263, "word": "protect", "xpos": "", "tags": ["INF"]}
+{"start_char": 2264, "end_char": 2269, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2270, "end_char": 2279, "word": "interests", "xpos": "", "tags": ["NN"]}
+{"start_char": 2281, "end_char": 2291, "word": "especially", "xpos": "", "tags": ["RB"]}
+{"start_char": 2292, "end_char": 2294, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2295, "end_char": 2298, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2299, "end_char": 2306, "word": "builder", "xpos": "", "tags": ["NN"]}
+{"start_char": 2307, "end_char": 2309, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2310, "end_char": 2318, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2319, "end_char": 2323, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2325, "end_char": 2329, "word": "F.E.", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2330, "end_char": 2334, "word": "Moss", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2336, "end_char": 2339, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 2340, "end_char": 2344, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 2345, "end_char": 2346, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2347, "end_char": 2351, "word": "city", "xpos": "", "tags": ["NN"]}
+{"start_char": 2352, "end_char": 2362, "word": "councillor", "xpos": "", "tags": ["NN"]}
+{"start_char": 2364, "end_char": 2374, "word": "Developers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2375, "end_char": 2379, "word": "seem", "xpos": "", "tags": ["VPRT", "SMP"]}
+{"start_char": 2380, "end_char": 2382, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2383, "end_char": 2387, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 2388, "end_char": 2391, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2392, "end_char": 2396, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 2397, "end_char": 2402, "word": "power", "xpos": "", "tags": ["NN"]}
+{"start_char": 2403, "end_char": 2406, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2407, "end_char": 2411, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 2412, "end_char": 2419, "word": "setting", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 2420, "end_char": 2423, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2424, "end_char": 2430, "word": "agenda", "xpos": "", "tags": ["NN"]}
+{"start_char": 2432, "end_char": 2437, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2438, "end_char": 2444, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 2446, "end_char": 2455, "word": "Newcastle", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2456, "end_char": 2464, "word": "Location", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2465, "end_char": 2467, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2468, "end_char": 2473, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2474, "end_char": 2480, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 2482, "end_char": 2490, "word": "Multimap", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2492, "end_char": 2496, "word": "2005", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2498, "end_char": 2502, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 2503, "end_char": 2507, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 2508, "end_char": 2510, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2511, "end_char": 2520, "word": "Newcastle", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2521, "end_char": 2524, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 2525, "end_char": 2535, "word": "originally", "xpos": "", "tags": ["RB", "TIME"]}
+{"start_char": 2536, "end_char": 2537, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2538, "end_char": 2545, "word": "working", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2546, "end_char": 2551, "word": "class", "xpos": "", "tags": ["NN"]}
+{"start_char": 2552, "end_char": 2556, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 2557, "end_char": 2559, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2560, "end_char": 2564, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2565, "end_char": 2572, "word": "density", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2573, "end_char": 2577, "word": "back", "xpos": "", "tags": ["RB"]}
+{"start_char": 2578, "end_char": 2580, "word": "to", "xpos": "", "tags": ["PIN", "STPR", "PREP"]}
+{"start_char": 2581, "end_char": 2585, "word": "back", "xpos": "", "tags": ["RB"]}
+{"start_char": 2586, "end_char": 2595, "word": "Victorian", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 2596, "end_char": 2604, "word": "terraces", "xpos": "", "tags": ["NN"]}
+{"start_char": 2606, "end_char": 2610, "word": "Many", "xpos": "", "tags": ["QUAN", "JJ", "CAP"]}
+{"start_char": 2611, "end_char": 2613, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2614, "end_char": 2619, "word": "these", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 2620, "end_char": 2624, "word": "were", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 2625, "end_char": 2627, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2628, "end_char": 2632, "word": "poor", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2633, "end_char": 2642, "word": "condition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2643, "end_char": 2646, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2647, "end_char": 2653, "word": "lacked", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2654, "end_char": 2657, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2658, "end_char": 2660, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2661, "end_char": 2665, "word": "more", "xpos": "", "tags": ["JJ", "EMPH", "CMADJ"]}
+{"start_char": 2666, "end_char": 2671, "word": "basic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2672, "end_char": 2681, "word": "household", "xpos": "", "tags": ["NN"]}
+{"start_char": 2682, "end_char": 2691, "word": "amenities", "xpos": "", "tags": ["NN"]}
+{"start_char": 2693, "end_char": 2695, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 2696, "end_char": 2699, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2700, "end_char": 2705, "word": "1960s", "xpos": "", "tags": ["NN"]}
+{"start_char": 2706, "end_char": 2715, "word": "Newcastle", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2716, "end_char": 2720, "word": "City", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2721, "end_char": 2728, "word": "Council", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2729, "end_char": 2733, "word": "took", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2734, "end_char": 2737, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2738, "end_char": 2746, "word": "decision", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2747, "end_char": 2749, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2750, "end_char": 2759, "word": "redevelop", "xpos": "", "tags": ["INF"]}
+{"start_char": 2760, "end_char": 2762, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2764, "end_char": 2766, "word": "80", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2768, "end_char": 2770, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2771, "end_char": 2774, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2775, "end_char": 2784, "word": "residents", "xpos": "", "tags": ["NN"]}
+{"start_char": 2785, "end_char": 2791, "word": "wanted", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2792, "end_char": 2794, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2795, "end_char": 2799, "word": "stay", "xpos": "", "tags": ["INF"]}
+{"start_char": 2800, "end_char": 2802, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2803, "end_char": 2808, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2809, "end_char": 2812, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 2813, "end_char": 2815, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2816, "end_char": 2820, "word": "1968", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2821, "end_char": 2824, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2825, "end_char": 2838, "word": "Conservatives", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2839, "end_char": 2842, "word": "won", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2843, "end_char": 2846, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2847, "end_char": 2849, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2850, "end_char": 2853, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2854, "end_char": 2861, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 2862, "end_char": 2867, "word": "seats", "xpos": "", "tags": ["NN"]}
+{"start_char": 2868, "end_char": 2873, "word": "after", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2874, "end_char": 2885, "word": "campaigning", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 2886, "end_char": 2888, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2889, "end_char": 2892, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2893, "end_char": 2899, "word": "slogan", "xpos": "", "tags": ["NN"]}
+{"start_char": 2901, "end_char": 2906, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2907, "end_char": 2910, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2911, "end_char": 2916, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2917, "end_char": 2923, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 2926, "end_char": 2929, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 2930, "end_char": 2937, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 2938, "end_char": 2945, "word": "decided", "xpos": "", "tags": ["VBD", "PRIV", "SUAV"]}
+{"start_char": 2946, "end_char": 2948, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2949, "end_char": 2954, "word": "clear", "xpos": "", "tags": ["INF"]}
+{"start_char": 2955, "end_char": 2958, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2959, "end_char": 2964, "word": "slums", "xpos": "", "tags": ["NN"]}
+{"start_char": 2965, "end_char": 2968, "word": "but", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2969, "end_char": 2971, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2972, "end_char": 2975, "word": "try", "xpos": "", "tags": ["INF"]}
+{"start_char": 2976, "end_char": 2978, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2979, "end_char": 2983, "word": "keep", "xpos": "", "tags": ["INF"]}
+{"start_char": 2984, "end_char": 2987, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2988, "end_char": 2997, "word": "community", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2999, "end_char": 3004, "word": "Ralph", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3005, "end_char": 3012, "word": "Erskine", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3014, "end_char": 3016, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3017, "end_char": 3026, "word": "architect", "xpos": "", "tags": ["NN"]}
+{"start_char": 3028, "end_char": 3031, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "AUXB"]}
+{"start_char": 3032, "end_char": 3041, "word": "appointed", "xpos": "", "tags": []}
+{"start_char": 3042, "end_char": 3044, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3045, "end_char": 3048, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3049, "end_char": 3056, "word": "Housing", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3057, "end_char": 3066, "word": "Committee", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3067, "end_char": 3069, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3070, "end_char": 3073, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3074, "end_char": 3080, "word": "master", "xpos": "", "tags": ["NN"]}
+{"start_char": 3081, "end_char": 3088, "word": "planner", "xpos": "", "tags": ["NN"]}
+{"start_char": 3089, "end_char": 3092, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 3093, "end_char": 3103, "word": "consultant", "xpos": "", "tags": ["NN"]}
+{"start_char": 3104, "end_char": 3107, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3108, "end_char": 3111, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3112, "end_char": 3125, "word": "redevelopment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3127, "end_char": 3130, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3131, "end_char": 3136, "word": "local", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3137, "end_char": 3146, "word": "authority", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3147, "end_char": 3152, "word": "owned", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3153, "end_char": 3156, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3157, "end_char": 3161, "word": "land", "xpos": "", "tags": ["NN"]}
+{"start_char": 3163, "end_char": 3171, "word": "financed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3172, "end_char": 3175, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3176, "end_char": 3187, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3188, "end_char": 3191, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3192, "end_char": 3195, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 3196, "end_char": 3207, "word": "responsible", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 3208, "end_char": 3211, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3212, "end_char": 3221, "word": "approving", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 3222, "end_char": 3225, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3226, "end_char": 3231, "word": "plans", "xpos": "", "tags": ["NN"]}
+{"start_char": 3233, "end_char": 3236, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 3237, "end_char": 3243, "word": "giving", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 3244, "end_char": 3252, "word": "planning", "xpos": "", "tags": ["NN"]}
+{"start_char": 3253, "end_char": 3263, "word": "permission", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3265, "end_char": 3272, "word": "Erskine", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3273, "end_char": 3279, "word": "opened", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3280, "end_char": 3282, "word": "up", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3283, "end_char": 3285, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3286, "end_char": 3292, "word": "office", "xpos": "", "tags": ["NN"]}
+{"start_char": 3293, "end_char": 3295, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3296, "end_char": 3298, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3299, "end_char": 3302, "word": "old", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3303, "end_char": 3307, "word": "shop", "xpos": "", "tags": ["NN"]}
+{"start_char": 3308, "end_char": 3310, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3311, "end_char": 3314, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3315, "end_char": 3321, "word": "middle", "xpos": "", "tags": ["NN"]}
+{"start_char": 3322, "end_char": 3324, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3325, "end_char": 3328, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3329, "end_char": 3342, "word": "redevelopment", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3343, "end_char": 3347, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 3349, "end_char": 3352, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 3353, "end_char": 3358, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 3359, "end_char": 3362, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 3363, "end_char": 3365, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3367, "end_char": 3371, "word": "open", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3372, "end_char": 3377, "word": "house", "xpos": "", "tags": ["NN"]}
+{"start_char": 3379, "end_char": 3385, "word": "policy", "xpos": "", "tags": ["NN"]}
+{"start_char": 3386, "end_char": 3390, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 3391, "end_char": 3401, "word": "encouraged", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3402, "end_char": 3407, "word": "local", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3408, "end_char": 3414, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 3415, "end_char": 3417, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3418, "end_char": 3422, "word": "drop", "xpos": "", "tags": ["INF"]}
+{"start_char": 3423, "end_char": 3425, "word": "in", "xpos": "", "tags": ["RB", "PIN", "CONJ", "PREP"]}
+{"start_char": 3426, "end_char": 3429, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3430, "end_char": 3434, "word": "talk", "xpos": "", "tags": ["INF"]}
+{"start_char": 3435, "end_char": 3437, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3438, "end_char": 3441, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3442, "end_char": 3452, "word": "architects", "xpos": "", "tags": ["NN"]}
+{"start_char": 3453, "end_char": 3456, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3457, "end_char": 3460, "word": "get", "xpos": "", "tags": ["INF"]}
+{"start_char": 3461, "end_char": 3469, "word": "involved", "xpos": "", "tags": []}
+{"start_char": 3470, "end_char": 3474, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3475, "end_char": 3478, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3479, "end_char": 3485, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 3486, "end_char": 3490, "word": "team", "xpos": "", "tags": ["NN"]}
+{"start_char": 3492, "end_char": 3494, "word": "At", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 3495, "end_char": 3498, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3499, "end_char": 3503, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 3504, "end_char": 3509, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 3510, "end_char": 3514, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 3515, "end_char": 3520, "word": "plans", "xpos": "", "tags": ["NN"]}
+{"start_char": 3521, "end_char": 3524, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3525, "end_char": 3526, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3527, "end_char": 3535, "word": "motorway", "xpos": "", "tags": ["NN"]}
+{"start_char": 3536, "end_char": 3542, "word": "bypass", "xpos": "", "tags": ["NN"]}
+{"start_char": 3543, "end_char": 3545, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3546, "end_char": 3549, "word": "run", "xpos": "", "tags": ["INF"]}
+{"start_char": 3550, "end_char": 3557, "word": "through", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3558, "end_char": 3561, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3562, "end_char": 3566, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 3568, "end_char": 3572, "word": "Part", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3573, "end_char": 3575, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3576, "end_char": 3579, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3580, "end_char": 3586, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 3587, "end_char": 3595, "word": "solution", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3596, "end_char": 3598, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3599, "end_char": 3605, "word": "screen", "xpos": "", "tags": ["INF"]}
+{"start_char": 3606, "end_char": 3609, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3610, "end_char": 3614, "word": "rest", "xpos": "", "tags": ["NN"]}
+{"start_char": 3615, "end_char": 3617, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3618, "end_char": 3621, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3622, "end_char": 3626, "word": "site", "xpos": "", "tags": ["NN"]}
+{"start_char": 3627, "end_char": 3631, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3632, "end_char": 3636, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 3637, "end_char": 3640, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 3641, "end_char": 3644, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3645, "end_char": 3650, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3651, "end_char": 3655, "word": "Wall", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3657, "end_char": 3660, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3661, "end_char": 3666, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3667, "end_char": 3671, "word": "Wall", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3673, "end_char": 3678, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3679, "end_char": 3683, "word": "Wall", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3684, "end_char": 3691, "word": "Website", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3693, "end_char": 3697, "word": "2000", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3699, "end_char": 3703, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 3704, "end_char": 3708, "word": "wall", "xpos": "", "tags": ["NN"]}
+{"start_char": 3709, "end_char": 3711, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3712, "end_char": 3713, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3714, "end_char": 3719, "word": "block", "xpos": "", "tags": ["NN"]}
+{"start_char": 3720, "end_char": 3722, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3723, "end_char": 3728, "word": "flats", "xpos": "", "tags": ["NN"]}
+{"start_char": 3729, "end_char": 3740, "word": "maisonettes", "xpos": "", "tags": ["NN"]}
+{"start_char": 3741, "end_char": 3746, "word": "which", "xpos": "", "tags": ["WHSUB", "DET", "WH"]}
+{"start_char": 3747, "end_char": 3752, "word": "winds", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3753, "end_char": 3759, "word": "around", "xpos": "", "tags": ["PIN", "PLACE", "PREP"]}
+{"start_char": 3760, "end_char": 3763, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3764, "end_char": 3769, "word": "north", "xpos": "", "tags": ["PLACE", "NN"]}
+{"start_char": 3770, "end_char": 3772, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3773, "end_char": 3776, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3777, "end_char": 3783, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 3785, "end_char": 3791, "word": "Within", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 3792, "end_char": 3795, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3796, "end_char": 3800, "word": "wall", "xpos": "", "tags": ["NN"]}
+{"start_char": 3802, "end_char": 3805, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3806, "end_char": 3817, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3818, "end_char": 3826, "word": "consists", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3827, "end_char": 3829, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3830, "end_char": 3833, "word": "low", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3834, "end_char": 3838, "word": "rise", "xpos": "", "tags": ["NN"]}
+{"start_char": 3839, "end_char": 3846, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 3848, "end_char": 3858, "word": "comprising", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 3859, "end_char": 3861, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3862, "end_char": 3863, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3864, "end_char": 3871, "word": "mixture", "xpos": "", "tags": ["NN"]}
+{"start_char": 3872, "end_char": 3874, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3875, "end_char": 3883, "word": "terraces", "xpos": "", "tags": ["NN"]}
+{"start_char": 3884, "end_char": 3887, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 3888, "end_char": 3899, "word": "maisonettes", "xpos": "", "tags": ["NN"]}
+{"start_char": 3900, "end_char": 3903, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3904, "end_char": 3905, "word": "2", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3906, "end_char": 3908, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3909, "end_char": 3910, "word": "6", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3911, "end_char": 3917, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 3919, "end_char": 3924, "word": "There", "xpos": "", "tags": ["EX", "CAP"]}
+{"start_char": 3925, "end_char": 3927, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 3928, "end_char": 3929, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3930, "end_char": 3935, "word": "great", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3936, "end_char": 3939, "word": "mix", "xpos": "", "tags": ["NN"]}
+{"start_char": 3940, "end_char": 3942, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3943, "end_char": 3951, "word": "textures", "xpos": "", "tags": ["NN"]}
+{"start_char": 3953, "end_char": 3959, "word": "styles", "xpos": "", "tags": ["NN"]}
+{"start_char": 3961, "end_char": 3967, "word": "scales", "xpos": "", "tags": ["NN"]}
+{"start_char": 3968, "end_char": 3971, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 3972, "end_char": 3978, "word": "colour", "xpos": "", "tags": ["NN"]}
+{"start_char": 3979, "end_char": 3981, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3982, "end_char": 3985, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3986, "end_char": 3993, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 3995, "end_char": 4002, "word": "Example", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 4003, "end_char": 4005, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4006, "end_char": 4009, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4010, "end_char": 4015, "word": "style", "xpos": "", "tags": ["NN"]}
+{"start_char": 4016, "end_char": 4018, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4019, "end_char": 4027, "word": "dwelling", "xpos": "", "tags": ["NN"]}
+{"start_char": 4028, "end_char": 4030, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4031, "end_char": 4034, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4035, "end_char": 4040, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4041, "end_char": 4047, "word": "Estate", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4049, "end_char": 4054, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4055, "end_char": 4059, "word": "Wall", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4060, "end_char": 4067, "word": "Website", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4069, "end_char": 4073, "word": "2000", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4075, "end_char": 4082, "word": "Another", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 4083, "end_char": 4090, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 4091, "end_char": 4093, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4094, "end_char": 4097, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4098, "end_char": 4105, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 4106, "end_char": 4108, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4109, "end_char": 4112, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4113, "end_char": 4118, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4119, "end_char": 4125, "word": "Estate", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4127, "end_char": 4132, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4133, "end_char": 4137, "word": "Wall", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4138, "end_char": 4145, "word": "Website", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4147, "end_char": 4151, "word": "2000", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4153, "end_char": 4158, "word": "Green", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4159, "end_char": 4165, "word": "spaces", "xpos": "", "tags": ["NN"]}
+{"start_char": 4166, "end_char": 4169, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4170, "end_char": 4181, "word": "landscaping", "xpos": "", "tags": ["GER"]}
+{"start_char": 4182, "end_char": 4186, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 4187, "end_char": 4195, "word": "included", "xpos": "", "tags": []}
+{"start_char": 4196, "end_char": 4198, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4199, "end_char": 4202, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4203, "end_char": 4216, "word": "redevelopment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4217, "end_char": 4220, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4221, "end_char": 4229, "word": "communal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4231, "end_char": 4236, "word": "hobby", "xpos": "", "tags": ["NN"]}
+{"start_char": 4237, "end_char": 4242, "word": "rooms", "xpos": "", "tags": ["NN"]}
+{"start_char": 4244, "end_char": 4248, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 4249, "end_char": 4257, "word": "provided", "xpos": "", "tags": []}
+{"start_char": 4258, "end_char": 4261, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4262, "end_char": 4266, "word": "each", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4267, "end_char": 4272, "word": "group", "xpos": "", "tags": ["NN"]}
+{"start_char": 4273, "end_char": 4275, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4276, "end_char": 4285, "word": "residents", "xpos": "", "tags": ["NN"]}
+{"start_char": 4287, "end_char": 4290, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4291, "end_char": 4301, "word": "architects", "xpos": "", "tags": ["NN"]}
+{"start_char": 4302, "end_char": 4305, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 4306, "end_char": 4314, "word": "constant", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4315, "end_char": 4323, "word": "feedback", "xpos": "", "tags": ["NN"]}
+{"start_char": 4324, "end_char": 4328, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4329, "end_char": 4336, "word": "tenants", "xpos": "", "tags": ["NN"]}
+{"start_char": 4337, "end_char": 4340, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4341, "end_char": 4345, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 4346, "end_char": 4353, "word": "changes", "xpos": "", "tags": ["NN"]}
+{"start_char": 4354, "end_char": 4358, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 4359, "end_char": 4363, "word": "made", "xpos": "", "tags": []}
+{"start_char": 4364, "end_char": 4366, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4367, "end_char": 4370, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4371, "end_char": 4377, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 4378, "end_char": 4381, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4382, "end_char": 4390, "word": "building", "xpos": "", "tags": ["NN"]}
+{"start_char": 4391, "end_char": 4400, "word": "standards", "xpos": "", "tags": ["NN"]}
+{"start_char": 4401, "end_char": 4403, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4404, "end_char": 4412, "word": "response", "xpos": "", "tags": ["NN"]}
+{"start_char": 4413, "end_char": 4415, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4416, "end_char": 4419, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4420, "end_char": 4426, "word": "tenant", "xpos": "", "tags": ["NN"]}
+{"start_char": 4426, "end_char": 4428, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 4429, "end_char": 4434, "word": "views", "xpos": "", "tags": ["NN"]}
+{"start_char": 4436, "end_char": 4439, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4440, "end_char": 4446, "word": "scheme", "xpos": "", "tags": ["NN"]}
+{"start_char": 4447, "end_char": 4450, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 4451, "end_char": 4455, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 4456, "end_char": 4464, "word": "heralded", "xpos": "", "tags": []}
+{"start_char": 4465, "end_char": 4467, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4468, "end_char": 4471, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4472, "end_char": 4477, "word": "first", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4478, "end_char": 4485, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 4486, "end_char": 4488, "word": "of", "xpos": "", "tags": ["PIN", "STPR", "PREP"]}
+{"start_char": 4490, "end_char": 4499, "word": "community", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4500, "end_char": 4512, "word": "architecture", "xpos": "", "tags": ["NN"]}
+{"start_char": 4515, "end_char": 4518, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4519, "end_char": 4525, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 4526, "end_char": 4531, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 4532, "end_char": 4539, "word": "remains", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4541, "end_char": 4549, "word": "although", "xpos": "", "tags": ["CONC", "PIN", "SCONJ", "PREP"]}
+{"start_char": 4550, "end_char": 4552, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4553, "end_char": 4559, "word": "recent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4560, "end_char": 4565, "word": "years", "xpos": "", "tags": ["NN"]}
+{"start_char": 4566, "end_char": 4570, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4571, "end_char": 4577, "word": "social", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4578, "end_char": 4586, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 4587, "end_char": 4591, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 4592, "end_char": 4601, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 4603, "end_char": 4609, "word": "partly", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 4610, "end_char": 4613, "word": "due", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4614, "end_char": 4616, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4617, "end_char": 4621, "word": "poor", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4622, "end_char": 4633, "word": "maintenance", "xpos": "", "tags": ["NN"]}
+{"start_char": 4634, "end_char": 4636, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4637, "end_char": 4640, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4641, "end_char": 4645, "word": "site", "xpos": "", "tags": ["NN"]}
+{"start_char": 4647, "end_char": 4650, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4651, "end_char": 4657, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 4658, "end_char": 4661, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 4662, "end_char": 4667, "word": "grade", "xpos": "", "tags": ["NN"]}
+{"start_char": 4668, "end_char": 4670, "word": "II", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4671, "end_char": 4677, "word": "listed", "xpos": "", "tags": []}
+{"start_char": 4678, "end_char": 4680, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4681, "end_char": 4685, "word": "2003", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4686, "end_char": 4689, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4690, "end_char": 4698, "word": "majority", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4699, "end_char": 4703, "word": "view", "xpos": "", "tags": ["NN"]}
+{"start_char": 4704, "end_char": 4709, "word": "seems", "xpos": "", "tags": ["VPRT", "SMP"]}
+{"start_char": 4710, "end_char": 4712, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4713, "end_char": 4715, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 4716, "end_char": 4720, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 4721, "end_char": 4724, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4725, "end_char": 4730, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4731, "end_char": 4742, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4743, "end_char": 4746, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 4748, "end_char": 4754, "word": "highly", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 4755, "end_char": 4765, "word": "successful", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4767, "end_char": 4770, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 4772, "end_char": 4775, "word": "set", "xpos": "", "tags": ["VBD"]}
+{"start_char": 4776, "end_char": 4779, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4780, "end_char": 4789, "word": "standards", "xpos": "", "tags": ["NN"]}
+{"start_char": 4790, "end_char": 4793, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4794, "end_char": 4799, "word": "local", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4800, "end_char": 4809, "word": "authority", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4810, "end_char": 4817, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 4818, "end_char": 4826, "word": "'(Grundy", "xpos": "", "tags": ["CONT", "NNP"]}
+{"start_char": 4828, "end_char": 4832, "word": "1992", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4834, "end_char": 4841, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 4842, "end_char": 4845, "word": "due", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4846, "end_char": 4848, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4849, "end_char": 4852, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4853, "end_char": 4857, "word": "fact", "xpos": "", "tags": ["NN"]}
+{"start_char": 4858, "end_char": 4862, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 4863, "end_char": 4866, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4867, "end_char": 4870, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4871, "end_char": 4878, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 4879, "end_char": 4882, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 4883, "end_char": 4885, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4886, "end_char": 4887, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4888, "end_char": 4893, "word": "lower", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 4894, "end_char": 4901, "word": "density", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4902, "end_char": 4906, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4907, "end_char": 4910, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4911, "end_char": 4916, "word": "slums", "xpos": "", "tags": ["NN"]}
+{"start_char": 4917, "end_char": 4920, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4921, "end_char": 4924, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4925, "end_char": 4927, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4928, "end_char": 4931, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4932, "end_char": 4941, "word": "community", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4942, "end_char": 4947, "word": "could", "xpos": "", "tags": ["POMD"]}
+{"start_char": 4948, "end_char": 4950, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 4951, "end_char": 4959, "word": "rehoused", "xpos": "", "tags": []}
+{"start_char": 4960, "end_char": 4962, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4963, "end_char": 4966, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4967, "end_char": 4971, "word": "same", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4972, "end_char": 4976, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 4978, "end_char": 4981, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4982, "end_char": 4986, "word": "main", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4987, "end_char": 4993, "word": "actors", "xpos": "", "tags": ["NN"]}
+{"start_char": 4994, "end_char": 4996, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4997, "end_char": 5001, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5002, "end_char": 5013, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5014, "end_char": 5018, "word": "were", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 5019, "end_char": 5022, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5023, "end_char": 5032, "word": "architect", "xpos": "", "tags": ["NN"]}
+{"start_char": 5034, "end_char": 5037, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5038, "end_char": 5047, "word": "residents", "xpos": "", "tags": ["NN"]}
+{"start_char": 5048, "end_char": 5051, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5052, "end_char": 5055, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5056, "end_char": 5061, "word": "local", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5062, "end_char": 5071, "word": "authority", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5073, "end_char": 5083, "word": "Conclusion", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5084, "end_char": 5087, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5088, "end_char": 5093, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5094, "end_char": 5100, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5101, "end_char": 5104, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5105, "end_char": 5113, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5114, "end_char": 5118, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5119, "end_char": 5125, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5126, "end_char": 5130, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 5131, "end_char": 5140, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 5141, "end_char": 5143, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5144, "end_char": 5153, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5154, "end_char": 5159, "word": "times", "xpos": "", "tags": ["NN"]}
+{"start_char": 5160, "end_char": 5163, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 5164, "end_char": 5166, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5167, "end_char": 5171, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 5172, "end_char": 5181, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5182, "end_char": 5186, "word": "ways", "xpos": "", "tags": ["NN"]}
+{"start_char": 5188, "end_char": 5191, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5192, "end_char": 5200, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5201, "end_char": 5205, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5206, "end_char": 5212, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5213, "end_char": 5216, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 5217, "end_char": 5226, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 5227, "end_char": 5229, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5230, "end_char": 5240, "word": "greenfield", "xpos": "", "tags": ["NN"]}
+{"start_char": 5241, "end_char": 5245, "word": "land", "xpos": "", "tags": ["NN"]}
+{"start_char": 5247, "end_char": 5260, "word": "speculatively", "xpos": "", "tags": ["RB"]}
+{"start_char": 5262, "end_char": 5264, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5265, "end_char": 5272, "word": "private", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5273, "end_char": 5283, "word": "developers", "xpos": "", "tags": ["NN"]}
+{"start_char": 5284, "end_char": 5287, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5288, "end_char": 5294, "word": "profit", "xpos": "", "tags": ["NN"]}
+{"start_char": 5296, "end_char": 5299, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5300, "end_char": 5305, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5306, "end_char": 5312, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5313, "end_char": 5316, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 5317, "end_char": 5324, "word": "planned", "xpos": "", "tags": []}
+{"start_char": 5325, "end_char": 5338, "word": "redevelopment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5339, "end_char": 5341, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5342, "end_char": 5344, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5345, "end_char": 5349, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 5351, "end_char": 5354, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5355, "end_char": 5362, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 5363, "end_char": 5366, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5367, "end_char": 5374, "word": "several", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 5375, "end_char": 5380, "word": "roles", "xpos": "", "tags": ["NN"]}
+{"start_char": 5381, "end_char": 5383, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5384, "end_char": 5386, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5387, "end_char": 5390, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 5391, "end_char": 5394, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5395, "end_char": 5404, "word": "landowner", "xpos": "", "tags": ["NN"]}
+{"start_char": 5405, "end_char": 5408, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5409, "end_char": 5415, "word": "client", "xpos": "", "tags": ["NN"]}
+{"start_char": 5416, "end_char": 5419, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5420, "end_char": 5423, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5424, "end_char": 5431, "word": "project", "xpos": "", "tags": ["NN"]}
+{"start_char": 5432, "end_char": 5435, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5436, "end_char": 5439, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5440, "end_char": 5451, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5452, "end_char": 5455, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 5456, "end_char": 5459, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5460, "end_char": 5466, "word": "public", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5467, "end_char": 5474, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 5476, "end_char": 5479, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5480, "end_char": 5487, "word": "council", "xpos": "", "tags": ["NN"]}
+{"start_char": 5488, "end_char": 5492, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 5493, "end_char": 5496, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5497, "end_char": 5498, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5499, "end_char": 5503, "word": "role", "xpos": "", "tags": ["NN"]}
+{"start_char": 5504, "end_char": 5506, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5507, "end_char": 5510, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5511, "end_char": 5519, "word": "planning", "xpos": "", "tags": ["NN"]}
+{"start_char": 5520, "end_char": 5529, "word": "authority", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5531, "end_char": 5535, "word": "When", "xpos": "", "tags": ["RB", "CAP", "SCONJ", "WH"]}
+{"start_char": 5536, "end_char": 5544, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5545, "end_char": 5549, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5550, "end_char": 5553, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 5554, "end_char": 5559, "word": "being", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 5560, "end_char": 5569, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 5570, "end_char": 5575, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 5576, "end_char": 5579, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 5580, "end_char": 5583, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5584, "end_char": 5587, "word": "yet", "xpos": "", "tags": ["RB"]}
+{"start_char": 5588, "end_char": 5592, "word": "such", "xpos": "", "tags": ["EMPH", "DET"]}
+{"start_char": 5593, "end_char": 5594, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5595, "end_char": 5601, "word": "formal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5602, "end_char": 5610, "word": "planning", "xpos": "", "tags": ["NN"]}
+{"start_char": 5611, "end_char": 5617, "word": "system", "xpos": "", "tags": ["NN"]}
+{"start_char": 5618, "end_char": 5626, "word": "although", "xpos": "", "tags": ["CONC", "PIN", "SCONJ", "PREP"]}
+{"start_char": 5627, "end_char": 5632, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 5633, "end_char": 5637, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 5638, "end_char": 5649, "word": "regulations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5650, "end_char": 5654, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 5655, "end_char": 5661, "word": "should", "xpos": "", "tags": ["NEMD"]}
+{"start_char": 5662, "end_char": 5666, "word": "have", "xpos": "", "tags": ["PEAS", "INF"]}
+{"start_char": 5667, "end_char": 5671, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 5672, "end_char": 5679, "word": "adhered", "xpos": "", "tags": []}
+{"start_char": 5680, "end_char": 5682, "word": "to", "xpos": "", "tags": ["PIN", "STPR", "PREP"]}
+{"start_char": 5684, "end_char": 5686, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 5687, "end_char": 5690, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5691, "end_char": 5700, "word": "developer", "xpos": "", "tags": ["NN"]}
+{"start_char": 5701, "end_char": 5704, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 5705, "end_char": 5709, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 5710, "end_char": 5711, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5712, "end_char": 5722, "word": "councillor", "xpos": "", "tags": ["NN"]}
+{"start_char": 5724, "end_char": 5729, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 5730, "end_char": 5733, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 5734, "end_char": 5735, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5736, "end_char": 5744, "word": "conflict", "xpos": "", "tags": ["NN"]}
+{"start_char": 5745, "end_char": 5747, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5748, "end_char": 5756, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 5758, "end_char": 5765, "word": "Private", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5766, "end_char": 5776, "word": "developers", "xpos": "", "tags": ["NN"]}
+{"start_char": 5777, "end_char": 5787, "word": "instigated", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5788, "end_char": 5791, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5792, "end_char": 5803, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5804, "end_char": 5806, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5807, "end_char": 5815, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5816, "end_char": 5820, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5821, "end_char": 5824, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5825, "end_char": 5828, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5829, "end_char": 5830, "word": "a", "xpos": "", "tags": ["EMPH", "ART", "DET", "INDA"]}
+{"start_char": 5831, "end_char": 5834, "word": "lot", "xpos": "", "tags": ["NN"]}
+{"start_char": 5835, "end_char": 5837, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5838, "end_char": 5843, "word": "power", "xpos": "", "tags": ["NN"]}
+{"start_char": 5845, "end_char": 5852, "word": "Tenants", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 5853, "end_char": 5856, "word": "had", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5857, "end_char": 5859, "word": "no", "xpos": "", "tags": ["SYNE", "DET"]}
+{"start_char": 5860, "end_char": 5869, "word": "influence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5870, "end_char": 5877, "word": "whereas", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 5878, "end_char": 5880, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5881, "end_char": 5886, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5887, "end_char": 5890, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5891, "end_char": 5897, "word": "tenant", "xpos": "", "tags": ["NN"]}
+{"start_char": 5897, "end_char": 5899, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 5900, "end_char": 5905, "word": "views", "xpos": "", "tags": ["NN"]}
+{"start_char": 5906, "end_char": 5910, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 5911, "end_char": 5915, "word": "much", "xpos": "", "tags": ["QUAN", "RB"]}
+{"start_char": 5916, "end_char": 5920, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 5921, "end_char": 5932, "word": "influential", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5934, "end_char": 5937, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5938, "end_char": 5943, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5944, "end_char": 5950, "word": "estate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5951, "end_char": 5954, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "AUXB"]}
+{"start_char": 5955, "end_char": 5963, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 5964, "end_char": 5966, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5967, "end_char": 5969, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5970, "end_char": 5979, "word": "architect", "xpos": "", "tags": ["NN"]}
+{"start_char": 5981, "end_char": 5984, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 5985, "end_char": 5988, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 5989, "end_char": 5996, "word": "thought", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 5997, "end_char": 5999, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6000, "end_char": 6002, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 6003, "end_char": 6007, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 6008, "end_char": 6018, "word": "innovative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6020, "end_char": 6027, "word": "Housing", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 6028, "end_char": 6031, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "SPAU", "AUXB"]}
+{"start_char": 6032, "end_char": 6044, "word": "individually", "xpos": "", "tags": ["RB"]}
+{"start_char": 6045, "end_char": 6053, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 6054, "end_char": 6058, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6059, "end_char": 6062, "word": "300", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6063, "end_char": 6072, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6073, "end_char": 6078, "word": "types", "xpos": "", "tags": ["NN"]}
+{"start_char": 6079, "end_char": 6081, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6082, "end_char": 6090, "word": "dwelling", "xpos": "", "tags": ["NN"]}
+{"start_char": 6091, "end_char": 6096, "word": "which", "xpos": "", "tags": ["WHSUB", "DET", "WH"]}
+{"start_char": 6097, "end_char": 6101, "word": "were", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 6102, "end_char": 6104, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6105, "end_char": 6109, "word": "good", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6110, "end_char": 6117, "word": "quality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6119, "end_char": 6127, "word": "Florence", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6128, "end_char": 6132, "word": "Park", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6133, "end_char": 6136, "word": "did", "xpos": "", "tags": ["VBD", "SPAU"]}
+{"start_char": 6137, "end_char": 6140, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6141, "end_char": 6144, "word": "use", "xpos": "", "tags": ["INF"]}
+{"start_char": 6145, "end_char": 6147, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6148, "end_char": 6157, "word": "architect", "xpos": "", "tags": ["NN"]}
+{"start_char": 6159, "end_char": 6166, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 6167, "end_char": 6170, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 6171, "end_char": 6178, "word": "uniform", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 6180, "end_char": 6183, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 6184, "end_char": 6189, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 6190, "end_char": 6194, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 6195, "end_char": 6199, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 6200, "end_char": 6210, "word": "complaints", "xpos": "", "tags": ["NN"]}
+{"start_char": 6211, "end_char": 6216, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6217, "end_char": 6220, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6221, "end_char": 6230, "word": "standards", "xpos": "", "tags": ["NN"]}
+{"start_char": 6231, "end_char": 6233, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6234, "end_char": 6237, "word": "its", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 6238, "end_char": 6244, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 6246, "end_char": 6253, "word": "Tenants", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 6254, "end_char": 6258, "word": "were", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 6259, "end_char": 6263, "word": "much", "xpos": "", "tags": ["QUAN", "RB"]}
+{"start_char": 6264, "end_char": 6268, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 6269, "end_char": 6278, "word": "satisfied", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6279, "end_char": 6283, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6284, "end_char": 6287, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6288, "end_char": 6295, "word": "housing", "xpos": "", "tags": ["NN"]}
+{"start_char": 6296, "end_char": 6298, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6299, "end_char": 6304, "word": "Byker", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6306, "end_char": 6311, "word": "These", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 6312, "end_char": 6315, "word": "two", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6316, "end_char": 6324, "word": "examples", "xpos": "", "tags": ["NN"]}
+{"start_char": 6325, "end_char": 6336, "word": "demonstrate", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 6337, "end_char": 6341, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 6342, "end_char": 6347, "word": "urban", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6348, "end_char": 6353, "word": "areas", "xpos": "", "tags": ["NN"]}
+{"start_char": 6354, "end_char": 6357, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "BYPA", "AUXB"]}
+{"start_char": 6358, "end_char": 6364, "word": "shaped", "xpos": "", "tags": []}
+{"start_char": 6365, "end_char": 6367, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6368, "end_char": 6369, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6370, "end_char": 6381, "word": "combination", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6382, "end_char": 6384, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6385, "end_char": 6395, "word": "influences", "xpos": "", "tags": ["NN"]}
+{"start_char": 6396, "end_char": 6399, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 6400, "end_char": 6412, "word": "interactions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6413, "end_char": 6420, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6421, "end_char": 6430, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6431, "end_char": 6437, "word": "actors", "xpos": "", "tags": ["NN"]}
+{"start_char": 6439, "end_char": 6442, "word": "who", "xpos": "", "tags": ["WHQU", "WH"]}
+{"start_char": 6443, "end_char": 6447, "word": "have", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6448, "end_char": 6455, "word": "varying", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 6456, "end_char": 6463, "word": "degrees", "xpos": "", "tags": ["NN"]}
+{"start_char": 6464, "end_char": 6466, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6467, "end_char": 6472, "word": "power", "xpos": "", "tags": ["NN"]}
+{"start_char": 6473, "end_char": 6475, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6476, "end_char": 6479, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6480, "end_char": 6491, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6492, "end_char": 6499, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 6501, "end_char": 6506, "word": "These", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 6507, "end_char": 6516, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6517, "end_char": 6527, "word": "influences", "xpos": "", "tags": ["NN"]}
+{"start_char": 6528, "end_char": 6531, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 6532, "end_char": 6540, "word": "apparent", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 6541, "end_char": 6543, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6544, "end_char": 6547, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6548, "end_char": 6553, "word": "final", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6554, "end_char": 6558, "word": "form", "xpos": "", "tags": ["NN"]}
+{"start_char": 6559, "end_char": 6561, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6562, "end_char": 6565, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6566, "end_char": 6571, "word": "built", "xpos": "", "tags": []}
+{"start_char": 6572, "end_char": 6583, "word": "environment", "xpos": "", "tags": ["NOMZ"]}

@@ -1,0 +1,1291 @@
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Politics_Essay_2_0147b_tx.txt"}
+{"start_char": 0, "end_char": 2, "word": "To", "xpos": "", "tags": ["PIN", "TO", "CAP", "PREP"]}
+{"start_char": 3, "end_char": 13, "word": "deliberate", "xpos": "", "tags": ["INF"]}
+{"start_char": 14, "end_char": 21, "word": "whether", "xpos": "", "tags": ["PIN", "SCONJ", "PREP"]}
+{"start_char": 22, "end_char": 26, "word": "John", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 27, "end_char": 34, "word": "Maynard", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 35, "end_char": 41, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 42, "end_char": 45, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 46, "end_char": 47, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 48, "end_char": 57, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 58, "end_char": 60, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 61, "end_char": 64, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 65, "end_char": 74, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 75, "end_char": 84, "word": "economist", "xpos": "", "tags": ["NN"]}
+{"start_char": 85, "end_char": 87, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 88, "end_char": 99, "word": "essentially", "xpos": "", "tags": ["RB"]}
+{"start_char": 100, "end_char": 102, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 103, "end_char": 110, "word": "compare", "xpos": "", "tags": ["INF"]}
+{"start_char": 111, "end_char": 114, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 115, "end_char": 118, "word": "two", "xpos": "", "tags": ["NUM"]}
+{"start_char": 119, "end_char": 129, "word": "traditions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 130, "end_char": 132, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 133, "end_char": 138, "word": "light", "xpos": "", "tags": ["NN"]}
+{"start_char": 139, "end_char": 141, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 142, "end_char": 148, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 150, "end_char": 158, "word": "theories", "xpos": "", "tags": ["NN"]}
+{"start_char": 160, "end_char": 164, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 165, "end_char": 170, "word": "essay", "xpos": "", "tags": ["NN"]}
+{"start_char": 171, "end_char": 175, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 176, "end_char": 184, "word": "consider", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 185, "end_char": 188, "word": "how", "xpos": "", "tags": ["RB", "WHCL", "SCONJ", "WH"]}
+{"start_char": 189, "end_char": 195, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 197, "end_char": 204, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 205, "end_char": 213, "word": "compares", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 214, "end_char": 218, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 219, "end_char": 225, "word": "either", "xpos": "", "tags": ["DET"]}
+{"start_char": 226, "end_char": 232, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 234, "end_char": 239, "word": "Above", "xpos": "", "tags": ["PIN", "PLACE", "CAP", "PREP"]}
+{"start_char": 240, "end_char": 244, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 245, "end_char": 253, "word": "analysis", "xpos": "", "tags": ["NN"]}
+{"start_char": 254, "end_char": 256, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 257, "end_char": 259, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 260, "end_char": 267, "word": "equally", "xpos": "", "tags": ["RB"]}
+{"start_char": 268, "end_char": 277, "word": "important", "xpos": "", "tags": ["JJ"]}
+{"start_char": 278, "end_char": 280, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 281, "end_char": 290, "word": "interpret", "xpos": "", "tags": ["INF"]}
+{"start_char": 291, "end_char": 297, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 298, "end_char": 305, "word": "general", "xpos": "", "tags": ["JJ"]}
+{"start_char": 306, "end_char": 314, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 315, "end_char": 317, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 318, "end_char": 321, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 322, "end_char": 327, "word": "study", "xpos": "", "tags": ["NN"]}
+{"start_char": 328, "end_char": 330, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 331, "end_char": 340, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 342, "end_char": 345, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 346, "end_char": 355, "word": "tradition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 356, "end_char": 358, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 359, "end_char": 362, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 363, "end_char": 372, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 373, "end_char": 382, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 383, "end_char": 390, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 391, "end_char": 397, "word": "should", "xpos": "", "tags": ["NEMD"]}
+{"start_char": 398, "end_char": 400, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 401, "end_char": 406, "word": "taken", "xpos": "", "tags": []}
+{"start_char": 407, "end_char": 417, "word": "synonymous", "xpos": "", "tags": ["JJ"]}
+{"start_char": 418, "end_char": 422, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 423, "end_char": 426, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 427, "end_char": 434, "word": "liberal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 435, "end_char": 443, "word": "critique", "xpos": "", "tags": ["NN"]}
+{"start_char": 444, "end_char": 446, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 447, "end_char": 459, "word": "mercantilism", "xpos": "", "tags": ["NN"]}
+{"start_char": 460, "end_char": 463, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 464, "end_char": 467, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 468, "end_char": 476, "word": "analyses", "xpos": "", "tags": ["NN"]}
+{"start_char": 477, "end_char": 479, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 480, "end_char": 483, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 484, "end_char": 494, "word": "advantages", "xpos": "", "tags": ["NN"]}
+{"start_char": 495, "end_char": 497, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 498, "end_char": 511, "word": "international", "xpos": "", "tags": ["JJ"]}
+{"start_char": 512, "end_char": 517, "word": "trade", "xpos": "", "tags": ["NN"]}
+{"start_char": 519, "end_char": 521, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 522, "end_char": 526, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 527, "end_char": 530, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 532, "end_char": 535, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 536, "end_char": 539, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 540, "end_char": 549, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 550, "end_char": 557, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 558, "end_char": 565, "word": "further", "xpos": "", "tags": ["RB"]}
+{"start_char": 566, "end_char": 575, "word": "advocated", "xpos": "", "tags": ["VBD"]}
+{"start_char": 576, "end_char": 579, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 580, "end_char": 590, "word": "principles", "xpos": "", "tags": ["NN"]}
+{"start_char": 591, "end_char": 593, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 594, "end_char": 598, "word": "free", "xpos": "", "tags": ["JJ"]}
+{"start_char": 599, "end_char": 604, "word": "trade", "xpos": "", "tags": ["NN"]}
+{"start_char": 605, "end_char": 611, "word": "within", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 612, "end_char": 619, "word": "British", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 620, "end_char": 628, "word": "hegemony", "xpos": "", "tags": ["NN"]}
+{"start_char": 629, "end_char": 631, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 632, "end_char": 635, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 636, "end_char": 638, "word": "19", "xpos": "", "tags": ["NUM"]}
+{"start_char": 639, "end_char": 641, "word": "th", "xpos": "", "tags": ["X"]}
+{"start_char": 642, "end_char": 649, "word": "century", "xpos": "", "tags": ["NN"]}
+{"start_char": 651, "end_char": 654, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 655, "end_char": 663, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 664, "end_char": 666, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 667, "end_char": 670, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 671, "end_char": 674, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 675, "end_char": 684, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 685, "end_char": 696, "word": "marginalist", "xpos": "", "tags": ["NN"]}
+{"start_char": 697, "end_char": 707, "word": "revolution", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 708, "end_char": 716, "word": "signaled", "xpos": "", "tags": ["VBD"]}
+{"start_char": 717, "end_char": 718, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 719, "end_char": 733, "word": "specialization", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 734, "end_char": 736, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 737, "end_char": 746, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 747, "end_char": 749, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 750, "end_char": 751, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 752, "end_char": 758, "word": "purely", "xpos": "", "tags": ["RB"]}
+{"start_char": 759, "end_char": 768, "word": "technical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 769, "end_char": 779, "word": "discipline", "xpos": "", "tags": ["NN"]}
+{"start_char": 781, "end_char": 783, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 784, "end_char": 791, "word": "Michael", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 792, "end_char": 799, "word": "Bleaney", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 800, "end_char": 808, "word": "comments", "xpos": "", "tags": ["VPRT", "PUBV"]}
+{"start_char": 811, "end_char": 817, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 819, "end_char": 830, "word": "achievement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 831, "end_char": 834, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 835, "end_char": 837, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 838, "end_char": 844, "word": "bridge", "xpos": "", "tags": ["INF"]}
+{"start_char": 845, "end_char": 848, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 849, "end_char": 853, "word": "gulf", "xpos": "", "tags": ["NN"]}
+{"start_char": 854, "end_char": 861, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 862, "end_char": 867, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 868, "end_char": 877, "word": "practical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 878, "end_char": 883, "word": "ideas", "xpos": "", "tags": ["NN"]}
+{"start_char": 884, "end_char": 887, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 888, "end_char": 892, "word": "pure", "xpos": "", "tags": ["JJ"]}
+{"start_char": 893, "end_char": 896, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 897, "end_char": 906, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 907, "end_char": 913, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 915, "end_char": 917, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 918, "end_char": 922, "word": "root", "xpos": "", "tags": ["INF"]}
+{"start_char": 923, "end_char": 928, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 929, "end_char": 937, "word": "thoughts", "xpos": "", "tags": ["NN"]}
+{"start_char": 938, "end_char": 940, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 941, "end_char": 942, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 943, "end_char": 946, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 947, "end_char": 954, "word": "general", "xpos": "", "tags": ["JJ"]}
+{"start_char": 955, "end_char": 961, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 962, "end_char": 964, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 965, "end_char": 974, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 977, "end_char": 982, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 984, "end_char": 990, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 992, "end_char": 999, "word": "writing", "xpos": "", "tags": ["PUBV", "NN"]}
+{"start_char": 1000, "end_char": 1003, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1004, "end_char": 1012, "word": "composed", "xpos": "", "tags": []}
+{"start_char": 1013, "end_char": 1015, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1016, "end_char": 1017, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1018, "end_char": 1025, "word": "mélange", "xpos": "", "tags": ["NN"]}
+{"start_char": 1026, "end_char": 1028, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1029, "end_char": 1038, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1039, "end_char": 1042, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1043, "end_char": 1046, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1047, "end_char": 1056, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1057, "end_char": 1062, "word": "ideas", "xpos": "", "tags": ["NN"]}
+{"start_char": 1064, "end_char": 1067, "word": "Yet", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 1069, "end_char": 1072, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1073, "end_char": 1081, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 1082, "end_char": 1084, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1085, "end_char": 1088, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1089, "end_char": 1094, "word": "study", "xpos": "", "tags": ["NN"]}
+{"start_char": 1095, "end_char": 1097, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1098, "end_char": 1107, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 1108, "end_char": 1112, "word": "most", "xpos": "", "tags": ["RB", "EMPH", "SPADJ"]}
+{"start_char": 1113, "end_char": 1120, "word": "closely", "xpos": "", "tags": ["RB"]}
+{"start_char": 1121, "end_char": 1130, "word": "resembles", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1131, "end_char": 1134, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1135, "end_char": 1144, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1145, "end_char": 1158, "word": "consideration", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1159, "end_char": 1161, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1162, "end_char": 1163, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1164, "end_char": 1173, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1174, "end_char": 1181, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1183, "end_char": 1188, "word": "These", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 1189, "end_char": 1198, "word": "arguments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1199, "end_char": 1201, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1202, "end_char": 1208, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 1209, "end_char": 1212, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1213, "end_char": 1221, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 1222, "end_char": 1226, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 1227, "end_char": 1229, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 1230, "end_char": 1237, "word": "brought", "xpos": "", "tags": []}
+{"start_char": 1238, "end_char": 1245, "word": "forward", "xpos": "", "tags": ["RB"]}
+{"start_char": 1246, "end_char": 1257, "word": "hereinafter", "xpos": "", "tags": ["NN"]}
+{"start_char": 1259, "end_char": 1266, "word": "Bleaney", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1268, "end_char": 1271, "word": "p.1", "xpos": "", "tags": ["NN"]}
+{"start_char": 1272, "end_char": 1274, "word": "It", "xpos": "", "tags": ["PIT", "CAP", "PRP", "SBJP"]}
+{"start_char": 1275, "end_char": 1277, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1278, "end_char": 1287, "word": "essential", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 1288, "end_char": 1290, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1291, "end_char": 1298, "word": "compare", "xpos": "", "tags": ["INF"]}
+{"start_char": 1299, "end_char": 1302, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1303, "end_char": 1306, "word": "two", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1307, "end_char": 1314, "word": "strands", "xpos": "", "tags": ["NN"]}
+{"start_char": 1315, "end_char": 1317, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1318, "end_char": 1325, "word": "liberal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1326, "end_char": 1335, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1336, "end_char": 1343, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1346, "end_char": 1350, "word": "both", "xpos": "", "tags": ["DET"]}
+{"start_char": 1351, "end_char": 1354, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1355, "end_char": 1364, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1365, "end_char": 1368, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1369, "end_char": 1372, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1373, "end_char": 1382, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1383, "end_char": 1391, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 1393, "end_char": 1396, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1397, "end_char": 1406, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1407, "end_char": 1416, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1417, "end_char": 1424, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1425, "end_char": 1427, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "BYPA", "SPAU", "AUXB"]}
+{"start_char": 1428, "end_char": 1432, "word": "most", "xpos": "", "tags": ["RB", "EMPH", "SPADJ"]}
+{"start_char": 1433, "end_char": 1441, "word": "commonly", "xpos": "", "tags": ["RB"]}
+{"start_char": 1442, "end_char": 1455, "word": "characterized", "xpos": "", "tags": []}
+{"start_char": 1456, "end_char": 1458, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1459, "end_char": 1462, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1463, "end_char": 1468, "word": "works", "xpos": "", "tags": ["NN"]}
+{"start_char": 1469, "end_char": 1471, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1472, "end_char": 1476, "word": "Adam", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1477, "end_char": 1482, "word": "Smith", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1483, "end_char": 1486, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1487, "end_char": 1492, "word": "David", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1493, "end_char": 1500, "word": "Ricardo", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1502, "end_char": 1506, "word": "Both", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 1507, "end_char": 1512, "word": "wrote", "xpos": "", "tags": ["VBD", "PUBV"]}
+{"start_char": 1513, "end_char": 1518, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1519, "end_char": 1521, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1522, "end_char": 1529, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1530, "end_char": 1536, "word": "deeply", "xpos": "", "tags": ["RB"]}
+{"start_char": 1537, "end_char": 1543, "word": "rooted", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1544, "end_char": 1546, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1547, "end_char": 1548, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1549, "end_char": 1555, "word": "social", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1556, "end_char": 1563, "word": "context", "xpos": "", "tags": ["NN"]}
+{"start_char": 1565, "end_char": 1571, "word": "Social", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 1572, "end_char": 1581, "word": "relations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1582, "end_char": 1586, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1587, "end_char": 1590, "word": "did", "xpos": "", "tags": ["VBD", "SPAU"]}
+{"start_char": 1591, "end_char": 1594, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1595, "end_char": 1599, "word": "take", "xpos": "", "tags": ["INF"]}
+{"start_char": 1600, "end_char": 1601, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1602, "end_char": 1610, "word": "backseat", "xpos": "", "tags": ["NN"]}
+{"start_char": 1611, "end_char": 1613, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1614, "end_char": 1622, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1623, "end_char": 1629, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 1631, "end_char": 1636, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 1638, "end_char": 1643, "word": "Smith", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1645, "end_char": 1647, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1648, "end_char": 1651, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1652, "end_char": 1660, "word": "analysis", "xpos": "", "tags": ["NN"]}
+{"start_char": 1661, "end_char": 1663, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1664, "end_char": 1670, "word": "social", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1671, "end_char": 1683, "word": "institutions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1685, "end_char": 1688, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 1689, "end_char": 1696, "word": "careful", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 1697, "end_char": 1699, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1700, "end_char": 1705, "word": "point", "xpos": "", "tags": ["INF"]}
+{"start_char": 1706, "end_char": 1709, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1710, "end_char": 1713, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1714, "end_char": 1724, "word": "properties", "xpos": "", "tags": ["NN"]}
+{"start_char": 1725, "end_char": 1727, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1728, "end_char": 1729, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1730, "end_char": 1736, "word": "market", "xpos": "", "tags": ["NN"]}
+{"start_char": 1737, "end_char": 1744, "word": "society", "xpos": "", "tags": ["NN"]}
+{"start_char": 1745, "end_char": 1749, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 1750, "end_char": 1755, "word": "could", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 1756, "end_char": 1767, "word": "potentially", "xpos": "", "tags": ["RB"]}
+{"start_char": 1768, "end_char": 1772, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 1773, "end_char": 1780, "word": "adverse", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1781, "end_char": 1788, "word": "effects", "xpos": "", "tags": ["NN"]}
+{"start_char": 1789, "end_char": 1791, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1792, "end_char": 1795, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1796, "end_char": 1801, "word": "human", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1802, "end_char": 1811, "word": "condition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1813, "end_char": 1817, "word": "From", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 1818, "end_char": 1822, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 1823, "end_char": 1833, "word": "background", "xpos": "", "tags": ["NN"]}
+{"start_char": 1834, "end_char": 1839, "word": "Smith", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1840, "end_char": 1848, "word": "develops", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1849, "end_char": 1852, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1853, "end_char": 1859, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 1860, "end_char": 1862, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1863, "end_char": 1866, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1867, "end_char": 1876, "word": "invisible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1877, "end_char": 1881, "word": "hand", "xpos": "", "tags": ["NN"]}
+{"start_char": 1882, "end_char": 1887, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 1888, "end_char": 1894, "word": "direct", "xpos": "", "tags": ["INF"]}
+{"start_char": 1895, "end_char": 1905, "word": "individual", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1906, "end_char": 1915, "word": "interests", "xpos": "", "tags": ["NN"]}
+{"start_char": 1916, "end_char": 1918, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1919, "end_char": 1926, "word": "benefit", "xpos": "", "tags": ["INF"]}
+{"start_char": 1927, "end_char": 1930, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1931, "end_char": 1941, "word": "collective", "xpos": "", "tags": ["NN"]}
+{"start_char": 1942, "end_char": 1944, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1945, "end_char": 1952, "word": "society", "xpos": "", "tags": ["NN"]}
+{"start_char": 1954, "end_char": 1961, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 1963, "end_char": 1967, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 1968, "end_char": 1970, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1971, "end_char": 1974, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1975, "end_char": 1977, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1978, "end_char": 1980, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 1981, "end_char": 1989, "word": "confused", "xpos": "", "tags": []}
+{"start_char": 1990, "end_char": 1994, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1995, "end_char": 1998, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1999, "end_char": 2002, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2003, "end_char": 2012, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2013, "end_char": 2023, "word": "perception", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2024, "end_char": 2026, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2027, "end_char": 2030, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2031, "end_char": 2035, "word": "homo", "xpos": "", "tags": ["NN"]}
+{"start_char": 2036, "end_char": 2046, "word": "economicus", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2049, "end_char": 2053, "word": "More", "xpos": "", "tags": ["RB", "EMPH", "CAP", "CMADJ"]}
+{"start_char": 2054, "end_char": 2065, "word": "importantly", "xpos": "", "tags": ["RB"]}
+{"start_char": 2067, "end_char": 2069, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2070, "end_char": 2073, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2074, "end_char": 2080, "word": "Wealth", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2081, "end_char": 2083, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2084, "end_char": 2091, "word": "Nations", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2092, "end_char": 2094, "word": "he", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2095, "end_char": 2103, "word": "outlined", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2104, "end_char": 2108, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 2109, "end_char": 2112, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2113, "end_char": 2117, "word": "real", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2118, "end_char": 2123, "word": "value", "xpos": "", "tags": ["NN"]}
+{"start_char": 2124, "end_char": 2126, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2127, "end_char": 2128, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2129, "end_char": 2135, "word": "nation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2136, "end_char": 2138, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2139, "end_char": 2142, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2143, "end_char": 2146, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2147, "end_char": 2151, "word": "gold", "xpos": "", "tags": ["NN"]}
+{"start_char": 2152, "end_char": 2154, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2155, "end_char": 2161, "word": "silver", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2162, "end_char": 2170, "word": "reserves", "xpos": "", "tags": ["NN"]}
+{"start_char": 2171, "end_char": 2173, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2174, "end_char": 2183, "word": "possesses", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2184, "end_char": 2187, "word": "but", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2188, "end_char": 2191, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2192, "end_char": 2197, "word": "labor", "xpos": "", "tags": ["NN"]}
+{"start_char": 2198, "end_char": 2200, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2201, "end_char": 2206, "word": "holds", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 2208, "end_char": 2210, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 2211, "end_char": 2214, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2215, "end_char": 2217, "word": "19", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2218, "end_char": 2220, "word": "th", "xpos": "", "tags": ["X"]}
+{"start_char": 2221, "end_char": 2228, "word": "century", "xpos": "", "tags": ["NN"]}
+{"start_char": 2229, "end_char": 2234, "word": "David", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2235, "end_char": 2242, "word": "Ricardo", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2243, "end_char": 2254, "word": "contributes", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2255, "end_char": 2257, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2258, "end_char": 2261, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2262, "end_char": 2271, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2272, "end_char": 2281, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2282, "end_char": 2289, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2290, "end_char": 2297, "word": "thought", "xpos": "", "tags": ["PRIV", "WZPAST"]}
+{"start_char": 2298, "end_char": 2300, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2301, "end_char": 2312, "word": "introducing", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 2313, "end_char": 2316, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2317, "end_char": 2323, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 2324, "end_char": 2326, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2327, "end_char": 2338, "word": "comparative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2339, "end_char": 2348, "word": "advantage", "xpos": "", "tags": ["NN"]}
+{"start_char": 2350, "end_char": 2354, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 2355, "end_char": 2361, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 2362, "end_char": 2373, "word": "essentially", "xpos": "", "tags": ["RB"]}
+{"start_char": 2374, "end_char": 2378, "word": "puts", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2379, "end_char": 2386, "word": "forward", "xpos": "", "tags": ["RB"]}
+{"start_char": 2387, "end_char": 2390, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2391, "end_char": 2395, "word": "idea", "xpos": "", "tags": ["NN"]}
+{"start_char": 2396, "end_char": 2398, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2399, "end_char": 2412, "word": "international", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2413, "end_char": 2418, "word": "trade", "xpos": "", "tags": ["NN"]}
+{"start_char": 2419, "end_char": 2424, "word": "being", "xpos": "", "tags": ["BEMA", "WZPRES", "AUXB"]}
+{"start_char": 2425, "end_char": 2426, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2427, "end_char": 2435, "word": "positive", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2436, "end_char": 2439, "word": "sum", "xpos": "", "tags": ["NN"]}
+{"start_char": 2440, "end_char": 2446, "word": "rather", "xpos": "", "tags": ["RB"]}
+{"start_char": 2447, "end_char": 2451, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2452, "end_char": 2453, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2454, "end_char": 2458, "word": "zero", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2459, "end_char": 2462, "word": "sum", "xpos": "", "tags": ["NN"]}
+{"start_char": 2463, "end_char": 2467, "word": "game", "xpos": "", "tags": ["NN"]}
+{"start_char": 2469, "end_char": 2474, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 2476, "end_char": 2481, "word": "these", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 2482, "end_char": 2485, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2486, "end_char": 2490, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 2491, "end_char": 2493, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2494, "end_char": 2497, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2498, "end_char": 2509, "word": "fundamental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2510, "end_char": 2516, "word": "points", "xpos": "", "tags": ["NN"]}
+{"start_char": 2517, "end_char": 2521, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 2522, "end_char": 2532, "word": "contribute", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2533, "end_char": 2535, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2536, "end_char": 2539, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2540, "end_char": 2553, "word": "understanding", "xpos": "", "tags": ["GER", "PRIV"]}
+{"start_char": 2554, "end_char": 2556, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2557, "end_char": 2566, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2567, "end_char": 2576, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2577, "end_char": 2584, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2586, "end_char": 2590, "word": "Both", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 2591, "end_char": 2596, "word": "Smith", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2597, "end_char": 2600, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2601, "end_char": 2608, "word": "Ricardo", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2609, "end_char": 2617, "word": "directly", "xpos": "", "tags": ["RB"]}
+{"start_char": 2618, "end_char": 2627, "word": "criticize", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2628, "end_char": 2631, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2632, "end_char": 2644, "word": "mercantilist", "xpos": "", "tags": ["NN"]}
+{"start_char": 2645, "end_char": 2653, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 2654, "end_char": 2656, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2657, "end_char": 2666, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2667, "end_char": 2674, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2676, "end_char": 2680, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 2681, "end_char": 2686, "word": "label", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2687, "end_char": 2689, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2690, "end_char": 2691, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2692, "end_char": 2699, "word": "statist", "xpos": "", "tags": ["NN"]}
+{"start_char": 2700, "end_char": 2703, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2704, "end_char": 2717, "word": "protectionist", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2718, "end_char": 2726, "word": "doctrine", "xpos": "", "tags": ["NN"]}
+{"start_char": 2727, "end_char": 2731, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 2732, "end_char": 2742, "word": "emphasizes", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2743, "end_char": 2746, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2747, "end_char": 2753, "word": "wealth", "xpos": "", "tags": ["NN"]}
+{"start_char": 2754, "end_char": 2756, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2757, "end_char": 2764, "word": "nations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2765, "end_char": 2767, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2768, "end_char": 2771, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2772, "end_char": 2777, "word": "basis", "xpos": "", "tags": ["NN"]}
+{"start_char": 2778, "end_char": 2780, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2781, "end_char": 2789, "word": "material", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2790, "end_char": 2798, "word": "reserves", "xpos": "", "tags": ["NN"]}
+{"start_char": 2800, "end_char": 2806, "word": "Indeed", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 2808, "end_char": 2820, "word": "mercantilist", "xpos": "", "tags": ["NN"]}
+{"start_char": 2821, "end_char": 2830, "word": "economies", "xpos": "", "tags": ["NN"]}
+{"start_char": 2831, "end_char": 2841, "word": "understand", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 2842, "end_char": 2845, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2846, "end_char": 2854, "word": "benefits", "xpos": "", "tags": ["NN"]}
+{"start_char": 2855, "end_char": 2858, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2859, "end_char": 2864, "word": "trade", "xpos": "", "tags": ["NN"]}
+{"start_char": 2865, "end_char": 2867, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2868, "end_char": 2876, "word": "mutually", "xpos": "", "tags": ["RB"]}
+{"start_char": 2877, "end_char": 2886, "word": "exclusive", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2888, "end_char": 2890, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 2891, "end_char": 2899, "word": "contrast", "xpos": "", "tags": ["NN"]}
+{"start_char": 2901, "end_char": 2910, "word": "according", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 2911, "end_char": 2913, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2914, "end_char": 2921, "word": "Ricardo", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2921, "end_char": 2923, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 2924, "end_char": 2930, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 2931, "end_char": 2933, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2934, "end_char": 2945, "word": "comparative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2946, "end_char": 2955, "word": "advantage", "xpos": "", "tags": ["NN"]}
+{"start_char": 2956, "end_char": 2958, "word": "if", "xpos": "", "tags": ["COND", "PIN", "SCONJ", "PREP"]}
+{"start_char": 2959, "end_char": 2960, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2961, "end_char": 2968, "word": "country", "xpos": "", "tags": ["NN"]}
+{"start_char": 2969, "end_char": 2976, "word": "engages", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2977, "end_char": 2979, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2980, "end_char": 2984, "word": "free", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2985, "end_char": 2990, "word": "trade", "xpos": "", "tags": ["NN"]}
+{"start_char": 2991, "end_char": 2995, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 2996, "end_char": 2998, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2999, "end_char": 3003, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 3004, "end_char": 3006, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 3007, "end_char": 3017, "word": "beneficial", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 3018, "end_char": 3020, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3021, "end_char": 3024, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3025, "end_char": 3032, "word": "nations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3033, "end_char": 3041, "word": "involved", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 3042, "end_char": 3045, "word": "due", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3046, "end_char": 3048, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3049, "end_char": 3063, "word": "specialization", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3065, "end_char": 3070, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 3072, "end_char": 3076, "word": "both", "xpos": "", "tags": ["DET"]}
+{"start_char": 3077, "end_char": 3086, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3087, "end_char": 3096, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3097, "end_char": 3107, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 3108, "end_char": 3111, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3112, "end_char": 3119, "word": "similar", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 3120, "end_char": 3122, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3123, "end_char": 3128, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 3129, "end_char": 3133, "word": "view", "xpos": "", "tags": ["NN"]}
+{"start_char": 3134, "end_char": 3138, "word": "that", "xpos": "", "tags": ["PIN", "TSUB", "SCONJ", "PREP"]}
+{"start_char": 3139, "end_char": 3145, "word": "acting", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 3146, "end_char": 3149, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3150, "end_char": 3152, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3153, "end_char": 3157, "word": "self", "xpos": "", "tags": ["NN"]}
+{"start_char": 3158, "end_char": 3166, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 3168, "end_char": 3174, "word": "either", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3175, "end_char": 3177, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3178, "end_char": 3185, "word": "society", "xpos": "", "tags": ["NN"]}
+{"start_char": 3186, "end_char": 3188, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3189, "end_char": 3191, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3192, "end_char": 3205, "word": "international", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3206, "end_char": 3215, "word": "relations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3216, "end_char": 3223, "word": "becomes", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3224, "end_char": 3227, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3228, "end_char": 3235, "word": "general", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3236, "end_char": 3244, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 3245, "end_char": 3247, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3248, "end_char": 3251, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3253, "end_char": 3259, "word": "States", "xpos": "", "tags": ["PUBV", "CAP", "NNP"]}
+{"start_char": 3260, "end_char": 3263, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 3264, "end_char": 3270, "word": "Market", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3271, "end_char": 3278, "word": "Lecture", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3280, "end_char": 3282, "word": "No", "xpos": "", "tags": ["SYNE", "NN", "CAP"]}
+{"start_char": 3284, "end_char": 3285, "word": "2", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3287, "end_char": 3290, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3291, "end_char": 3302, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3303, "end_char": 3305, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3306, "end_char": 3307, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3308, "end_char": 3311, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3312, "end_char": 3321, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3322, "end_char": 3328, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 3329, "end_char": 3332, "word": "saw", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 3333, "end_char": 3336, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3337, "end_char": 3347, "word": "discipline", "xpos": "", "tags": ["NN"]}
+{"start_char": 3348, "end_char": 3350, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3351, "end_char": 3361, "word": "economical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3362, "end_char": 3369, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 3370, "end_char": 3376, "word": "evolve", "xpos": "", "tags": ["NN"]}
+{"start_char": 3377, "end_char": 3381, "word": "into", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3382, "end_char": 3383, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3384, "end_char": 3388, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 3389, "end_char": 3399, "word": "scientific", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3400, "end_char": 3403, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3404, "end_char": 3408, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 3409, "end_char": 3418, "word": "technical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3419, "end_char": 3428, "word": "direction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3430, "end_char": 3432, "word": "It", "xpos": "", "tags": ["PIT", "CAP", "PRP", "SBJP"]}
+{"start_char": 3433, "end_char": 3435, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 3436, "end_char": 3445, "word": "generally", "xpos": "", "tags": ["RB"]}
+{"start_char": 3446, "end_char": 3450, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 3451, "end_char": 3453, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3454, "end_char": 3455, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3456, "end_char": 3465, "word": "departure", "xpos": "", "tags": ["NN"]}
+{"start_char": 3466, "end_char": 3471, "word": "point", "xpos": "", "tags": ["NN"]}
+{"start_char": 3472, "end_char": 3476, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3477, "end_char": 3480, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3481, "end_char": 3490, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3491, "end_char": 3500, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3501, "end_char": 3508, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 3510, "end_char": 3513, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3514, "end_char": 3522, "word": "analysis", "xpos": "", "tags": ["NN"]}
+{"start_char": 3523, "end_char": 3525, "word": "of", "xpos": "", "tags": ["PIN", "STPR", "PREP"]}
+{"start_char": 3527, "end_char": 3530, "word": "how", "xpos": "", "tags": ["RB", "WHQU", "SCONJ", "WH"]}
+{"start_char": 3531, "end_char": 3538, "word": "choices", "xpos": "", "tags": ["NN"]}
+{"start_char": 3539, "end_char": 3542, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 3543, "end_char": 3547, "word": "made", "xpos": "", "tags": []}
+{"start_char": 3548, "end_char": 3555, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3556, "end_char": 3567, "word": "alternative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3568, "end_char": 3572, "word": "ends", "xpos": "", "tags": ["NN"]}
+{"start_char": 3573, "end_char": 3578, "word": "under", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3579, "end_char": 3589, "word": "conditions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3590, "end_char": 3592, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3593, "end_char": 3601, "word": "scarcity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3603, "end_char": 3609, "word": "became", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3610, "end_char": 3613, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3614, "end_char": 3619, "word": "focus", "xpos": "", "tags": ["NN"]}
+{"start_char": 3620, "end_char": 3625, "word": "point", "xpos": "", "tags": ["NN"]}
+{"start_char": 3626, "end_char": 3628, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3629, "end_char": 3632, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3633, "end_char": 3642, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3643, "end_char": 3650, "word": "studies", "xpos": "", "tags": ["NN"]}
+{"start_char": 3652, "end_char": 3661, "word": "Therefore", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 3662, "end_char": 3664, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 3665, "end_char": 3668, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 3669, "end_char": 3673, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 3674, "end_char": 3676, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3677, "end_char": 3679, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 3680, "end_char": 3681, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3682, "end_char": 3689, "word": "science", "xpos": "", "tags": ["NN"]}
+{"start_char": 3690, "end_char": 3694, "word": "free", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3695, "end_char": 3697, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3698, "end_char": 3701, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3702, "end_char": 3711, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3712, "end_char": 3714, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3715, "end_char": 3720, "word": "moral", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3721, "end_char": 3731, "word": "undertones", "xpos": "", "tags": ["NN"]}
+{"start_char": 3733, "end_char": 3739, "word": "Indeed", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 3741, "end_char": 3744, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3745, "end_char": 3753, "word": "Austrian", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 3754, "end_char": 3760, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 3762, "end_char": 3767, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 3768, "end_char": 3770, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 3771, "end_char": 3775, "word": "most", "xpos": "", "tags": ["RB", "EMPH", "SPADJ"]}
+{"start_char": 3776, "end_char": 3784, "word": "commonly", "xpos": "", "tags": ["RB"]}
+{"start_char": 3785, "end_char": 3795, "word": "associated", "xpos": "", "tags": []}
+{"start_char": 3796, "end_char": 3800, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3801, "end_char": 3804, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3805, "end_char": 3814, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3815, "end_char": 3822, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 3824, "end_char": 3834, "word": "emphasized", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3835, "end_char": 3838, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3839, "end_char": 3843, "word": "need", "xpos": "", "tags": ["NN"]}
+{"start_char": 3844, "end_char": 3847, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3848, "end_char": 3851, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3852, "end_char": 3864, "word": "universality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3865, "end_char": 3867, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3868, "end_char": 3876, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3877, "end_char": 3885, "word": "concepts", "xpos": "", "tags": ["NN"]}
+{"start_char": 3887, "end_char": 3891, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 3892, "end_char": 3898, "word": "stands", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3899, "end_char": 3901, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3902, "end_char": 3912, "word": "opposition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3913, "end_char": 3915, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3916, "end_char": 3919, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3920, "end_char": 3930, "word": "historical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3931, "end_char": 3937, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 3938, "end_char": 3941, "word": "who", "xpos": "", "tags": ["WHSUB", "WH"]}
+{"start_char": 3942, "end_char": 3945, "word": "are", "xpos": "", "tags": ["VPRT", "SPAU", "AUXB"]}
+{"start_char": 3946, "end_char": 3952, "word": "firmly", "xpos": "", "tags": ["RB"]}
+{"start_char": 3953, "end_char": 3960, "word": "believe", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 3961, "end_char": 3963, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3964, "end_char": 3965, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3966, "end_char": 3978, "word": "historically", "xpos": "", "tags": ["RB"]}
+{"start_char": 3979, "end_char": 3989, "word": "contingent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3990, "end_char": 3998, "word": "analysis", "xpos": "", "tags": ["NN"]}
+{"start_char": 4000, "end_char": 4005, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 4007, "end_char": 4010, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4011, "end_char": 4014, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4015, "end_char": 4024, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4025, "end_char": 4033, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 4034, "end_char": 4040, "word": "treats", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4041, "end_char": 4050, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 4051, "end_char": 4053, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4054, "end_char": 4055, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4056, "end_char": 4060, "word": "pure", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4061, "end_char": 4068, "word": "science", "xpos": "", "tags": ["NN"]}
+{"start_char": 4069, "end_char": 4073, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 4074, "end_char": 4083, "word": "considers", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 4084, "end_char": 4092, "word": "socially", "xpos": "", "tags": ["RB"]}
+{"start_char": 4093, "end_char": 4104, "word": "indifferent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4105, "end_char": 4116, "word": "individuals", "xpos": "", "tags": ["NN"]}
+{"start_char": 4118, "end_char": 4122, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 4123, "end_char": 4131, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 4132, "end_char": 4135, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS", "SPAU"]}
+{"start_char": 4136, "end_char": 4141, "word": "often", "xpos": "", "tags": ["RB"]}
+{"start_char": 4142, "end_char": 4146, "word": "lent", "xpos": "", "tags": []}
+{"start_char": 4147, "end_char": 4150, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4151, "end_char": 4154, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4155, "end_char": 4164, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4165, "end_char": 4175, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 4176, "end_char": 4177, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4178, "end_char": 4188, "word": "reputation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4189, "end_char": 4192, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4193, "end_char": 4198, "word": "being", "xpos": "", "tags": ["AUXB"]}
+{"start_char": 4199, "end_char": 4205, "word": "market", "xpos": "", "tags": ["NN"]}
+{"start_char": 4206, "end_char": 4221, "word": "fundamentalists", "xpos": "", "tags": ["NN"]}
+{"start_char": 4223, "end_char": 4234, "word": "Furthermore", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 4236, "end_char": 4240, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4241, "end_char": 4244, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 4245, "end_char": 4257, "word": "additionally", "xpos": "", "tags": ["RB"]}
+{"start_char": 4258, "end_char": 4262, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 4263, "end_char": 4265, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4266, "end_char": 4278, "word": "predecessors", "xpos": "", "tags": ["NN"]}
+{"start_char": 4279, "end_char": 4281, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4282, "end_char": 4285, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4286, "end_char": 4294, "word": "Hayekian", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 4295, "end_char": 4298, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4299, "end_char": 4306, "word": "liberal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4307, "end_char": 4316, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4317, "end_char": 4324, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 4326, "end_char": 4332, "word": "Gamble", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 4333, "end_char": 4337, "word": "1995", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4339, "end_char": 4342, "word": "518", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4343, "end_char": 4349, "word": "Gamble", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4351, "end_char": 4354, "word": "p.5", "xpos": "", "tags": []}
+{"start_char": 4355, "end_char": 4357, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 4358, "end_char": 4363, "word": "order", "xpos": "", "tags": ["SUAV", "NN"]}
+{"start_char": 4364, "end_char": 4366, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4367, "end_char": 4374, "word": "compare", "xpos": "", "tags": ["INF"]}
+{"start_char": 4375, "end_char": 4381, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4383, "end_char": 4390, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 4391, "end_char": 4395, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4396, "end_char": 4399, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4400, "end_char": 4409, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4410, "end_char": 4413, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4414, "end_char": 4417, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4418, "end_char": 4427, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4428, "end_char": 4434, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 4435, "end_char": 4437, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 4438, "end_char": 4440, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4441, "end_char": 4450, "word": "necessary", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4451, "end_char": 4453, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4454, "end_char": 4461, "word": "analyze", "xpos": "", "tags": ["INF"]}
+{"start_char": 4462, "end_char": 4466, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4467, "end_char": 4469, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4470, "end_char": 4476, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4478, "end_char": 4488, "word": "viewpoints", "xpos": "", "tags": ["NN"]}
+{"start_char": 4489, "end_char": 4492, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4493, "end_char": 4500, "word": "stances", "xpos": "", "tags": ["NN"]}
+{"start_char": 4502, "end_char": 4509, "word": "Several", "xpos": "", "tags": ["QUAN", "JJ", "CAP"]}
+{"start_char": 4510, "end_char": 4512, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4513, "end_char": 4516, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4517, "end_char": 4525, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4526, "end_char": 4534, "word": "theories", "xpos": "", "tags": ["NN"]}
+{"start_char": 4535, "end_char": 4540, "word": "point", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4541, "end_char": 4548, "word": "towards", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4549, "end_char": 4555, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4556, "end_char": 4558, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4559, "end_char": 4571, "word": "disapproving", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 4572, "end_char": 4574, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4575, "end_char": 4584, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4585, "end_char": 4593, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4594, "end_char": 4601, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 4603, "end_char": 4610, "word": "Ricardo", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4611, "end_char": 4614, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4615, "end_char": 4618, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4619, "end_char": 4627, "word": "classics", "xpos": "", "tags": ["NN"]}
+{"start_char": 4628, "end_char": 4632, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 4633, "end_char": 4642, "word": "convinced", "xpos": "", "tags": []}
+{"start_char": 4643, "end_char": 4647, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 4648, "end_char": 4655, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 4656, "end_char": 4661, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 4662, "end_char": 4664, "word": "be", "xpos": "", "tags": ["PASS", "SPAU", "AUXB", "INF"]}
+{"start_char": 4665, "end_char": 4678, "word": "automatically", "xpos": "", "tags": ["RB"]}
+{"start_char": 4679, "end_char": 4689, "word": "reinvested", "xpos": "", "tags": []}
+{"start_char": 4691, "end_char": 4698, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 4701, "end_char": 4704, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4705, "end_char": 4715, "word": "difference", "xpos": "", "tags": ["NN"]}
+{"start_char": 4716, "end_char": 4723, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4724, "end_char": 4730, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4731, "end_char": 4734, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4735, "end_char": 4738, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4739, "end_char": 4748, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4749, "end_char": 4759, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 4760, "end_char": 4763, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 4764, "end_char": 4768, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 4769, "end_char": 4774, "word": "while", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 4775, "end_char": 4779, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4780, "end_char": 4787, "word": "thought", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 4788, "end_char": 4790, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4791, "end_char": 4795, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 4796, "end_char": 4798, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4799, "end_char": 4802, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4803, "end_char": 4809, "word": "normal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4811, "end_char": 4820, "word": "universal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4821, "end_char": 4826, "word": "state", "xpos": "", "tags": ["PUBV", "NN"]}
+{"start_char": 4827, "end_char": 4829, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4830, "end_char": 4837, "word": "affairs", "xpos": "", "tags": ["NN"]}
+{"start_char": 4839, "end_char": 4841, "word": "he", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4842, "end_char": 4845, "word": "saw", "xpos": "", "tags": ["VBD", "PRIV", "THATD"]}
+{"start_char": 4846, "end_char": 4848, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 4849, "end_char": 4851, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4852, "end_char": 4853, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4854, "end_char": 4861, "word": "special", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4862, "end_char": 4866, "word": "case", "xpos": "", "tags": ["NN"]}
+{"start_char": 4869, "end_char": 4876, "word": "Stewart", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4878, "end_char": 4882, "word": "p.99", "xpos": "", "tags": ["NNP"]}
+{"start_char": 4883, "end_char": 4885, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 4886, "end_char": 4890, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 4891, "end_char": 4894, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 4895, "end_char": 4898, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4899, "end_char": 4908, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4909, "end_char": 4919, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 4920, "end_char": 4928, "word": "believed", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 4929, "end_char": 4933, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 4934, "end_char": 4941, "word": "balance", "xpos": "", "tags": ["NN"]}
+{"start_char": 4942, "end_char": 4949, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4950, "end_char": 4957, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 4958, "end_char": 4961, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4962, "end_char": 4972, "word": "investment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4973, "end_char": 4976, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "AUXB"]}
+{"start_char": 4977, "end_char": 4986, "word": "regulated", "xpos": "", "tags": []}
+{"start_char": 4987, "end_char": 4989, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4990, "end_char": 4991, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4992, "end_char": 5000, "word": "changing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 5001, "end_char": 5009, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 5010, "end_char": 5014, "word": "rate", "xpos": "", "tags": ["NN"]}
+{"start_char": 5016, "end_char": 5019, "word": "For", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 5020, "end_char": 5028, "word": "instance", "xpos": "", "tags": ["NN"]}
+{"start_char": 5030, "end_char": 5032, "word": "if", "xpos": "", "tags": ["COND", "PIN", "SCONJ", "PREP"]}
+{"start_char": 5033, "end_char": 5036, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5037, "end_char": 5042, "word": "level", "xpos": "", "tags": ["NN"]}
+{"start_char": 5043, "end_char": 5045, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5046, "end_char": 5053, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 5054, "end_char": 5063, "word": "increases", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5064, "end_char": 5067, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5068, "end_char": 5076, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 5077, "end_char": 5082, "word": "rates", "xpos": "", "tags": ["NN"]}
+{"start_char": 5083, "end_char": 5087, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5088, "end_char": 5092, "word": "fall", "xpos": "", "tags": ["INF"]}
+{"start_char": 5093, "end_char": 5097, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5098, "end_char": 5099, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5100, "end_char": 5111, "word": "consequence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5112, "end_char": 5114, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5115, "end_char": 5126, "word": "investments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5127, "end_char": 5133, "word": "rising", "xpos": "", "tags": ["WZPRES", "PGAS"]}
+{"start_char": 5134, "end_char": 5139, "word": "again", "xpos": "", "tags": ["RB", "TIME"]}
+{"start_char": 5141, "end_char": 5145, "word": "Thus", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 5147, "end_char": 5148, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5149, "end_char": 5157, "word": "decrease", "xpos": "", "tags": ["NN"]}
+{"start_char": 5158, "end_char": 5160, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5161, "end_char": 5172, "word": "consumption", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5173, "end_char": 5178, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5179, "end_char": 5181, "word": "be", "xpos": "", "tags": ["PASS", "BYPA", "AUXB", "INF"]}
+{"start_char": 5182, "end_char": 5190, "word": "balanced", "xpos": "", "tags": []}
+{"start_char": 5191, "end_char": 5193, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5194, "end_char": 5195, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5196, "end_char": 5200, "word": "rise", "xpos": "", "tags": ["NN"]}
+{"start_char": 5201, "end_char": 5203, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5204, "end_char": 5214, "word": "investment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5215, "end_char": 5218, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 5219, "end_char": 5224, "word": "hence", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 5225, "end_char": 5235, "word": "employment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5236, "end_char": 5241, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5242, "end_char": 5246, "word": "stay", "xpos": "", "tags": ["INF"]}
+{"start_char": 5247, "end_char": 5252, "word": "equal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5254, "end_char": 5257, "word": "Yet", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 5259, "end_char": 5261, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5262, "end_char": 5268, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5269, "end_char": 5275, "word": "argues", "xpos": "", "tags": ["VPRT", "PUBV"]}
+{"start_char": 5276, "end_char": 5280, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 5281, "end_char": 5288, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 5289, "end_char": 5292, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "BYPA", "SPAU", "AUXB"]}
+{"start_char": 5293, "end_char": 5296, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5297, "end_char": 5307, "word": "reinvested", "xpos": "", "tags": []}
+{"start_char": 5308, "end_char": 5310, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5311, "end_char": 5318, "word": "default", "xpos": "", "tags": ["NN"]}
+{"start_char": 5320, "end_char": 5322, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5323, "end_char": 5331, "word": "increase", "xpos": "", "tags": ["NN"]}
+{"start_char": 5332, "end_char": 5334, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5335, "end_char": 5342, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 5343, "end_char": 5348, "word": "would", "xpos": "", "tags": ["PRMD", "SPAU"]}
+{"start_char": 5349, "end_char": 5353, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 5354, "end_char": 5358, "word": "mean", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 5359, "end_char": 5360, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5361, "end_char": 5369, "word": "decrease", "xpos": "", "tags": ["NN"]}
+{"start_char": 5370, "end_char": 5372, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5373, "end_char": 5384, "word": "consumption", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5386, "end_char": 5389, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5390, "end_char": 5400, "word": "subsequent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5401, "end_char": 5409, "word": "decrease", "xpos": "", "tags": ["NN"]}
+{"start_char": 5410, "end_char": 5412, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5413, "end_char": 5421, "word": "national", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5422, "end_char": 5428, "word": "income", "xpos": "", "tags": ["NN"]}
+{"start_char": 5429, "end_char": 5434, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5435, "end_char": 5441, "word": "signal", "xpos": "", "tags": ["INF"]}
+{"start_char": 5442, "end_char": 5443, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5444, "end_char": 5448, "word": "rise", "xpos": "", "tags": ["NN"]}
+{"start_char": 5449, "end_char": 5451, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5452, "end_char": 5464, "word": "unemployment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5466, "end_char": 5471, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 5473, "end_char": 5475, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5476, "end_char": 5480, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5481, "end_char": 5488, "word": "respect", "xpos": "", "tags": ["NN"]}
+{"start_char": 5489, "end_char": 5495, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5497, "end_char": 5504, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 5505, "end_char": 5511, "word": "hardly", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 5512, "end_char": 5518, "word": "aligns", "xpos": "", "tags": ["NN"]}
+{"start_char": 5519, "end_char": 5523, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5524, "end_char": 5533, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5534, "end_char": 5542, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5543, "end_char": 5551, "word": "concepts", "xpos": "", "tags": ["NN"]}
+{"start_char": 5552, "end_char": 5554, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5555, "end_char": 5562, "word": "savings", "xpos": "", "tags": ["NN"]}
+{"start_char": 5563, "end_char": 5566, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5567, "end_char": 5578, "word": "investments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5580, "end_char": 5589, "word": "Classical", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5590, "end_char": 5600, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 5601, "end_char": 5604, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5605, "end_char": 5611, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5612, "end_char": 5617, "word": "clash", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5618, "end_char": 5622, "word": "once", "xpos": "", "tags": ["RB", "TIME"]}
+{"start_char": 5623, "end_char": 5627, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 5628, "end_char": 5633, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5634, "end_char": 5637, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5638, "end_char": 5650, "word": "relationship", "xpos": "", "tags": ["NN"]}
+{"start_char": 5651, "end_char": 5653, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5654, "end_char": 5659, "word": "wages", "xpos": "", "tags": ["NN"]}
+{"start_char": 5660, "end_char": 5662, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5663, "end_char": 5675, "word": "unemployment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5677, "end_char": 5679, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 5680, "end_char": 5684, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5685, "end_char": 5691, "word": "regard", "xpos": "", "tags": ["NN"]}
+{"start_char": 5693, "end_char": 5700, "word": "Michael", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5701, "end_char": 5708, "word": "Stewart", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5709, "end_char": 5712, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 5713, "end_char": 5719, "word": "argued", "xpos": "", "tags": ["PUBV"]}
+{"start_char": 5720, "end_char": 5724, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 5725, "end_char": 5731, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5732, "end_char": 5738, "word": "relied", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5739, "end_char": 5741, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5742, "end_char": 5753, "word": "fundamental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5754, "end_char": 5763, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5764, "end_char": 5772, "word": "concepts", "xpos": "", "tags": ["NN"]}
+{"start_char": 5774, "end_char": 5777, "word": "yet", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5778, "end_char": 5787, "word": "developed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5788, "end_char": 5789, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5790, "end_char": 5799, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5800, "end_char": 5810, "word": "conclusion", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5812, "end_char": 5813, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 5814, "end_char": 5825, "word": "combination", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5826, "end_char": 5828, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5829, "end_char": 5832, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5833, "end_char": 5836, "word": "Law", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5837, "end_char": 5839, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5840, "end_char": 5851, "word": "Diminishing", "xpos": "", "tags": ["GER", "CAP", "PGAS"]}
+{"start_char": 5852, "end_char": 5859, "word": "Returns", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 5860, "end_char": 5863, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5864, "end_char": 5867, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5868, "end_char": 5874, "word": "Theory", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 5875, "end_char": 5877, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5878, "end_char": 5886, "word": "Marginal", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5887, "end_char": 5899, "word": "Productivity", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5900, "end_char": 5907, "word": "results", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5908, "end_char": 5910, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5911, "end_char": 5914, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5915, "end_char": 5926, "word": "observation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5927, "end_char": 5929, "word": "if", "xpos": "", "tags": ["COND", "PIN", "SCONJ", "PREP"]}
+{"start_char": 5930, "end_char": 5933, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5934, "end_char": 5940, "word": "number", "xpos": "", "tags": ["NN"]}
+{"start_char": 5941, "end_char": 5943, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5944, "end_char": 5951, "word": "workers", "xpos": "", "tags": ["NN"]}
+{"start_char": 5952, "end_char": 5961, "word": "increases", "xpos": "", "tags": ["NN"]}
+{"start_char": 5962, "end_char": 5966, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 5967, "end_char": 5977, "word": "individual", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5978, "end_char": 5982, "word": "must", "xpos": "", "tags": ["NEMD"]}
+{"start_char": 5983, "end_char": 5987, "word": "fall", "xpos": "", "tags": ["INF"]}
+{"start_char": 5989, "end_char": 5992, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 5993, "end_char": 6000, "word": "studies", "xpos": "", "tags": ["NN"]}
+{"start_char": 6001, "end_char": 6003, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6004, "end_char": 6010, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6012, "end_char": 6020, "word": "theories", "xpos": "", "tags": ["NN"]}
+{"start_char": 6021, "end_char": 6029, "word": "indicate", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 6030, "end_char": 6034, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 6035, "end_char": 6040, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 6041, "end_char": 6044, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 6045, "end_char": 6056, "word": "concurrence", "xpos": "", "tags": ["NN"]}
+{"start_char": 6057, "end_char": 6059, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6060, "end_char": 6064, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6065, "end_char": 6070, "word": "issue", "xpos": "", "tags": ["NN"]}
+{"start_char": 6071, "end_char": 6078, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6079, "end_char": 6082, "word": "him", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 6083, "end_char": 6086, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6087, "end_char": 6090, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6091, "end_char": 6099, "word": "classics", "xpos": "", "tags": ["NN"]}
+{"start_char": 6101, "end_char": 6113, "word": "Nevertheless", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 6115, "end_char": 6117, "word": "he", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6118, "end_char": 6125, "word": "claimed", "xpos": "", "tags": ["VBD", "PUBV"]}
+{"start_char": 6126, "end_char": 6130, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 6131, "end_char": 6135, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6136, "end_char": 6139, "word": "had", "xpos": "", "tags": ["VBD", "PEAS", "SPAU"]}
+{"start_char": 6140, "end_char": 6143, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6144, "end_char": 6157, "word": "distinguished", "xpos": "", "tags": []}
+{"start_char": 6158, "end_char": 6165, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6166, "end_char": 6170, "word": "real", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6171, "end_char": 6174, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6175, "end_char": 6180, "word": "money", "xpos": "", "tags": ["NN"]}
+{"start_char": 6181, "end_char": 6186, "word": "wages", "xpos": "", "tags": ["NN"]}
+{"start_char": 6188, "end_char": 6190, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 6191, "end_char": 6196, "word": "terms", "xpos": "", "tags": ["NN"]}
+{"start_char": 6197, "end_char": 6199, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6200, "end_char": 6213, "word": "macroeconomic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6214, "end_char": 6223, "word": "principle", "xpos": "", "tags": ["NN"]}
+{"start_char": 6224, "end_char": 6226, "word": "if", "xpos": "", "tags": ["COND", "PIN", "SCONJ", "PREP"]}
+{"start_char": 6227, "end_char": 6235, "word": "everyone", "xpos": "", "tags": ["QUPR", "INPR"]}
+{"start_char": 6236, "end_char": 6247, "word": "experiences", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6248, "end_char": 6255, "word": "similar", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6256, "end_char": 6263, "word": "changes", "xpos": "", "tags": ["NN"]}
+{"start_char": 6264, "end_char": 6266, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6267, "end_char": 6272, "word": "money", "xpos": "", "tags": ["NN"]}
+{"start_char": 6273, "end_char": 6278, "word": "wages", "xpos": "", "tags": ["NN"]}
+{"start_char": 6279, "end_char": 6283, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 6284, "end_char": 6287, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6288, "end_char": 6296, "word": "combined", "xpos": "", "tags": []}
+{"start_char": 6297, "end_char": 6301, "word": "real", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6302, "end_char": 6306, "word": "wage", "xpos": "", "tags": ["NN"]}
+{"start_char": 6307, "end_char": 6311, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 6312, "end_char": 6318, "word": "remain", "xpos": "", "tags": ["INF"]}
+{"start_char": 6319, "end_char": 6328, "word": "unchanged", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6330, "end_char": 6334, "word": "From", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 6335, "end_char": 6339, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6340, "end_char": 6342, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 6343, "end_char": 6350, "word": "follows", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6351, "end_char": 6355, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 6356, "end_char": 6358, "word": "if", "xpos": "", "tags": ["COND", "PIN", "SCONJ", "PREP"]}
+{"start_char": 6359, "end_char": 6363, "word": "real", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6364, "end_char": 6369, "word": "wages", "xpos": "", "tags": ["NN"]}
+{"start_char": 6370, "end_char": 6372, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 6373, "end_char": 6376, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6377, "end_char": 6383, "word": "change", "xpos": "", "tags": ["INF"]}
+{"start_char": 6385, "end_char": 6389, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 6390, "end_char": 6397, "word": "neither", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6398, "end_char": 6402, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 6403, "end_char": 6406, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6407, "end_char": 6412, "word": "level", "xpos": "", "tags": ["NN"]}
+{"start_char": 6413, "end_char": 6415, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6416, "end_char": 6426, "word": "employment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6428, "end_char": 6433, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 6435, "end_char": 6437, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6438, "end_char": 6448, "word": "opposition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6449, "end_char": 6451, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6452, "end_char": 6455, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6456, "end_char": 6465, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6466, "end_char": 6476, "word": "economists", "xpos": "", "tags": ["NN"]}
+{"start_char": 6477, "end_char": 6483, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6484, "end_char": 6490, "word": "argued", "xpos": "", "tags": ["VBD", "PUBV"]}
+{"start_char": 6491, "end_char": 6495, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 6496, "end_char": 6498, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 6499, "end_char": 6502, "word": "was", "xpos": "", "tags": ["VBD", "AUXB"]}
+{"start_char": 6503, "end_char": 6511, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 6512, "end_char": 6517, "word": "rates", "xpos": "", "tags": ["NN"]}
+{"start_char": 6518, "end_char": 6521, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6522, "end_char": 6525, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6526, "end_char": 6531, "word": "wages", "xpos": "", "tags": ["NN"]}
+{"start_char": 6532, "end_char": 6536, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 6537, "end_char": 6542, "word": "cause", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6543, "end_char": 6555, "word": "unemployment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6557, "end_char": 6570, "word": "Interestingly", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 6572, "end_char": 6579, "word": "however", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 6581, "end_char": 6585, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6586, "end_char": 6592, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 6593, "end_char": 6595, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 6596, "end_char": 6604, "word": "somewhat", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 6605, "end_char": 6612, "word": "negated", "xpos": "", "tags": []}
+{"start_char": 6613, "end_char": 6615, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6616, "end_char": 6621, "word": "light", "xpos": "", "tags": ["NN"]}
+{"start_char": 6622, "end_char": 6624, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6625, "end_char": 6628, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6629, "end_char": 6642, "word": "international", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6643, "end_char": 6652, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6653, "end_char": 6660, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 6661, "end_char": 6666, "word": "where", "xpos": "", "tags": ["RB", "WHOBJ", "SCONJ", "WH"]}
+{"start_char": 6667, "end_char": 6677, "word": "individual", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6678, "end_char": 6687, "word": "countries", "xpos": "", "tags": ["NN"]}
+{"start_char": 6688, "end_char": 6691, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 6692, "end_char": 6696, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 6697, "end_char": 6699, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6700, "end_char": 6704, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 6705, "end_char": 6709, "word": "open", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6710, "end_char": 6719, "word": "economies", "xpos": "", "tags": ["NN"]}
+{"start_char": 6721, "end_char": 6728, "word": "Stewart", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6730, "end_char": 6732, "word": "pp", "xpos": "", "tags": ["NNP"]}
+{"start_char": 6734, "end_char": 6737, "word": "109", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6738, "end_char": 6741, "word": "112", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6742, "end_char": 6749, "word": "Stewart", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6751, "end_char": 6753, "word": "p.", "xpos": "", "tags": ["NN"]}
+{"start_char": 6754, "end_char": 6757, "word": "109", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6758, "end_char": 6760, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 6761, "end_char": 6766, "word": "terms", "xpos": "", "tags": ["NN"]}
+{"start_char": 6767, "end_char": 6769, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6770, "end_char": 6776, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 6777, "end_char": 6783, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6784, "end_char": 6786, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 6787, "end_char": 6790, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6791, "end_char": 6804, "word": "significantly", "xpos": "", "tags": ["RB"]}
+{"start_char": 6805, "end_char": 6811, "word": "closer", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 6812, "end_char": 6814, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6815, "end_char": 6818, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6819, "end_char": 6822, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6823, "end_char": 6832, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6833, "end_char": 6840, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 6841, "end_char": 6843, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6844, "end_char": 6853, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 6855, "end_char": 6861, "word": "Indeed", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 6863, "end_char": 6869, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6870, "end_char": 6879, "word": "disagreed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 6880, "end_char": 6884, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6885, "end_char": 6888, "word": "Say", "xpos": "", "tags": ["PUBV", "CAP", "NNP"]}
+{"start_char": 6888, "end_char": 6890, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 6891, "end_char": 6894, "word": "Law", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6896, "end_char": 6901, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 6902, "end_char": 6904, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 6905, "end_char": 6909, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 6910, "end_char": 6912, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6913, "end_char": 6915, "word": "be", "xpos": "", "tags": ["AUXB", "INF"]}
+{"start_char": 6916, "end_char": 6919, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6920, "end_char": 6922, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6923, "end_char": 6926, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6927, "end_char": 6939, "word": "cornerstones", "xpos": "", "tags": ["NN"]}
+{"start_char": 6940, "end_char": 6942, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6943, "end_char": 6946, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6947, "end_char": 6956, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6957, "end_char": 6966, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 6968, "end_char": 6974, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6975, "end_char": 6987, "word": "contradicted", "xpos": "", "tags": ["VBD"]}
+{"start_char": 6988, "end_char": 6992, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6993, "end_char": 7004, "word": "proposition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7005, "end_char": 7007, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7008, "end_char": 7019, "word": "disagreeing", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 7020, "end_char": 7024, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7025, "end_char": 7028, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7029, "end_char": 7040, "word": "stipulation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7041, "end_char": 7045, "word": "that", "xpos": "", "tags": ["DEMO", "WHOBJ", "WH"]}
+{"start_char": 7046, "end_char": 7052, "word": "supply", "xpos": "", "tags": ["NN"]}
+{"start_char": 7053, "end_char": 7057, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 7058, "end_char": 7064, "word": "create", "xpos": "", "tags": ["INF"]}
+{"start_char": 7065, "end_char": 7068, "word": "its", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 7069, "end_char": 7072, "word": "own", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7073, "end_char": 7079, "word": "demand", "xpos": "", "tags": ["SUAV", "NN"]}
+{"start_char": 7081, "end_char": 7088, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 7090, "end_char": 7097, "word": "Michael", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7098, "end_char": 7105, "word": "Bleaney", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7106, "end_char": 7111, "word": "notes", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 7112, "end_char": 7116, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 7117, "end_char": 7123, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7125, "end_char": 7128, "word": "did", "xpos": "", "tags": ["VBD", "SPAU"]}
+{"start_char": 7129, "end_char": 7132, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7133, "end_char": 7137, "word": "make", "xpos": "", "tags": ["INF"]}
+{"start_char": 7138, "end_char": 7141, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 7142, "end_char": 7149, "word": "obvious", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7150, "end_char": 7160, "word": "departures", "xpos": "", "tags": ["NN"]}
+{"start_char": 7161, "end_char": 7165, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7166, "end_char": 7169, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7170, "end_char": 7173, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7174, "end_char": 7183, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7184, "end_char": 7193, "word": "tradition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7194, "end_char": 7196, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 7197, "end_char": 7200, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7201, "end_char": 7212, "word": "assumptions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7213, "end_char": 7219, "word": "around", "xpos": "", "tags": ["PIN", "PLACE", "PREP"]}
+{"start_char": 7220, "end_char": 7225, "word": "which", "xpos": "", "tags": ["PIRE", "DET", "WH"]}
+{"start_char": 7226, "end_char": 7229, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 7230, "end_char": 7236, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 7237, "end_char": 7240, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 7241, "end_char": 7246, "word": "built", "xpos": "", "tags": []}
+{"start_char": 7249, "end_char": 7253, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 7254, "end_char": 7259, "word": "leads", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 7260, "end_char": 7262, "word": "us", "xpos": "", "tags": ["FPP1", "PRP", "SBJP", "ACCU"]}
+{"start_char": 7263, "end_char": 7265, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7266, "end_char": 7269, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7270, "end_char": 7273, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7274, "end_char": 7283, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7284, "end_char": 7293, "word": "synthesis", "xpos": "", "tags": ["NN"]}
+{"start_char": 7294, "end_char": 7302, "word": "argument", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7303, "end_char": 7307, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 7308, "end_char": 7314, "word": "claims", "xpos": "", "tags": ["VPRT", "PUBV"]}
+{"start_char": 7315, "end_char": 7318, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7319, "end_char": 7325, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7327, "end_char": 7334, "word": "General", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7335, "end_char": 7341, "word": "Theory", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7342, "end_char": 7345, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 7346, "end_char": 7352, "word": "merely", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 7353, "end_char": 7354, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 7356, "end_char": 7363, "word": "special", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7364, "end_char": 7368, "word": "case", "xpos": "", "tags": ["NN"]}
+{"start_char": 7369, "end_char": 7371, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7372, "end_char": 7375, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7376, "end_char": 7385, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7386, "end_char": 7392, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 7395, "end_char": 7398, "word": "Yet", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 7400, "end_char": 7402, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 7403, "end_char": 7407, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 7408, "end_char": 7413, "word": "above", "xpos": "", "tags": ["RB", "PLACE"]}
+{"start_char": 7415, "end_char": 7421, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7423, "end_char": 7431, "word": "thoughts", "xpos": "", "tags": ["NN"]}
+{"start_char": 7432, "end_char": 7435, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 7436, "end_char": 7439, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7440, "end_char": 7451, "word": "necessarily", "xpos": "", "tags": ["RB"]}
+{"start_char": 7452, "end_char": 7461, "word": "favorable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7462, "end_char": 7469, "word": "towards", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7470, "end_char": 7473, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7474, "end_char": 7483, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7484, "end_char": 7493, "word": "political", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7494, "end_char": 7501, "word": "economy", "xpos": "", "tags": ["NN"]}
+{"start_char": 7503, "end_char": 7509, "word": "Indeed", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 7511, "end_char": 7517, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7519, "end_char": 7529, "word": "accusation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7530, "end_char": 7534, "word": "that", "xpos": "", "tags": ["PIN", "STPR", "DEMP", "SCONJ", "PREP"]}
+{"start_char": 7536, "end_char": 7539, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7540, "end_char": 7549, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7550, "end_char": 7558, "word": "economic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7559, "end_char": 7565, "word": "theory", "xpos": "", "tags": ["NN"]}
+{"start_char": 7566, "end_char": 7568, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7569, "end_char": 7574, "word": "being", "xpos": "", "tags": ["AUXB"]}
+{"start_char": 7575, "end_char": 7581, "word": "itself", "xpos": "", "tags": ["PIT", "PRP", "SBJP", "ACCU"]}
+{"start_char": 7582, "end_char": 7585, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 7586, "end_char": 7588, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7589, "end_char": 7594, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 7595, "end_char": 7600, "word": "petty", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7602, "end_char": 7608, "word": "polite", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7609, "end_char": 7619, "word": "techniques", "xpos": "", "tags": ["NN"]}
+{"start_char": 7620, "end_char": 7625, "word": "which", "xpos": "", "tags": ["WHSUB", "DET", "WH"]}
+{"start_char": 7626, "end_char": 7631, "word": "tries", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 7632, "end_char": 7634, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 7635, "end_char": 7639, "word": "deal", "xpos": "", "tags": ["INF"]}
+{"start_char": 7640, "end_char": 7644, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7645, "end_char": 7648, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7649, "end_char": 7656, "word": "present", "xpos": "", "tags": ["NN"]}
+{"start_char": 7657, "end_char": 7659, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7660, "end_char": 7671, "word": "abstracting", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 7672, "end_char": 7676, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7677, "end_char": 7680, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7681, "end_char": 7685, "word": "fact", "xpos": "", "tags": ["NN"]}
+{"start_char": 7686, "end_char": 7690, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 7691, "end_char": 7693, "word": "we", "xpos": "", "tags": ["FPP1", "PRP", "SBJP"]}
+{"start_char": 7694, "end_char": 7698, "word": "know", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 7699, "end_char": 7703, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 7704, "end_char": 7710, "word": "little", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7711, "end_char": 7716, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7717, "end_char": 7720, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7721, "end_char": 7727, "word": "future", "xpos": "", "tags": ["NN"]}
+{"start_char": 7729, "end_char": 7731, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 7732, "end_char": 7735, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7736, "end_char": 7743, "word": "exactly", "xpos": "", "tags": ["RB"]}
+{"start_char": 7744, "end_char": 7753, "word": "favorable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7754, "end_char": 7756, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7757, "end_char": 7760, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7761, "end_char": 7770, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7771, "end_char": 7778, "word": "thought", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 7780, "end_char": 7787, "word": "Bleaney", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7789, "end_char": 7793, "word": "p.17", "xpos": "", "tags": ["NNP"]}
+{"start_char": 7794, "end_char": 7800, "word": "Togati", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7802, "end_char": 7805, "word": "p.3", "xpos": "", "tags": ["NN"]}
+{"start_char": 7806, "end_char": 7812, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7813, "end_char": 7818, "word": "cited", "xpos": "", "tags": ["VBD"]}
+{"start_char": 7819, "end_char": 7821, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 7822, "end_char": 7828, "word": "Togati", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7830, "end_char": 7834, "word": "p.47", "xpos": "", "tags": ["NNP"]}
+{"start_char": 7835, "end_char": 7837, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 7838, "end_char": 7843, "word": "light", "xpos": "", "tags": ["NN"]}
+{"start_char": 7844, "end_char": 7846, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7847, "end_char": 7852, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 7853, "end_char": 7864, "word": "theoretical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7865, "end_char": 7876, "word": "comparisons", "xpos": "", "tags": ["NN"]}
+{"start_char": 7877, "end_char": 7879, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 7880, "end_char": 7882, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 7883, "end_char": 7892, "word": "necessary", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 7893, "end_char": 7895, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7896, "end_char": 7904, "word": "abstract", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7905, "end_char": 7908, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 7909, "end_char": 7916, "word": "analyze", "xpos": "", "tags": ["INF"]}
+{"start_char": 7917, "end_char": 7921, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 7922, "end_char": 7932, "word": "scientific", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7933, "end_char": 7941, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 7942, "end_char": 7948, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 7949, "end_char": 7953, "word": "used", "xpos": "", "tags": ["VBD"]}
+{"start_char": 7954, "end_char": 7956, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 7957, "end_char": 7964, "word": "develop", "xpos": "", "tags": ["INF"]}
+{"start_char": 7965, "end_char": 7970, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 7971, "end_char": 7979, "word": "theories", "xpos": "", "tags": ["NN"]}
+{"start_char": 7981, "end_char": 7984, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 7985, "end_char": 7997, "word": "constructive", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7998, "end_char": 8004, "word": "method", "xpos": "", "tags": ["NN"]}
+{"start_char": 8005, "end_char": 8007, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8008, "end_char": 8011, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 8012, "end_char": 8015, "word": "neo", "xpos": "", "tags": ["JJ"]}
+{"start_char": 8016, "end_char": 8025, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 8026, "end_char": 8032, "word": "school", "xpos": "", "tags": ["NN"]}
+{"start_char": 8033, "end_char": 8036, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "AUXB"]}
+{"start_char": 8037, "end_char": 8047, "word": "criticized", "xpos": "", "tags": []}
+{"start_char": 8048, "end_char": 8050, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8051, "end_char": 8057, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 8058, "end_char": 8060, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 8061, "end_char": 8067, "word": "merely", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 8068, "end_char": 8075, "word": "dealing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 8076, "end_char": 8080, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8081, "end_char": 8091, "word": "particular", "xpos": "", "tags": ["JJ", "CONJ"]}
+{"start_char": 8092, "end_char": 8097, "word": "cases", "xpos": "", "tags": ["NN"]}
+{"start_char": 8099, "end_char": 8108, "word": "Therefore", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 8110, "end_char": 8116, "word": "Keynes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 8117, "end_char": 8119, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 8120, "end_char": 8124, "word": "seen", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 8125, "end_char": 8127, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 8128, "end_char": 8135, "word": "placing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 8137, "end_char": 8145, "word": "emphasis", "xpos": "", "tags": ["NN"]}
+{"start_char": 8146, "end_char": 8148, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8149, "end_char": 8159, "word": "aggregates", "xpos": "", "tags": ["NN"]}
+{"start_char": 8160, "end_char": 8166, "word": "rather", "xpos": "", "tags": ["RB"]}
+{"start_char": 8167, "end_char": 8171, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8172, "end_char": 8174, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8175, "end_char": 8189, "word": "representative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 8190, "end_char": 8196, "word": "agents", "xpos": "", "tags": ["NN"]}
+{"start_char": 8197, "end_char": 8199, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 8200, "end_char": 8211, "word": "irreducible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 8212, "end_char": 8221, "word": "realities", "xpos": "", "tags": ["NN"]}
+{"start_char": 8222, "end_char": 8224, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 8225, "end_char": 8234, "word": "economics", "xpos": "", "tags": ["NN"]}
+{"start_char": 8237, "end_char": 8239, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 8240, "end_char": 8248, "word": "addition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 8250, "end_char": 8253, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 8254, "end_char": 8261, "word": "General", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 8262, "end_char": 8268, "word": "Theory", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 8269, "end_char": 8275, "word": "market", "xpos": "", "tags": ["NN"]}
+{"start_char": 8279, "end_char": 8290, "word": "mathematics", "xpos": "", "tags": ["NN"]}
+{"start_char": 8291, "end_char": 8296, "word": "graph", "xpos": "", "tags": ["NN"]}
+{"start_char": 8297, "end_char": 8301, "word": "only", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 8302, "end_char": 8311, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 8312, "end_char": 8317, "word": "later", "xpos": "", "tags": ["RB", "TIME"]}
+{"start_char": 8319, "end_char": 8325, "word": "Togati", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 8327, "end_char": 8331, "word": "p.44", "xpos": "", "tags": ["NN"]}

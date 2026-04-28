@@ -8,6 +8,15 @@ import { showToast, showView } from '../ui.js'
 const QR_STEPS = ['queued', 'tagging', 'normalizing', 'kfa', 'saving', 'done']
 let _jobId     = null
 let _pollTimer = null
+let _isStarting = false
+let _isRunning = false
+
+function _setRunButtonBusy(isBusy) {
+  const btn = document.getElementById('btn-qr-run')
+  if (!btn) return
+  btn.disabled = isBusy
+  btn.textContent = isBusy ? 'Executando…' : 'Executar pipeline'
+}
 
 function setStep(step, isError) {
   document.querySelectorAll('.progress-step').forEach(el => {
@@ -70,6 +79,8 @@ async function poll(refreshKfaSelect) {
 
     if (r.status === 'done') {
       clearInterval(_pollTimer); _pollTimer = null
+      _isRunning = false
+      _setRunButtonBusy(false)
       // update project label via custom event
       document.dispatchEvent(new CustomEvent('project-changed'))
       try { await refreshKfaSelect() } catch (_) {}
@@ -87,10 +98,14 @@ async function poll(refreshKfaSelect) {
     }
     if (r.status === 'error') {
       clearInterval(_pollTimer); _pollTimer = null
+      _isRunning = false
+      _setRunButtonBusy(false)
       showToast(r.error || 'Erro na análise.', 'error')
     }
   } catch (err) {
     clearInterval(_pollTimer); _pollTimer = null
+    _isRunning = false
+    _setRunButtonBusy(false)
     showToast(err.message, 'error')
   }
 }
@@ -148,6 +163,8 @@ export function initQuickrun({ refreshKfaSelect }) {
   // Form submit
   document.getElementById('form-quickrun')?.addEventListener('submit', async e => {
     e.preventDefault()
+    if (_isStarting || _isRunning) return
+
     const get = id => document.getElementById(id)?.value?.trim()
 
     let outputPath = get('qr-output') || ''
@@ -182,17 +199,30 @@ export function initQuickrun({ refreshKfaSelect }) {
     }
 
     // Reset UI
+    _isStarting = true
+    _setRunButtonBusy(true)
     setStep('queued', false)
     setMsg('Iniciando…')
     document.getElementById('qr-progress')?.classList.remove('hidden')
     document.getElementById('btn-qr-results')?.classList.add('hidden')
 
     try {
+      if (_pollTimer) {
+        clearInterval(_pollTimer)
+        _pollTimer = null
+      }
       const { job_id } = await api.quickrun.start(body)
       _jobId      = job_id
-      _pollTimer  = setInterval(() => poll(refreshKfaSelect), 1500)
+      _isRunning = true
+      await poll(refreshKfaSelect)
+      if (_isRunning) {
+        _pollTimer  = setInterval(() => poll(refreshKfaSelect), 1500)
+      }
     } catch (err) {
+      _setRunButtonBusy(false)
       showToast(err.message, 'error')
+    } finally {
+      _isStarting = false
     }
   })
 

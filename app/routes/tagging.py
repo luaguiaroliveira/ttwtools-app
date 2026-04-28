@@ -5,6 +5,7 @@ routes/tagging.py — Dispara o pipeline biberplus/ttwtools e salva no .ttwa.
 from __future__ import annotations
 
 import tempfile
+import threading
 from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
@@ -75,7 +76,12 @@ def run_tagging(req: TagRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())
     _jobs[job_id] = {"status": "queued", "corpus_name": req.corpus_name}
 
-    background_tasks.add_task(_tag_job, job_id, req, app_state.current_project_path)
+    # Use an explicit daemon thread to avoid BackgroundTasks stalls in frozen app builds.
+    threading.Thread(
+        target=_tag_job,
+        args=(job_id, req, app_state.current_project_path),
+        daemon=True,
+    ).start()
     return {"job_id": job_id, "status": "queued"}
 
 
@@ -141,6 +147,7 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
                     folder_path_str=str(corpus_dir),
                     output_dir=str(tmp),
                     save_tagged=req.save_tagged,
+                    use_gpu=False,
                     extended=extended,
                 )
                 

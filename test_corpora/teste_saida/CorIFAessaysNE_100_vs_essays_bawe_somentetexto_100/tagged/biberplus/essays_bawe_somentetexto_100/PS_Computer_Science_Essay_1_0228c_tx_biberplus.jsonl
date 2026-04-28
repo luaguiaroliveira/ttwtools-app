@@ -1,0 +1,1310 @@
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Computer_Science_Essay_1_0228c_tx.txt"}
+{"start_char": 0, "end_char": 3, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4, "end_char": 7, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 8, "end_char": 15, "word": "English", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 16, "end_char": 23, "word": "Penguin", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 24, "end_char": 34, "word": "dictionary", "xpos": "", "tags": ["NN"]}
+{"start_char": 35, "end_char": 42, "word": "defines", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 43, "end_char": 44, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 45, "end_char": 53, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 54, "end_char": 56, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 57, "end_char": 58, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 60, "end_char": 72, "word": "programmable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 73, "end_char": 83, "word": "electronic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 84, "end_char": 90, "word": "device", "xpos": "", "tags": ["NN"]}
+{"start_char": 91, "end_char": 95, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 96, "end_char": 99, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 100, "end_char": 105, "word": "store", "xpos": "", "tags": ["INF"]}
+{"start_char": 107, "end_char": 115, "word": "retrieve", "xpos": "", "tags": ["INF"]}
+{"start_char": 116, "end_char": 119, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 120, "end_char": 127, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 128, "end_char": 132, "word": "data", "xpos": "", "tags": ["NN"]}
+{"start_char": 135, "end_char": 136, "word": "1", "xpos": "", "tags": ["NUM"]}
+{"start_char": 140, "end_char": 148, "word": "Outlined", "xpos": "", "tags": ["PASTP", "CAP"]}
+{"start_char": 149, "end_char": 151, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 152, "end_char": 156, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 157, "end_char": 160, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 161, "end_char": 163, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 164, "end_char": 169, "word": "means", "xpos": "", "tags": ["VPRT", "PRIV", "THATD"]}
+{"start_char": 170, "end_char": 174, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 175, "end_char": 179, "word": "when", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 180, "end_char": 187, "word": "talking", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 188, "end_char": 193, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 194, "end_char": 198, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 199, "end_char": 208, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 209, "end_char": 212, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 212, "end_char": 215, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 216, "end_char": 218, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 219, "end_char": 222, "word": "one", "xpos": "", "tags": ["PRP", "SBJP"]}
+{"start_char": 223, "end_char": 226, "word": "has", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 227, "end_char": 229, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 230, "end_char": 234, "word": "take", "xpos": "", "tags": ["INF"]}
+{"start_char": 235, "end_char": 239, "word": "into", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 240, "end_char": 247, "word": "account", "xpos": "", "tags": ["NN"]}
+{"start_char": 248, "end_char": 252, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 253, "end_char": 258, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 259, "end_char": 262, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 263, "end_char": 272, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 273, "end_char": 275, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 276, "end_char": 280, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 281, "end_char": 291, "word": "electronic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 292, "end_char": 301, "word": "equipment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 303, "end_char": 313, "word": "Electronic", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 314, "end_char": 319, "word": "chips", "xpos": "", "tags": ["NN"]}
+{"start_char": 320, "end_char": 323, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 324, "end_char": 331, "word": "devices", "xpos": "", "tags": ["NN"]}
+{"start_char": 332, "end_char": 336, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 337, "end_char": 341, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 342, "end_char": 346, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 347, "end_char": 355, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 356, "end_char": 358, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 359, "end_char": 364, "word": "store", "xpos": "", "tags": ["INF"]}
+{"start_char": 365, "end_char": 374, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 375, "end_char": 380, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 381, "end_char": 384, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 385, "end_char": 391, "word": "output", "xpos": "", "tags": ["NN"]}
+{"start_char": 392, "end_char": 400, "word": "voltages", "xpos": "", "tags": ["NN"]}
+{"start_char": 402, "end_char": 407, "word": "Hence", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 409, "end_char": 412, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 413, "end_char": 420, "word": "silicon", "xpos": "", "tags": ["NN"]}
+{"start_char": 421, "end_char": 426, "word": "chips", "xpos": "", "tags": ["NN"]}
+{"start_char": 427, "end_char": 430, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 431, "end_char": 436, "word": "forms", "xpos": "", "tags": ["NN"]}
+{"start_char": 437, "end_char": 439, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 440, "end_char": 441, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 442, "end_char": 450, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 451, "end_char": 454, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 455, "end_char": 460, "word": "these", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 461, "end_char": 464, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 465, "end_char": 471, "word": "placed", "xpos": "", "tags": []}
+{"start_char": 472, "end_char": 478, "word": "inside", "xpos": "", "tags": ["JJ", "PLACE"]}
+{"start_char": 479, "end_char": 490, "word": "televisions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 492, "end_char": 497, "word": "video", "xpos": "", "tags": ["NN"]}
+{"start_char": 498, "end_char": 507, "word": "recorders", "xpos": "", "tags": ["NN"]}
+{"start_char": 509, "end_char": 519, "word": "microwaves", "xpos": "", "tags": ["NN"]}
+{"start_char": 520, "end_char": 523, "word": "etc", "xpos": "", "tags": ["X"]}
+{"start_char": 525, "end_char": 532, "word": "Another", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 533, "end_char": 538, "word": "point", "xpos": "", "tags": ["NN"]}
+{"start_char": 539, "end_char": 541, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 542, "end_char": 546, "word": "make", "xpos": "", "tags": ["INF"]}
+{"start_char": 547, "end_char": 549, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 550, "end_char": 554, "word": "that", "xpos": "", "tags": ["PIN", "DEMP", "SCONJ", "PREP"]}
+{"start_char": 555, "end_char": 559, "word": "when", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 560, "end_char": 570, "word": "discussing", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 571, "end_char": 575, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 576, "end_char": 585, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 586, "end_char": 589, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 589, "end_char": 592, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 593, "end_char": 595, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 596, "end_char": 600, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 601, "end_char": 611, "word": "boundaries", "xpos": "", "tags": ["NN"]}
+{"start_char": 612, "end_char": 616, "word": "have", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 617, "end_char": 619, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 620, "end_char": 622, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 623, "end_char": 630, "word": "defined", "xpos": "", "tags": []}
+{"start_char": 632, "end_char": 634, "word": "It", "xpos": "", "tags": ["PIT", "CAP", "PRP", "SBJP"]}
+{"start_char": 635, "end_char": 639, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 640, "end_char": 642, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 643, "end_char": 647, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 648, "end_char": 652, "word": "easy", "xpos": "", "tags": ["JJ"]}
+{"start_char": 653, "end_char": 655, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 656, "end_char": 659, "word": "say", "xpos": "", "tags": ["PUBV", "THATD", "INF"]}
+{"start_char": 660, "end_char": 669, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 670, "end_char": 673, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 673, "end_char": 676, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 677, "end_char": 683, "word": "change", "xpos": "", "tags": ["INF"]}
+{"start_char": 684, "end_char": 688, "word": "into", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 689, "end_char": 694, "word": "frogs", "xpos": "", "tags": ["NN"]}
+{"start_char": 695, "end_char": 698, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 699, "end_char": 703, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 704, "end_char": 707, "word": "but", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 708, "end_char": 712, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 713, "end_char": 718, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 719, "end_char": 723, "word": "lead", "xpos": "", "tags": ["INF"]}
+{"start_char": 724, "end_char": 726, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 727, "end_char": 731, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 732, "end_char": 744, "word": "disorganised", "xpos": "", "tags": ["JJ"]}
+{"start_char": 745, "end_char": 754, "word": "arguments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 755, "end_char": 758, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 759, "end_char": 768, "word": "structure", "xpos": "", "tags": ["NN"]}
+{"start_char": 770, "end_char": 772, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 773, "end_char": 777, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 778, "end_char": 783, "word": "essay", "xpos": "", "tags": ["NN"]}
+{"start_char": 784, "end_char": 788, "word": "when", "xpos": "", "tags": ["RB", "WHSUB", "SCONJ", "WH"]}
+{"start_char": 789, "end_char": 799, "word": "discussing", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 800, "end_char": 804, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 805, "end_char": 814, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 815, "end_char": 818, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 818, "end_char": 821, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 822, "end_char": 824, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 826, "end_char": 829, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 830, "end_char": 839, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 840, "end_char": 844, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 845, "end_char": 847, "word": "be", "xpos": "", "tags": ["PASS", "SPAU", "AUXB", "INF"]}
+{"start_char": 848, "end_char": 854, "word": "mainly", "xpos": "", "tags": ["RB"]}
+{"start_char": 855, "end_char": 863, "word": "compared", "xpos": "", "tags": []}
+{"start_char": 864, "end_char": 866, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 867, "end_char": 873, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 875, "end_char": 886, "word": "Discovering", "xpos": "", "tags": ["GER", "PRIV", "PRESP", "CAP", "PGAS"]}
+{"start_char": 887, "end_char": 891, "word": "what", "xpos": "", "tags": ["WHQU", "WHCL", "WH"]}
+{"start_char": 892, "end_char": 901, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 902, "end_char": 905, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 905, "end_char": 908, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 909, "end_char": 911, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 912, "end_char": 916, "word": "will", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 917, "end_char": 921, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 922, "end_char": 924, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 925, "end_char": 927, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 928, "end_char": 935, "word": "tackled", "xpos": "", "tags": []}
+{"start_char": 936, "end_char": 938, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 939, "end_char": 940, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 941, "end_char": 950, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 951, "end_char": 954, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 956, "end_char": 963, "word": "Firstly", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 964, "end_char": 966, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 967, "end_char": 970, "word": "may", "xpos": "", "tags": ["POMD"]}
+{"start_char": 971, "end_char": 973, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 974, "end_char": 983, "word": "important", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 984, "end_char": 986, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 987, "end_char": 990, "word": "see", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 991, "end_char": 995, "word": "what", "xpos": "", "tags": ["WHCL", "WH"]}
+{"start_char": 996, "end_char": 1005, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1006, "end_char": 1009, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1010, "end_char": 1012, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 1013, "end_char": 1015, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1016, "end_char": 1021, "word": "order", "xpos": "", "tags": ["SUAV", "NN"]}
+{"start_char": 1022, "end_char": 1024, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1025, "end_char": 1029, "word": "find", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 1030, "end_char": 1033, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1034, "end_char": 1038, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 1039, "end_char": 1043, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1044, "end_char": 1047, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 1047, "end_char": 1050, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1051, "end_char": 1053, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 1055, "end_char": 1064, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1065, "end_char": 1069, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1070, "end_char": 1078, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 1079, "end_char": 1081, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1082, "end_char": 1087, "word": "solve", "xpos": "", "tags": ["INF"]}
+{"start_char": 1088, "end_char": 1100, "word": "mathematical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1101, "end_char": 1109, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 1110, "end_char": 1114, "word": "much", "xpos": "", "tags": ["QUAN", "RB"]}
+{"start_char": 1115, "end_char": 1121, "word": "faster", "xpos": "", "tags": ["RB", "CMADJ"]}
+{"start_char": 1122, "end_char": 1126, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1127, "end_char": 1133, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 1134, "end_char": 1139, "word": "could", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1141, "end_char": 1145, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 1146, "end_char": 1152, "word": "slowly", "xpos": "", "tags": ["RB"]}
+{"start_char": 1153, "end_char": 1163, "word": "progressed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1164, "end_char": 1168, "word": "onto", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1169, "end_char": 1176, "word": "storage", "xpos": "", "tags": ["NN"]}
+{"start_char": 1177, "end_char": 1179, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1180, "end_char": 1184, "word": "data", "xpos": "", "tags": ["NN"]}
+{"start_char": 1185, "end_char": 1188, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 1189, "end_char": 1193, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 1194, "end_char": 1200, "word": "became", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1201, "end_char": 1204, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1205, "end_char": 1209, "word": "tool", "xpos": "", "tags": ["NN"]}
+{"start_char": 1210, "end_char": 1212, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1213, "end_char": 1216, "word": "our", "xpos": "", "tags": ["FPP1", "PRP", "SBJP"]}
+{"start_char": 1217, "end_char": 1225, "word": "everyday", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1226, "end_char": 1231, "word": "lives", "xpos": "", "tags": ["NN"]}
+{"start_char": 1233, "end_char": 1236, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1237, "end_char": 1244, "word": "typical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1246, "end_char": 1254, "word": "personal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1255, "end_char": 1263, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 1265, "end_char": 1268, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1269, "end_char": 1276, "word": "perform", "xpos": "", "tags": ["INF"]}
+{"start_char": 1277, "end_char": 1287, "word": "activities", "xpos": "", "tags": ["NN"]}
+{"start_char": 1289, "end_char": 1294, "word": "which", "xpos": "", "tags": ["SERE", "DET", "WH"]}
+{"start_char": 1295, "end_char": 1304, "word": "entertain", "xpos": "", "tags": ["NN"]}
+{"start_char": 1306, "end_char": 1314, "word": "organise", "xpos": "", "tags": ["INF"]}
+{"start_char": 1315, "end_char": 1318, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1319, "end_char": 1323, "word": "help", "xpos": "", "tags": ["INF"]}
+{"start_char": 1324, "end_char": 1327, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1328, "end_char": 1333, "word": "lives", "xpos": "", "tags": ["NN"]}
+{"start_char": 1334, "end_char": 1336, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1337, "end_char": 1343, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 1345, "end_char": 1350, "word": "These", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 1351, "end_char": 1360, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1361, "end_char": 1364, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1365, "end_char": 1368, "word": "run", "xpos": "", "tags": ["INF"]}
+{"start_char": 1369, "end_char": 1377, "word": "software", "xpos": "", "tags": ["NN"]}
+{"start_char": 1379, "end_char": 1383, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1384, "end_char": 1386, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1387, "end_char": 1392, "word": "games", "xpos": "", "tags": ["NN"]}
+{"start_char": 1394, "end_char": 1397, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 1398, "end_char": 1401, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1402, "end_char": 1408, "word": "assist", "xpos": "", "tags": ["INF"]}
+{"start_char": 1409, "end_char": 1413, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1414, "end_char": 1420, "word": "normal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1421, "end_char": 1426, "word": "daily", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1427, "end_char": 1437, "word": "activities", "xpos": "", "tags": ["NN"]}
+{"start_char": 1439, "end_char": 1443, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1444, "end_char": 1446, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1447, "end_char": 1454, "word": "writing", "xpos": "", "tags": ["PUBV", "NN"]}
+{"start_char": 1456, "end_char": 1458, "word": "At", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 1459, "end_char": 1460, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1461, "end_char": 1466, "word": "basic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1467, "end_char": 1472, "word": "level", "xpos": "", "tags": ["NN"]}
+{"start_char": 1473, "end_char": 1482, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1483, "end_char": 1486, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1487, "end_char": 1489, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 1490, "end_char": 1499, "word": "described", "xpos": "", "tags": []}
+{"start_char": 1500, "end_char": 1502, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1503, "end_char": 1507, "word": "fast", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1508, "end_char": 1518, "word": "processors", "xpos": "", "tags": ["NN"]}
+{"start_char": 1519, "end_char": 1521, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1522, "end_char": 1533, "word": "information", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1535, "end_char": 1542, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 1543, "end_char": 1554, "word": "remembering", "xpos": "", "tags": ["GER", "PRIV", "PGAS"]}
+{"start_char": 1555, "end_char": 1558, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1559, "end_char": 1569, "word": "definition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1570, "end_char": 1572, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1573, "end_char": 1576, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1577, "end_char": 1581, "word": "word", "xpos": "", "tags": ["NN"]}
+{"start_char": 1583, "end_char": 1591, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 1593, "end_char": 1598, "word": "means", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 1599, "end_char": 1603, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 1604, "end_char": 1613, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1614, "end_char": 1617, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1618, "end_char": 1620, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1621, "end_char": 1625, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 1626, "end_char": 1636, "word": "electronic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1637, "end_char": 1642, "word": "items", "xpos": "", "tags": ["NN"]}
+{"start_char": 1644, "end_char": 1653, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1654, "end_char": 1657, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 1658, "end_char": 1668, "word": "integrated", "xpos": "", "tags": []}
+{"start_char": 1669, "end_char": 1671, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1672, "end_char": 1674, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1675, "end_char": 1678, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1679, "end_char": 1688, "word": "lifestyle", "xpos": "", "tags": ["NN"]}
+{"start_char": 1689, "end_char": 1691, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1692, "end_char": 1698, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 1699, "end_char": 1701, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1702, "end_char": 1706, "word": "such", "xpos": "", "tags": ["EMPH", "DET"]}
+{"start_char": 1707, "end_char": 1708, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1709, "end_char": 1712, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 1713, "end_char": 1717, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 1718, "end_char": 1727, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 1728, "end_char": 1731, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 1732, "end_char": 1740, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 1741, "end_char": 1743, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1744, "end_char": 1748, "word": "help", "xpos": "", "tags": ["INF"]}
+{"start_char": 1749, "end_char": 1751, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1752, "end_char": 1757, "word": "daily", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1758, "end_char": 1768, "word": "activities", "xpos": "", "tags": ["NN"]}
+{"start_char": 1770, "end_char": 1779, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1780, "end_char": 1783, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1784, "end_char": 1786, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 1787, "end_char": 1791, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 1792, "end_char": 1799, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1800, "end_char": 1803, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1804, "end_char": 1811, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 1813, "end_char": 1822, "word": "vacuuming", "xpos": "", "tags": ["NN"]}
+{"start_char": 1823, "end_char": 1825, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1826, "end_char": 1829, "word": "fly", "xpos": "", "tags": ["INF"]}
+{"start_char": 1830, "end_char": 1836, "word": "planes", "xpos": "", "tags": ["NN"]}
+{"start_char": 1838, "end_char": 1847, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 1848, "end_char": 1851, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1852, "end_char": 1859, "word": "perform", "xpos": "", "tags": ["INF"]}
+{"start_char": 1860, "end_char": 1864, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 1865, "end_char": 1875, "word": "operations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1876, "end_char": 1885, "word": "involving", "xpos": "", "tags": ["WZPRES", "PGAS"]}
+{"start_char": 1886, "end_char": 1897, "word": "electronics", "xpos": "", "tags": ["NN"]}
+{"start_char": 1899, "end_char": 1906, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 1907, "end_char": 1910, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1911, "end_char": 1914, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 1915, "end_char": 1922, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1923, "end_char": 1930, "word": "involve", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1931, "end_char": 1942, "word": "electronics", "xpos": "", "tags": ["NN"]}
+{"start_char": 1944, "end_char": 1948, "word": "Some", "xpos": "", "tags": ["QUAN", "CAP", "DET"]}
+{"start_char": 1949, "end_char": 1956, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1957, "end_char": 1961, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 1962, "end_char": 1964, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 1965, "end_char": 1968, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1969, "end_char": 1976, "word": "involve", "xpos": "", "tags": ["INF"]}
+{"start_char": 1977, "end_char": 1988, "word": "electronics", "xpos": "", "tags": ["NN"]}
+{"start_char": 1989, "end_char": 1996, "word": "involve", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1997, "end_char": 2001, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 2002, "end_char": 2006, "word": "form", "xpos": "", "tags": ["NN"]}
+{"start_char": 2007, "end_char": 2009, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2010, "end_char": 2016, "word": "simple", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2017, "end_char": 2025, "word": "movement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2027, "end_char": 2033, "word": "Eating", "xpos": "", "tags": ["CAP", "PGAS"]}
+{"start_char": 2034, "end_char": 2042, "word": "requires", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 2043, "end_char": 2046, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2047, "end_char": 2058, "word": "contraction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2059, "end_char": 2062, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2063, "end_char": 2071, "word": "dilation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2072, "end_char": 2074, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2075, "end_char": 2082, "word": "muscles", "xpos": "", "tags": ["NN"]}
+{"start_char": 2083, "end_char": 2085, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2086, "end_char": 2089, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2090, "end_char": 2093, "word": "arm", "xpos": "", "tags": ["NN"]}
+{"start_char": 2094, "end_char": 2096, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2097, "end_char": 2101, "word": "move", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 2102, "end_char": 2106, "word": "food", "xpos": "", "tags": ["NN"]}
+{"start_char": 2107, "end_char": 2109, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2110, "end_char": 2113, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2114, "end_char": 2119, "word": "mouth", "xpos": "", "tags": ["NN"]}
+{"start_char": 2121, "end_char": 2128, "word": "running", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 2129, "end_char": 2137, "word": "requires", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 2138, "end_char": 2141, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2142, "end_char": 2153, "word": "contraction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2154, "end_char": 2157, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2158, "end_char": 2166, "word": "dilation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2167, "end_char": 2169, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2170, "end_char": 2177, "word": "muscles", "xpos": "", "tags": ["NN"]}
+{"start_char": 2178, "end_char": 2180, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2181, "end_char": 2184, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2185, "end_char": 2189, "word": "legs", "xpos": "", "tags": ["NN"]}
+{"start_char": 2191, "end_char": 2199, "word": "movement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2200, "end_char": 2202, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2203, "end_char": 2210, "word": "general", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2211, "end_char": 2219, "word": "requires", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 2220, "end_char": 2223, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2224, "end_char": 2235, "word": "contraction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2236, "end_char": 2239, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2240, "end_char": 2248, "word": "dilation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2249, "end_char": 2251, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2252, "end_char": 2259, "word": "muscles", "xpos": "", "tags": ["NN"]}
+{"start_char": 2261, "end_char": 2270, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2271, "end_char": 2273, "word": "do", "xpos": "", "tags": ["VPRT", "PROD", "SPAU"]}
+{"start_char": 2274, "end_char": 2276, "word": "no", "xpos": "", "tags": ["RB"]}
+{"start_char": 2277, "end_char": 2281, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 2282, "end_char": 2285, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 2286, "end_char": 2293, "word": "muscles", "xpos": "", "tags": ["NN"]}
+{"start_char": 2294, "end_char": 2297, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 2298, "end_char": 2300, "word": "so", "xpos": "", "tags": ["RB"]}
+{"start_char": 2301, "end_char": 2304, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 2304, "end_char": 2307, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2308, "end_char": 2312, "word": "move", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 2313, "end_char": 2315, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2316, "end_char": 2320, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2321, "end_char": 2324, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 2326, "end_char": 2330, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 2331, "end_char": 2333, "word": "do", "xpos": "", "tags": ["VPRT", "PROD", "SPAU"]}
+{"start_char": 2334, "end_char": 2337, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2338, "end_char": 2342, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 2343, "end_char": 2348, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2349, "end_char": 2354, "word": "forms", "xpos": "", "tags": ["NN"]}
+{"start_char": 2355, "end_char": 2357, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2358, "end_char": 2366, "word": "movement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2367, "end_char": 2373, "word": "either", "xpos": "", "tags": ["RB"]}
+{"start_char": 2375, "end_char": 2379, "word": "Cars", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2380, "end_char": 2384, "word": "move", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 2385, "end_char": 2387, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2388, "end_char": 2398, "word": "converting", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 2399, "end_char": 2402, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2403, "end_char": 2411, "word": "chemical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2412, "end_char": 2418, "word": "energy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2419, "end_char": 2425, "word": "stored", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2426, "end_char": 2428, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2429, "end_char": 2435, "word": "petrol", "xpos": "", "tags": ["NN"]}
+{"start_char": 2436, "end_char": 2438, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2439, "end_char": 2446, "word": "kinetic", "xpos": "", "tags": ["INF"]}
+{"start_char": 2447, "end_char": 2453, "word": "energy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2455, "end_char": 2459, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 2460, "end_char": 2466, "word": "energy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2467, "end_char": 2473, "word": "drives", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2474, "end_char": 2477, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2478, "end_char": 2484, "word": "engine", "xpos": "", "tags": ["NN"]}
+{"start_char": 2486, "end_char": 2494, "word": "rotating", "xpos": "", "tags": ["PRESP", "PGAS"]}
+{"start_char": 2495, "end_char": 2498, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2499, "end_char": 2505, "word": "wheels", "xpos": "", "tags": ["NN"]}
+{"start_char": 2507, "end_char": 2513, "word": "moving", "xpos": "", "tags": ["SUAV", "PRESP", "PGAS"]}
+{"start_char": 2514, "end_char": 2517, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2518, "end_char": 2521, "word": "car", "xpos": "", "tags": ["NN"]}
+{"start_char": 2522, "end_char": 2529, "word": "forward", "xpos": "", "tags": ["RB"]}
+{"start_char": 2531, "end_char": 2536, "word": "There", "xpos": "", "tags": ["EX", "CAP"]}
+{"start_char": 2537, "end_char": 2540, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 2541, "end_char": 2545, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 2546, "end_char": 2551, "word": "types", "xpos": "", "tags": ["NN"]}
+{"start_char": 2552, "end_char": 2554, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2555, "end_char": 2563, "word": "movement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2564, "end_char": 2567, "word": "but", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2568, "end_char": 2577, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 2578, "end_char": 2580, "word": "do", "xpos": "", "tags": ["VPRT", "PROD", "SPAU"]}
+{"start_char": 2581, "end_char": 2584, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2585, "end_char": 2589, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 2590, "end_char": 2593, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 2594, "end_char": 2596, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2597, "end_char": 2601, "word": "them", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 2603, "end_char": 2608, "word": "Since", "xpos": "", "tags": ["OSUB", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 2609, "end_char": 2618, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 2619, "end_char": 2621, "word": "do", "xpos": "", "tags": ["VPRT", "PROD", "SPAU"]}
+{"start_char": 2622, "end_char": 2625, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2626, "end_char": 2630, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 2631, "end_char": 2638, "word": "muscles", "xpos": "", "tags": ["NN"]}
+{"start_char": 2640, "end_char": 2642, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2643, "end_char": 2648, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2649, "end_char": 2660, "word": "equivalents", "xpos": "", "tags": ["NN"]}
+{"start_char": 2662, "end_char": 2666, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2667, "end_char": 2670, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 2670, "end_char": 2673, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2674, "end_char": 2684, "word": "physically", "xpos": "", "tags": ["RB"]}
+{"start_char": 2685, "end_char": 2689, "word": "move", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 2690, "end_char": 2692, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2693, "end_char": 2703, "word": "themselves", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 2705, "end_char": 2710, "word": "Other", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 2711, "end_char": 2718, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2719, "end_char": 2723, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 2724, "end_char": 2726, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 2727, "end_char": 2730, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2731, "end_char": 2738, "word": "require", "xpos": "", "tags": ["SUAV", "THATD", "INF"]}
+{"start_char": 2739, "end_char": 2750, "word": "electronics", "xpos": "", "tags": ["NN"]}
+{"start_char": 2751, "end_char": 2754, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 2755, "end_char": 2762, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2763, "end_char": 2765, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2766, "end_char": 2769, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2770, "end_char": 2774, "word": "mind", "xpos": "", "tags": ["NN"]}
+{"start_char": 2776, "end_char": 2778, "word": "At", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 2779, "end_char": 2783, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2784, "end_char": 2790, "word": "moment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2791, "end_char": 2793, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2794, "end_char": 2798, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 2799, "end_char": 2808, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 2809, "end_char": 2812, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 2812, "end_char": 2815, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2817, "end_char": 2822, "word": "think", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 2824, "end_char": 2826, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2827, "end_char": 2830, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2831, "end_char": 2834, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 2835, "end_char": 2839, "word": "that", "xpos": "", "tags": ["TOBJ", "WHOBJ", "WH"]}
+{"start_char": 2840, "end_char": 2846, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 2847, "end_char": 2849, "word": "do", "xpos": "", "tags": ["VPRT", "PROD"]}
+{"start_char": 2851, "end_char": 2860, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2861, "end_char": 2864, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "BYPA", "AUXB"]}
+{"start_char": 2865, "end_char": 2873, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 2874, "end_char": 2876, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2877, "end_char": 2883, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 2884, "end_char": 2886, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2887, "end_char": 2891, "word": "take", "xpos": "", "tags": ["INF"]}
+{"start_char": 2892, "end_char": 2898, "word": "inputs", "xpos": "", "tags": ["NN"]}
+{"start_char": 2900, "end_char": 2907, "word": "process", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2908, "end_char": 2913, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2914, "end_char": 2920, "word": "inputs", "xpos": "", "tags": ["NN"]}
+{"start_char": 2922, "end_char": 2925, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 2926, "end_char": 2930, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 2931, "end_char": 2936, "word": "carry", "xpos": "", "tags": ["INF"]}
+{"start_char": 2937, "end_char": 2940, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2941, "end_char": 2943, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2944, "end_char": 2950, "word": "action", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2951, "end_char": 2956, "word": "based", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2957, "end_char": 2959, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2960, "end_char": 2963, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2964, "end_char": 2969, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 2971, "end_char": 2980, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2981, "end_char": 2983, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 2984, "end_char": 2987, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2988, "end_char": 2991, "word": "act", "xpos": "", "tags": ["INF"]}
+{"start_char": 2992, "end_char": 2999, "word": "without", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3000, "end_char": 3004, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3005, "end_char": 3009, "word": "form", "xpos": "", "tags": ["NN"]}
+{"start_char": 3010, "end_char": 3012, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3013, "end_char": 3018, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 3020, "end_char": 3024, "word": "When", "xpos": "", "tags": ["RB", "CAP", "SCONJ", "WH"]}
+{"start_char": 3025, "end_char": 3031, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 3032, "end_char": 3037, "word": "think", "xpos": "", "tags": ["VPRT", "PRIV", "THATD"]}
+{"start_char": 3038, "end_char": 3042, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 3043, "end_char": 3046, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 3047, "end_char": 3052, "word": "think", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 3053, "end_char": 3063, "word": "creatively", "xpos": "", "tags": ["RB"]}
+{"start_char": 3064, "end_char": 3067, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3068, "end_char": 3075, "word": "produce", "xpos": "", "tags": ["INF"]}
+{"start_char": 3076, "end_char": 3079, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3080, "end_char": 3085, "word": "ideas", "xpos": "", "tags": ["NN"]}
+{"start_char": 3086, "end_char": 3093, "word": "without", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3094, "end_char": 3097, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3098, "end_char": 3102, "word": "real", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3103, "end_char": 3108, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 3110, "end_char": 3119, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3120, "end_char": 3123, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 3124, "end_char": 3128, "word": "only", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 3129, "end_char": 3136, "word": "produce", "xpos": "", "tags": ["INF"]}
+{"start_char": 3137, "end_char": 3142, "word": "ideas", "xpos": "", "tags": ["NN"]}
+{"start_char": 3143, "end_char": 3148, "word": "based", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 3149, "end_char": 3151, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3152, "end_char": 3156, "word": "what", "xpos": "", "tags": ["WH"]}
+{"start_char": 3157, "end_char": 3160, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 3161, "end_char": 3165, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 3166, "end_char": 3176, "word": "programmed", "xpos": "", "tags": []}
+{"start_char": 3177, "end_char": 3181, "word": "into", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3182, "end_char": 3186, "word": "them", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 3188, "end_char": 3190, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 3191, "end_char": 3194, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3195, "end_char": 3199, "word": "1950", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3199, "end_char": 3201, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 3203, "end_char": 3207, "word": "Alan", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3208, "end_char": 3214, "word": "Turing", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3216, "end_char": 3217, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3218, "end_char": 3226, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 3227, "end_char": 3236, "word": "scientist", "xpos": "", "tags": ["NN"]}
+{"start_char": 3237, "end_char": 3240, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3241, "end_char": 3254, "word": "mathematician", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3256, "end_char": 3264, "word": "designed", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3265, "end_char": 3271, "word": "Turing", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3271, "end_char": 3273, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 3274, "end_char": 3278, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3280, "end_char": 3284, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 3285, "end_char": 3289, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3290, "end_char": 3293, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 3294, "end_char": 3302, "word": "composed", "xpos": "", "tags": []}
+{"start_char": 3303, "end_char": 3305, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3306, "end_char": 3310, "word": "test", "xpos": "", "tags": ["INF"]}
+{"start_char": 3311, "end_char": 3314, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3315, "end_char": 3325, "word": "artificial", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3326, "end_char": 3338, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 3339, "end_char": 3341, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3342, "end_char": 3351, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 3352, "end_char": 3357, "word": "based", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 3358, "end_char": 3360, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3361, "end_char": 3367, "word": "verbal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3368, "end_char": 3376, "word": "response", "xpos": "", "tags": ["NN"]}
+{"start_char": 3378, "end_char": 3381, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3382, "end_char": 3386, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3387, "end_char": 3390, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 3391, "end_char": 3393, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 3394, "end_char": 3403, "word": "described", "xpos": "", "tags": []}
+{"start_char": 3404, "end_char": 3406, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3407, "end_char": 3414, "word": "follows", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3417, "end_char": 3418, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 3419, "end_char": 3425, "word": "person", "xpos": "", "tags": ["NN"]}
+{"start_char": 3426, "end_char": 3429, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3430, "end_char": 3431, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3432, "end_char": 3439, "word": "machine", "xpos": "", "tags": ["NN"]}
+{"start_char": 3440, "end_char": 3444, "word": "each", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3445, "end_char": 3456, "word": "communicate", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3457, "end_char": 3461, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3462, "end_char": 3464, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3465, "end_char": 3475, "word": "inquisitor", "xpos": "", "tags": ["NN"]}
+{"start_char": 3477, "end_char": 3480, "word": "who", "xpos": "", "tags": ["WHQU", "WH"]}
+{"start_char": 3481, "end_char": 3485, "word": "must", "xpos": "", "tags": ["NEMD"]}
+{"start_char": 3486, "end_char": 3492, "word": "decide", "xpos": "", "tags": ["PRIV", "SUAV", "INF"]}
+{"start_char": 3493, "end_char": 3498, "word": "which", "xpos": "", "tags": ["DET", "WH"]}
+{"start_char": 3499, "end_char": 3501, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3502, "end_char": 3505, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3506, "end_char": 3511, "word": "human", "xpos": "", "tags": ["NN"]}
+{"start_char": 3512, "end_char": 3515, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 3516, "end_char": 3521, "word": "which", "xpos": "", "tags": ["DET", "WH"]}
+{"start_char": 3522, "end_char": 3524, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3525, "end_char": 3528, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3529, "end_char": 3537, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 3539, "end_char": 3541, "word": "If", "xpos": "", "tags": ["COND", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 3542, "end_char": 3546, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 3547, "end_char": 3552, "word": "guess", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 3553, "end_char": 3558, "word": "wrong", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3559, "end_char": 3563, "word": "half", "xpos": "", "tags": ["DET"]}
+{"start_char": 3564, "end_char": 3567, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3568, "end_char": 3572, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 3574, "end_char": 3577, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3578, "end_char": 3586, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 3587, "end_char": 3589, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3590, "end_char": 3601, "word": "essentially", "xpos": "", "tags": ["RB"]}
+{"start_char": 3602, "end_char": 3619, "word": "indistinguishable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3620, "end_char": 3624, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3625, "end_char": 3626, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3627, "end_char": 3632, "word": "human", "xpos": "", "tags": ["NN"]}
+{"start_char": 3633, "end_char": 3636, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3637, "end_char": 3643, "word": "passes", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3644, "end_char": 3650, "word": "Turing", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3650, "end_char": 3652, "word": "'s", "xpos": "", "tags": []}
+{"start_char": 3653, "end_char": 3657, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3661, "end_char": 3662, "word": "2", "xpos": "", "tags": ["X"]}
+{"start_char": 3664, "end_char": 3666, "word": "No", "xpos": "", "tags": ["SYNE", "CAP", "DET"]}
+{"start_char": 3667, "end_char": 3675, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 3676, "end_char": 3679, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS", "SPAU"]}
+{"start_char": 3680, "end_char": 3684, "word": "ever", "xpos": "", "tags": ["RB"]}
+{"start_char": 3685, "end_char": 3691, "word": "passed", "xpos": "", "tags": []}
+{"start_char": 3692, "end_char": 3696, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 3697, "end_char": 3701, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3703, "end_char": 3706, "word": "One", "xpos": "", "tags": ["CAP", "NUM"]}
+{"start_char": 3707, "end_char": 3709, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3710, "end_char": 3713, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3714, "end_char": 3721, "word": "highest", "xpos": "", "tags": ["JJ", "SPADJ"]}
+{"start_char": 3722, "end_char": 3728, "word": "scores", "xpos": "", "tags": ["NN"]}
+{"start_char": 3729, "end_char": 3732, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 3733, "end_char": 3735, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3736, "end_char": 3739, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3740, "end_char": 3748, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 3749, "end_char": 3755, "word": "ALBERT", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3756, "end_char": 3761, "word": "which", "xpos": "", "tags": ["WHSUB", "DET", "WH"]}
+{"start_char": 3762, "end_char": 3765, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 3766, "end_char": 3772, "word": "deemed", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 3773, "end_char": 3778, "word": "human", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3779, "end_char": 3783, "word": "only", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 3784, "end_char": 3786, "word": "11", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3788, "end_char": 3790, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3791, "end_char": 3794, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3795, "end_char": 3799, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 3801, "end_char": 3804, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3805, "end_char": 3810, "word": "score", "xpos": "", "tags": ["NN"]}
+{"start_char": 3811, "end_char": 3817, "word": "itself", "xpos": "", "tags": ["PIT", "PRP", "SBJP", "ACCU"]}
+{"start_char": 3818, "end_char": 3820, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3821, "end_char": 3824, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 3825, "end_char": 3829, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3830, "end_char": 3833, "word": "yet", "xpos": "", "tags": ["RB"]}
+{"start_char": 3834, "end_char": 3836, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 3837, "end_char": 3839, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3840, "end_char": 3843, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3844, "end_char": 3847, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3848, "end_char": 3850, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3851, "end_char": 3854, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3855, "end_char": 3862, "word": "highest", "xpos": "", "tags": ["JJ", "SPADJ"]}
+{"start_char": 3863, "end_char": 3869, "word": "scores", "xpos": "", "tags": ["NN"]}
+{"start_char": 3870, "end_char": 3873, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3874, "end_char": 3878, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 3879, "end_char": 3883, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 3886, "end_char": 3895, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3896, "end_char": 3901, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 3902, "end_char": 3906, "word": "lack", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3907, "end_char": 3910, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3911, "end_char": 3916, "word": "human", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3917, "end_char": 3922, "word": "touch", "xpos": "", "tags": ["NN"]}
+{"start_char": 3925, "end_char": 3926, "word": "3", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3928, "end_char": 3932, "word": "says", "xpos": "", "tags": ["VPRT", "PUBV"]}
+{"start_char": 3933, "end_char": 3940, "word": "Charles", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3941, "end_char": 3946, "word": "Seife", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3947, "end_char": 3949, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3950, "end_char": 3953, "word": "New", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3954, "end_char": 3963, "word": "Scientist", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3964, "end_char": 3972, "word": "magazine", "xpos": "", "tags": ["NN"]}
+{"start_char": 3974, "end_char": 3983, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3985, "end_char": 3987, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3988, "end_char": 3995, "word": "present", "xpos": "", "tags": ["NN"]}
+{"start_char": 3997, "end_char": 3999, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 4000, "end_char": 4003, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4004, "end_char": 4008, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 4009, "end_char": 4012, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4013, "end_char": 4025, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 4026, "end_char": 4028, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4029, "end_char": 4034, "word": "think", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4035, "end_char": 4039, "word": "like", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4040, "end_char": 4046, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 4047, "end_char": 4049, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4050, "end_char": 4054, "word": "even", "xpos": "", "tags": ["RB"]}
+{"start_char": 4055, "end_char": 4062, "word": "imitate", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4063, "end_char": 4067, "word": "them", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 4069, "end_char": 4071, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 4072, "end_char": 4081, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 4082, "end_char": 4085, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 4085, "end_char": 4088, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4089, "end_char": 4094, "word": "think", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4095, "end_char": 4097, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4098, "end_char": 4102, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4103, "end_char": 4106, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 4107, "end_char": 4111, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 4112, "end_char": 4118, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 4119, "end_char": 4121, "word": "do", "xpos": "", "tags": ["VPRT", "PROD"]}
+{"start_char": 4122, "end_char": 4126, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4127, "end_char": 4129, "word": "do", "xpos": "", "tags": ["VPRT", "PROD", "SPAU"]}
+{"start_char": 4130, "end_char": 4133, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4134, "end_char": 4138, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 4139, "end_char": 4146, "word": "possess", "xpos": "", "tags": ["INF"]}
+{"start_char": 4148, "end_char": 4156, "word": "feelings", "xpos": "", "tags": ["NN"]}
+{"start_char": 4158, "end_char": 4160, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4161, "end_char": 4169, "word": "emotions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4171, "end_char": 4179, "word": "Emotions", "xpos": "", "tags": ["NOMZ", "CAP"]}
+{"start_char": 4180, "end_char": 4183, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4184, "end_char": 4188, "word": "felt", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 4189, "end_char": 4191, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4192, "end_char": 4200, "word": "reaction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4201, "end_char": 4203, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4204, "end_char": 4206, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4207, "end_char": 4212, "word": "event", "xpos": "", "tags": ["NN"]}
+{"start_char": 4214, "end_char": 4216, "word": "If", "xpos": "", "tags": ["COND", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 4217, "end_char": 4220, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4221, "end_char": 4228, "word": "thought", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 4229, "end_char": 4233, "word": "that", "xpos": "", "tags": ["THVC", "DET"]}
+{"start_char": 4234, "end_char": 4237, "word": "man", "xpos": "", "tags": ["NN"]}
+{"start_char": 4238, "end_char": 4245, "word": "landing", "xpos": "", "tags": ["WZPRES", "PGAS"]}
+{"start_char": 4246, "end_char": 4248, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4249, "end_char": 4252, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4253, "end_char": 4257, "word": "moon", "xpos": "", "tags": ["NN"]}
+{"start_char": 4258, "end_char": 4261, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 4262, "end_char": 4263, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4264, "end_char": 4269, "word": "great", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4270, "end_char": 4281, "word": "achievement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4283, "end_char": 4287, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 4288, "end_char": 4291, "word": "one", "xpos": "", "tags": ["PRP", "SBJP"]}
+{"start_char": 4292, "end_char": 4297, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 4298, "end_char": 4302, "word": "feel", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4303, "end_char": 4308, "word": "happy", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4310, "end_char": 4312, "word": "If", "xpos": "", "tags": ["COND", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 4313, "end_char": 4316, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4317, "end_char": 4324, "word": "thought", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 4325, "end_char": 4329, "word": "that", "xpos": "", "tags": ["THVC", "DET"]}
+{"start_char": 4330, "end_char": 4333, "word": "man", "xpos": "", "tags": ["NN"]}
+{"start_char": 4334, "end_char": 4341, "word": "landing", "xpos": "", "tags": ["WZPRES", "PGAS"]}
+{"start_char": 4342, "end_char": 4344, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4345, "end_char": 4348, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4349, "end_char": 4353, "word": "moon", "xpos": "", "tags": ["NN"]}
+{"start_char": 4354, "end_char": 4357, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 4358, "end_char": 4361, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4362, "end_char": 4363, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4364, "end_char": 4369, "word": "great", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4370, "end_char": 4381, "word": "achievement", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4382, "end_char": 4386, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 4387, "end_char": 4390, "word": "one", "xpos": "", "tags": ["PRP", "SBJP"]}
+{"start_char": 4391, "end_char": 4396, "word": "would", "xpos": "", "tags": ["PRMD", "SPAU"]}
+{"start_char": 4397, "end_char": 4400, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4401, "end_char": 4405, "word": "feel", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4406, "end_char": 4411, "word": "happy", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4412, "end_char": 4414, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4415, "end_char": 4421, "word": "result", "xpos": "", "tags": ["NN"]}
+{"start_char": 4423, "end_char": 4427, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 4428, "end_char": 4434, "word": "likely", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4435, "end_char": 4438, "word": "one", "xpos": "", "tags": ["PRP", "SBJP"]}
+{"start_char": 4439, "end_char": 4444, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 4445, "end_char": 4449, "word": "feel", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4450, "end_char": 4461, "word": "indifferent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4463, "end_char": 4466, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4467, "end_char": 4470, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 4471, "end_char": 4473, "word": "we", "xpos": "", "tags": ["FPP1", "PRP", "SBJP"]}
+{"start_char": 4474, "end_char": 4479, "word": "react", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4480, "end_char": 4482, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4483, "end_char": 4489, "word": "events", "xpos": "", "tags": ["NN"]}
+{"start_char": 4490, "end_char": 4492, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4493, "end_char": 4498, "word": "based", "xpos": "", "tags": []}
+{"start_char": 4499, "end_char": 4501, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4502, "end_char": 4505, "word": "our", "xpos": "", "tags": ["FPP1", "PRP", "SBJP"]}
+{"start_char": 4506, "end_char": 4516, "word": "ideologies", "xpos": "", "tags": ["NN"]}
+{"start_char": 4517, "end_char": 4520, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4521, "end_char": 4528, "word": "beliefs", "xpos": "", "tags": ["NN"]}
+{"start_char": 4530, "end_char": 4538, "word": "Emotions", "xpos": "", "tags": ["NOMZ", "CAP"]}
+{"start_char": 4539, "end_char": 4542, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4543, "end_char": 4552, "word": "activated", "xpos": "", "tags": []}
+{"start_char": 4553, "end_char": 4555, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4556, "end_char": 4557, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4558, "end_char": 4565, "word": "similar", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4566, "end_char": 4569, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 4570, "end_char": 4572, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4573, "end_char": 4582, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 4584, "end_char": 4593, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 4594, "end_char": 4597, "word": "act", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4598, "end_char": 4603, "word": "based", "xpos": "", "tags": []}
+{"start_char": 4604, "end_char": 4606, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4607, "end_char": 4612, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4613, "end_char": 4619, "word": "inputs", "xpos": "", "tags": ["NN"]}
+{"start_char": 4621, "end_char": 4628, "word": "Emotion", "xpos": "", "tags": ["NOMZ", "CAP"]}
+{"start_char": 4629, "end_char": 4631, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4632, "end_char": 4640, "word": "conveyed", "xpos": "", "tags": ["PUBV"]}
+{"start_char": 4641, "end_char": 4644, "word": "due", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4645, "end_char": 4647, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4648, "end_char": 4650, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4651, "end_char": 4656, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 4657, "end_char": 4659, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4660, "end_char": 4664, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4665, "end_char": 4669, "word": "sort", "xpos": "", "tags": ["NN"]}
+{"start_char": 4671, "end_char": 4674, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4675, "end_char": 4685, "word": "difference", "xpos": "", "tags": ["NN"]}
+{"start_char": 4686, "end_char": 4693, "word": "between", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4694, "end_char": 4699, "word": "these", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 4700, "end_char": 4702, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4703, "end_char": 4707, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 4708, "end_char": 4717, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 4718, "end_char": 4722, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS", "SPAU"]}
+{"start_char": 4723, "end_char": 4726, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4727, "end_char": 4731, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 4732, "end_char": 4742, "word": "programmed", "xpos": "", "tags": []}
+{"start_char": 4743, "end_char": 4745, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4746, "end_char": 4750, "word": "show", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 4751, "end_char": 4758, "word": "emotion", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4760, "end_char": 4762, "word": "To", "xpos": "", "tags": ["PIN", "TO", "CAP", "PREP"]}
+{"start_char": 4763, "end_char": 4765, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 4766, "end_char": 4768, "word": "so", "xpos": "", "tags": ["RB"]}
+{"start_char": 4769, "end_char": 4774, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 4775, "end_char": 4782, "word": "require", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 4783, "end_char": 4784, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4785, "end_char": 4795, "word": "programmer", "xpos": "", "tags": ["NN"]}
+{"start_char": 4796, "end_char": 4798, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4799, "end_char": 4803, "word": "tell", "xpos": "", "tags": ["INF"]}
+{"start_char": 4804, "end_char": 4807, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4808, "end_char": 4816, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 4817, "end_char": 4819, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4820, "end_char": 4825, "word": "react", "xpos": "", "tags": ["INF"]}
+{"start_char": 4826, "end_char": 4828, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4829, "end_char": 4834, "word": "input", "xpos": "", "tags": ["NN"]}
+{"start_char": 4835, "end_char": 4837, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4838, "end_char": 4845, "word": "certain", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4846, "end_char": 4852, "word": "events", "xpos": "", "tags": ["NN"]}
+{"start_char": 4854, "end_char": 4857, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4858, "end_char": 4868, "word": "programmer", "xpos": "", "tags": ["NN"]}
+{"start_char": 4869, "end_char": 4874, "word": "would", "xpos": "", "tags": ["PRMD", "SPAU"]}
+{"start_char": 4875, "end_char": 4879, "word": "then", "xpos": "", "tags": ["RB"]}
+{"start_char": 4880, "end_char": 4884, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 4885, "end_char": 4887, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4888, "end_char": 4892, "word": "tell", "xpos": "", "tags": ["INF"]}
+{"start_char": 4893, "end_char": 4896, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4897, "end_char": 4905, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 4906, "end_char": 4909, "word": "how", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 4910, "end_char": 4912, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4913, "end_char": 4918, "word": "react", "xpos": "", "tags": ["INF"]}
+{"start_char": 4919, "end_char": 4921, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4922, "end_char": 4925, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4926, "end_char": 4931, "word": "event", "xpos": "", "tags": ["NN"]}
+{"start_char": 4933, "end_char": 4938, "word": "react", "xpos": "", "tags": ["INF"]}
+{"start_char": 4939, "end_char": 4946, "word": "happily", "xpos": "", "tags": ["RB"]}
+{"start_char": 4948, "end_char": 4955, "word": "angrily", "xpos": "", "tags": ["RB"]}
+{"start_char": 4956, "end_char": 4959, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4960, "end_char": 4964, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4966, "end_char": 4969, "word": "But", "xpos": "", "tags": ["CAP", "CCONJ"]}
+{"start_char": 4970, "end_char": 4972, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4973, "end_char": 4975, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 4976, "end_char": 4980, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 4981, "end_char": 4986, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 4987, "end_char": 4991, "word": "take", "xpos": "", "tags": ["INF"]}
+{"start_char": 4992, "end_char": 4994, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4995, "end_char": 5005, "word": "incredible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5006, "end_char": 5012, "word": "amount", "xpos": "", "tags": ["NN"]}
+{"start_char": 5013, "end_char": 5015, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5016, "end_char": 5020, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 5022, "end_char": 5030, "word": "deciding", "xpos": "", "tags": ["PRIV", "SUAV", "PGAS"]}
+{"start_char": 5031, "end_char": 5033, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5034, "end_char": 5037, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 5038, "end_char": 5041, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5042, "end_char": 5052, "word": "situations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5053, "end_char": 5056, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5057, "end_char": 5066, "word": "reactions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5068, "end_char": 5073, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 5074, "end_char": 5076, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 5077, "end_char": 5080, "word": "why", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 5081, "end_char": 5083, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5084, "end_char": 5087, "word": "has", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 5088, "end_char": 5091, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5092, "end_char": 5094, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 5095, "end_char": 5106, "word": "implemented", "xpos": "", "tags": []}
+{"start_char": 5107, "end_char": 5109, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5110, "end_char": 5113, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5114, "end_char": 5123, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 5124, "end_char": 5126, "word": "we", "xpos": "", "tags": ["FPP1", "PRP", "SBJP"]}
+{"start_char": 5127, "end_char": 5131, "word": "have", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5132, "end_char": 5137, "word": "today", "xpos": "", "tags": ["TIME", "NN"]}
+{"start_char": 5139, "end_char": 5140, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 5141, "end_char": 5150, "word": "different", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5151, "end_char": 5157, "word": "method", "xpos": "", "tags": ["NN"]}
+{"start_char": 5158, "end_char": 5163, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5164, "end_char": 5166, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 5167, "end_char": 5169, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 5170, "end_char": 5176, "word": "design", "xpos": "", "tags": ["INF"]}
+{"start_char": 5177, "end_char": 5178, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5179, "end_char": 5187, "word": "learning", "xpos": "", "tags": ["PRIV", "PGAS"]}
+{"start_char": 5188, "end_char": 5196, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 5198, "end_char": 5202, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 5203, "end_char": 5208, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5209, "end_char": 5213, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 5214, "end_char": 5216, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 5217, "end_char": 5219, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 5220, "end_char": 5227, "word": "similar", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 5228, "end_char": 5230, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5231, "end_char": 5237, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 5238, "end_char": 5241, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5242, "end_char": 5249, "word": "animals", "xpos": "", "tags": ["NN"]}
+{"start_char": 5250, "end_char": 5253, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5254, "end_char": 5259, "word": "would", "xpos": "", "tags": ["PRMD"]}
+{"start_char": 5260, "end_char": 5267, "word": "require", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 5268, "end_char": 5271, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5272, "end_char": 5275, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 5276, "end_char": 5278, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5279, "end_char": 5289, "word": "artificial", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5290, "end_char": 5302, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5304, "end_char": 5314, "word": "Artificial", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5315, "end_char": 5327, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5328, "end_char": 5330, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5331, "end_char": 5340, "word": "difficult", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 5341, "end_char": 5343, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 5344, "end_char": 5347, "word": "use", "xpos": "", "tags": ["INF"]}
+{"start_char": 5348, "end_char": 5355, "word": "because", "xpos": "", "tags": ["CAUS", "PIN", "SCONJ", "PREP"]}
+{"start_char": 5356, "end_char": 5359, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5360, "end_char": 5370, "word": "boundaries", "xpos": "", "tags": ["NN"]}
+{"start_char": 5371, "end_char": 5374, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 5375, "end_char": 5378, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5379, "end_char": 5386, "word": "clearly", "xpos": "", "tags": ["RB"]}
+{"start_char": 5387, "end_char": 5394, "word": "defined", "xpos": "", "tags": []}
+{"start_char": 5397, "end_char": 5407, "word": "Artificial", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5408, "end_char": 5420, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5421, "end_char": 5423, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5424, "end_char": 5426, "word": "as", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 5427, "end_char": 5431, "word": "much", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 5432, "end_char": 5433, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5434, "end_char": 5440, "word": "ragbag", "xpos": "", "tags": ["NN"]}
+{"start_char": 5441, "end_char": 5451, "word": "collection", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5452, "end_char": 5454, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5455, "end_char": 5464, "word": "differing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 5465, "end_char": 5473, "word": "opinions", "xpos": "", "tags": ["NN"]}
+{"start_char": 5474, "end_char": 5476, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5477, "end_char": 5479, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5480, "end_char": 5482, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5483, "end_char": 5493, "word": "scientific", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5494, "end_char": 5501, "word": "inquiry", "xpos": "", "tags": ["NN"]}
+{"start_char": 5503, "end_char": 5506, "word": "Few", "xpos": "", "tags": ["QUAN", "JJ", "CAP"]}
+{"start_char": 5507, "end_char": 5512, "word": "agree", "xpos": "", "tags": ["VPRT", "PUBV", "SUAV"]}
+{"start_char": 5513, "end_char": 5517, "word": "even", "xpos": "", "tags": ["RB"]}
+{"start_char": 5518, "end_char": 5520, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5521, "end_char": 5524, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5525, "end_char": 5532, "word": "meaning", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 5533, "end_char": 5535, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5536, "end_char": 5539, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5540, "end_char": 5544, "word": "word", "xpos": "", "tags": ["NN"]}
+{"start_char": 5545, "end_char": 5557, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5559, "end_char": 5564, "word": "fewer", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 5565, "end_char": 5570, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 5571, "end_char": 5573, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5574, "end_char": 5587, "word": "consciousness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5591, "end_char": 5592, "word": "4", "xpos": "", "tags": ["X"]}
+{"start_char": 5594, "end_char": 5604, "word": "Artificial", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5605, "end_char": 5617, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5618, "end_char": 5626, "word": "involves", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5627, "end_char": 5638, "word": "programming", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 5639, "end_char": 5640, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5641, "end_char": 5649, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 5650, "end_char": 5652, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 5653, "end_char": 5657, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 5658, "end_char": 5670, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5672, "end_char": 5676, "word": "when", "xpos": "", "tags": ["RB", "WHQU", "SCONJ", "WH"]}
+{"start_char": 5677, "end_char": 5689, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5690, "end_char": 5692, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 5693, "end_char": 5696, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5697, "end_char": 5704, "word": "clearly", "xpos": "", "tags": ["RB"]}
+{"start_char": 5705, "end_char": 5712, "word": "defined", "xpos": "", "tags": []}
+{"start_char": 5714, "end_char": 5724, "word": "Artificial", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 5725, "end_char": 5737, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5738, "end_char": 5740, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5741, "end_char": 5746, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 5747, "end_char": 5749, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5750, "end_char": 5753, "word": "its", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5754, "end_char": 5759, "word": "early", "xpos": "", "tags": ["JJ", "TIME"]}
+{"start_char": 5760, "end_char": 5766, "word": "stages", "xpos": "", "tags": ["NN"]}
+{"start_char": 5767, "end_char": 5770, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5771, "end_char": 5774, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS", "SPAU"]}
+{"start_char": 5775, "end_char": 5778, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5779, "end_char": 5782, "word": "yet", "xpos": "", "tags": ["RB"]}
+{"start_char": 5783, "end_char": 5787, "word": "been", "xpos": "", "tags": ["PASS", "SPAU", "AUXB"]}
+{"start_char": 5788, "end_char": 5798, "word": "completely", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 5799, "end_char": 5809, "word": "researched", "xpos": "", "tags": []}
+{"start_char": 5811, "end_char": 5813, "word": "At", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 5814, "end_char": 5821, "word": "present", "xpos": "", "tags": ["NN"]}
+{"start_char": 5822, "end_char": 5827, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 5828, "end_char": 5830, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 5831, "end_char": 5833, "word": "no", "xpos": "", "tags": ["SYNE", "DET"]}
+{"start_char": 5834, "end_char": 5842, "word": "adequate", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5843, "end_char": 5853, "word": "artificial", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5854, "end_char": 5866, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5867, "end_char": 5875, "word": "software", "xpos": "", "tags": ["NN"]}
+{"start_char": 5877, "end_char": 5882, "word": "Since", "xpos": "", "tags": ["OSUB", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 5883, "end_char": 5894, "word": "programming", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 5895, "end_char": 5900, "word": "every", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 5901, "end_char": 5909, "word": "scenario", "xpos": "", "tags": ["NN"]}
+{"start_char": 5910, "end_char": 5914, "word": "into", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5915, "end_char": 5916, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5917, "end_char": 5925, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 5926, "end_char": 5928, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5929, "end_char": 5936, "word": "arduous", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 5938, "end_char": 5941, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 5942, "end_char": 5952, "word": "artificial", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5953, "end_char": 5965, "word": "intelligence", "xpos": "", "tags": ["NN"]}
+{"start_char": 5966, "end_char": 5968, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 5969, "end_char": 5972, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 5973, "end_char": 5978, "word": "fully", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 5979, "end_char": 5988, "word": "developed", "xpos": "", "tags": []}
+{"start_char": 5990, "end_char": 5999, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 6000, "end_char": 6003, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 6003, "end_char": 6006, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6007, "end_char": 6011, "word": "show", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 6012, "end_char": 6017, "word": "anger", "xpos": "", "tags": ["NN"]}
+{"start_char": 6019, "end_char": 6026, "word": "sadness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6027, "end_char": 6029, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6030, "end_char": 6033, "word": "any", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 6034, "end_char": 6039, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6040, "end_char": 6047, "word": "emotion", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6049, "end_char": 6057, "word": "Personal", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 6058, "end_char": 6067, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 6068, "end_char": 6071, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 6072, "end_char": 6080, "word": "designed", "xpos": "", "tags": []}
+{"start_char": 6081, "end_char": 6083, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6084, "end_char": 6091, "word": "improve", "xpos": "", "tags": ["INF"]}
+{"start_char": 6092, "end_char": 6095, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6096, "end_char": 6103, "word": "quality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6104, "end_char": 6106, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6107, "end_char": 6112, "word": "lives", "xpos": "", "tags": ["NN"]}
+{"start_char": 6114, "end_char": 6121, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 6122, "end_char": 6126, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6127, "end_char": 6133, "word": "design", "xpos": "", "tags": ["NN"]}
+{"start_char": 6134, "end_char": 6136, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 6137, "end_char": 6140, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6141, "end_char": 6147, "word": "always", "xpos": "", "tags": ["RB"]}
+{"start_char": 6148, "end_char": 6158, "word": "successful", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6160, "end_char": 6164, "word": "Many", "xpos": "", "tags": ["QUAN", "JJ", "CAP"]}
+{"start_char": 6165, "end_char": 6171, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 6172, "end_char": 6174, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 6175, "end_char": 6178, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6179, "end_char": 6182, "word": "use", "xpos": "", "tags": ["INF"]}
+{"start_char": 6183, "end_char": 6192, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 6194, "end_char": 6198, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 6199, "end_char": 6206, "word": "because", "xpos": "", "tags": ["CAUS", "PIN", "SCONJ", "PREP"]}
+{"start_char": 6207, "end_char": 6211, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6212, "end_char": 6216, "word": "find", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 6217, "end_char": 6226, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 6227, "end_char": 6236, "word": "difficult", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6237, "end_char": 6239, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6240, "end_char": 6243, "word": "use", "xpos": "", "tags": ["INF"]}
+{"start_char": 6244, "end_char": 6250, "word": "others", "xpos": "", "tags": ["NN"]}
+{"start_char": 6251, "end_char": 6258, "word": "because", "xpos": "", "tags": ["CAUS", "PIN", "SCONJ", "PREP"]}
+{"start_char": 6259, "end_char": 6263, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6264, "end_char": 6266, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 6267, "end_char": 6270, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6271, "end_char": 6275, "word": "find", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 6276, "end_char": 6285, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 6286, "end_char": 6290, "word": "user", "xpos": "", "tags": ["NN"]}
+{"start_char": 6291, "end_char": 6299, "word": "friendly", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6301, "end_char": 6303, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 6304, "end_char": 6306, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6307, "end_char": 6314, "word": "attempt", "xpos": "", "tags": ["NN"]}
+{"start_char": 6315, "end_char": 6317, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6318, "end_char": 6326, "word": "overcome", "xpos": "", "tags": ["INF"]}
+{"start_char": 6327, "end_char": 6331, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 6332, "end_char": 6339, "word": "problem", "xpos": "", "tags": ["NN"]}
+{"start_char": 6340, "end_char": 6348, "word": "software", "xpos": "", "tags": ["NN"]}
+{"start_char": 6349, "end_char": 6358, "word": "companies", "xpos": "", "tags": ["NN"]}
+{"start_char": 6359, "end_char": 6363, "word": "like", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6364, "end_char": 6373, "word": "Microsoft", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 6374, "end_char": 6378, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 6379, "end_char": 6384, "word": "tried", "xpos": "", "tags": []}
+{"start_char": 6385, "end_char": 6387, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6388, "end_char": 6395, "word": "portray", "xpos": "", "tags": ["INF"]}
+{"start_char": 6396, "end_char": 6401, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6402, "end_char": 6410, "word": "products", "xpos": "", "tags": ["NN"]}
+{"start_char": 6411, "end_char": 6415, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6416, "end_char": 6417, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6418, "end_char": 6425, "word": "certain", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6426, "end_char": 6431, "word": "image", "xpos": "", "tags": ["NN"]}
+{"start_char": 6433, "end_char": 6437, "word": "They", "xpos": "", "tags": ["TPP3", "CAP", "PRP", "SBJP"]}
+{"start_char": 6438, "end_char": 6442, "word": "have", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6443, "end_char": 6447, "word": "lots", "xpos": "", "tags": ["NN"]}
+{"start_char": 6448, "end_char": 6450, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6451, "end_char": 6457, "word": "bright", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6458, "end_char": 6465, "word": "colours", "xpos": "", "tags": ["NN"]}
+{"start_char": 6466, "end_char": 6468, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6469, "end_char": 6475, "word": "appeal", "xpos": "", "tags": ["INF"]}
+{"start_char": 6476, "end_char": 6478, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6479, "end_char": 6482, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 6483, "end_char": 6487, "word": "type", "xpos": "", "tags": ["NN"]}
+{"start_char": 6488, "end_char": 6490, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6491, "end_char": 6497, "word": "person", "xpos": "", "tags": ["NN"]}
+{"start_char": 6499, "end_char": 6504, "word": "claim", "xpos": "", "tags": ["VPRT", "PUBV"]}
+{"start_char": 6505, "end_char": 6509, "word": "ease", "xpos": "", "tags": ["NN"]}
+{"start_char": 6510, "end_char": 6512, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6513, "end_char": 6516, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 6517, "end_char": 6519, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6520, "end_char": 6526, "word": "appeal", "xpos": "", "tags": ["INF"]}
+{"start_char": 6527, "end_char": 6529, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6530, "end_char": 6537, "word": "another", "xpos": "", "tags": ["DET"]}
+{"start_char": 6539, "end_char": 6542, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 6543, "end_char": 6548, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 6549, "end_char": 6552, "word": "say", "xpos": "", "tags": ["PUBV", "INF"]}
+{"start_char": 6553, "end_char": 6557, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 6558, "end_char": 6563, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 6564, "end_char": 6571, "word": "product", "xpos": "", "tags": ["NN"]}
+{"start_char": 6572, "end_char": 6574, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 6575, "end_char": 6578, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6579, "end_char": 6583, "word": "most", "xpos": "", "tags": ["RB", "EMPH", "SPADJ"]}
+{"start_char": 6584, "end_char": 6592, "word": "powerful", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6593, "end_char": 6597, "word": "tool", "xpos": "", "tags": ["NN"]}
+{"start_char": 6598, "end_char": 6600, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6601, "end_char": 6605, "word": "date", "xpos": "", "tags": ["NN"]}
+{"start_char": 6607, "end_char": 6610, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 6611, "end_char": 6617, "word": "result", "xpos": "", "tags": ["NN"]}
+{"start_char": 6618, "end_char": 6620, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 6621, "end_char": 6625, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 6626, "end_char": 6630, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 6631, "end_char": 6637, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 6638, "end_char": 6641, "word": "get", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6642, "end_char": 6652, "word": "frustrated", "xpos": "", "tags": []}
+{"start_char": 6653, "end_char": 6655, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6656, "end_char": 6659, "word": "too", "xpos": "", "tags": ["RB"]}
+{"start_char": 6660, "end_char": 6664, "word": "much", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 6665, "end_char": 6669, "word": "help", "xpos": "", "tags": ["NN"]}
+{"start_char": 6671, "end_char": 6677, "word": "whilst", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 6678, "end_char": 6684, "word": "others", "xpos": "", "tags": ["NN"]}
+{"start_char": 6685, "end_char": 6688, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 6688, "end_char": 6691, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6692, "end_char": 6696, "word": "find", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 6697, "end_char": 6700, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6701, "end_char": 6706, "word": "right", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6707, "end_char": 6711, "word": "help", "xpos": "", "tags": ["NN"]}
+{"start_char": 6712, "end_char": 6715, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6716, "end_char": 6719, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6720, "end_char": 6725, "word": "right", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6726, "end_char": 6732, "word": "places", "xpos": "", "tags": ["NN"]}
+{"start_char": 6734, "end_char": 6743, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 6744, "end_char": 6748, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 6749, "end_char": 6753, "word": "have", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6754, "end_char": 6755, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6756, "end_char": 6764, "word": "tendency", "xpos": "", "tags": ["NN"]}
+{"start_char": 6765, "end_char": 6767, "word": "to", "xpos": "", "tags": ["PIN", "TO", "STPR", "PREP"]}
+{"start_char": 6769, "end_char": 6774, "word": "crash", "xpos": "", "tags": ["NN"]}
+{"start_char": 6776, "end_char": 6782, "word": "losing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 6783, "end_char": 6788, "word": "large", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6789, "end_char": 6796, "word": "amounts", "xpos": "", "tags": ["NN"]}
+{"start_char": 6797, "end_char": 6799, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6800, "end_char": 6804, "word": "data", "xpos": "", "tags": ["NN"]}
+{"start_char": 6805, "end_char": 6807, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6808, "end_char": 6811, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 6812, "end_char": 6819, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 6821, "end_char": 6825, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 6826, "end_char": 6829, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 6830, "end_char": 6836, "word": "caused", "xpos": "", "tags": []}
+{"start_char": 6837, "end_char": 6841, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 6842, "end_char": 6848, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 6849, "end_char": 6851, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6852, "end_char": 6858, "word": "become", "xpos": "", "tags": ["INF"]}
+{"start_char": 6859, "end_char": 6864, "word": "upset", "xpos": "", "tags": ["JJ"]}
+{"start_char": 6865, "end_char": 6868, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 6869, "end_char": 6876, "word": "display", "xpos": "", "tags": ["INF"]}
+{"start_char": 6877, "end_char": 6878, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6879, "end_char": 6883, "word": "form", "xpos": "", "tags": ["NN"]}
+{"start_char": 6884, "end_char": 6886, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6887, "end_char": 6895, "word": "computer", "xpos": "", "tags": ["NN"]}
+{"start_char": 6896, "end_char": 6900, "word": "rage", "xpos": "", "tags": ["NN"]}
+{"start_char": 6902, "end_char": 6906, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 6907, "end_char": 6913, "word": "occurs", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 6914, "end_char": 6916, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 6917, "end_char": 6918, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 6919, "end_char": 6924, "word": "range", "xpos": "", "tags": ["NN"]}
+{"start_char": 6925, "end_char": 6927, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6928, "end_char": 6940, "word": "environments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 6942, "end_char": 6946, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 6947, "end_char": 6956, "word": "workplace", "xpos": "", "tags": ["NN"]}
+{"start_char": 6957, "end_char": 6959, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 6960, "end_char": 6967, "word": "bedroom", "xpos": "", "tags": ["NN"]}
+{"start_char": 6969, "end_char": 6978, "word": "Computers", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 6979, "end_char": 6982, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 6982, "end_char": 6985, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 6986, "end_char": 6992, "word": "always", "xpos": "", "tags": ["RB"]}
+{"start_char": 6993, "end_char": 6998, "word": "bring", "xpos": "", "tags": ["INF"]}
+{"start_char": 6999, "end_char": 7008, "word": "happiness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7009, "end_char": 7011, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7012, "end_char": 7015, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7016, "end_char": 7021, "word": "lives", "xpos": "", "tags": ["NN"]}
+{"start_char": 7022, "end_char": 7024, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7025, "end_char": 7031, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 7033, "end_char": 7039, "word": "giving", "xpos": "", "tags": ["PRESP", "PGAS"]}
+{"start_char": 7040, "end_char": 7042, "word": "as", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 7043, "end_char": 7047, "word": "much", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 7048, "end_char": 7055, "word": "trouble", "xpos": "", "tags": ["NN"]}
+{"start_char": 7056, "end_char": 7058, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 7059, "end_char": 7063, "word": "help", "xpos": "", "tags": ["NN"]}
+{"start_char": 7065, "end_char": 7067, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 7068, "end_char": 7078, "word": "conclusion", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7079, "end_char": 7088, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7089, "end_char": 7092, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 7092, "end_char": 7095, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7096, "end_char": 7098, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 7099, "end_char": 7109, "word": "everything", "xpos": "", "tags": ["QUPR", "INPR"]}
+{"start_char": 7111, "end_char": 7116, "word": "Since", "xpos": "", "tags": ["OSUB", "PIN", "CAP", "SCONJ", "PREP"]}
+{"start_char": 7117, "end_char": 7121, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 7122, "end_char": 7125, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 7126, "end_char": 7133, "word": "present", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 7134, "end_char": 7136, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 7137, "end_char": 7141, "word": "most", "xpos": "", "tags": ["JJ", "EMPH", "SPADJ"]}
+{"start_char": 7142, "end_char": 7152, "word": "electronic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7153, "end_char": 7158, "word": "items", "xpos": "", "tags": ["NN"]}
+{"start_char": 7159, "end_char": 7163, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 7164, "end_char": 7167, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 7168, "end_char": 7173, "word": "carry", "xpos": "", "tags": ["INF"]}
+{"start_char": 7174, "end_char": 7177, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7178, "end_char": 7179, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 7180, "end_char": 7184, "word": "huge", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7185, "end_char": 7191, "word": "number", "xpos": "", "tags": ["NN"]}
+{"start_char": 7192, "end_char": 7194, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7195, "end_char": 7202, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7204, "end_char": 7211, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 7212, "end_char": 7215, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7216, "end_char": 7221, "word": "every", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 7222, "end_char": 7228, "word": "action", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7229, "end_char": 7237, "word": "involves", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 7238, "end_char": 7249, "word": "electronics", "xpos": "", "tags": ["NN"]}
+{"start_char": 7250, "end_char": 7253, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 7254, "end_char": 7256, "word": "so", "xpos": "", "tags": ["RB"]}
+{"start_char": 7257, "end_char": 7262, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 7263, "end_char": 7266, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 7267, "end_char": 7272, "word": "still", "xpos": "", "tags": ["RB"]}
+{"start_char": 7273, "end_char": 7277, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 7278, "end_char": 7285, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7286, "end_char": 7290, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 7291, "end_char": 7300, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7301, "end_char": 7304, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 7304, "end_char": 7307, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7308, "end_char": 7310, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 7312, "end_char": 7316, "word": "Most", "xpos": "", "tags": ["JJ", "EMPH", "CAP", "SPADJ"]}
+{"start_char": 7317, "end_char": 7324, "word": "actions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7325, "end_char": 7329, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 7330, "end_char": 7339, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7340, "end_char": 7343, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 7343, "end_char": 7346, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7347, "end_char": 7349, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 7350, "end_char": 7354, "word": "have", "xpos": "", "tags": ["INF"]}
+{"start_char": 7355, "end_char": 7356, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 7357, "end_char": 7365, "word": "relation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7366, "end_char": 7368, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7369, "end_char": 7375, "word": "humans", "xpos": "", "tags": ["NN"]}
+{"start_char": 7377, "end_char": 7383, "word": "Humans", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 7384, "end_char": 7387, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 7388, "end_char": 7392, "word": "move", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 7393, "end_char": 7400, "word": "whereas", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 7401, "end_char": 7410, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7411, "end_char": 7414, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 7414, "end_char": 7417, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7419, "end_char": 7425, "word": "Humans", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 7426, "end_char": 7429, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 7430, "end_char": 7435, "word": "think", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 7436, "end_char": 7439, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 7440, "end_char": 7444, "word": "feel", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 7445, "end_char": 7452, "word": "whereas", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 7453, "end_char": 7462, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7463, "end_char": 7466, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 7466, "end_char": 7469, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7471, "end_char": 7475, "word": "This", "xpos": "", "tags": ["DEMP", "CAP", "DET"]}
+{"start_char": 7476, "end_char": 7479, "word": "may", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 7480, "end_char": 7484, "word": "only", "xpos": "", "tags": ["DWNT", "RB"]}
+{"start_char": 7485, "end_char": 7487, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 7488, "end_char": 7492, "word": "true", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 7493, "end_char": 7496, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7497, "end_char": 7500, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7501, "end_char": 7508, "word": "present", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7509, "end_char": 7513, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 7514, "end_char": 7519, "word": "since", "xpos": "", "tags": ["OSUB", "PIN", "SCONJ", "PREP"]}
+{"start_char": 7520, "end_char": 7528, "word": "research", "xpos": "", "tags": ["NN"]}
+{"start_char": 7529, "end_char": 7531, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 7532, "end_char": 7537, "word": "being", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 7538, "end_char": 7545, "word": "carried", "xpos": "", "tags": []}
+{"start_char": 7546, "end_char": 7549, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7550, "end_char": 7553, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 7554, "end_char": 7557, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7558, "end_char": 7562, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 7564, "end_char": 7571, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 7573, "end_char": 7582, "word": "computers", "xpos": "", "tags": ["NN"]}
+{"start_char": 7583, "end_char": 7587, "word": "will", "xpos": "", "tags": ["PRMD", "SPAU"]}
+{"start_char": 7588, "end_char": 7591, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 7592, "end_char": 7597, "word": "bring", "xpos": "", "tags": ["INF"]}
+{"start_char": 7598, "end_char": 7607, "word": "happiness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 7608, "end_char": 7610, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7611, "end_char": 7614, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 7615, "end_char": 7620, "word": "lives", "xpos": "", "tags": ["NN"]}
+{"start_char": 7621, "end_char": 7623, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7624, "end_char": 7630, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 7631, "end_char": 7634, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7635, "end_char": 7636, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 7637, "end_char": 7641, "word": "very", "xpos": "", "tags": ["AMP", "RB"]}
+{"start_char": 7642, "end_char": 7646, "word": "long", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7647, "end_char": 7651, "word": "time", "xpos": "", "tags": ["NN"]}
+{"start_char": 7653, "end_char": 7656, "word": "due", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7657, "end_char": 7659, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7660, "end_char": 7663, "word": "its", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 7664, "end_char": 7672, "word": "annoying", "xpos": "", "tags": ["JJ"]}
+{"start_char": 7673, "end_char": 7678, "word": "habit", "xpos": "", "tags": ["NN"]}
+{"start_char": 7679, "end_char": 7681, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 7682, "end_char": 7689, "word": "letting", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 7690, "end_char": 7696, "word": "people", "xpos": "", "tags": ["NN"]}
+{"start_char": 7697, "end_char": 7701, "word": "down", "xpos": "", "tags": ["PIN", "STPR", "PREP"]}

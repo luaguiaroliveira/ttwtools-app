@@ -1,0 +1,858 @@
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2478.1202.txt"}
+{"start_char": 119, "end_char": 129, "word": "Throughout", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 130, "end_char": 133, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 134, "end_char": 141, "word": "history", "xpos": "", "tags": ["NN"]}
+{"start_char": 143, "end_char": 154, "word": "filamentous", "xpos": "", "tags": ["JJ"]}
+{"start_char": 155, "end_char": 160, "word": "fungi", "xpos": "", "tags": ["NN"]}
+{"start_char": 161, "end_char": 165, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 166, "end_char": 170, "word": "been", "xpos": "", "tags": ["PASS", "AUXB"]}
+{"start_char": 171, "end_char": 175, "word": "used", "xpos": "", "tags": []}
+{"start_char": 176, "end_char": 178, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 179, "end_char": 183, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 184, "end_char": 200, "word": "biotechnological", "xpos": "", "tags": ["JJ"]}
+{"start_char": 201, "end_char": 213, "word": "applications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 215, "end_char": 219, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 220, "end_char": 222, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 223, "end_char": 226, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 227, "end_char": 233, "word": "direct", "xpos": "", "tags": ["JJ"]}
+{"start_char": 234, "end_char": 246, "word": "alimentation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 248, "end_char": 257, "word": "mushrooms", "xpos": "", "tags": ["NN"]}
+{"start_char": 258, "end_char": 261, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 262, "end_char": 270, "word": "truffles", "xpos": "", "tags": ["NN"]}
+{"start_char": 273, "end_char": 285, "word": "fermentation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 286, "end_char": 293, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 294, "end_char": 297, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 298, "end_char": 307, "word": "beverages", "xpos": "", "tags": ["NN"]}
+{"start_char": 308, "end_char": 311, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 312, "end_char": 318, "word": "bakery", "xpos": "", "tags": ["NN"]}
+{"start_char": 319, "end_char": 327, "word": "products", "xpos": "", "tags": ["NN"]}
+{"start_char": 329, "end_char": 332, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 333, "end_char": 338, "word": "drugs", "xpos": "", "tags": ["NN"]}
+{"start_char": 339, "end_char": 342, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 343, "end_char": 352, "word": "cosmetics", "xpos": "", "tags": ["NN"]}
+{"start_char": 353, "end_char": 363, "word": "production", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 365, "end_char": 368, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 369, "end_char": 379, "word": "production", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 380, "end_char": 382, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 383, "end_char": 390, "word": "several", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 391, "end_char": 400, "word": "bioactive", "xpos": "", "tags": ["NN"]}
+{"start_char": 401, "end_char": 410, "word": "secondary", "xpos": "", "tags": ["JJ"]}
+{"start_char": 411, "end_char": 422, "word": "metabolites", "xpos": "", "tags": ["NN"]}
+{"start_char": 423, "end_char": 425, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 426, "end_char": 431, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 432, "end_char": 441, "word": "organisms", "xpos": "", "tags": ["NN"]}
+{"start_char": 442, "end_char": 449, "word": "enables", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 450, "end_char": 455, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 456, "end_char": 468, "word": "applications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 470, "end_char": 473, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 474, "end_char": 485, "word": "considering", "xpos": "", "tags": ["GER", "PRIV", "PGAS"]}
+{"start_char": 486, "end_char": 489, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 490, "end_char": 498, "word": "existing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 499, "end_char": 509, "word": "biological", "xpos": "", "tags": ["JJ"]}
+{"start_char": 510, "end_char": 517, "word": "variety", "xpos": "", "tags": ["NN"]}
+{"start_char": 519, "end_char": 524, "word": "there", "xpos": "", "tags": ["EX"]}
+{"start_char": 525, "end_char": 528, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 529, "end_char": 536, "word": "several", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 537, "end_char": 550, "word": "possibilities", "xpos": "", "tags": ["NN"]}
+{"start_char": 551, "end_char": 554, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 555, "end_char": 563, "word": "studying", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 565, "end_char": 570, "word": "Other", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 571, "end_char": 579, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 580, "end_char": 591, "word": "application", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 592, "end_char": 594, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 595, "end_char": 598, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 599, "end_char": 616, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 617, "end_char": 624, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 626, "end_char": 631, "word": "which", "xpos": "", "tags": ["SERE", "DET", "WH"]}
+{"start_char": 632, "end_char": 639, "word": "consist", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 640, "end_char": 642, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 643, "end_char": 646, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 647, "end_char": 650, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 651, "end_char": 653, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 654, "end_char": 659, "word": "fungi", "xpos": "", "tags": ["NNP"]}
+{"start_char": 660, "end_char": 667, "word": "species", "xpos": "", "tags": ["NN"]}
+{"start_char": 668, "end_char": 671, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 672, "end_char": 680, "word": "chemical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 681, "end_char": 696, "word": "transformations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 697, "end_char": 699, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 700, "end_char": 707, "word": "organic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 708, "end_char": 717, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 719, "end_char": 726, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 727, "end_char": 734, "word": "carried", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 735, "end_char": 738, "word": "out", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 739, "end_char": 741, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 742, "end_char": 749, "word": "enzymes", "xpos": "", "tags": ["NN"]}
+{"start_char": 750, "end_char": 758, "word": "produced", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 759, "end_char": 761, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 762, "end_char": 765, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 766, "end_char": 771, "word": "fungi", "xpos": "", "tags": ["NN"]}
+{"start_char": 773, "end_char": 782, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 783, "end_char": 785, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 786, "end_char": 788, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 791, "end_char": 795, "word": "2017", "xpos": "", "tags": ["NUM"]}
+{"start_char": 798, "end_char": 801, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 802, "end_char": 811, "word": "technique", "xpos": "", "tags": ["NN"]}
+{"start_char": 812, "end_char": 822, "word": "highlights", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 823, "end_char": 826, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 827, "end_char": 844, "word": "functionalization", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 845, "end_char": 847, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 848, "end_char": 855, "word": "natural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 856, "end_char": 864, "word": "products", "xpos": "", "tags": ["NN"]}
+{"start_char": 865, "end_char": 875, "word": "containing", "xpos": "", "tags": ["GER", "WZPRES", "PGAS"]}
+{"start_char": 876, "end_char": 879, "word": "non", "xpos": "", "tags": ["JJ"]}
+{"start_char": 880, "end_char": 889, "word": "activated", "xpos": "", "tags": []}
+{"start_char": 890, "end_char": 897, "word": "carbons", "xpos": "", "tags": ["NN"]}
+{"start_char": 899, "end_char": 903, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 904, "end_char": 906, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 907, "end_char": 910, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 911, "end_char": 923, "word": "introduction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 924, "end_char": 926, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 927, "end_char": 935, "word": "hydroxyl", "xpos": "", "tags": ["NNP"]}
+{"start_char": 936, "end_char": 942, "word": "groups", "xpos": "", "tags": ["NN"]}
+{"start_char": 943, "end_char": 946, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 947, "end_char": 952, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 953, "end_char": 960, "word": "organic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 961, "end_char": 970, "word": "functions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 972, "end_char": 981, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 982, "end_char": 984, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 985, "end_char": 987, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 990, "end_char": 994, "word": "2014", "xpos": "", "tags": ["NUM"]}
+{"start_char": 997, "end_char": 1001, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 1002, "end_char": 1010, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 1011, "end_char": 1015, "word": "aims", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1016, "end_char": 1018, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1019, "end_char": 1025, "word": "obtain", "xpos": "", "tags": ["INF"]}
+{"start_char": 1026, "end_char": 1029, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1030, "end_char": 1039, "word": "bioactive", "xpos": "", "tags": ["NN"]}
+{"start_char": 1040, "end_char": 1049, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 1050, "end_char": 1053, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1054, "end_char": 1058, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 1059, "end_char": 1061, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1062, "end_char": 1068, "word": "remove", "xpos": "", "tags": ["INF"]}
+{"start_char": 1069, "end_char": 1071, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1072, "end_char": 1078, "word": "reduce", "xpos": "", "tags": ["INF"]}
+{"start_char": 1079, "end_char": 1089, "word": "pollutants", "xpos": "", "tags": ["NN"]}
+{"start_char": 1090, "end_char": 1098, "word": "contents", "xpos": "", "tags": ["NN"]}
+{"start_char": 1099, "end_char": 1101, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1102, "end_char": 1109, "word": "aquatic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1110, "end_char": 1122, "word": "environments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1123, "end_char": 1125, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1126, "end_char": 1127, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1128, "end_char": 1132, "word": "more", "xpos": "", "tags": ["RB", "EMPH", "CMADJ"]}
+{"start_char": 1133, "end_char": 1144, "word": "sustainable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1145, "end_char": 1148, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 1151, "end_char": 1158, "word": "Firstly", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 1160, "end_char": 1163, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1164, "end_char": 1170, "word": "fungal", "xpos": "", "tags": ["NN"]}
+{"start_char": 1171, "end_char": 1188, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1189, "end_char": 1196, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 1197, "end_char": 1200, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1201, "end_char": 1203, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 1204, "end_char": 1214, "word": "considered", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 1215, "end_char": 1217, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1218, "end_char": 1220, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1221, "end_char": 1232, "word": "alternative", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1233, "end_char": 1241, "word": "chemical", "xpos": "", "tags": ["NN"]}
+{"start_char": 1242, "end_char": 1251, "word": "synthesis", "xpos": "", "tags": ["NN"]}
+{"start_char": 1252, "end_char": 1255, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1256, "end_char": 1259, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1260, "end_char": 1270, "word": "production", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1271, "end_char": 1273, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1274, "end_char": 1283, "word": "bioactive", "xpos": "", "tags": ["NN"]}
+{"start_char": 1284, "end_char": 1293, "word": "molecules", "xpos": "", "tags": ["NN"]}
+{"start_char": 1295, "end_char": 1305, "word": "especially", "xpos": "", "tags": ["RB"]}
+{"start_char": 1306, "end_char": 1310, "word": "when", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 1311, "end_char": 1314, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1315, "end_char": 1322, "word": "desired", "xpos": "", "tags": ["SUAV"]}
+{"start_char": 1323, "end_char": 1333, "word": "structural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1334, "end_char": 1347, "word": "modifications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1348, "end_char": 1355, "word": "demands", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 1356, "end_char": 1360, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 1361, "end_char": 1366, "word": "steps", "xpos": "", "tags": ["NN"]}
+{"start_char": 1367, "end_char": 1370, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1371, "end_char": 1375, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1376, "end_char": 1379, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 1380, "end_char": 1382, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1383, "end_char": 1391, "word": "solvents", "xpos": "", "tags": ["NN"]}
+{"start_char": 1392, "end_char": 1397, "word": "using", "xpos": "", "tags": ["WZPRES", "PGAS"]}
+{"start_char": 1398, "end_char": 1407, "word": "classical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1408, "end_char": 1417, "word": "synthetic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1418, "end_char": 1425, "word": "methods", "xpos": "", "tags": ["NN"]}
+{"start_char": 1426, "end_char": 1428, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1429, "end_char": 1433, "word": "even", "xpos": "", "tags": ["RB"]}
+{"start_char": 1434, "end_char": 1437, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 1437, "end_char": 1440, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1441, "end_char": 1443, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 1444, "end_char": 1453, "word": "performed", "xpos": "", "tags": []}
+{"start_char": 1455, "end_char": 1464, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1465, "end_char": 1467, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1468, "end_char": 1470, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1473, "end_char": 1477, "word": "2017", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1480, "end_char": 1483, "word": "Dos", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1484, "end_char": 1490, "word": "Santos", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1491, "end_char": 1494, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1495, "end_char": 1505, "word": "colleagues", "xpos": "", "tags": ["NN"]}
+{"start_char": 1507, "end_char": 1511, "word": "2018", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1513, "end_char": 1521, "word": "obtained", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1522, "end_char": 1527, "word": "three", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1528, "end_char": 1533, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1534, "end_char": 1543, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 1544, "end_char": 1548, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1549, "end_char": 1552, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1553, "end_char": 1564, "word": "interaction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1565, "end_char": 1567, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1568, "end_char": 1571, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1572, "end_char": 1579, "word": "natural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1580, "end_char": 1589, "word": "diterpene", "xpos": "", "tags": ["NN"]}
+{"start_char": 1590, "end_char": 1604, "word": "trachyloban-19", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1605, "end_char": 1608, "word": "oic", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1609, "end_char": 1613, "word": "acid", "xpos": "", "tags": ["NN"]}
+{"start_char": 1614, "end_char": 1618, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1619, "end_char": 1622, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1623, "end_char": 1629, "word": "fungus", "xpos": "", "tags": ["NN"]}
+{"start_char": 1630, "end_char": 1645, "word": "Syncephalastrum", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1646, "end_char": 1655, "word": "racemosum", "xpos": "", "tags": ["NN"]}
+{"start_char": 1657, "end_char": 1660, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1661, "end_char": 1664, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1665, "end_char": 1674, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 1675, "end_char": 1679, "word": "were", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 1680, "end_char": 1686, "word": "tested", "xpos": "", "tags": []}
+{"start_char": 1687, "end_char": 1689, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1690, "end_char": 1710, "word": "acetylcholinesterase", "xpos": "", "tags": ["NN"]}
+{"start_char": 1712, "end_char": 1716, "word": "AChE", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1718, "end_char": 1728, "word": "inhinitors", "xpos": "", "tags": ["NN"]}
+{"start_char": 1730, "end_char": 1733, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1734, "end_char": 1738, "word": "main", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1739, "end_char": 1745, "word": "enzyme", "xpos": "", "tags": ["NN"]}
+{"start_char": 1746, "end_char": 1753, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1754, "end_char": 1756, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1757, "end_char": 1760, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1761, "end_char": 1770, "word": "Alzheimer", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1770, "end_char": 1772, "word": "’s", "xpos": "", "tags": []}
+{"start_char": 1773, "end_char": 1780, "word": "disease", "xpos": "", "tags": ["NN"]}
+{"start_char": 1782, "end_char": 1795, "word": "Interestingly", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 1797, "end_char": 1802, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 1803, "end_char": 1812, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 1813, "end_char": 1822, "word": "presented", "xpos": "", "tags": ["VBD"]}
+{"start_char": 1823, "end_char": 1829, "word": "higher", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 1830, "end_char": 1838, "word": "activity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1839, "end_char": 1843, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1844, "end_char": 1847, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1848, "end_char": 1856, "word": "starting", "xpos": "", "tags": ["NN"]}
+{"start_char": 1857, "end_char": 1865, "word": "material", "xpos": "", "tags": ["NN"]}
+{"start_char": 1866, "end_char": 1880, "word": "trachyloban-19", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1881, "end_char": 1884, "word": "oic", "xpos": "", "tags": ["NNP"]}
+{"start_char": 1885, "end_char": 1889, "word": "acid", "xpos": "", "tags": ["NN"]}
+{"start_char": 1891, "end_char": 1893, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 1894, "end_char": 1902, "word": "addition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1904, "end_char": 1907, "word": "one", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1908, "end_char": 1910, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1911, "end_char": 1915, "word": "them", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 1916, "end_char": 1922, "word": "showed", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 1923, "end_char": 1927, "word": "even", "xpos": "", "tags": ["RB"]}
+{"start_char": 1928, "end_char": 1934, "word": "higher", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 1935, "end_char": 1939, "word": "AChE", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1940, "end_char": 1950, "word": "inhibition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1951, "end_char": 1955, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1956, "end_char": 1959, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1960, "end_char": 1968, "word": "standard", "xpos": "", "tags": ["NN"]}
+{"start_char": 1969, "end_char": 1973, "word": "used", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1974, "end_char": 1976, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1977, "end_char": 1980, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1981, "end_char": 1985, "word": "test", "xpos": "", "tags": ["NN"]}
+{"start_char": 1987, "end_char": 1990, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1991, "end_char": 2009, "word": "anticholinesterase", "xpos": "", "tags": ["NN"]}
+{"start_char": 2010, "end_char": 2015, "word": "agent", "xpos": "", "tags": ["NN"]}
+{"start_char": 2016, "end_char": 2027, "word": "galantamine", "xpos": "", "tags": ["NN"]}
+{"start_char": 2029, "end_char": 2032, "word": "For", "xpos": "", "tags": ["PIN", "CAP", "PREP"]}
+{"start_char": 2033, "end_char": 2036, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2037, "end_char": 2041, "word": "same", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2042, "end_char": 2050, "word": "compound", "xpos": "", "tags": ["NN"]}
+{"start_char": 2052, "end_char": 2057, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2058, "end_char": 2063, "word": "fungi", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2064, "end_char": 2071, "word": "species", "xpos": "", "tags": ["NN"]}
+{"start_char": 2072, "end_char": 2078, "word": "showed", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 2079, "end_char": 2089, "word": "efficiency", "xpos": "", "tags": ["NN"]}
+{"start_char": 2090, "end_char": 2092, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2093, "end_char": 2101, "word": "previous", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2102, "end_char": 2107, "word": "works", "xpos": "", "tags": ["NN"]}
+{"start_char": 2109, "end_char": 2111, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2112, "end_char": 2115, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2116, "end_char": 2123, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 2125, "end_char": 2133, "word": "Rhizopus", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2134, "end_char": 2144, "word": "stolonifer", "xpos": "", "tags": ["NN"]}
+{"start_char": 2146, "end_char": 2151, "word": "whose", "xpos": "", "tags": ["DET", "WH"]}
+{"start_char": 2152, "end_char": 2162, "word": "experiment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2163, "end_char": 2172, "word": "generated", "xpos": "", "tags": ["VBD"]}
+{"start_char": 2173, "end_char": 2176, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2177, "end_char": 2186, "word": "synthesis", "xpos": "", "tags": ["NN"]}
+{"start_char": 2187, "end_char": 2189, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2190, "end_char": 2193, "word": "six", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2194, "end_char": 2197, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2198, "end_char": 2206, "word": "chemical", "xpos": "", "tags": ["NN"]}
+{"start_char": 2207, "end_char": 2216, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 2217, "end_char": 2219, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2220, "end_char": 2230, "word": "biological", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2231, "end_char": 2239, "word": "interest", "xpos": "", "tags": ["NN"]}
+{"start_char": 2241, "end_char": 2246, "word": "SILVA", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2247, "end_char": 2249, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2250, "end_char": 2252, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2255, "end_char": 2259, "word": "2002", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2262, "end_char": 2269, "word": "Another", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 2270, "end_char": 2277, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 2278, "end_char": 2280, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2281, "end_char": 2284, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2285, "end_char": 2302, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2303, "end_char": 2305, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2306, "end_char": 2309, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2310, "end_char": 2318, "word": "compound", "xpos": "", "tags": ["NN"]}
+{"start_char": 2319, "end_char": 2342, "word": "20-(S)-protopanaxatriol", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2343, "end_char": 2345, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2346, "end_char": 2349, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2350, "end_char": 2356, "word": "fungus", "xpos": "", "tags": ["NN"]}
+{"start_char": 2357, "end_char": 2362, "word": "Mucor", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2363, "end_char": 2372, "word": "racemosus", "xpos": "", "tags": ["NN"]}
+{"start_char": 2374, "end_char": 2383, "word": "providing", "xpos": "", "tags": ["PRESP", "PGAS"]}
+{"start_char": 2384, "end_char": 2387, "word": "six", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2388, "end_char": 2391, "word": "new", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2392, "end_char": 2401, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 2403, "end_char": 2406, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 2407, "end_char": 2411, "word": "anti", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2412, "end_char": 2418, "word": "cancer", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2419, "end_char": 2427, "word": "activity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2428, "end_char": 2436, "word": "bioassay", "xpos": "", "tags": ["NN"]}
+{"start_char": 2437, "end_char": 2440, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2441, "end_char": 2446, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2447, "end_char": 2456, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 2457, "end_char": 2466, "word": "disclosed", "xpos": "", "tags": ["VBD", "PUBV"]}
+{"start_char": 2467, "end_char": 2473, "word": "potent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2474, "end_char": 2484, "word": "inhibitory", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2485, "end_char": 2493, "word": "activity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2494, "end_char": 2496, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2497, "end_char": 2500, "word": "two", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2501, "end_char": 2503, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2504, "end_char": 2508, "word": "them", "xpos": "", "tags": ["TPP3", "PRP", "SBJP", "ACCU"]}
+{"start_char": 2509, "end_char": 2516, "word": "against", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2517, "end_char": 2519, "word": "SH", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2520, "end_char": 2524, "word": "SY5Y", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 2525, "end_char": 2528, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2529, "end_char": 2534, "word": "HepG2", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2535, "end_char": 2539, "word": "cell", "xpos": "", "tags": ["NN"]}
+{"start_char": 2540, "end_char": 2545, "word": "lines", "xpos": "", "tags": ["NN"]}
+{"start_char": 2547, "end_char": 2551, "word": "CHEN", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2552, "end_char": 2554, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2555, "end_char": 2557, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 2560, "end_char": 2564, "word": "2015", "xpos": "", "tags": ["NUM"]}
+{"start_char": 2567, "end_char": 2572, "word": "These", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 2573, "end_char": 2581, "word": "examples", "xpos": "", "tags": ["NN"]}
+{"start_char": 2582, "end_char": 2587, "word": "shows", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 2588, "end_char": 2591, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2592, "end_char": 2598, "word": "claims", "xpos": "", "tags": ["PUBV", "NN"]}
+{"start_char": 2599, "end_char": 2607, "word": "proposed", "xpos": "", "tags": ["SUAV", "WZPAST"]}
+{"start_char": 2608, "end_char": 2610, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2611, "end_char": 2614, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2615, "end_char": 2624, "word": "technique", "xpos": "", "tags": ["NN"]}
+{"start_char": 2625, "end_char": 2630, "word": "being", "xpos": "", "tags": ["PASS", "WZPRES", "SPAU", "AUXB"]}
+{"start_char": 2631, "end_char": 2642, "word": "efficiently", "xpos": "", "tags": ["RB"]}
+{"start_char": 2643, "end_char": 2651, "word": "achieved", "xpos": "", "tags": []}
+{"start_char": 2654, "end_char": 2661, "word": "Another", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 2662, "end_char": 2670, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 2671, "end_char": 2674, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2675, "end_char": 2679, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2680, "end_char": 2691, "word": "methodology", "xpos": "", "tags": ["NN"]}
+{"start_char": 2692, "end_char": 2694, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2695, "end_char": 2698, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2699, "end_char": 2712, "word": "environmental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2713, "end_char": 2725, "word": "applications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2727, "end_char": 2729, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 2730, "end_char": 2735, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 2736, "end_char": 2741, "word": "cases", "xpos": "", "tags": ["NN"]}
+{"start_char": 2743, "end_char": 2746, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2747, "end_char": 2754, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 2755, "end_char": 2758, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 2759, "end_char": 2761, "word": "be", "xpos": "", "tags": ["PASS", "SPAU", "AUXB", "INF"]}
+{"start_char": 2762, "end_char": 2766, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 2767, "end_char": 2773, "word": "called", "xpos": "", "tags": []}
+{"start_char": 2774, "end_char": 2776, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2777, "end_char": 2791, "word": "bioremediation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2793, "end_char": 2796, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 2797, "end_char": 2800, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2801, "end_char": 2808, "word": "purpose", "xpos": "", "tags": ["NN"]}
+{"start_char": 2809, "end_char": 2811, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2812, "end_char": 2822, "word": "structural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2823, "end_char": 2836, "word": "modifications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2837, "end_char": 2839, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2840, "end_char": 2842, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2843, "end_char": 2850, "word": "degrade", "xpos": "", "tags": ["INF"]}
+{"start_char": 2851, "end_char": 2858, "word": "organic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2859, "end_char": 2871, "word": "contaminants", "xpos": "", "tags": ["NN"]}
+{"start_char": 2873, "end_char": 2877, "word": "such", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2878, "end_char": 2880, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2881, "end_char": 2891, "word": "pesticides", "xpos": "", "tags": ["NN"]}
+{"start_char": 2893, "end_char": 2897, "word": "dyes", "xpos": "", "tags": ["NN"]}
+{"start_char": 2899, "end_char": 2914, "word": "pharmaceuticals", "xpos": "", "tags": ["NN"]}
+{"start_char": 2916, "end_char": 2919, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 2920, "end_char": 2928, "word": "personal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2929, "end_char": 2933, "word": "care", "xpos": "", "tags": ["NN"]}
+{"start_char": 2934, "end_char": 2942, "word": "products", "xpos": "", "tags": ["NN"]}
+{"start_char": 2944, "end_char": 2946, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2947, "end_char": 2949, "word": "at", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2950, "end_char": 2955, "word": "least", "xpos": "", "tags": ["JJ", "SPADJ"]}
+{"start_char": 2956, "end_char": 2958, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2959, "end_char": 2967, "word": "decrease", "xpos": "", "tags": ["INF"]}
+{"start_char": 2968, "end_char": 2973, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2974, "end_char": 2982, "word": "toxicity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2983, "end_char": 2985, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2986, "end_char": 2998, "word": "accumulation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2999, "end_char": 3001, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3002, "end_char": 3005, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3006, "end_char": 3017, "word": "environment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3019, "end_char": 3028, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3029, "end_char": 3031, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3032, "end_char": 3034, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3037, "end_char": 3041, "word": "2014", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3044, "end_char": 3045, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 3046, "end_char": 3056, "word": "successful", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3057, "end_char": 3064, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 3065, "end_char": 3068, "word": "was", "xpos": "", "tags": ["BEMA", "VBD", "AUXB"]}
+{"start_char": 3069, "end_char": 3072, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3073, "end_char": 3076, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 3077, "end_char": 3079, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3080, "end_char": 3083, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3084, "end_char": 3090, "word": "fungus", "xpos": "", "tags": ["NN"]}
+{"start_char": 3091, "end_char": 3099, "word": "Trametes", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3100, "end_char": 3110, "word": "versicolor", "xpos": "", "tags": ["NN"]}
+{"start_char": 3112, "end_char": 3120, "word": "commonly", "xpos": "", "tags": ["RB"]}
+{"start_char": 3121, "end_char": 3126, "word": "grown", "xpos": "", "tags": []}
+{"start_char": 3127, "end_char": 3129, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3130, "end_char": 3134, "word": "rice", "xpos": "", "tags": ["NN"]}
+{"start_char": 3135, "end_char": 3139, "word": "husk", "xpos": "", "tags": ["NN"]}
+{"start_char": 3141, "end_char": 3144, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3145, "end_char": 3148, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3149, "end_char": 3160, "word": "degradation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3161, "end_char": 3163, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3164, "end_char": 3167, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3168, "end_char": 3177, "word": "pesticide", "xpos": "", "tags": ["NN"]}
+{"start_char": 3178, "end_char": 3188, "word": "carbofuran", "xpos": "", "tags": ["NN"]}
+{"start_char": 3190, "end_char": 3193, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 3194, "end_char": 3201, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 3202, "end_char": 3209, "word": "reached", "xpos": "", "tags": ["VBD"]}
+{"start_char": 3210, "end_char": 3214, "word": "55.1", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3216, "end_char": 3218, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3219, "end_char": 3230, "word": "degradation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3232, "end_char": 3235, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 3236, "end_char": 3239, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "AUXB"]}
+{"start_char": 3240, "end_char": 3248, "word": "detected", "xpos": "", "tags": []}
+{"start_char": 3249, "end_char": 3253, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 3254, "end_char": 3257, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3258, "end_char": 3275, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3276, "end_char": 3283, "word": "product", "xpos": "", "tags": ["NN"]}
+{"start_char": 3284, "end_char": 3286, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 3287, "end_char": 3289, "word": "89", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3291, "end_char": 3295, "word": "less", "xpos": "", "tags": ["RB", "CMADJ"]}
+{"start_char": 3296, "end_char": 3301, "word": "toxic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3302, "end_char": 3306, "word": "when", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 3307, "end_char": 3315, "word": "compared", "xpos": "", "tags": []}
+{"start_char": 3316, "end_char": 3318, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3319, "end_char": 3322, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3323, "end_char": 3331, "word": "starting", "xpos": "", "tags": ["NN"]}
+{"start_char": 3332, "end_char": 3340, "word": "material", "xpos": "", "tags": ["NN"]}
+{"start_char": 3342, "end_char": 3352, "word": "carbofuran", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3354, "end_char": 3358, "word": "RUIZ", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3359, "end_char": 3366, "word": "HIDALGO", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3367, "end_char": 3369, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3370, "end_char": 3372, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3375, "end_char": 3379, "word": "2014", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3382, "end_char": 3384, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 3385, "end_char": 3391, "word": "recent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3392, "end_char": 3397, "word": "works", "xpos": "", "tags": ["NN"]}
+{"start_char": 3399, "end_char": 3414, "word": "Syncephalastrum", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3415, "end_char": 3424, "word": "racemosum", "xpos": "", "tags": ["NN"]}
+{"start_char": 3425, "end_char": 3432, "word": "strains", "xpos": "", "tags": ["NN"]}
+{"start_char": 3433, "end_char": 3439, "word": "showed", "xpos": "", "tags": ["VBD", "PRIV"]}
+{"start_char": 3440, "end_char": 3449, "word": "promising", "xpos": "", "tags": ["JJ", "PUBV"]}
+{"start_char": 3450, "end_char": 3457, "word": "results", "xpos": "", "tags": ["NN"]}
+{"start_char": 3458, "end_char": 3461, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3462, "end_char": 3470, "word": "chemical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3471, "end_char": 3486, "word": "transformations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3487, "end_char": 3489, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3490, "end_char": 3493, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3494, "end_char": 3502, "word": "molecule", "xpos": "", "tags": ["NN"]}
+{"start_char": 3503, "end_char": 3505, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3506, "end_char": 3515, "word": "ibuprofen", "xpos": "", "tags": ["NNP"]}
+{"start_char": 3517, "end_char": 3518, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3519, "end_char": 3531, "word": "prescription", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3532, "end_char": 3536, "word": "free", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3537, "end_char": 3549, "word": "nonsteroidal", "xpos": "", "tags": ["NN"]}
+{"start_char": 3550, "end_char": 3554, "word": "anti", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3555, "end_char": 3567, "word": "inflammatory", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3568, "end_char": 3572, "word": "drug", "xpos": "", "tags": ["NN"]}
+{"start_char": 3574, "end_char": 3580, "word": "widely", "xpos": "", "tags": ["RB"]}
+{"start_char": 3581, "end_char": 3585, "word": "used", "xpos": "", "tags": []}
+{"start_char": 3586, "end_char": 3596, "word": "throughout", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3597, "end_char": 3600, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3601, "end_char": 3606, "word": "world", "xpos": "", "tags": ["NN"]}
+{"start_char": 3607, "end_char": 3610, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3612, "end_char": 3615, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3616, "end_char": 3620, "word": "that", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 3621, "end_char": 3627, "word": "reason", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 3629, "end_char": 3637, "word": "commonly", "xpos": "", "tags": ["RB"]}
+{"start_char": 3638, "end_char": 3645, "word": "present", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3646, "end_char": 3648, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3649, "end_char": 3652, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3653, "end_char": 3658, "word": "water", "xpos": "", "tags": ["NN"]}
+{"start_char": 3659, "end_char": 3665, "word": "bodies", "xpos": "", "tags": ["NN"]}
+{"start_char": 3667, "end_char": 3671, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
+{"start_char": 3672, "end_char": 3679, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 3680, "end_char": 3682, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3683, "end_char": 3685, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3686, "end_char": 3697, "word": "development", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3699, "end_char": 3705, "word": "aiming", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 3706, "end_char": 3709, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3710, "end_char": 3716, "word": "assist", "xpos": "", "tags": ["INF"]}
+{"start_char": 3717, "end_char": 3720, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3721, "end_char": 3728, "word": "removal", "xpos": "", "tags": ["NN"]}
+{"start_char": 3729, "end_char": 3731, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3732, "end_char": 3736, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 3737, "end_char": 3741, "word": "drug", "xpos": "", "tags": ["NN"]}
+{"start_char": 3742, "end_char": 3746, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3747, "end_char": 3760, "word": "environmental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3761, "end_char": 3768, "word": "aqueous", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3769, "end_char": 3777, "word": "matrices", "xpos": "", "tags": ["NN"]}
+{"start_char": 3779, "end_char": 3786, "word": "MARTINS", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 3787, "end_char": 3790, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3791, "end_char": 3800, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3802, "end_char": 3806, "word": "2019", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3809, "end_char": 3811, "word": "An", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 3812, "end_char": 3821, "word": "important", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3822, "end_char": 3828, "word": "factor", "xpos": "", "tags": ["NN"]}
+{"start_char": 3829, "end_char": 3831, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3832, "end_char": 3836, "word": "that", "xpos": "", "tags": ["PIN", "DEMO", "SCONJ", "PREP"]}
+{"start_char": 3837, "end_char": 3840, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3841, "end_char": 3855, "word": "bioremediation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3856, "end_char": 3863, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 3864, "end_char": 3868, "word": "does", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 3869, "end_char": 3872, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 3873, "end_char": 3878, "word": "alter", "xpos": "", "tags": ["INF"]}
+{"start_char": 3879, "end_char": 3882, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3883, "end_char": 3898, "word": "physicochemical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3899, "end_char": 3909, "word": "properties", "xpos": "", "tags": ["NN"]}
+{"start_char": 3910, "end_char": 3912, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3913, "end_char": 3916, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3917, "end_char": 3926, "word": "treatment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3927, "end_char": 3931, "word": "site", "xpos": "", "tags": ["NN"]}
+{"start_char": 3932, "end_char": 3935, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3936, "end_char": 3939, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 3940, "end_char": 3942, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 3943, "end_char": 3947, "word": "used", "xpos": "", "tags": []}
+{"start_char": 3948, "end_char": 3950, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3951, "end_char": 3953, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3954, "end_char": 3965, "word": "alternative", "xpos": "", "tags": ["NN"]}
+{"start_char": 3966, "end_char": 3969, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3970, "end_char": 3978, "word": "physical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3979, "end_char": 3982, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 3983, "end_char": 3991, "word": "chemical", "xpos": "", "tags": ["NN"]}
+{"start_char": 3992, "end_char": 4001, "word": "processes", "xpos": "", "tags": ["NN"]}
+{"start_char": 4002, "end_char": 4006, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 4007, "end_char": 4010, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4011, "end_char": 4014, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4015, "end_char": 4025, "word": "applicable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4026, "end_char": 4028, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4029, "end_char": 4033, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 4034, "end_char": 4044, "word": "situations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4046, "end_char": 4053, "word": "MARTINS", "xpos": "", "tags": ["NN", "CAP"]}
+{"start_char": 4054, "end_char": 4056, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 4057, "end_char": 4059, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 4062, "end_char": 4066, "word": "2019", "xpos": "", "tags": ["NUM"]}
+{"start_char": 4071, "end_char": 4072, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
+{"start_char": 4073, "end_char": 4085, "word": "considerable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4086, "end_char": 4095, "word": "advantage", "xpos": "", "tags": ["NN"]}
+{"start_char": 4096, "end_char": 4099, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4100, "end_char": 4103, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4104, "end_char": 4121, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4122, "end_char": 4129, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 4130, "end_char": 4132, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4133, "end_char": 4136, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4137, "end_char": 4141, "word": "fact", "xpos": "", "tags": ["NN"]}
+{"start_char": 4142, "end_char": 4146, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "SCONJ", "PREP"]}
+{"start_char": 4147, "end_char": 4149, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 4150, "end_char": 4152, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4153, "end_char": 4154, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4155, "end_char": 4160, "word": "green", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4161, "end_char": 4172, "word": "methodology", "xpos": "", "tags": ["NN"]}
+{"start_char": 4174, "end_char": 4177, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 4178, "end_char": 4181, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 4182, "end_char": 4184, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4185, "end_char": 4193, "word": "solvents", "xpos": "", "tags": ["NN"]}
+{"start_char": 4194, "end_char": 4197, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4198, "end_char": 4206, "word": "reagents", "xpos": "", "tags": ["NN"]}
+{"start_char": 4207, "end_char": 4210, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4211, "end_char": 4218, "word": "reduced", "xpos": "", "tags": []}
+{"start_char": 4220, "end_char": 4222, "word": "as", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 4223, "end_char": 4227, "word": "well", "xpos": "", "tags": ["RB"]}
+{"start_char": 4228, "end_char": 4230, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4231, "end_char": 4234, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4235, "end_char": 4245, "word": "production", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4246, "end_char": 4248, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4249, "end_char": 4254, "word": "waste", "xpos": "", "tags": ["NN"]}
+{"start_char": 4255, "end_char": 4259, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 4260, "end_char": 4263, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 4264, "end_char": 4266, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 4267, "end_char": 4274, "word": "harmful", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4275, "end_char": 4277, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4278, "end_char": 4283, "word": "human", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4284, "end_char": 4290, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 4291, "end_char": 4294, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4295, "end_char": 4298, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4299, "end_char": 4302, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4303, "end_char": 4314, "word": "environment", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4315, "end_char": 4317, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4318, "end_char": 4321, "word": "low", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4323, "end_char": 4329, "word": "Fungal", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4330, "end_char": 4337, "word": "biomass", "xpos": "", "tags": ["NN"]}
+{"start_char": 4338, "end_char": 4341, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 4342, "end_char": 4350, "word": "produced", "xpos": "", "tags": []}
+{"start_char": 4351, "end_char": 4353, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4354, "end_char": 4358, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4359, "end_char": 4365, "word": "yields", "xpos": "", "tags": ["NN"]}
+{"start_char": 4366, "end_char": 4369, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4370, "end_char": 4378, "word": "consists", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 4379, "end_char": 4381, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4382, "end_char": 4395, "word": "biodegradable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4396, "end_char": 4403, "word": "organic", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4404, "end_char": 4412, "word": "material", "xpos": "", "tags": ["NN"]}
+{"start_char": 4414, "end_char": 4417, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 4418, "end_char": 4422, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 4423, "end_char": 4428, "word": "fungi", "xpos": "", "tags": ["NNP"]}
+{"start_char": 4429, "end_char": 4436, "word": "species", "xpos": "", "tags": ["NN"]}
+{"start_char": 4437, "end_char": 4440, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
+{"start_char": 4441, "end_char": 4451, "word": "officially", "xpos": "", "tags": ["RB"]}
+{"start_char": 4452, "end_char": 4462, "word": "considered", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 4463, "end_char": 4467, "word": "safe", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4468, "end_char": 4470, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 4471, "end_char": 4474, "word": "use", "xpos": "", "tags": ["INF"]}
+{"start_char": 4476, "end_char": 4478, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 4479, "end_char": 4487, "word": "addition", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4489, "end_char": 4492, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4493, "end_char": 4496, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 4497, "end_char": 4499, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4500, "end_char": 4504, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 4505, "end_char": 4516, "word": "sustainable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4517, "end_char": 4525, "word": "approach", "xpos": "", "tags": ["NN"]}
+{"start_char": 4526, "end_char": 4528, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4529, "end_char": 4541, "word": "advantageous", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4542, "end_char": 4549, "word": "because", "xpos": "", "tags": ["CAUS", "PIN", "SCONJ", "PREP"]}
+{"start_char": 4550, "end_char": 4552, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4553, "end_char": 4556, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4557, "end_char": 4562, "word": "lower", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 4563, "end_char": 4567, "word": "cost", "xpos": "", "tags": ["NN"]}
+{"start_char": 4568, "end_char": 4570, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4571, "end_char": 4577, "word": "fungal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4578, "end_char": 4590, "word": "manipulation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4592, "end_char": 4594, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4595, "end_char": 4603, "word": "relation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4604, "end_char": 4606, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4607, "end_char": 4610, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4611, "end_char": 4615, "word": "cost", "xpos": "", "tags": ["NN"]}
+{"start_char": 4616, "end_char": 4618, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4619, "end_char": 4626, "word": "enzymes", "xpos": "", "tags": ["NN"]}
+{"start_char": 4627, "end_char": 4636, "word": "isolation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4638, "end_char": 4641, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4642, "end_char": 4649, "word": "example", "xpos": "", "tags": ["NN"]}
+{"start_char": 4651, "end_char": 4657, "word": "Fungal", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 4658, "end_char": 4667, "word": "operation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4668, "end_char": 4670, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 4671, "end_char": 4677, "word": "simple", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4678, "end_char": 4681, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 4682, "end_char": 4686, "word": "fast", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 4688, "end_char": 4691, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 4692, "end_char": 4696, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4697, "end_char": 4707, "word": "successive", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4708, "end_char": 4712, "word": "cell", "xpos": "", "tags": ["NN"]}
+{"start_char": 4713, "end_char": 4727, "word": "reintegrations", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4729, "end_char": 4730, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 4731, "end_char": 4737, "word": "single", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4738, "end_char": 4744, "word": "fungal", "xpos": "", "tags": ["NN"]}
+{"start_char": 4745, "end_char": 4751, "word": "strain", "xpos": "", "tags": ["NN"]}
+{"start_char": 4752, "end_char": 4755, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 4756, "end_char": 4758, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 4759, "end_char": 4763, "word": "used", "xpos": "", "tags": []}
+{"start_char": 4764, "end_char": 4770, "word": "during", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4771, "end_char": 4776, "word": "years", "xpos": "", "tags": ["NN"]}
+{"start_char": 4777, "end_char": 4779, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 4780, "end_char": 4787, "word": "several", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 4788, "end_char": 4805, "word": "interdisciplinary", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4806, "end_char": 4813, "word": "studies", "xpos": "", "tags": ["NN"]}
+{"start_char": 4814, "end_char": 4817, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4818, "end_char": 4829, "word": "exploration", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4830, "end_char": 4832, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4833, "end_char": 4836, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4837, "end_char": 4843, "word": "fungal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 4844, "end_char": 4854, "word": "metabolism", "xpos": "", "tags": ["NN"]}
+{"start_char": 4856, "end_char": 4858, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 4859, "end_char": 4864, "word": "fungi", "xpos": "", "tags": ["NN"]}
+{"start_char": 4865, "end_char": 4867, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 4868, "end_char": 4871, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 4872, "end_char": 4878, "word": "depend", "xpos": "", "tags": ["INF"]}
+{"start_char": 4879, "end_char": 4881, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4882, "end_char": 4893, "word": "seasonality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 4894, "end_char": 4897, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4898, "end_char": 4903, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4904, "end_char": 4910, "word": "growth", "xpos": "", "tags": ["NN"]}
+{"start_char": 4912, "end_char": 4916, "word": "they", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 4917, "end_char": 4920, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 4921, "end_char": 4923, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 4924, "end_char": 4934, "word": "replicated", "xpos": "", "tags": []}
+{"start_char": 4935, "end_char": 4945, "word": "throughout", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4946, "end_char": 4949, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4950, "end_char": 4954, "word": "year", "xpos": "", "tags": ["NN"]}
+{"start_char": 4955, "end_char": 4958, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 4959, "end_char": 4962, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 4963, "end_char": 4970, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 4971, "end_char": 4974, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 4975, "end_char": 4977, "word": "be", "xpos": "", "tags": ["PASS", "BYPA", "AUXB", "INF"]}
+{"start_char": 4978, "end_char": 4987, "word": "optimized", "xpos": "", "tags": []}
+{"start_char": 4988, "end_char": 4990, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 4991, "end_char": 5000, "word": "modifying", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 5001, "end_char": 5012, "word": "cultivation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5013, "end_char": 5023, "word": "conditions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5024, "end_char": 5026, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5027, "end_char": 5039, "word": "considerably", "xpos": "", "tags": ["RB"]}
+{"start_char": 5040, "end_char": 5050, "word": "accessible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5051, "end_char": 5056, "word": "plant", "xpos": "", "tags": ["NN"]}
+{"start_char": 5057, "end_char": 5062, "word": "based", "xpos": "", "tags": []}
+{"start_char": 5063, "end_char": 5070, "word": "culture", "xpos": "", "tags": ["NN"]}
+{"start_char": 5071, "end_char": 5076, "word": "media", "xpos": "", "tags": ["NN"]}
+{"start_char": 5077, "end_char": 5079, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5080, "end_char": 5081, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5082, "end_char": 5088, "word": "source", "xpos": "", "tags": ["NN"]}
+{"start_char": 5089, "end_char": 5091, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5092, "end_char": 5101, "word": "nutrients", "xpos": "", "tags": ["NN"]}
+{"start_char": 5103, "end_char": 5112, "word": "TAKAHASHI", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 5113, "end_char": 5115, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 5116, "end_char": 5118, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 5121, "end_char": 5125, "word": "2017", "xpos": "", "tags": ["NUM"]}
+{"start_char": 5130, "end_char": 5141, "word": "Considering", "xpos": "", "tags": ["GER", "PRIV", "CAP", "PGAS"]}
+{"start_char": 5142, "end_char": 5145, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 5146, "end_char": 5151, "word": "these", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5152, "end_char": 5163, "word": "interesting", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5164, "end_char": 5176, "word": "applications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5178, "end_char": 5180, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5181, "end_char": 5183, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 5184, "end_char": 5192, "word": "possible", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 5193, "end_char": 5195, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 5196, "end_char": 5204, "word": "conclude", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 5205, "end_char": 5209, "word": "that", "xpos": "", "tags": ["PIN", "THVC", "SCONJ", "PREP"]}
+{"start_char": 5210, "end_char": 5213, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5214, "end_char": 5220, "word": "fungal", "xpos": "", "tags": ["NN"]}
+{"start_char": 5221, "end_char": 5238, "word": "biotransformation", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5239, "end_char": 5242, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 5243, "end_char": 5245, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 5246, "end_char": 5248, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5249, "end_char": 5258, "word": "efficient", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5260, "end_char": 5263, "word": "low", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5264, "end_char": 5268, "word": "cost", "xpos": "", "tags": ["NN"]}
+{"start_char": 5270, "end_char": 5273, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 5274, "end_char": 5285, "word": "sustainable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5286, "end_char": 5293, "word": "process", "xpos": "", "tags": ["NN"]}
+{"start_char": 5295, "end_char": 5302, "word": "Consist", "xpos": "", "tags": ["CAP", "INF"]}
+{"start_char": 5303, "end_char": 5305, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5306, "end_char": 5307, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5308, "end_char": 5313, "word": "green", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5314, "end_char": 5325, "word": "alternative", "xpos": "", "tags": ["NN"]}
+{"start_char": 5326, "end_char": 5330, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5331, "end_char": 5343, "word": "conventional", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5344, "end_char": 5352, "word": "chemical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5353, "end_char": 5362, "word": "synthesis", "xpos": "", "tags": ["NN"]}
+{"start_char": 5363, "end_char": 5366, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5367, "end_char": 5379, "word": "conventional", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5380, "end_char": 5391, "word": "waterbodies", "xpos": "", "tags": ["NN"]}
+{"start_char": 5392, "end_char": 5402, "word": "treatments", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5404, "end_char": 5405, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5406, "end_char": 5413, "word": "desired", "xpos": "", "tags": ["SUAV"]}
+{"start_char": 5414, "end_char": 5420, "word": "aspect", "xpos": "", "tags": ["NN"]}
+{"start_char": 5421, "end_char": 5429, "word": "nowadays", "xpos": "", "tags": ["RB", "TIME"]}
+{"start_char": 5431, "end_char": 5436, "word": "where", "xpos": "", "tags": ["RB", "SCONJ", "WH"]}
+{"start_char": 5437, "end_char": 5439, "word": "so", "xpos": "", "tags": ["RB", "EMPH"]}
+{"start_char": 5440, "end_char": 5444, "word": "many", "xpos": "", "tags": ["QUAN", "JJ"]}
+{"start_char": 5445, "end_char": 5458, "word": "environmental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5459, "end_char": 5468, "word": "disasters", "xpos": "", "tags": ["NN"]}
+{"start_char": 5469, "end_char": 5472, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5473, "end_char": 5485, "word": "recklessness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5486, "end_char": 5489, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 5490, "end_char": 5499, "word": "occurring", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 5501, "end_char": 5503, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 5504, "end_char": 5508, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5509, "end_char": 5512, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 5514, "end_char": 5517, "word": "its", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 5518, "end_char": 5521, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 5522, "end_char": 5525, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
+{"start_char": 5526, "end_char": 5530, "word": "been", "xpos": "", "tags": ["PASS", "SPAU", "AUXB"]}
+{"start_char": 5531, "end_char": 5543, "word": "increasingly", "xpos": "", "tags": ["RB"]}
+{"start_char": 5544, "end_char": 5556, "word": "incorporated", "xpos": "", "tags": []}
+{"start_char": 5557, "end_char": 5559, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5560, "end_char": 5563, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5564, "end_char": 5578, "word": "pharmaceutical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5579, "end_char": 5587, "word": "industry", "xpos": "", "tags": ["NN"]}
+{"start_char": 5589, "end_char": 5592, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5593, "end_char": 5596, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5597, "end_char": 5607, "word": "production", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5608, "end_char": 5610, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5611, "end_char": 5620, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 5621, "end_char": 5623, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5624, "end_char": 5629, "word": "great", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5630, "end_char": 5637, "word": "utility", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5638, "end_char": 5641, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 5642, "end_char": 5646, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5647, "end_char": 5657, "word": "commercial", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5658, "end_char": 5663, "word": "value", "xpos": "", "tags": ["NN"]}
+{"start_char": 5665, "end_char": 5667, "word": "It", "xpos": "", "tags": ["PIT", "CAP", "PRP", "SBJP"]}
+{"start_char": 5668, "end_char": 5672, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 5673, "end_char": 5685, "word": "demonstrates", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 5686, "end_char": 5698, "word": "considerable", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5699, "end_char": 5709, "word": "ecological", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5710, "end_char": 5713, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 5714, "end_char": 5727, "word": "environmental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5728, "end_char": 5737, "word": "potential", "xpos": "", "tags": ["NN"]}
+{"start_char": 5739, "end_char": 5745, "word": "making", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 5746, "end_char": 5754, "word": "possible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5755, "end_char": 5758, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5759, "end_char": 5768, "word": "reduction", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5769, "end_char": 5771, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5772, "end_char": 5778, "word": "levels", "xpos": "", "tags": ["NN"]}
+{"start_char": 5779, "end_char": 5781, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5782, "end_char": 5786, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 5787, "end_char": 5797, "word": "persistent", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5798, "end_char": 5807, "word": "compounds", "xpos": "", "tags": ["NN"]}
+{"start_char": 5808, "end_char": 5812, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 5813, "end_char": 5822, "word": "represent", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5823, "end_char": 5824, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5825, "end_char": 5834, "word": "potential", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5835, "end_char": 5839, "word": "risk", "xpos": "", "tags": ["NN"]}
+{"start_char": 5840, "end_char": 5842, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5843, "end_char": 5846, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5847, "end_char": 5856, "word": "ecosystem", "xpos": "", "tags": ["NN"]}
+{"start_char": 5858, "end_char": 5865, "word": "Finally", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 5867, "end_char": 5870, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 5871, "end_char": 5875, "word": "rich", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5876, "end_char": 5882, "word": "fungal", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5883, "end_char": 5895, "word": "biodiversity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5896, "end_char": 5903, "word": "enables", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 5904, "end_char": 5906, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 5907, "end_char": 5915, "word": "infinity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 5916, "end_char": 5918, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5919, "end_char": 5926, "word": "studies", "xpos": "", "tags": ["NN"]}
+{"start_char": 5927, "end_char": 5930, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5931, "end_char": 5937, "word": "future", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5938, "end_char": 5946, "word": "advances", "xpos": "", "tags": ["NN"]}
+{"start_char": 5947, "end_char": 5949, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 5950, "end_char": 5954, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 5955, "end_char": 5959, "word": "area", "xpos": "", "tags": ["NN"]}
+{"start_char": 5960, "end_char": 5962, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 5963, "end_char": 5970, "word": "natural", "xpos": "", "tags": ["JJ"]}
+{"start_char": 5971, "end_char": 5979, "word": "products", "xpos": "", "tags": ["NN"]}
+{"start_char": 5980, "end_char": 5989, "word": "chemistry", "xpos": "", "tags": ["NN"]}
+{"start_char": 5991, "end_char": 5998, "word": "applied", "xpos": "", "tags": ["VBD"]}
+{"start_char": 5999, "end_char": 6011, "word": "microbiology", "xpos": "", "tags": ["NN"]}
+{"start_char": 6013, "end_char": 6016, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 6017, "end_char": 6030, "word": "biotechnology", "xpos": "", "tags": ["NN"]}

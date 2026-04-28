@@ -11,7 +11,7 @@
 
 import sys
 from pathlib import Path
-from PyInstaller.utils.hooks import collect_data_files, collect_submodules
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, collect_all
 
 ROOT = Path(SPECPATH).parent  # pasta raiz do repositório
 
@@ -32,6 +32,7 @@ else:
 # Dados a incluir no bundle
 # ---------------------------------------------------------------------------
 datas = []
+binaries = []
 
 # ttwtools: fontes Python + dados (tags_biber.json)
 datas += [(str(TTWTOOLS_SRC), 'ttwtools')]
@@ -39,10 +40,15 @@ datas += [(str(TTWTOOLS_SRC), 'ttwtools')]
 # Frontend (HTML/CSS/JS)
 datas += [(str(ROOT / 'frontend'), 'frontend')]
 
-# spaCy: arquivos de dados dos modelos (pipe configs, vocab, etc.)
+# spaCy: bundle completo dos modelos (codigo + dados + binarios + hidden imports)
+# para evitar erro [E050] em app congelado do PyInstaller.
+model_hidden = []
 for model in ['en_core_web_sm', 'en_core_web_trf']:
     try:
-        datas += collect_data_files(model)
+        model_datas, model_bins, model_hiddens = collect_all(model)
+        datas += model_datas
+        binaries += model_bins
+        model_hidden += model_hiddens
     except Exception:
         pass  # modelo não instalado — ignorar
 
@@ -67,6 +73,9 @@ hidden += ['webview', 'webview.platforms.cocoa', 'webview.platforms.winforms',
 hidden += ['spacy', 'thinc', 'blis', 'murmurhash', 'cymem', 'preshed',
            'srsly', 'catalogue', 'wasabi', 'typer', 'click']
 hidden += ['en_core_web_sm', 'en_core_web_sm.about']
+hidden += model_hidden
+# stdlib modules needed by torch.distributed.distributed_c10d at runtime
+hidden += ['unittest', 'unittest.case', 'unittest.mock']
 
 # ---------------------------------------------------------------------------
 # Analysis
@@ -74,13 +83,13 @@ hidden += ['en_core_web_sm', 'en_core_web_sm.about']
 a = Analysis(
     [str(ROOT / 'app' / '__main__.py')],
     pathex=[str(ROOT), str(TTWTOOLS_SRC.parent)],  # TTWTOOLS_SRC.parent contém o pacote ttwtools/
-    binaries=[],
+    binaries=binaries,
     datas=datas,
     hiddenimports=hidden,
     hookspath=[str(ROOT / 'build' / 'hooks')],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['tkinter', 'test', 'unittest'],
+    excludes=['tkinter', 'test'],  # 'unittest' must stay: torch.distributed.distributed_c10d imports it
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     noarchive=False,

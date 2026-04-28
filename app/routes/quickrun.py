@@ -10,6 +10,7 @@ GET  /api/quickrun/status/{job_id}
 from __future__ import annotations
 
 import tempfile
+import threading
 import uuid
 from pathlib import Path
 
@@ -72,9 +73,14 @@ class QuickRunRequest(BaseModel):
 @router.post("/start")
 def quickrun_start(req: QuickRunRequest, background_tasks: BackgroundTasks):
     """Inicia o pipeline completo em background. Retorna job_id para polling."""
+    # Avoid accidental double-start from UI (double click / stale retries).
+    if any(j.get("status") in {"queued", "running"} for j in _jobs.values()):
+        raise HTTPException(status_code=409, detail="Ja existe um pipeline em execucao.")
+
     job_id = str(uuid.uuid4())
-    _jobs[job_id] = {"status": "queued", "step": "aguardando", "message": "", "error": None, "ttwa_path": None}
-    background_tasks.add_task(_run_pipeline, job_id, req)
+    _jobs[job_id] = {"status": "queued", "step": "queued", "message": "Na fila...", "error": None, "ttwa_path": None}
+    # Use an explicit daemon thread to avoid BackgroundTasks stalls in frozen app builds.
+    threading.Thread(target=_run_pipeline, args=(job_id, req), daemon=True).start()
     return {"job_id": job_id}
 
 
@@ -91,13 +97,13 @@ def quickrun_status(job_id: str):
 # ---------------------------------------------------------------------------
 
 def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
-    import ttwtools
-    from ttwtools.project import save_analysis_to_project
-
     def _upd(step: str, msg: str = ""):
         _jobs[job_id].update({"status": "running", "step": step, "message": msg})
 
     try:
+        _upd("queued", "Inicializando pipeline...")
+
+        import ttwtools
         c1_folder = Path(req.corpus1_folder).resolve()
         c2_folder = Path(req.corpus2_folder).resolve()
 
@@ -167,6 +173,7 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                             folder_path_str=str(c1_folder),
                             output_dir=str(tmp),
                             save_tagged=True,
+                            use_gpu=False,
                             extended=(current_tagger == "mfte_ext"),
                         )
 
@@ -185,6 +192,7 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                             folder_path_str=str(c2_folder),
                             output_dir=str(tmp),
                             save_tagged=True,
+                            use_gpu=False,
                             extended=(current_tagger == "mfte_ext"),
                         )
 

@@ -1,0 +1,487 @@
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.0986.0568.txt"}
+{"start_char": 113, "end_char": 128, "word": "Intensification", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 129, "end_char": 131, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 132, "end_char": 135, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 136, "end_char": 147, "word": "possibility", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 148, "end_char": 150, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 151, "end_char": 155, "word": "harm", "xpos": "", "tags": ["NN"]}
+{"start_char": 156, "end_char": 166, "word": "associated", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 167, "end_char": 171, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 172, "end_char": 181, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 182, "end_char": 185, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 186, "end_char": 197, "word": "prescribing", "xpos": "", "tags": ["GER"]}
+{"start_char": 198, "end_char": 201, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 202, "end_char": 204, "word": "be", "xpos": "", "tags": ["PASS", "AUXB", "INF"]}
+{"start_char": 205, "end_char": 212, "word": "defined", "xpos": "", "tags": []}
+{"start_char": 213, "end_char": 215, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 216, "end_char": 226, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 227, "end_char": 232, "word": "error", "xpos": "", "tags": ["NN"]}
+{"start_char": 234, "end_char": 238, "word": "Dean", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 239, "end_char": 241, "word": "et", "xpos": "", "tags": ["NNP"]}
+{"start_char": 242, "end_char": 244, "word": "al", "xpos": "", "tags": ["NNP"]}
+{"start_char": 247, "end_char": 251, "word": "2000", "xpos": "", "tags": ["NUM"]}
+{"start_char": 254, "end_char": 256, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 257, "end_char": 265, "word": "reported", "xpos": "", "tags": ["PUBV"]}
+{"start_char": 266, "end_char": 268, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 269, "end_char": 274, "word": "World", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 275, "end_char": 281, "word": "Health", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 282, "end_char": 294, "word": "Organization", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 296, "end_char": 299, "word": "WHO", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 301, "end_char": 303, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 304, "end_char": 308, "word": "2017", "xpos": "", "tags": ["NUM"]}
+{"start_char": 310, "end_char": 313, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 314, "end_char": 318, "word": "cost", "xpos": "", "tags": ["NN"]}
+{"start_char": 319, "end_char": 329, "word": "associated", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 330, "end_char": 334, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 335, "end_char": 345, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 346, "end_char": 352, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 353, "end_char": 358, "word": "might", "xpos": "", "tags": ["POMD"]}
+{"start_char": 359, "end_char": 361, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 362, "end_char": 367, "word": "equal", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 368, "end_char": 370, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 371, "end_char": 374, "word": "US$", "xpos": "", "tags": ["CAP"]}
+{"start_char": 375, "end_char": 377, "word": "42", "xpos": "", "tags": ["NUM"]}
+{"start_char": 378, "end_char": 385, "word": "billion", "xpos": "", "tags": ["NUM"]}
+{"start_char": 387, "end_char": 394, "word": "However", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 396, "end_char": 405, "word": "according", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 406, "end_char": 408, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 409, "end_char": 413, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 414, "end_char": 426, "word": "Organization", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 428, "end_char": 434, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 435, "end_char": 438, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 439, "end_char": 449, "word": "inevitable", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 450, "end_char": 453, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 454, "end_char": 457, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 458, "end_char": 467, "word": "challenge", "xpos": "", "tags": ["NN"]}
+{"start_char": 468, "end_char": 470, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 471, "end_char": 473, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 474, "end_char": 480, "word": "reduce", "xpos": "", "tags": ["INF"]}
+{"start_char": 481, "end_char": 486, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 487, "end_char": 496, "word": "frequency", "xpos": "", "tags": ["NN"]}
+{"start_char": 497, "end_char": 500, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 501, "end_char": 507, "word": "impact", "xpos": "", "tags": ["NN"]}
+{"start_char": 509, "end_char": 511, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 512, "end_char": 516, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 517, "end_char": 522, "word": "sense", "xpos": "", "tags": ["PRIV", "NN"]}
+{"start_char": 524, "end_char": 532, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 533, "end_char": 544, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 545, "end_char": 548, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 549, "end_char": 551, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 552, "end_char": 554, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 555, "end_char": 564, "word": "effective", "xpos": "", "tags": ["JJ"]}
+{"start_char": 565, "end_char": 573, "word": "strategy", "xpos": "", "tags": ["NN"]}
+{"start_char": 575, "end_char": 586, "word": "considering", "xpos": "", "tags": ["GER", "PRIV", "PGAS"]}
+{"start_char": 587, "end_char": 592, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 593, "end_char": 602, "word": "expertise", "xpos": "", "tags": ["NN"]}
+{"start_char": 603, "end_char": 605, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 606, "end_char": 617, "word": "medications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 618, "end_char": 628, "word": "associated", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 629, "end_char": 633, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 634, "end_char": 639, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 640, "end_char": 655, "word": "sociobehavioral", "xpos": "", "tags": ["JJ"]}
+{"start_char": 656, "end_char": 659, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 660, "end_char": 668, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 669, "end_char": 682, "word": "understanding", "xpos": "", "tags": ["GER", "PRIV"]}
+{"start_char": 684, "end_char": 689, "word": "First", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 691, "end_char": 699, "word": "reducing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 700, "end_char": 710, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 711, "end_char": 717, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 718, "end_char": 726, "word": "involves", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 727, "end_char": 730, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 731, "end_char": 739, "word": "capacity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 740, "end_char": 742, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 743, "end_char": 750, "word": "predict", "xpos": "", "tags": ["PUBV", "INF"]}
+{"start_char": 752, "end_char": 759, "word": "explain", "xpos": "", "tags": ["PUBV", "INF"]}
+{"start_char": 760, "end_char": 763, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 764, "end_char": 773, "word": "elucidate", "xpos": "", "tags": ["JJ"]}
+{"start_char": 774, "end_char": 782, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 783, "end_char": 790, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 791, "end_char": 793, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 794, "end_char": 803, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 805, "end_char": 810, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 811, "end_char": 813, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 814, "end_char": 822, "word": "possible", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 823, "end_char": 825, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 826, "end_char": 827, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 828, "end_char": 836, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 837, "end_char": 847, "word": "pharmacist", "xpos": "", "tags": ["NN"]}
+{"start_char": 849, "end_char": 852, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 853, "end_char": 861, "word": "pharmacy", "xpos": "", "tags": ["NN"]}
+{"start_char": 862, "end_char": 871, "word": "curricula", "xpos": "", "tags": ["NN"]}
+{"start_char": 872, "end_char": 879, "word": "provide", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 880, "end_char": 884, "word": "more", "xpos": "", "tags": ["JJ", "EMPH", "CMADJ"]}
+{"start_char": 885, "end_char": 892, "word": "courses", "xpos": "", "tags": ["NN"]}
+{"start_char": 893, "end_char": 895, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 896, "end_char": 900, "word": "drug", "xpos": "", "tags": ["NN"]}
+{"start_char": 901, "end_char": 910, "word": "chemistry", "xpos": "", "tags": ["NN"]}
+{"start_char": 911, "end_char": 915, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 916, "end_char": 918, "word": "do", "xpos": "", "tags": ["PROD", "INF"]}
+{"start_char": 919, "end_char": 924, "word": "those", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 925, "end_char": 927, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 928, "end_char": 933, "word": "other", "xpos": "", "tags": ["JJ"]}
+{"start_char": 934, "end_char": 940, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 941, "end_char": 945, "word": "care", "xpos": "", "tags": ["NN"]}
+{"start_char": 946, "end_char": 957, "word": "professions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 959, "end_char": 964, "word": "which", "xpos": "", "tags": ["SERE", "DET", "WH"]}
+{"start_char": 965, "end_char": 971, "word": "allows", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 972, "end_char": 974, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 975, "end_char": 986, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 987, "end_char": 995, "word": "identify", "xpos": "", "tags": ["INF"]}
+{"start_char": 996, "end_char": 1004, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 1005, "end_char": 1012, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1013, "end_char": 1015, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1016, "end_char": 1027, "word": "medications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1029, "end_char": 1034, "word": "David", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 1036, "end_char": 1040, "word": "2009", "xpos": "", "tags": ["NUM"]}
+{"start_char": 1043, "end_char": 1047, "word": "Thus", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 1049, "end_char": 1055, "word": "dosage", "xpos": "", "tags": ["NN"]}
+{"start_char": 1056, "end_char": 1062, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 1064, "end_char": 1068, "word": "drug", "xpos": "", "tags": ["NN"]}
+{"start_char": 1069, "end_char": 1086, "word": "incompatibilities", "xpos": "", "tags": ["NN"]}
+{"start_char": 1088, "end_char": 1098, "word": "especially", "xpos": "", "tags": ["RB"]}
+{"start_char": 1099, "end_char": 1101, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1102, "end_char": 1107, "word": "those", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 1108, "end_char": 1112, "word": "that", "xpos": "", "tags": ["DEMO", "WH"]}
+{"start_char": 1113, "end_char": 1123, "word": "frequently", "xpos": "", "tags": ["RB"]}
+{"start_char": 1124, "end_char": 1129, "word": "occur", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1130, "end_char": 1135, "word": "after", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1136, "end_char": 1142, "word": "mixing", "xpos": "", "tags": ["PGAS"]}
+{"start_char": 1143, "end_char": 1153, "word": "parenteral", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1154, "end_char": 1163, "word": "solutions", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1165, "end_char": 1168, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}
+{"start_char": 1169, "end_char": 1178, "word": "incorrect", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1179, "end_char": 1190, "word": "monotherapy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1191, "end_char": 1194, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 1195, "end_char": 1203, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 1204, "end_char": 1208, "word": "that", "xpos": "", "tags": ["TOBJ", "WHOBJ", "WH"]}
+{"start_char": 1209, "end_char": 1217, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1218, "end_char": 1229, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 1230, "end_char": 1233, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1234, "end_char": 1238, "word": "able", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 1239, "end_char": 1241, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1242, "end_char": 1247, "word": "solve", "xpos": "", "tags": ["INF"]}
+{"start_char": 1248, "end_char": 1253, "word": "based", "xpos": "", "tags": []}
+{"start_char": 1254, "end_char": 1256, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1257, "end_char": 1262, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1263, "end_char": 1267, "word": "deep", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1268, "end_char": 1277, "word": "knowledge", "xpos": "", "tags": ["NN"]}
+{"start_char": 1278, "end_char": 1280, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1281, "end_char": 1290, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 1292, "end_char": 1295, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1296, "end_char": 1308, "word": "consequences", "xpos": "", "tags": ["NN"]}
+{"start_char": 1309, "end_char": 1311, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1312, "end_char": 1315, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1316, "end_char": 1322, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 1323, "end_char": 1329, "word": "system", "xpos": "", "tags": ["NN"]}
+{"start_char": 1330, "end_char": 1333, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
+{"start_char": 1335, "end_char": 1344, "word": "therefore", "xpos": "", "tags": ["RB", "CONJ"]}
+{"start_char": 1346, "end_char": 1347, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1348, "end_char": 1355, "word": "patient", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1356, "end_char": 1362, "word": "safety", "xpos": "", "tags": ["NN"]}
+{"start_char": 1363, "end_char": 1370, "word": "culture", "xpos": "", "tags": ["NN"]}
+{"start_char": 1371, "end_char": 1374, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1375, "end_char": 1380, "word": "fewer", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 1381, "end_char": 1389, "word": "expenses", "xpos": "", "tags": ["NN"]}
+{"start_char": 1390, "end_char": 1397, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1398, "end_char": 1400, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1401, "end_char": 1411, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1412, "end_char": 1418, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 1420, "end_char": 1427, "word": "Another", "xpos": "", "tags": ["CAP", "DET"]}
+{"start_char": 1428, "end_char": 1439, "word": "fundamental", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1440, "end_char": 1444, "word": "fact", "xpos": "", "tags": ["NN"]}
+{"start_char": 1445, "end_char": 1449, "word": "that", "xpos": "", "tags": ["PIN", "TSUB", "SCONJ", "PREP"]}
+{"start_char": 1450, "end_char": 1457, "word": "impacts", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1458, "end_char": 1461, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1462, "end_char": 1467, "word": "chain", "xpos": "", "tags": ["NN"]}
+{"start_char": 1468, "end_char": 1470, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1471, "end_char": 1472, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1473, "end_char": 1479, "word": "safety", "xpos": "", "tags": ["NN"]}
+{"start_char": 1480, "end_char": 1490, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1491, "end_char": 1493, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1494, "end_char": 1497, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1498, "end_char": 1504, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 1505, "end_char": 1514, "word": "education", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1516, "end_char": 1524, "word": "Clinical", "xpos": "", "tags": ["JJ", "CAP"]}
+{"start_char": 1525, "end_char": 1536, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 1537, "end_char": 1540, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 1541, "end_char": 1545, "word": "able", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 1546, "end_char": 1548, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1549, "end_char": 1557, "word": "instruct", "xpos": "", "tags": ["SUAV", "INF"]}
+{"start_char": 1558, "end_char": 1561, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1562, "end_char": 1569, "word": "patient", "xpos": "", "tags": ["NN"]}
+{"start_char": 1570, "end_char": 1575, "word": "about", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1576, "end_char": 1579, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1580, "end_char": 1584, "word": "best", "xpos": "", "tags": ["JJ", "SPADJ"]}
+{"start_char": 1585, "end_char": 1588, "word": "way", "xpos": "", "tags": ["NN"]}
+{"start_char": 1589, "end_char": 1591, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1592, "end_char": 1596, "word": "take", "xpos": "", "tags": ["INF"]}
+{"start_char": 1598, "end_char": 1603, "word": "store", "xpos": "", "tags": ["INF"]}
+{"start_char": 1604, "end_char": 1607, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 1608, "end_char": 1615, "word": "prepare", "xpos": "", "tags": ["INF"]}
+{"start_char": 1616, "end_char": 1619, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1620, "end_char": 1622, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1623, "end_char": 1626, "word": "her", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 1627, "end_char": 1638, "word": "medications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 1640, "end_char": 1642, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 1643, "end_char": 1651, "word": "diabetes", "xpos": "", "tags": ["NN"]}
+{"start_char": 1652, "end_char": 1659, "word": "therapy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1661, "end_char": 1664, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1665, "end_char": 1673, "word": "instance", "xpos": "", "tags": ["NN"]}
+{"start_char": 1675, "end_char": 1678, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1679, "end_char": 1687, "word": "patients", "xpos": "", "tags": ["NN"]}
+{"start_char": 1688, "end_char": 1691, "word": "who", "xpos": "", "tags": ["WHSUB", "WH"]}
+{"start_char": 1692, "end_char": 1695, "word": "use", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 1696, "end_char": 1703, "word": "insulin", "xpos": "", "tags": ["NN"]}
+{"start_char": 1704, "end_char": 1707, "word": "can", "xpos": "", "tags": ["POMD", "SPAU"]}
+{"start_char": 1708, "end_char": 1718, "word": "frequently", "xpos": "", "tags": ["RB"]}
+{"start_char": 1719, "end_char": 1722, "word": "put", "xpos": "", "tags": ["INF"]}
+{"start_char": 1723, "end_char": 1726, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1727, "end_char": 1734, "word": "insulin", "xpos": "", "tags": ["NN"]}
+{"start_char": 1735, "end_char": 1737, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 1738, "end_char": 1741, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1742, "end_char": 1749, "word": "freezer", "xpos": "", "tags": ["NN"]}
+{"start_char": 1751, "end_char": 1756, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 1757, "end_char": 1759, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 1760, "end_char": 1765, "word": "known", "xpos": "", "tags": ["PRIV"]}
+{"start_char": 1766, "end_char": 1768, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 1769, "end_char": 1776, "word": "degrade", "xpos": "", "tags": ["INF"]}
+{"start_char": 1777, "end_char": 1779, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 1781, "end_char": 1783, "word": "or", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1784, "end_char": 1786, "word": "do", "xpos": "", "tags": ["VPRT", "SPAU"]}
+{"start_char": 1787, "end_char": 1790, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1791, "end_char": 1801, "word": "administer", "xpos": "", "tags": ["INF"]}
+{"start_char": 1802, "end_char": 1806, "word": "this", "xpos": "", "tags": ["DEMO", "DET"]}
+{"start_char": 1807, "end_char": 1815, "word": "medicine", "xpos": "", "tags": ["NN"]}
+{"start_char": 1816, "end_char": 1825, "word": "correctly", "xpos": "", "tags": ["RB"]}
+{"start_char": 1827, "end_char": 1830, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
+{"start_char": 1831, "end_char": 1843, "word": "consequences", "xpos": "", "tags": ["NN"]}
+{"start_char": 1844, "end_char": 1846, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1847, "end_char": 1851, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 1852, "end_char": 1855, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1856, "end_char": 1858, "word": "be", "xpos": "", "tags": ["BEMA", "AUXB", "INF"]}
+{"start_char": 1859, "end_char": 1860, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 1861, "end_char": 1864, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 1865, "end_char": 1874, "word": "effective", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1875, "end_char": 1882, "word": "therapy", "xpos": "", "tags": ["NN"]}
+{"start_char": 1884, "end_char": 1889, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 1890, "end_char": 1895, "word": "might", "xpos": "", "tags": ["POMD"]}
+{"start_char": 1896, "end_char": 1904, "word": "increase", "xpos": "", "tags": ["INF"]}
+{"start_char": 1905, "end_char": 1908, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 1909, "end_char": 1913, "word": "rate", "xpos": "", "tags": ["NN"]}
+{"start_char": 1914, "end_char": 1916, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1917, "end_char": 1929, "word": "hospitalized", "xpos": "", "tags": []}
+{"start_char": 1930, "end_char": 1938, "word": "patients", "xpos": "", "tags": ["NN"]}
+{"start_char": 1940, "end_char": 1946, "word": "higher", "xpos": "", "tags": ["JJ", "CMADJ"]}
+{"start_char": 1947, "end_char": 1954, "word": "dosages", "xpos": "", "tags": ["NN"]}
+{"start_char": 1955, "end_char": 1957, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 1958, "end_char": 1965, "word": "insulin", "xpos": "", "tags": ["NN"]}
+{"start_char": 1966, "end_char": 1969, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 1970, "end_char": 1982, "word": "irreversible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 1983, "end_char": 1988, "word": "harms", "xpos": "", "tags": ["NN"]}
+{"start_char": 1989, "end_char": 1996, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 1997, "end_char": 1999, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2000, "end_char": 2008, "word": "diabetes", "xpos": "", "tags": ["NN"]}
+{"start_char": 2009, "end_char": 2012, "word": "not", "xpos": "", "tags": ["XX0", "RB"]}
+{"start_char": 2013, "end_char": 2023, "word": "controlled", "xpos": "", "tags": []}
+{"start_char": 2025, "end_char": 2027, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2028, "end_char": 2034, "word": "kidney", "xpos": "", "tags": ["NN"]}
+{"start_char": 2035, "end_char": 2042, "word": "failure", "xpos": "", "tags": ["NN"]}
+{"start_char": 2043, "end_char": 2046, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2047, "end_char": 2056, "word": "blindness", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2058, "end_char": 2066, "word": "Avoiding", "xpos": "", "tags": ["PRESP", "CAP", "PGAS"]}
+{"start_char": 2067, "end_char": 2071, "word": "this", "xpos": "", "tags": ["DEMP", "DET"]}
+{"start_char": 2072, "end_char": 2077, "word": "means", "xpos": "", "tags": ["VPRT", "PRIV"]}
+{"start_char": 2078, "end_char": 2085, "word": "quality", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2086, "end_char": 2088, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2089, "end_char": 2093, "word": "life", "xpos": "", "tags": ["NN"]}
+{"start_char": 2094, "end_char": 2096, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2097, "end_char": 2100, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2101, "end_char": 2108, "word": "patient", "xpos": "", "tags": ["NN"]}
+{"start_char": 2109, "end_char": 2112, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2113, "end_char": 2114, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2115, "end_char": 2121, "word": "system", "xpos": "", "tags": ["NN"]}
+{"start_char": 2122, "end_char": 2124, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2125, "end_char": 2131, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 2132, "end_char": 2136, "word": "care", "xpos": "", "tags": ["NN"]}
+{"start_char": 2137, "end_char": 2142, "word": "where", "xpos": "", "tags": ["RB", "WHOBJ", "SCONJ", "WH"]}
+{"start_char": 2143, "end_char": 2146, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2147, "end_char": 2156, "word": "frequency", "xpos": "", "tags": ["NN"]}
+{"start_char": 2157, "end_char": 2159, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2160, "end_char": 2170, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2171, "end_char": 2177, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 2178, "end_char": 2180, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2181, "end_char": 2188, "word": "minimal", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 2190, "end_char": 2197, "word": "Finally", "xpos": "", "tags": ["RB", "CAP"]}
+{"start_char": 2199, "end_char": 2209, "word": "increasing", "xpos": "", "tags": ["GER", "PRESP", "PGAS"]}
+{"start_char": 2210, "end_char": 2211, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2212, "end_char": 2216, "word": "safe", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2217, "end_char": 2219, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2220, "end_char": 2229, "word": "effective", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2230, "end_char": 2233, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 2234, "end_char": 2236, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2237, "end_char": 2246, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 2247, "end_char": 2255, "word": "requires", "xpos": "", "tags": ["VPRT", "SUAV"]}
+{"start_char": 2256, "end_char": 2259, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2260, "end_char": 2267, "word": "ability", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2268, "end_char": 2270, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2271, "end_char": 2281, "word": "understand", "xpos": "", "tags": ["PRIV", "INF"]}
+{"start_char": 2282, "end_char": 2285, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2286, "end_char": 2301, "word": "sociobehavioral", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2302, "end_char": 2305, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2306, "end_char": 2309, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2310, "end_char": 2318, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2319, "end_char": 2326, "word": "science", "xpos": "", "tags": ["NN"]}
+{"start_char": 2328, "end_char": 2333, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 2334, "end_char": 2336, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
+{"start_char": 2337, "end_char": 2345, "word": "provided", "xpos": "", "tags": []}
+{"start_char": 2346, "end_char": 2348, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2349, "end_char": 2357, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2358, "end_char": 2366, "word": "pharmacy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2367, "end_char": 2377, "word": "discipline", "xpos": "", "tags": ["NN"]}
+{"start_char": 2379, "end_char": 2381, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
+{"start_char": 2382, "end_char": 2387, "word": "order", "xpos": "", "tags": ["SUAV", "NN"]}
+{"start_char": 2388, "end_char": 2390, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2391, "end_char": 2399, "word": "identify", "xpos": "", "tags": ["INF"]}
+{"start_char": 2400, "end_char": 2408, "word": "problems", "xpos": "", "tags": ["NN"]}
+{"start_char": 2409, "end_char": 2416, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2417, "end_char": 2419, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2420, "end_char": 2429, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 2431, "end_char": 2433, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
+{"start_char": 2434, "end_char": 2436, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2437, "end_char": 2446, "word": "necessary", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 2447, "end_char": 2450, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2451, "end_char": 2459, "word": "capacity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2460, "end_char": 2462, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2463, "end_char": 2472, "word": "interpret", "xpos": "", "tags": ["INF"]}
+{"start_char": 2473, "end_char": 2481, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2482, "end_char": 2487, "word": "exams", "xpos": "", "tags": ["NN"]}
+{"start_char": 2489, "end_char": 2491, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2492, "end_char": 2496, "word": "high", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2497, "end_char": 2502, "word": "blood", "xpos": "", "tags": ["NN"]}
+{"start_char": 2503, "end_char": 2512, "word": "potassium", "xpos": "", "tags": ["NN"]}
+{"start_char": 2513, "end_char": 2520, "word": "meaning", "xpos": "", "tags": ["WZPRES", "PRIV", "PGAS"]}
+{"start_char": 2521, "end_char": 2522, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2523, "end_char": 2531, "word": "possible", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2532, "end_char": 2545, "word": "inappropriate", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2546, "end_char": 2552, "word": "dosage", "xpos": "", "tags": ["NN"]}
+{"start_char": 2553, "end_char": 2555, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2556, "end_char": 2560, "word": "some", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 2561, "end_char": 2569, "word": "medicine", "xpos": "", "tags": ["NN"]}
+{"start_char": 2570, "end_char": 2573, "word": "and", "xpos": "", "tags": ["CCONJ"]}
+{"start_char": 2575, "end_char": 2579, "word": "also", "xpos": "", "tags": ["RB"]}
+{"start_char": 2581, "end_char": 2590, "word": "behaviors", "xpos": "", "tags": ["NN"]}
+{"start_char": 2591, "end_char": 2600, "word": "presented", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2601, "end_char": 2603, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2604, "end_char": 2607, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2608, "end_char": 2615, "word": "patient", "xpos": "", "tags": ["NN"]}
+{"start_char": 2617, "end_char": 2619, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2620, "end_char": 2632, "word": "irritability", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2634, "end_char": 2639, "word": "which", "xpos": "", "tags": ["SERE", "WHQU", "DET", "WH"]}
+{"start_char": 2640, "end_char": 2643, "word": "can", "xpos": "", "tags": ["POMD"]}
+{"start_char": 2644, "end_char": 2646, "word": "be", "xpos": "", "tags": ["PASS", "BYPA", "AUXB", "INF"]}
+{"start_char": 2647, "end_char": 2653, "word": "caused", "xpos": "", "tags": []}
+{"start_char": 2654, "end_char": 2656, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2657, "end_char": 2666, "word": "medicines", "xpos": "", "tags": ["NN"]}
+{"start_char": 2667, "end_char": 2671, "word": "that", "xpos": "", "tags": ["TSUB", "WHSUB", "WH"]}
+{"start_char": 2672, "end_char": 2675, "word": "act", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 2676, "end_char": 2678, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 2679, "end_char": 2682, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2683, "end_char": 2688, "word": "brain", "xpos": "", "tags": ["NN"]}
+{"start_char": 2690, "end_char": 2694, "word": "Thus", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 2696, "end_char": 2704, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2705, "end_char": 2716, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 2717, "end_char": 2720, "word": "are", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2721, "end_char": 2725, "word": "able", "xpos": "", "tags": ["JJ", "PRED"]}
+{"start_char": 2726, "end_char": 2728, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2729, "end_char": 2737, "word": "optimize", "xpos": "", "tags": ["INF"]}
+{"start_char": 2738, "end_char": 2748, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2749, "end_char": 2756, "word": "therapy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2757, "end_char": 2762, "word": "based", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2763, "end_char": 2765, "word": "on", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2766, "end_char": 2771, "word": "their", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
+{"start_char": 2772, "end_char": 2781, "word": "knowledge", "xpos": "", "tags": ["NN"]}
+{"start_char": 2782, "end_char": 2784, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2785, "end_char": 2788, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2789, "end_char": 2797, "word": "multiple", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2798, "end_char": 2807, "word": "abilities", "xpos": "", "tags": ["NN"]}
+{"start_char": 2808, "end_char": 2815, "word": "related", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2816, "end_char": 2818, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2819, "end_char": 2825, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 2826, "end_char": 2830, "word": "care", "xpos": "", "tags": ["NN"]}
+{"start_char": 2832, "end_char": 2841, "word": "Therefore", "xpos": "", "tags": ["RB", "CONJ", "CAP"]}
+{"start_char": 2843, "end_char": 2845, "word": "an", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 2846, "end_char": 2855, "word": "effective", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2856, "end_char": 2864, "word": "strategy", "xpos": "", "tags": ["NN"]}
+{"start_char": 2865, "end_char": 2867, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 2868, "end_char": 2874, "word": "reduce", "xpos": "", "tags": ["INF"]}
+{"start_char": 2875, "end_char": 2878, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2879, "end_char": 2888, "word": "frequency", "xpos": "", "tags": ["NN"]}
+{"start_char": 2889, "end_char": 2892, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 2893, "end_char": 2899, "word": "impact", "xpos": "", "tags": ["NN"]}
+{"start_char": 2900, "end_char": 2902, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2903, "end_char": 2914, "word": "medications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 2915, "end_char": 2921, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 2922, "end_char": 2924, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 2925, "end_char": 2928, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2929, "end_char": 2932, "word": "use", "xpos": "", "tags": ["NN"]}
+{"start_char": 2933, "end_char": 2935, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2936, "end_char": 2944, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 2945, "end_char": 2956, "word": "pharmacists", "xpos": "", "tags": ["NN"]}
+{"start_char": 2958, "end_char": 2960, "word": "To", "xpos": "", "tags": ["PIN", "TO", "CAP", "PREP"]}
+{"start_char": 2961, "end_char": 2968, "word": "achieve", "xpos": "", "tags": ["INF"]}
+{"start_char": 2969, "end_char": 2972, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2973, "end_char": 2976, "word": "aim", "xpos": "", "tags": ["NN"]}
+{"start_char": 2977, "end_char": 2985, "word": "launched", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 2986, "end_char": 2989, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 2990, "end_char": 2993, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 2994, "end_char": 2997, "word": "WHO", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 2998, "end_char": 3000, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3001, "end_char": 3004, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3005, "end_char": 3010, "word": "Third", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3011, "end_char": 3017, "word": "Global", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3018, "end_char": 3025, "word": "Patient", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3026, "end_char": 3032, "word": "Safety", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3033, "end_char": 3042, "word": "Challenge", "xpos": "", "tags": ["CAP", "NNP"]}
+{"start_char": 3044, "end_char": 3049, "word": "which", "xpos": "", "tags": ["SERE", "DET", "WH"]}
+{"start_char": 3050, "end_char": 3058, "word": "involves", "xpos": "", "tags": ["VPRT"]}
+{"start_char": 3059, "end_char": 3069, "word": "decreasing", "xpos": "", "tags": ["GER", "PGAS"]}
+{"start_char": 3070, "end_char": 3073, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3074, "end_char": 3084, "word": "medication", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3085, "end_char": 3091, "word": "errors", "xpos": "", "tags": ["NN"]}
+{"start_char": 3092, "end_char": 3094, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3095, "end_char": 3099, "word": "more", "xpos": "", "tags": ["JJ", "EMPH", "CMADJ"]}
+{"start_char": 3100, "end_char": 3104, "word": "than", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3105, "end_char": 3107, "word": "50", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3109, "end_char": 3111, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3112, "end_char": 3115, "word": "all", "xpos": "", "tags": ["QUAN", "DET"]}
+{"start_char": 3116, "end_char": 3125, "word": "countries", "xpos": "", "tags": ["NN"]}
+{"start_char": 3126, "end_char": 3130, "word": "over", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3131, "end_char": 3134, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3135, "end_char": 3139, "word": "next", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3140, "end_char": 3144, "word": "five", "xpos": "", "tags": ["NUM"]}
+{"start_char": 3145, "end_char": 3150, "word": "years", "xpos": "", "tags": ["NN"]}
+{"start_char": 3152, "end_char": 3153, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
+{"start_char": 3154, "end_char": 3157, "word": "key", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3158, "end_char": 3164, "word": "method", "xpos": "", "tags": ["NN"]}
+{"start_char": 3165, "end_char": 3167, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
+{"start_char": 3168, "end_char": 3170, "word": "to", "xpos": "", "tags": ["PIN", "TO", "PREP"]}
+{"start_char": 3171, "end_char": 3176, "word": "apply", "xpos": "", "tags": ["INF"]}
+{"start_char": 3177, "end_char": 3180, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
+{"start_char": 3181, "end_char": 3190, "word": "abilities", "xpos": "", "tags": ["NN"]}
+{"start_char": 3191, "end_char": 3200, "word": "presented", "xpos": "", "tags": ["WZPAST"]}
+{"start_char": 3201, "end_char": 3203, "word": "by", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3204, "end_char": 3212, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3213, "end_char": 3223, "word": "pharmacist", "xpos": "", "tags": ["NN"]}
+{"start_char": 3225, "end_char": 3227, "word": "as", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
+{"start_char": 3228, "end_char": 3232, "word": "deep", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3233, "end_char": 3242, "word": "knowledge", "xpos": "", "tags": ["NN"]}
+{"start_char": 3243, "end_char": 3245, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}
+{"start_char": 3246, "end_char": 3257, "word": "medications", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3259, "end_char": 3265, "word": "health", "xpos": "", "tags": ["NN"]}
+{"start_char": 3266, "end_char": 3275, "word": "education", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3276, "end_char": 3284, "word": "capacity", "xpos": "", "tags": ["NOMZ"]}
+{"start_char": 3286, "end_char": 3301, "word": "sociobehavioral", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3302, "end_char": 3305, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}
+{"start_char": 3306, "end_char": 3314, "word": "clinical", "xpos": "", "tags": ["JJ"]}
+{"start_char": 3315, "end_char": 3322, "word": "science", "xpos": "", "tags": ["NN"]}
+{"start_char": 3323, "end_char": 3336, "word": "understanding", "xpos": "", "tags": ["GER", "PRIV"]}
