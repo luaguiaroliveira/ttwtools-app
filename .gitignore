@@ -43,3 +43,6 @@ wheels/
 .project
 .pydevproject
 node_modules/
+
+
+ttwa_files/
