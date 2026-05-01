@@ -1,0 +1,6 @@
+<CorIFA-UFMG-B1.Int.Ne.AEss.2015-2.0534.0311>
+The graph above shows how the factors age and gender interact, give a 
+picture about the percent of divorces in USA. In the case of women, the 
+percentil of divorcies incresead from the age of 40, reachind the percent 
+above 35% in the age of 55. It seems that the women divorced more than 
+men, mainly.

@@ -94,7 +94,26 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
 
   function hideTip() { tip.style.display = 'none' }
 
-  const paletteColors = (PALETTES[palette] ?? PALETTES.biber).fn(rows, metric)
+  // Read computed colors from probe elements — SVG needs rgb() not oklch()
+  const _probe = document.createElement('span')
+  _probe.className = 'text-base-content'
+  _probe.style.cssText = 'position:absolute;opacity:0;pointer-events:none'
+  document.body.appendChild(_probe)  // attach to body, not hidden wrapper, to ensure computed styles work
+  const _rawBcColor = getComputedStyle(_probe).color
+  document.body.removeChild(_probe)
+  // Fallback based on current theme if probe returns transparent or empty
+  const _isDarkTheme = document.documentElement.dataset.theme !== 'ttwlight'
+  const _fallbackColor = _isDarkTheme ? 'rgb(220, 218, 230)' : 'rgb(30, 30, 40)'
+  const _bcColor = (_rawBcColor && _rawBcColor !== 'rgba(0, 0, 0, 0)' && _rawBcColor !== 'rgba(0,0,0,0)')
+    ? _rawBcColor : _fallbackColor
+
+  // Convert rgb(...) → rgba(..., alpha) for lines/grid
+  const _rgba = (rgb, a) => rgb.startsWith('rgb(')
+    ? rgb.replace('rgb(', 'rgba(').replace(')', `, ${a})`)
+    : rgb
+  const _axisLineColor = _rgba(_bcColor, 0.20)
+  const _gridLineColor = _rgba(_bcColor, 0.10)
+
   const isEffect = metric === 'Effect_Size'
   const margin   = { top: 6, right: 28, bottom: 32, left: 170 }
   const totalW   = Math.max(wrapper.getBoundingClientRect().width || 600, 320)
@@ -130,6 +149,9 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
     .range([0, h])
     .padding(0.18)
 
+  // Palette colors (one per row)
+  const paletteColors = (PALETTES[palette] || PALETTES.biber).fn(rows, metric)
+
   // Grid lines (vertical, behind bars)
   g.append('g')
     .attr('class', 'grid')
@@ -142,7 +164,7 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
     )
     .call(sel => sel.select('.domain').remove())
     .call(sel => sel.selectAll('line')
-      .attr('stroke', '#363b4a')
+      .attr('stroke', _gridLineColor)
       .attr('stroke-dasharray', '3,3'))
 
   // Bars
@@ -168,7 +190,7 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
     g.append('line')
       .attr('x1', x(0)).attr('x2', x(0))
       .attr('y1', 0).attr('y2', h)
-      .attr('stroke', '#5a6070')
+      .attr('stroke', _axisLineColor)
       .attr('stroke-width', 1.5)
   }
 
@@ -176,18 +198,18 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
   g.append('g')
     .attr('transform', `translate(0,${h})`)
     .call(d3.axisBottom(x).ticks(6).tickSize(4))
-    .call(sel => sel.select('.domain').attr('stroke', '#363b4a'))
-    .call(sel => sel.selectAll('text').attr('fill', '#8892a4').attr('font-size', '11px'))
-    .call(sel => sel.selectAll('line').attr('stroke', '#363b4a'))
+    .call(sel => sel.select('.domain').attr('stroke', _axisLineColor))
+    .call(sel => sel.selectAll('text').attr('fill', _bcColor).attr('font-size', '11px'))
+    .call(sel => sel.selectAll('line').attr('stroke', _axisLineColor))
 
   // Y axis
   const yAxisG = g.append('g')
     .call(d3.axisLeft(y).tickSize(3))
-    .call(sel => sel.select('.domain').attr('stroke', '#363b4a'))
-    .call(sel => sel.selectAll('line').attr('stroke', '#363b4a'))
+    .call(sel => sel.select('.domain').attr('stroke', _axisLineColor))
+    .call(sel => sel.selectAll('line').attr('stroke', _axisLineColor))
 
   yAxisG.selectAll('.tick text')
-    .attr('fill', '#e2e6f0')
+    .attr('fill', _bcColor)
     .attr('font-size', '11px')
     .attr('dy', '0.32em')
 

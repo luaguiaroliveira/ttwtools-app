@@ -76,8 +76,14 @@ export const api = {
   analysis: {
     runKfa:       body              => request('POST', '/api/analysis/kfa', body),
     listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),
-    getKfa:       (c1, c2, d, join, tagger) =>
-      request('GET', `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}${tagger ? `&tagger=${encodeURIComponent(tagger)}` : ''}`),
+    getKfa:       (c1, c2, d, join, tagger, analysisName) => {
+      let url = `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}`
+      if (tagger)       url += `&tagger=${encodeURIComponent(tagger)}`
+      if (analysisName) url += `&analysis_name=${encodeURIComponent(analysisName)}`
+      return request('GET', url)
+    },
+    getRawFeatures: (corpusName, taggerType) =>
+      request('GET', `/api/analysis/rawfeatures/${encodeURIComponent(corpusName)}${taggerType ? '?tagger_type=' + encodeURIComponent(taggerType) : ''}`),
     featureFiles: (c1, c2, feature, tagger1, tagger2) => {
       let url = `/api/analysis/feature-files/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}/${encodeURIComponent(feature)}`
       const params = []

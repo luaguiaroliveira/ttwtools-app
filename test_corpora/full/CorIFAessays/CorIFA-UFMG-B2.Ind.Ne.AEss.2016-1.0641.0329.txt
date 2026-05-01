@@ -1,0 +1,18 @@
+﻿<CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0641.0329>
+
+<Global Sea Level Variations>
+
+<Keywords: deglaciation, sea level, global warming, climate.>
+
+What happen if 25 mi km3 of water, now in solid phase, become melted? According to Landerer, & Swenson (2012) the sea level could rise up until 65 meters, resulting in the inundation of some of the major cities in the world – London, New York, Los Angeles, Tokyo, and in South American, Lima, Buenos Aires, Montevideo, Porto Alegre, Florianopolis, Rio de Janeiro, Salvador, Recife, Belem and Manaus.
+Sea level changes has occurred naturally during the geologic history, in consequence of tectonic and changes in climate (Kominz, 2001). The current climate period on Earth, called Global Warming causes a concerned problem, the sea level rise. Two main effects, closely related to the global warming could be responsible for the elevation of the ocean surface:
+I.	Deglaciation: glacial ice melting causes a small increment in the sea level rise.
+II.	Expansion of water volume: dilatation of the seawater’s volume promotes an advance of the line cost toward the continent and concomitant ascend of the sea surface.
+
+A pair of NASA satellites named The Gravity Recovery and Climate Experiment (GRACE) has been in orbit since 2002, with the aim of measure changes in Earth’s gravity field and estimate variations in the surface mass. The surface mass fundamentally reflects total water storage, which quantifies in large scale the post-glacial rebound (Swenson, Sean & National Center for Atmospheric Research Staff, 2013). Based on this recent satellite measures combined with older data of long-term tide gauge measurements, the Graph 1 illustrates variations in sea level for the world’s oceans between 1880 and 2014 (NOAA, 2015). The shaded band shows the likely range of values, based on the number of measurements collected and the precision of the methods used.
+
+<Figure 1: Cumulative changes in sea level for the world’s oceans since 1880, based on a combination of long-term tide gauge measurements and recent satellite measurements (NOAA, 2015).>
+
+Evidently, is noted that on average the ocean floor has been gradually sinking absolute sea level change. This ascend compared with the variance in large time scale (geologic time) could be insignificant. Although, the warming global in few degrees could cause sea level’s elevation and combined with undulations of storm and tides, the sea level are sufficient to devastate low coastal regions. Millions of people in Bangladesh, for example, live in deltas of Ganges and Brahmaputra rivers, few meters above the sea level. The rise of one meter, for these people could be enough damaging, that have been victims of catastrophic floods, which cost a thousands of lives.
+
+<References>

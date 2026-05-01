@@ -1,0 +1,46 @@
+<CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2331.1265>
+
+<General Relativity and the Develpment of Innovative Devices in Electrical Engineering>
+
+Albert Einstein (1915, 1916) published the general relativity theory, a geo-
+metric description of how gravitation works. This theory had an important role
+on developing modern astrophysics. However, it has implications in other areas,
+such as electrical engineering. Leonhardt and Philbin (2006) used Einstein's
+deductions in association with recent metamaterials discoveries to formulate in-
+teresting applications to the control over electromagnetic elds. In this essay,
+I will describe how the use of general relativity can be benecial in developing
+innovative devices in electrical engineering.
+Einstein's theory brought a new way on working with physical space. General
+relativity introduced the idea of time-space media, which can be applied to elec-
+tromagnetic media. One application is the development of invisibility devices.
+Metamaterials have nanostructures that can be built to have specic proper-
+ties and follow a certain function. One of these properties is the employment of
+anisotropic media, where electrical permittivity and magnetic permeability vary
+through spatial coordinates. This type of media allows negative refraction and
+therefore, it is possible to manipulate a electromagnetic eld to t in a space
+around a determined area without interacting with it (Leonhardt & Philbin,
+2006). This means, for example, that light can pass through an object with-
+out any perception of it, because the media created with metamaterials curves
+propagation direction around the object.
+Another application of negative refraction Leonhardt (2006) refers to is the
+creation of perfect lenses. These devices act as usual lenses, but they have
+additional properties that make them more precise. Since metamaterials' size
+is comparable to wavelengths of electromagnetic waves, they can be molded
+to turn a desired function into fact. This means that a lens made with them
+facilitates an exact coordinate transformation, so the resolution of the image
+gets nearly perfect since eects of diraction barely exist.
+On one hand, the general relativity can help electrical engineering with new
+and precise devices. On the other hand, the engineers can help develop other
+sciences with those devices, including astrophysics. Black holes are a diffcult
+object of study because of its complexity and measure limitations. These diffi-
+culties can be solved by engineering devices allied with the metamaterial appli-
+cations explained before to create articial black holes in laboratory (Leonhardt
+& Philbin, 2006). This would allow physicists to study the elusive effects of gen-
+eral relativity deeply and space-time singularities caused by black holes.
+In conclusion, the evolution of metamaterials and the way they interact with
+electromagnetic time-space can produce innovation in electrical engineering. In-
+visibility devices, perfect lenses and creation of articial black holes are examples
+of how this new technology can help the development of eld and wave electro-
+magnetics manipulation, besides other areas that can utilize these devices for
+another applications.
+<References>

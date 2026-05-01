@@ -25,6 +25,8 @@ class TqdmCatcher:
         self.orig_stderr = orig_stderr
         self.jobs_dict = jobs_dict
         self.buf = ""
+        self.running_taggers: set = set()  # taggers currently running — updated by _tagger_upd
+        self.tagger_phase: dict = {}       # tagger → "c1" | "c2"
 
     def write(self, s):
         self.orig_stderr.write(s)
@@ -35,6 +37,19 @@ class TqdmCatcher:
                 stripped = line.strip()
                 if stripped and '%' in stripped:
                     self.jobs_dict[self.job_id]["tqdm"] = stripped
+                    # Parse percentage and distribute to all currently-running taggers
+                    import re as _re
+                    m = _re.search(r'(\d+)%', stripped)
+                    if m:
+                        pct = int(m.group(1))
+                        tp = self.jobs_dict[self.job_id]["taggers_progress"]
+                        for t in self.running_taggers:
+                            if t in tp:
+                                phase = self.tagger_phase.get(t, "c1")
+                                if phase == "c2":
+                                    tp[t]["pct2"] = pct
+                                else:
+                                    tp[t]["pct1"] = pct
                     break
             self.buf = lines[-1]
 
@@ -64,6 +79,7 @@ class QuickRunRequest(BaseModel):
     n_processes: int = 4
     overwrite: bool = True
     taggers: list[str] = Field(default_factory=lambda: ["biberplus"])
+    tag_only: bool = False    # True = para após tagging (sem KFA)
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +94,11 @@ def quickrun_start(req: QuickRunRequest, background_tasks: BackgroundTasks):
         raise HTTPException(status_code=409, detail="Ja existe um pipeline em execucao.")
 
     job_id = str(uuid.uuid4())
-    _jobs[job_id] = {"status": "queued", "step": "queued", "message": "Na fila...", "error": None, "ttwa_path": None}
+    _jobs[job_id] = {
+        "status": "queued", "step": "queued", "message": "Na fila...",
+        "error": None, "ttwa_path": None,
+        "taggers_progress": {},  # tagger_name → {status, msg}
+    }
     # Use an explicit daemon thread to avoid BackgroundTasks stalls in frozen app builds.
     threading.Thread(target=_run_pipeline, args=(job_id, req), daemon=True).start()
     return {"job_id": job_id}
@@ -99,6 +119,26 @@ def quickrun_status(job_id: str):
 def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
     def _upd(step: str, msg: str = ""):
         _jobs[job_id].update({"status": "running", "step": step, "message": msg})
+
+    def _tagger_upd(tagger: str, status: str, msg: str = "", phase: str = "c1"):
+        existing = _jobs[job_id]["taggers_progress"].get(tagger, {})
+        _jobs[job_id]["taggers_progress"][tagger] = {
+            "status": status,
+            "msg": msg,
+            "pct1": existing.get("pct1", 0),
+            "pct2": existing.get("pct2", 0),
+            "phase": phase,
+        }
+        # Keep TqdmCatcher's running_taggers and tagger_phase in sync for pct parsing
+        if hasattr(sys.stderr, 'running_taggers'):
+            if status == "running":
+                sys.stderr.running_taggers.add(tagger)
+                if hasattr(sys.stderr, 'tagger_phase'):
+                    sys.stderr.tagger_phase[tagger] = phase
+            else:
+                sys.stderr.running_taggers.discard(tagger)
+                if hasattr(sys.stderr, 'tagger_phase'):
+                    sys.stderr.tagger_phase.pop(tagger, None)
 
     try:
         _upd("queued", "Inicializando pipeline...")
@@ -166,10 +206,13 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
             for current_tagger in biber_taggers:
                 with tempfile.TemporaryDirectory() as tmpdir:
                     tmp = Path(tmpdir)
-                    for corpus_folder, corpus_name in [
+                    _tagger_upd(current_tagger, "running", f"Tagueando {req.corpus1_name}…", phase="c1")
+                    for i, (corpus_folder, corpus_name) in enumerate([
                         (c1_folder, req.corpus1_name),
                         (c2_folder, req.corpus2_name),
-                    ]:
+                    ]):
+                        if i == 1:
+                            _tagger_upd(current_tagger, "running", f"Tagueando {req.corpus2_name}…", phase="c2")
                         _upd("tagging", f"[{current_tagger}] Tagueando {corpus_name}…")
                         ttwtools.biberplus(
                             folder_path_str=str(corpus_folder),
@@ -187,9 +230,6 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                     norm1 = tmp / f"{c1_folder.name}_biberfeatures_norm1000.csv"
                     norm2 = tmp / f"{c2_folder.name}_biberfeatures_norm1000.csv"
 
-                    _upd("kfa", f"[{current_tagger}] Calculando KFA…")
-                    kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
-
                     _upd("saving", f"[{current_tagger}] Salvando dados no projeto…")
                     tagged1 = tmp / f"{c1_folder.name}_tagged"
                     tagged2 = tmp / f"{c2_folder.name}_tagged"
@@ -201,24 +241,35 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                             proj.save_tagged_folder(cname, tagged_folder, glob="*.jsonl", tagger_type=current_tagger)
                         proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
                         proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
-                    if kfa_df is not None:
-                        proj.save_kfa_result(
-                            req.corpus1_name, req.corpus2_name, kfa_df,
-                            min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
-                        )
-                        total_features += len(kfa_df)
+
+                    if not req.tag_only:
+                        _upd("kfa", f"[{current_tagger}] Calculando KFA…")
+                        kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
+                        if kfa_df is not None:
+                            proj.save_kfa_result(
+                                req.corpus1_name, req.corpus2_name, kfa_df,
+                                min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                            )
+                            total_features += len(kfa_df)
+
+                    _tagger_upd(current_tagger, "done", "Concluído")
 
             # ── Stanza-based taggers: single Stanza pass per corpus ──────────────
             if stanza_taggers:
+                for t in stanza_taggers:
+                    _tagger_upd(t, "running", f"Tagueando {req.corpus1_name}…", phase="c1")
                 _upd("tagging", f"[stanza combined] Tagueando {req.corpus1_name} e {req.corpus2_name} ({', '.join(stanza_taggers)})…")
                 with tempfile.TemporaryDirectory() as tmpdir:
                     tmp = Path(tmpdir)
 
                     raw_paths: dict[str, dict[str, Path]] = {}   # corpus_name → {tagger → csv_path}
-                    for corpus_folder, corpus_name in [
+                    for i, (corpus_folder, corpus_name) in enumerate([
                         (c1_folder, req.corpus1_name),
                         (c2_folder, req.corpus2_name),
-                    ]:
+                    ]):
+                        if i == 1:
+                            for t in stanza_taggers:
+                                _tagger_upd(t, "running", f"Tagueando {req.corpus2_name}…", phase="c2")
                         _upd("tagging", f"[stanza combined] Tagueando {corpus_name}…")
                         raw_paths[corpus_name] = ttwtools.extract_stanza_combined_features_from_folder(
                             folder_path_str=str(corpus_folder),
@@ -248,9 +299,6 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                         norm1 = raw1.parent / f"{suffix}_norm1000.csv"
                         norm2 = raw2.parent / f"{raw2.stem.replace('_rawcount', '')}_norm1000.csv"
 
-                        _upd("kfa", f"[{current_tagger}] Calculando KFA…")
-                        kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
-
                         _upd("saving", f"[{current_tagger}] Salvando dados no projeto…")
                         tagged_dir = tmp / f"{c1_folder.name}_tagged"
                         tagged_dir2 = tmp / f"{c2_folder.name}_tagged"
@@ -262,24 +310,33 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                                 proj.save_tagged_folder(cname, tagged_folder, glob=f"*_{current_tagger}.jsonl", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
-                        if kfa_df is not None:
-                            proj.save_kfa_result(
-                                req.corpus1_name, req.corpus2_name, kfa_df,
-                                min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
-                            )
-                            total_features += len(kfa_df)
+                        if not req.tag_only:
+                            _upd("kfa", f"[{current_tagger}] Calculando KFA…")
+                            kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
+                            if kfa_df is not None:
+                                proj.save_kfa_result(
+                                    req.corpus1_name, req.corpus2_name, kfa_df,
+                                    min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                                )
+                                total_features += len(kfa_df)
+                        _tagger_upd(current_tagger, "done", "Concluído")
 
             # ── spaCy-based taggers: single nlp.pipe pass per corpus ────────────
             if spacy_taggers:
+                for t in spacy_taggers:
+                    _tagger_upd(t, "running", f"Tagueando {req.corpus1_name}…", phase="c1")
                 _upd("tagging", f"[spacy combined] Tagueando {req.corpus1_name} e {req.corpus2_name} ({', '.join(spacy_taggers)})…")
                 with tempfile.TemporaryDirectory() as tmpdir:
                     tmp = Path(tmpdir)
 
                     raw_paths: dict[str, dict[str, Path]] = {}   # corpus_name → {tagger → csv_path}
-                    for corpus_folder, corpus_name in [
+                    for i, (corpus_folder, corpus_name) in enumerate([
                         (c1_folder, req.corpus1_name),
                         (c2_folder, req.corpus2_name),
-                    ]:
+                    ]):
+                        if i == 1:
+                            for t in spacy_taggers:
+                                _tagger_upd(t, "running", f"Tagueando {req.corpus2_name}…", phase="c2")
                         _upd("tagging", f"[spacy combined] Tagueando {corpus_name}…")
                         raw_paths[corpus_name] = ttwtools.extract_spacy_combined_features_from_folder(
                             folder_path_str=str(corpus_folder),
@@ -317,12 +374,13 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                                 proj.save_tagged_folder(cname, tagged_folder, glob=f"*_{current_tagger}.jsonl", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
-                        if kfa_df is not None:
+                        if not req.tag_only and kfa_df is not None:
                             proj.save_kfa_result(
                                 req.corpus1_name, req.corpus2_name, kfa_df,
                                 min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
                             )
                             total_features += len(kfa_df)
+                        _tagger_upd(current_tagger, "done", "Concluído")
 
             proj.close()
 

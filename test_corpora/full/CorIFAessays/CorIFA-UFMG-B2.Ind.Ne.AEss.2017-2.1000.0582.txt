@@ -1,0 +1,13 @@
+﻿<CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.1000.0582>
+
+<Description of experiments performed with laser, to use or not to use the coherent states?>
+
+Although coherent states reproduce well and efficiently the results of experiments performed with laser (Molmer 1997), these can be explained using quantum states without coherence in the optical regime, by means of interference. Indeed, optical coherence is a convenient fiction (Molmer 1997). It is not necessary to consider the state of the laser as a coherent state. In fact, the laser can be described as a statistical mixture of Fock states, this one being a quantum state without classical analogue.
+
+Optical coherence is commonly use when is necessary to describe experiments for obtain squeezed states. For this, is necessary to use a “mixture” between the field to be squeezed and the pump field, the latter being in a coherent state. Coherent states are those that most close related to the classical ones because their behavior are analogous to the classical. Through coherent states, it is easy -or at least more convenient- to describe the results for the experiment to obtain squeezed states. Nevertheless, it is also possible describe the state of the laser using Fock states, to do the description it is necessary to use a statistical mixture of Fock states.
+
+However, in a more realistic description of the state of the laser is required to use statistical mixture of coherent states, which has been proved being equal to a statistical mixture of Fock states. In this description, all the results can be explain without use coherence in optical regime, in other words, the explanation did not use the analogy with classical behavior because the Fock states has no classical analogue, they are purely quantum. Therefore, all the results are obtain by means of interference, using a quantum description to the laser.
+
+Concluding, optical coherence -besides describing the results- may simplify the description of an experiment performed with optical devices -for example the experiment to obtain squeezed states- despite this, it is only an approximation. In a more accurate description, the laser is in a state which has no classical analogy and therefore is purely quantum. So we can describe the experiment without classical counterpart. Analysing the state as a statistical mixture of Fock state should give us an interesting interpretation about the quantum behaviour and a better physical description of the system.
+
+<Reference: “Optical coherence: A convenient fiction” - Klaus Mølmer, Phys. Rev. A 55, 3195 – Published 1 April 1997.>

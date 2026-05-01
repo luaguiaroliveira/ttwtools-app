@@ -1,0 +1,7 @@
+<CorIFA-UFMG-B1.Int.Ne.AEss.2015-2.0571.0346>
+As we can see, both graphs decrease the number of divorced people when 
+the age is increasing. Another fact is both gender have same shape but 
+men in the age of 35 have less divorces than women in the same age. For 
+men, birth year between 45 - 49 and 50 - 54 have more number of divorces. 
+It is the end of Second World War. After the sixties on both graphs the 
+number of divorces decreased, showing that divorces get less frequent.

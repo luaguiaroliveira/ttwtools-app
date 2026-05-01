@@ -24,6 +24,8 @@ class KFARequest(BaseModel):
     save_to_project: bool = True
     tagger1: str | None = None
     tagger2: str | None = None
+    analysis_name: str = "default"
+    include_features: list[str] | None = None  # None = todos os features
 
 
 # ---------------------------------------------------------------------------
@@ -77,8 +79,15 @@ def run_kfa(req: KFARequest):
             join=req.join,
         )
 
+    # Filter features if a subset is specified
+    if req.include_features:
+        results_df = results_df[results_df["Feature"].isin(req.include_features)]
+
     # Determine the tagger_type to store with the KFA
     kfa_tagger = req.tagger1 if req.tagger1 == req.tagger2 else f"{req.tagger1}:{req.tagger2}"
+
+    # Build features_meta: list of all features included with their raw count info
+    features_meta = results_df["Feature"].tolist() if req.include_features else []
 
     if req.save_to_project:
         with TTWAProject.open(app_state.current_project_path) as proj:
@@ -86,15 +95,18 @@ def run_kfa(req: KFARequest):
                 req.corpus1_name,
                 req.corpus2_name,
                 results_df,
-                min_effect=0.0,    # sempre salva todos os d
+                min_effect=0.0,
                 join_method=req.join,
                 tagger_type=kfa_tagger,
+                analysis_name=req.analysis_name,
+                features_meta=features_meta,
             )
 
     return {
         "corpus1": req.corpus1_name,
         "corpus2": req.corpus2_name,
         "tagger": kfa_tagger,
+        "analysis_name": req.analysis_name,
         "n_features": len(results_df),
         "results": results_df.to_dict(orient="records"),
     }
@@ -117,14 +129,17 @@ def get_kfa_result(
     min_effect: float = 0.0,
     join: str = "union",
     tagger: str | None = None,
+    analysis_name: str | None = None,
 ):
-    """Retorna uma KFA já armazenada. Carrega sempre com min_effect=0 e filtra em Python."""
+    """Retorna uma KFA já armazenada."""
     _require_project()
     from ttwtools.project import TTWAProject
 
     with TTWAProject.open(app_state.current_project_path) as proj:
-        # KFAs são sempre salvas com min_effect=0.0 (todos os d)
-        df = proj.load_kfa_result(corpus1, corpus2, min_effect=0.0, join_method=join, tagger_type=tagger)
+        df = proj.load_kfa_result(
+            corpus1, corpus2, min_effect=0.0, join_method=join,
+            tagger_type=tagger, analysis_name=analysis_name,
+        )
 
     if df is None:
         raise HTTPException(status_code=404, detail="KFA não encontrada. Execute /api/analysis/kfa primeiro.")
@@ -133,6 +148,7 @@ def get_kfa_result(
         "corpus1": corpus1,
         "corpus2": corpus2,
         "tagger": tagger,
+        "analysis_name": analysis_name,
         "n_features": len(df),
         "results": df.to_dict(orient="records"),
     }
@@ -168,6 +184,41 @@ def get_feature_table(corpus_name: str, table_type: str = "norm1000", tagger_typ
         "n_docs": len(df),
         "columns": list(df.columns),
         "data": df.to_dict(orient="records"),
+    }
+
+
+@router.get("/rawfeatures/{corpus_name}")
+def get_raw_features(corpus_name: str, tagger_type: str | None = None):
+    """Retorna os features disponíveis com contagem raw agregada para a seleção de tags."""
+    _require_project()
+    from ttwtools.project import TTWAProject
+    import json as _json
+
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        if tagger_type is None:
+            for ft in proj.list_feature_tables():
+                if ft["corpus_name"] == corpus_name and ft["table_type"] == "rawcount":
+                    tagger_type = ft["tagger_type"]
+                    break
+        if tagger_type is None:
+            raise HTTPException(status_code=404, detail="Nenhuma feature table encontrada.")
+        df = proj.load_feature_table(corpus_name, "rawcount", tagger_type=tagger_type)
+
+    if df is None:
+        raise HTTPException(status_code=404, detail="Feature table não encontrada.")
+
+    file_col = "filename" if "filename" in df.columns else df.columns[0]
+    # Exclude document-level metadata columns (not linguistic features)
+    _META = {"filename", "field", "section", "Words", "TTR", "word_count", "n_words"}
+    # Only keep numeric columns that are not metadata
+    feat_cols = [c for c in df.columns
+                 if c not in _META and df[c].dtype.kind in ('i', 'u', 'f')]
+    # Aggregate: sum of raw counts across all documents
+    totals = df[feat_cols].sum().astype(float).sort_values(ascending=False)
+    return {
+        "corpus_name": corpus_name,
+        "tagger_type": tagger_type,
+        "features": [{ "name": k, "total": int(v) } for k, v in totals.items()],
     }
 
 
