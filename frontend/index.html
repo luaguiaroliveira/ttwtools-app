@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-BNPK7l2q.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-B3ki5GnC.css">
+  <script type="module" crossorigin src="/assets/index-C_DL8enh.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-276bUd0c.css">
 </head>
 <body>
 
@@ -60,39 +60,73 @@
     <section id="view-quickrun" class="view">
       <h1>Nova análise</h1>
       <form id="form-quickrun" class="form-panel">
-        <div class="form-row">
-          <label>
-            Corpus 1 — nome
-            <sl-input id="qr-c1-name" placeholder="ex: corpus_A" size="small"></sl-input>
-          </label>
-          <label class="grow">
-            Corpus 1 — pasta
-            <div class="input-browse">
-              <sl-input id="qr-c1-folder" placeholder="/caminho/para/corpus1" size="small"></sl-input>
-              <button type="button" class="btn-browse" data-target="qr-c1-folder" title="Procurar pasta">📁</button>
-            </div>
-          </label>
+
+        <!-- ── Corpus 1 ──────────────────────────────────────────── -->
+        <div class="corpus-input-row">
+          <button type="button" class="btn-open-folder" data-target="qr-c1-folder" data-nameid="qr-c1-name" data-lastkey="corpus">Abrir pasta (corpus 1)</button>
+          <sl-input id="qr-c1-folder" placeholder="/caminho/para/corpus1" size="small" class="grow"></sl-input>
+          <sl-input id="qr-c1-name" placeholder="nome do corpus" size="small" style="width:170px"></sl-input>
         </div>
-        <div class="form-row">
-          <label>
-            Corpus 2 — nome
-            <sl-input id="qr-c2-name" placeholder="ex: corpus_B" size="small"></sl-input>
-          </label>
-          <label class="grow">
-            Corpus 2 — pasta
-            <div class="input-browse">
-              <sl-input id="qr-c2-folder" placeholder="/caminho/para/corpus2" size="small"></sl-input>
-              <button type="button" class="btn-browse" data-target="qr-c2-folder" title="Procurar pasta">📁</button>
-            </div>
-          </label>
+
+        <!-- ── Corpus 2 ──────────────────────────────────────────── -->
+        <div class="corpus-input-row">
+          <button type="button" class="btn-open-folder" data-target="qr-c2-folder" data-nameid="qr-c2-name" data-lastkey="corpus">Abrir pasta (corpus 2)</button>
+          <sl-input id="qr-c2-folder" placeholder="/caminho/para/corpus2" size="small" class="grow"></sl-input>
+          <sl-input id="qr-c2-name" placeholder="nome do corpus" size="small" style="width:170px"></sl-input>
         </div>
-        <label>
-          Salvar resultados em (.ttwa)
-          <div class="input-browse">
-            <sl-input id="qr-output" placeholder="/caminho/meu_projeto.ttwa" size="small"></sl-input>
-            <button type="button" class="btn-browse" data-target="qr-output" data-mode="file" title="Procurar pasta">📁</button>
+
+        <!-- ── Taggers ───────────────────────────────────────────── -->
+        <div class="field-section">
+          <span class="field-label">Taggers</span>
+          <div class="tagger-tree">
+
+            <!-- Todos -->
+            <sl-checkbox id="qr-all">Todos</sl-checkbox>
+
+            <!-- spaCy -->
+            <div class="tagger-group">
+              <sl-checkbox class="qr-group-cb" data-group="spacy">spaCy</sl-checkbox>
+              <div class="tagger-children">
+                <sl-checkbox class="qr-tagger-cb" value="spacy_upos" data-group="spacy">UPOS</sl-checkbox>
+                <sl-checkbox class="qr-tagger-cb" value="spacy_ptb" data-group="spacy">PTB</sl-checkbox>
+              </div>
+            </div>
+
+            <!-- Stanza -->
+            <div class="tagger-group">
+              <sl-checkbox class="qr-group-cb" data-group="stanza">Stanza</sl-checkbox>
+              <div class="tagger-children">
+                <sl-checkbox class="qr-tagger-cb" value="stanza_upos" data-group="stanza">UPOS</sl-checkbox>
+                <sl-checkbox class="qr-tagger-cb" value="stanza_xpos" data-group="stanza">XPOS</sl-checkbox>
+              </div>
+            </div>
+
+            <!-- BiberPlus -->
+            <div class="tagger-group">
+              <sl-checkbox class="qr-tagger-cb" value="biberplus" checked>BiberPlus</sl-checkbox>
+              <div id="qr-usenlp-wrap" class="tagger-children">
+                <label class="radio-option">
+                  <input type="radio" name="qr-biber-mode" value="no_nlp" checked> Sem tokens spaCy
+                </label>
+                <label class="radio-option">
+                  <input type="radio" name="qr-biber-mode" value="use_nlp"> Com tokens spaCy
+                </label>
+              </div>
+            </div>
+
+            <!-- MFTE -->
+            <div class="tagger-group">
+              <sl-checkbox class="qr-group-cb" data-group="mfte">MFTE</sl-checkbox>
+              <div class="tagger-children">
+                <sl-checkbox class="qr-tagger-cb" value="mfte" data-group="mfte">Simples</sl-checkbox>
+                <sl-checkbox class="qr-tagger-cb" value="mfte_ext" data-group="mfte">Estendido</sl-checkbox>
+              </div>
+            </div>
+
           </div>
-        </label>
+        </div>
+
+        <!-- ── Modo + Método KFA ─────────────────────────────────── -->
         <div class="form-row">
           <label>
             Modo
@@ -102,18 +136,6 @@
             </sl-select>
           </label>
           <label>
-            Taggers
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; padding-top: 0.25rem;">
-              <sl-checkbox class="qr-tagger-cb" value="biberplus" checked>BiberPlus</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="mfte">MFTE</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="mfte_ext">MFTE Estendido</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="stanza_upos">Stanza UPOS</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="stanza_xpos">Stanza XPOS</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="spacy_upos">spaCy UPOS</sl-checkbox>
-              <sl-checkbox class="qr-tagger-cb" value="spacy_ptb">spaCy PTB</sl-checkbox>
-            </div>
-          </label>
-          <label>
             Método KFA
             <sl-select id="qr-join" value="union" size="small">
               <sl-option value="union">union</sl-option>
@@ -121,8 +143,18 @@
             </sl-select>
           </label>
         </div>
-        <sl-checkbox id="qr-usenlp">Usar spaCy para tokenização</sl-checkbox>
 
+        <!-- ── Saída ─────────────────────────────────────────────── -->
+        <fieldset class="output-section">
+          <legend>Saída</legend>
+          <div class="corpus-input-row">
+            <button type="button" class="btn-open-folder" data-target="qr-output" data-lastkey="output">Salvar em...</button>
+            <sl-input id="qr-output" placeholder="/caminho/meu_projeto.ttwa" size="small" class="grow"></sl-input>
+          </div>
+          <p class="field-hint">Caminho onde será salvo o arquivo .ttwa com os resultados da análise</p>
+        </fieldset>
+
+        <!-- ── Exportar ──────────────────────────────────────────── -->
         <!-- Export section: toggle + category tree -->
         <div class="qr-export-section">
           <sl-checkbox id="qr-auto-export" checked>Exportar ao concluir</sl-checkbox>
@@ -215,7 +247,9 @@
             <sl-option value="spacy_ptb">spaCy PTB</sl-option>
           </sl-select>
         </label>
-        <sl-checkbox id="tag-usenlp">Usar spaCy (mais preciso, mais lento)</sl-checkbox>
+        <div id="tag-usenlp-wrap">
+          <sl-checkbox id="tag-usenlp">Usar spaCy (mais preciso, mais lento)</sl-checkbox>
+        </div>
         <sl-checkbox id="tag-save-tagged" checked>Salvar tokens tagueados no .ttwa</sl-checkbox>
         <label>
           Processos paralelos

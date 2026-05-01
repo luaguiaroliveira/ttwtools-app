@@ -41,6 +41,23 @@ async function pollJob() {
 }
 
 export function initTagging() {
+  // Show "Usar spaCy" option only when BiberPlus is selected
+  const taggerSelect  = document.getElementById('tag-tagger-select')
+  const usenlpWrap    = document.getElementById('tag-usenlp-wrap')
+
+  function _syncUsenlp() {
+    if (!usenlpWrap) return
+    const isBiber = taggerSelect?.value === 'biberplus'
+    usenlpWrap.style.display = isBiber ? '' : 'none'
+    if (!isBiber) {
+      const cb = document.getElementById('tag-usenlp')
+      if (cb) cb.checked = false
+    }
+  }
+
+  taggerSelect?.addEventListener('sl-change', _syncUsenlp)
+  _syncUsenlp()
+
   document.getElementById('form-tagging')?.addEventListener('submit', async e => {
     e.preventDefault()
 

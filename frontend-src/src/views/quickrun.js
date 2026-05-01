@@ -111,7 +111,97 @@ async function poll(refreshKfaSelect) {
 }
 
 export function initQuickrun({ refreshKfaSelect }) {
-  // Toggle category panel when "Exportar ao concluir" checkbox changes
+  // ── Tagger tree logic ──────────────────────────────────────────────────────
+  const allCb      = document.getElementById('qr-all')
+  const groupCbs   = Array.from(document.querySelectorAll('.qr-group-cb'))
+  const leafCbs    = Array.from(document.querySelectorAll('.qr-tagger-cb'))
+  const biberCb    = leafCbs.find(cb => cb.value === 'biberplus')
+  const usenlpWrap = document.getElementById('qr-usenlp-wrap')
+
+  function _leafsOfGroup(group) {
+    return leafCbs.filter(cb => cb.dataset.group === group)
+  }
+
+  function _syncGroupState(groupCb) {
+    const leaves = _leafsOfGroup(groupCb.dataset.group)
+    const checked = leaves.filter(c => c.checked).length
+    if (checked === 0) {
+      groupCb.checked = false
+      groupCb.indeterminate = false
+    } else if (checked === leaves.length) {
+      groupCb.checked = true
+      groupCb.indeterminate = false
+    } else {
+      groupCb.checked = false
+      groupCb.indeterminate = true
+    }
+  }
+
+  function _syncAllState() {
+    const total    = leafCbs.length
+    const checked  = leafCbs.filter(c => c.checked).length
+    if (checked === 0) {
+      allCb.checked = false
+      allCb.indeterminate = false
+    } else if (checked === total) {
+      allCb.checked = true
+      allCb.indeterminate = false
+    } else {
+      allCb.checked = false
+      allCb.indeterminate = true
+    }
+  }
+
+  function _syncUsenlp() {
+    if (!usenlpWrap) return
+    const visible = biberCb?.checked ?? false
+    usenlpWrap.style.display = visible ? '' : 'none'
+    if (!visible) {
+      const radio = document.querySelector('input[name="qr-biber-mode"][value="no_nlp"]')
+      if (radio) radio.checked = true
+    }
+  }
+
+  // "Todos" clicked → set all leaves
+  allCb?.addEventListener('sl-change', () => {
+    const newState = allCb.checked
+    leafCbs.forEach(cb => { cb.checked = newState })
+    groupCbs.forEach(gcb => {
+      gcb.checked = newState
+      gcb.indeterminate = false
+    })
+    _syncUsenlp()
+  })
+
+  // Group checkbox clicked → set all children
+  groupCbs.forEach(gcb => {
+    gcb.addEventListener('sl-change', () => {
+      _leafsOfGroup(gcb.dataset.group).forEach(cb => { cb.checked = gcb.checked })
+      gcb.indeterminate = false
+      _syncAllState()
+      _syncUsenlp()
+    })
+  })
+
+  // Leaf checkbox clicked → update parent group + "Todos"
+  leafCbs.forEach(cb => {
+    cb.addEventListener('sl-change', () => {
+      const group = cb.dataset.group
+      if (group) {
+        const gcb = groupCbs.find(g => g.dataset.group === group)
+        if (gcb) _syncGroupState(gcb)
+      }
+      _syncAllState()
+      _syncUsenlp()
+    })
+  })
+
+  // Sync initial state
+  groupCbs.forEach(gcb => _syncGroupState(gcb))
+  _syncAllState()
+  _syncUsenlp()
+
+  // ── Toggle category panel ──────────────────────────────────────────────────
   const autoExportCb = document.getElementById('qr-auto-export')
   const catsPanel    = document.getElementById('qr-export-cats')
 
@@ -121,46 +211,58 @@ export function initQuickrun({ refreshKfaSelect }) {
   }
 
   autoExportCb?.addEventListener('sl-change', _syncCatsPanel)
-  // Sync on init (checkbox starts checked, so panel visible)
   _syncCatsPanel()
 
-  // Browse buttons (📁) inside the quickrun form
-  document.querySelectorAll('#form-quickrun .btn-browse').forEach(btn => {
+  // ── Browse / open-folder buttons ───────────────────────────────────────────
+  const LS_CORPUS = 'qr_last_corpus_folder'
+  const LS_OUTPUT = 'qr_last_output_folder'
+
+  document.querySelectorAll('#form-quickrun .btn-open-folder').forEach(btn => {
     btn.addEventListener('click', async () => {
       btn.disabled = true
-      const prev = btn.textContent
+      const origText = btn.textContent
       btn.textContent = '…'
+
+      const isOutput = btn.dataset.lastkey === 'output'
+      const storageKey = isOutput ? LS_OUTPUT : LS_CORPUS
+      const defaultLocation = localStorage.getItem(storageKey) || ''
+
       try {
-        const res = await api.utils.pickFolder()
+        const res = await api.utils.pickFolder({ defaultLocation })
         if (res?.path) {
           const targetId = btn.dataset.target
           const input    = document.getElementById(targetId)
           if (input) {
-            if (targetId === 'qr-output') {
+            if (isOutput) {
+              // Suggest a .ttwa file name from corpus names
               const c1 = document.getElementById('qr-c1-name')?.value?.trim() || 'corpus1'
               const c2 = document.getElementById('qr-c2-name')?.value?.trim() || 'corpus2'
               input.value = res.path + '/' + c1 + '_vs_' + c2 + '.ttwa'
+              localStorage.setItem(LS_OUTPUT, res.path)
             } else {
               input.value = res.path
-              
-              // Auto-fill corpus name based on folder name
-              const nameId = targetId.replace('-folder', '-name')
-              const nameInput = document.getElementById(nameId)
-              if (nameInput) {
+              // Auto-fill corpus name from folder name
+              const nameId = btn.dataset.nameid
+              const nameInput = nameId ? document.getElementById(nameId) : null
+              if (nameInput && !nameInput.value.trim()) {
                 const folderName = res.path.split(/[/\\]/).filter(Boolean).pop()
                 if (folderName) nameInput.value = folderName
               }
+              // Remember parent dir as the last corpus location
+              const parentDir = res.path.split(/[/\\]/).slice(0, -1).join('/') || res.path
+              localStorage.setItem(LS_CORPUS, parentDir)
             }
             input.dispatchEvent(new Event('change'))
           }
         }
       } catch (_) {}
-      btn.textContent = prev
+
+      btn.textContent = origText
       btn.disabled    = false
     })
   })
 
-  // Form submit
+  // ── Form submit ────────────────────────────────────────────────────────────
   document.getElementById('form-quickrun')?.addEventListener('submit', async e => {
     e.preventDefault()
     if (_isStarting || _isRunning) return
@@ -182,7 +284,7 @@ export function initQuickrun({ refreshKfaSelect }) {
       taggers:        _getSelectedTaggers(),
       join:           get('qr-join'),
       min_effect:     0,
-      usenlp:         document.getElementById('qr-usenlp')?.checked ?? false,
+      usenlp:         document.querySelector('input[name="qr-biber-mode"]:checked')?.value === 'use_nlp',
       n_processes:    1,
       overwrite:      true,
     }

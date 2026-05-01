@@ -13,9 +13,12 @@ from fastapi.responses import JSONResponse
 router = APIRouter()
 
 
-def _pick_folder_macos() -> str:
+def _pick_folder_macos(default_location: str = "") -> str:
     """Usa AppleScript para abrir o seletor de pasta nativo do macOS em primeiro plano."""
-    script = 'POSIX path of (choose folder with prompt "Selecione a pasta:")'
+    if default_location:
+        script = f'POSIX path of (choose folder with prompt "Selecione a pasta:" default location POSIX file "{default_location}")'
+    else:
+        script = 'POSIX path of (choose folder with prompt "Selecione a pasta:")'
     result = subprocess.run(
         ["osascript", "-e", script],
         capture_output=True,
@@ -28,12 +31,13 @@ def _pick_folder_macos() -> str:
     return result.stdout.strip().rstrip("/")
 
 
-def _pick_folder_generic() -> str:
+def _pick_folder_generic(default_location: str = "") -> str:
     """Fallback: tkinter para Linux/Windows."""
+    init_dir = f", initialdir='{default_location}'" if default_location else ""
     script = (
         "import tkinter as tk; from tkinter import filedialog; "
         "root = tk.Tk(); root.withdraw(); root.wm_attributes('-topmost', True); "
-        "p = filedialog.askdirectory(); print(p)"
+        f"p = filedialog.askdirectory({init_dir.lstrip(', ')}); print(p)"
     )
     result = subprocess.run(
         [sys.executable, "-c", script],
@@ -45,13 +49,13 @@ def _pick_folder_generic() -> str:
 
 
 @router.get("/pick-folder")
-def pick_folder():
+def pick_folder(default_location: str = ""):
     """Abre o seletor de pasta nativo do sistema e retorna o caminho escolhido."""
     try:
         if platform.system() == "Darwin":
-            path = _pick_folder_macos()
+            path = _pick_folder_macos(default_location)
         else:
-            path = _pick_folder_generic()
+            path = _pick_folder_generic(default_location)
 
         if path:
             return {"path": path}

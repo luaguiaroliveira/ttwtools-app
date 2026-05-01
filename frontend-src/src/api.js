@@ -57,7 +57,10 @@ export const api = {
   },
 
   utils: {
-    pickFolder: () => request('GET', '/api/utils/pick-folder'),
+    pickFolder: (opts = {}) => {
+      const qs = opts.defaultLocation ? `?default_location=${encodeURIComponent(opts.defaultLocation)}` : ''
+      return request('GET', `/api/utils/pick-folder${qs}`)
+    },
     pickFile:   () => request('GET', '/api/utils/pick-file'),
   },
 

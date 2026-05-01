@@ -1338,6 +1338,106 @@ sl-option::part(checked-icon) {
 }
 
 /* ── Export Tree ────────────────────────────────────────────────────────── */
+
+/* ── Corpus input row (button | path | name) ────────────────────────────── */
+.corpus-input-row {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+.corpus-input-row sl-input.grow { flex: 1; min-width: 0; }
+
+.btn-open-folder {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0 .85rem;
+  font-size: .82rem;
+  line-height: 2.05;
+  white-space: nowrap;
+  transition: border-color .15s, background .15s;
+  flex-shrink: 0;
+}
+.btn-open-folder:hover  { border-color: var(--accent); background: var(--surface); }
+.btn-open-folder:active { opacity: .8; }
+
+/* ── Generic field section (label + content block) ──────────────────────── */
+.field-section {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.field-label {
+  font-size: .82rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-weight: 600;
+}
+.field-hint {
+  font-size: .75rem;
+  color: var(--text-muted);
+  margin: .2rem 0 0;
+}
+
+/* ── Tagger tree ─────────────────────────────────────────────────────────── */
+.tagger-tree {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  padding: .65rem .85rem;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.tagger-group {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+
+.tagger-children {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+  margin-left: 1.55rem;
+  margin-top: .1rem;
+  padding-left: .6rem;
+  border-left: 2px solid var(--border);
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .85rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: .1rem 0;
+}
+.radio-option input[type="radio"] {
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ── Output section (saída) ──────────────────────────────────────────────── */
+.output-section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .75rem 1rem .85rem;
+  background: var(--surface2);
+}
+.output-section legend {
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  padding: 0 .4rem;
+}
 .exp-tree {
   font-size: .85rem;
   line-height: 1.6;
