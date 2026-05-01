@@ -38,10 +38,12 @@ initExport()
 // Listen for project-changed event (dispatched by quickrun on completion)
 document.addEventListener('project-changed', () => {
   updateProjectLabel()
+  // Refresh corpus selects so KFA / Tagging views show the newly created corpora
+  refreshCorpusSelects()
   // Clear stale KFA data so the Results view doesn't show data from a previous project
-  state.kfaData  = null
-  state.kfaC1    = ''
-  state.kfaC2    = ''
+  state.kfaData   = null
+  state.kfaC1     = ''
+  state.kfaC2     = ''
   state.kfaTagger = null
   // Hide chart + table until user explicitly loads a KFA from the new project
   for (const sfx of ['', '-standalone']) {
@@ -64,14 +66,24 @@ api.tags.list().then(list => {
 ;(function () {
   const html = document.documentElement
   const btn  = document.getElementById('btn-theme-toggle')
-  const saved = localStorage.getItem('ttw-theme') || 'ttwdark'
-  html.setAttribute('data-theme', saved)
-  if (btn) btn.textContent = saved === 'ttwdark' ? '🌙' : '☀️'
+
+  // Default theme: light between 08:00–18:00, dark otherwise
+  // If the user has ever chosen manually, respect their saved preference.
+  function _autoTheme() {
+    const h = new Date().getHours()
+    return (h >= 8 && h < 18) ? 'ttwlight' : 'ttwdark'
+  }
+
+  const saved  = localStorage.getItem('ttw-theme')  // null if never explicitly chosen
+  const active = saved || _autoTheme()
+  html.setAttribute('data-theme', active)
+  if (btn) btn.textContent = active === 'ttwdark' ? '🌙' : '☀️'
+
   btn?.addEventListener('click', () => {
     const current = html.getAttribute('data-theme') || 'ttwdark'
     const next    = current === 'ttwdark' ? 'ttwlight' : 'ttwdark'
     html.setAttribute('data-theme', next)
-    localStorage.setItem('ttw-theme', next)
+    localStorage.setItem('ttw-theme', next)   // persist manual choice
     btn.textContent = next === 'ttwdark' ? '🌙' : '☀️'
   })
 })()

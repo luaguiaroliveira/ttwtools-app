@@ -1,7 +1,13 @@
 /**
  * views/analysis.js — KFA standalone form.
- * Auto-detects which taggers are available for corpus1 and shows
- * a tag-selection panel per tagger — identical to quickrun step 3.
+ *
+ * When the "KFA" sidebar button is clicked:
+ *  1. The corpus selects are auto-populated from existing project KFA results.
+ *  2. Features are auto-detected for all taggers that have data for corpus1.
+ *  3. A panel per tagger is shown — identical to quickrun step 3.
+ *
+ * The user can then run a new KFA (adding a new analysis layer) or adjust
+ * which tags to include.
  */
 
 import { api }                 from '../api.js'
@@ -63,6 +69,7 @@ function _buildTagPanel(tagger, features) {
 
 // ── Try all taggers for corpus1; show a panel for each with features ─────────
 let _loadingFeatures = false
+
 async function _loadAllFeatures() {
   const panels = document.getElementById('kfa-feat-panels')
   if (!panels) return
@@ -86,14 +93,15 @@ async function _loadAllFeatures() {
         const r = await api.analysis.getRawFeatures(c1, tagger)
         const features = r.features || []
         if (features.length > 0) results.push({ tagger, features })
-      } catch (_) { /* tagger not run for this corpus — skip */ }
+      } catch (_) { /* tagger not run for this corpus — skip silently */ }
     }
 
     panels.innerHTML = ''
     if (results.length === 0) {
       panels.innerHTML = `
         <div class="text-sm text-base-content/50 italic py-2">
-          Nenhum tagger encontrado para este corpus. O corpus foi tagueado?
+          Nenhum tagger encontrado para este corpus.<br/>
+          Execute o Tagging primeiro (menu lateral "Tagging") para gerar as features.
         </div>`
     } else {
       results.forEach(({ tagger, features }) =>
@@ -105,18 +113,51 @@ async function _loadAllFeatures() {
   }
 }
 
+// ── Auto-populate corpus pair from the first existing KFA result ─────────────
+async function _autoPopulateFromProject() {
+  try {
+    const { kfa_results } = await api.analysis.listKfa()
+    if (!kfa_results || kfa_results.length === 0) return
+
+    const first = kfa_results[0]
+    const c1Sel = document.getElementById('kfa-corpus1')
+    const c2Sel = document.getElementById('kfa-corpus2')
+
+    // Only set if not already chosen
+    if (c1Sel && !c1Sel.value && first.corpus1_name) {
+      const opt = Array.from(c1Sel.options).find(o => o.value === first.corpus1_name)
+      if (opt) c1Sel.value = first.corpus1_name
+    }
+    if (c2Sel && !c2Sel.value && first.corpus2_name) {
+      const opt = Array.from(c2Sel.options).find(o => o.value === first.corpus2_name)
+      if (opt) c2Sel.value = first.corpus2_name
+    }
+
+    // Now load features for the auto-selected corpus1
+    if (document.getElementById('kfa-corpus1')?.value) {
+      await _loadAllFeatures()
+    }
+  } catch (_) { /* no project open yet — ignore */ }
+}
+
 // ── Public init ──────────────────────────────────────────────────────────────
 export function initAnalysis({ refreshKfaSelect }) {
   // Reload panels when corpus1 changes
   document.getElementById('kfa-corpus1')?.addEventListener('change', _loadAllFeatures)
 
-  // When view-analysis becomes visible, auto-load if corpus1 is already set
+  // When view-analysis becomes visible, auto-populate + load features
   const viewEl = document.getElementById('view-analysis')
   if (viewEl) {
     new MutationObserver(() => {
       if (viewEl.classList.contains('active')) {
         const c1 = document.getElementById('kfa-corpus1')?.value
-        if (c1) _loadAllFeatures()
+        if (c1) {
+          // corpus already selected → just refresh panels
+          _loadAllFeatures()
+        } else {
+          // try to pre-fill from existing project results
+          _autoPopulateFromProject()
+        }
       }
     }).observe(viewEl, { attributes: true, attributeFilter: ['class'] })
   }
@@ -133,9 +174,9 @@ export function initAnalysis({ refreshKfaSelect }) {
     if (!c1 || !c2) { showToast('Selecione os dois corpora.', 'error'); return }
     if (c1 === c2)  { showToast('Os corpora devem ser diferentes.', 'error'); return }
 
-    // Collect panels (one per detected tagger)
-    const panels = document.querySelectorAll('#kfa-feat-panels .kfa-panel')
-    if (panels.length === 0) {
+    // Collect one panel per detected tagger
+    const panelEls = document.querySelectorAll('#kfa-feat-panels .kfa-panel')
+    if (panelEls.length === 0) {
       showToast('Nenhuma feature disponível. Selecione um corpus tagueado.', 'error')
       return
     }
@@ -146,13 +187,13 @@ export function initAnalysis({ refreshKfaSelect }) {
 
     let ran = 0
     try {
-      for (const panel of panels) {
+      for (const panel of panelEls) {
         const tagger = panel.dataset.tagger
         const checked = Array.from(
           panel.querySelectorAll('.kfa-sa-feat-cb:checked')
         ).map(cb => cb.value)
 
-        if (checked.length === 0) continue // skip if user deselected all
+        if (checked.length === 0) continue  // user deselected everything — skip
 
         await api.analysis.runKfa({
           corpus1_name:     c1,

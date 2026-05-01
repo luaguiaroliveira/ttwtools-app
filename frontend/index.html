@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-DmItSnAy.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-B7Ld49t1.css">
+  <script type="module" crossorigin src="/assets/index-C44bMuvf.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Dv9u83w3.css">
 </head>
 <body class="flex h-screen overflow-hidden bg-base-100 text-base-content">
 
@@ -381,7 +381,7 @@
           <div class="flex gap-2">
             <input id="export-dest" type="text" placeholder="padrão: pasta ao lado do .ttwa"
               class="input input-bordered input-sm flex-1" />
-            <button type="button" class="btn btn-sm btn-outline" id="btn-export-browse" title="Procurar pasta">📁</button>
+            <button type="button" class="btn btn-sm btn-outline" id="btn-export-browse">Escolher pasta</button>
           </div>
         </label>
         <div id="export-tree" class="exp-tree"></div>
@@ -447,58 +447,32 @@
     <!-- ANALYSIS (KFA standalone) -->
     <section id="view-analysis" class="view">
       <h1 class="text-2xl font-light mb-1">Key Feature Analysis</h1>
-      <p class="text-sm text-base-content/60 mb-4">Selecione os corpora, o tagger e os tags a incluir na análise.</p>
-      <form id="form-kfa" class="flex flex-col gap-4 max-w-xl">
+      <p class="text-sm text-base-content/60 mb-4">
+        Selecione os corpora — os taggers disponíveis são detectados automaticamente.
+      </p>
+      <form id="form-kfa" class="flex flex-col gap-4">
 
-        <!-- Corpus + Tagger 1 -->
-        <div class="flex flex-wrap gap-4">
+        <!-- Corpus 1 + Corpus 2 -->
+        <div class="flex flex-wrap gap-4 max-w-xl">
           <label class="form-control flex-1 min-w-40">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 1</span>
             <select id="kfa-corpus1" class="select select-bordered select-sm">
               <option value="">-- selecione --</option>
             </select>
           </label>
-          <label class="form-control">
-            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Tagger 1</span>
-            <select id="kfa-tagger1" class="select select-bordered select-sm">
-              <option value="biberplus">BiberPlus</option>
-              <option value="mfte">MFTE</option>
-              <option value="mfte_ext">MFTE Estendido</option>
-              <option value="stanza_upos">Stanza UPOS</option>
-              <option value="stanza_xpos">Stanza XPOS</option>
-              <option value="spacy_upos">spaCy UPOS</option>
-              <option value="spacy_ptb">spaCy PTB</option>
-            </select>
-          </label>
-        </div>
-
-        <!-- Corpus + Tagger 2 -->
-        <div class="flex flex-wrap gap-4">
           <label class="form-control flex-1 min-w-40">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 2</span>
             <select id="kfa-corpus2" class="select select-bordered select-sm">
               <option value="">-- selecione --</option>
             </select>
           </label>
-          <label class="form-control">
-            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Tagger 2</span>
-            <select id="kfa-tagger2" class="select select-bordered select-sm">
-              <option value="biberplus">BiberPlus</option>
-              <option value="mfte">MFTE</option>
-              <option value="mfte_ext">MFTE Estendido</option>
-              <option value="stanza_upos">Stanza UPOS</option>
-              <option value="stanza_xpos">Stanza XPOS</option>
-              <option value="spacy_upos">spaCy UPOS</option>
-              <option value="spacy_ptb">spaCy PTB</option>
-            </select>
-          </label>
         </div>
 
-        <!-- Tag selection panels (populated dynamically when corpus1 + tagger1 are selected) -->
+        <!-- Tag selection panels (auto-populated per detected tagger) -->
         <div id="kfa-feat-panels" class="flex flex-col gap-4"></div>
 
         <!-- Join method + analysis name -->
-        <div class="flex flex-wrap gap-4">
+        <div class="flex flex-wrap gap-4 max-w-xl">
           <label class="form-control">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Método de junção</span>
             <select id="kfa-join" class="select select-bordered select-sm w-48">
@@ -513,7 +487,7 @@
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Executar KFA</button>
+        <button type="submit" class="btn btn-primary max-w-xl">Executar KFA</button>
       </form>
     </section>
 

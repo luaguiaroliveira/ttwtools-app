@@ -67,27 +67,38 @@ function updateTaggerBar(tagger, status, msg, pct) {
   const fill   = document.getElementById(`tbar-fill-${tagger}`)
   if (!card) return
   card.classList.remove('running', 'done', 'error')
+
   if (status === 'running') {
     card.classList.add('running')
     if (fill) {
-      fill.parentElement.classList.toggle('indeterminate', !pct || pct === 0)
-      if (pct > 0) {
-        fill.style.display = 'block'
-        fill.style.width = pct + '%'
-        fill.style.background = 'hsl(var(--p))'
-      } else {
-        fill.style.display = 'none'
-        fill.style.width = ''
-        fill.style.background = ''
-      }
+      fill.parentElement.classList.remove('indeterminate')
+      // Always keep fill visible — use pct if available, else minimum 5%
+      fill.style.display  = 'block'
+      fill.style.width    = pct > 0 ? pct + '%' : '5%'
+      fill.style.background = 'hsl(var(--p))'
     }
   } else if (status === 'done') {
     card.classList.add('done')
-    if (fill) { fill.style.display='block'; fill.style.width = '100%'; fill.style.background = ''; fill.parentElement.classList.remove('indeterminate') }
+    if (fill) {
+      fill.style.display = 'block'
+      fill.style.width   = '100%'
+      fill.style.background = ''
+      fill.parentElement.classList.remove('indeterminate')
+    }
   } else if (status === 'error') {
     card.classList.add('error')
-    if (fill) { fill.style.display='block'; fill.style.width = '100%'; fill.style.background = ''; fill.parentElement.classList.remove('indeterminate') }
+    if (fill) {
+      fill.style.display = 'block'
+      fill.style.width   = '100%'
+      fill.style.background = ''
+      fill.parentElement.classList.remove('indeterminate')
+    }
+  } else {
+    // Waiting / queued — show empty track (fill at 0%)
+    if (fill) { fill.style.display = 'block'; fill.style.width = '0%'; fill.style.background = 'hsl(var(--p))'; }
   }
+
+  // Status label: append "(N%)" when running with real pct
   const pctLabel = (pct > 0 && status === 'running') ? ` (${pct}%)` : ''
   if (statEl) statEl.textContent = (msg || status) + pctLabel
 }
