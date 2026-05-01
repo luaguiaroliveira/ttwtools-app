@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Archaeology_Essay_2_6124b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Archaeology_Essay_2_6124b_tx.txt"}
 {"start_char": 0, "end_char": 12, "word": "Neanderthals", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 13, "end_char": 16, "word": "are", "xpos": "", "tags": ["PASS", "VPRT", "AUXB"]}
 {"start_char": 17, "end_char": 22, "word": "known", "xpos": "", "tags": ["PRIV"]}

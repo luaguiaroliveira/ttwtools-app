@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2102.1186.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2102.1186.txt"}
 {"start_char": 108, "end_char": 114, "word": "Forest", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 115, "end_char": 120, "word": "Fires", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 121, "end_char": 127, "word": "became", "xpos": "", "tags": ["VBD"]}

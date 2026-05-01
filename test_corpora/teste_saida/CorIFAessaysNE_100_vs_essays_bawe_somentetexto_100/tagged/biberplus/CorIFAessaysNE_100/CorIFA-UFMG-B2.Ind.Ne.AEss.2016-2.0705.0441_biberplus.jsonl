@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0705.0441.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0705.0441.txt"}
 {"start_char": 93, "end_char": 103, "word": "Transgenic", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 104, "end_char": 113, "word": "organisms", "xpos": "", "tags": ["NN"]}
 {"start_char": 115, "end_char": 117, "word": "or", "xpos": "", "tags": ["CCONJ"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Law_Essay_1_0191a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Law_Essay_1_0191a_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
 {"start_char": 3, "end_char": 6, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
 {"start_char": 7, "end_char": 16, "word": "statement", "xpos": "", "tags": ["NOMZ"]}

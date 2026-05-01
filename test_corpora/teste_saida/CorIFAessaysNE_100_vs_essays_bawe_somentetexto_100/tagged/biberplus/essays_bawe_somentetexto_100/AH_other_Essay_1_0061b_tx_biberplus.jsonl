@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_other_Essay_1_0061b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_other_Essay_1_0061b_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "As", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
 {"start_char": 3, "end_char": 4, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
 {"start_char": 5, "end_char": 11, "word": "writer", "xpos": "", "tags": ["NN"]}

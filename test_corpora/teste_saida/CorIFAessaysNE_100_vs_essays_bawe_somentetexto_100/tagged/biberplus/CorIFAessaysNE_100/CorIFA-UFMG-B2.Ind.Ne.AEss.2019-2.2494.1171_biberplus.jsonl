@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2494.1171.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2494.1171.txt"}
 {"start_char": 92, "end_char": 100, "word": "Brownian", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 101, "end_char": 107, "word": "motion", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 108, "end_char": 111, "word": "was", "xpos": "", "tags": ["PASS", "VBD", "BYPA", "SPAU", "AUXB"]}

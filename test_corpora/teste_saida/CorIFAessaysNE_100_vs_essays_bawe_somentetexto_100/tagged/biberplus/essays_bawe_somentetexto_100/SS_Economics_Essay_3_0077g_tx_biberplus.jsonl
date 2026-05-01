@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Economics_Essay_3_0077g_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Economics_Essay_3_0077g_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "Price", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 6, "end_char": 19, "word": "determination", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 20, "end_char": 23, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}

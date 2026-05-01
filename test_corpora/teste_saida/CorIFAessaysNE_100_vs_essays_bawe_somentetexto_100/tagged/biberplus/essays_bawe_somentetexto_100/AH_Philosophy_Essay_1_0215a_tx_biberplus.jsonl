@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0215a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0215a_tx.txt"}
 {"start_char": 0, "end_char": 10, "word": "Parmenides", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 12, "end_char": 24, "word": "contribution", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 25, "end_char": 27, "word": "to", "xpos": "", "tags": ["PIN", "PREP"]}

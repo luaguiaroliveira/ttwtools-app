@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Agriculture_Essay_1_6008h_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Agriculture_Essay_1_6008h_tx.txt"}
 {"start_char": 0, "end_char": 1, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
 {"start_char": 2, "end_char": 6, "word": "firm", "xpos": "", "tags": ["NN"]}
 {"start_char": 7, "end_char": 9, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}

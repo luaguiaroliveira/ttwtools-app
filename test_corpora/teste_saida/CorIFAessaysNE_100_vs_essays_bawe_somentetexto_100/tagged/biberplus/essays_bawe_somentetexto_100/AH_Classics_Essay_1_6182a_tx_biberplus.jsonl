@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Classics_Essay_1_6182a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Classics_Essay_1_6182a_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "Part", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 5, "end_char": 9, "word": "One-", "xpos": "", "tags": ["CAP", "NUM"]}
 {"start_char": 10, "end_char": 14, "word": "What", "xpos": "", "tags": ["CAP", "WH"]}

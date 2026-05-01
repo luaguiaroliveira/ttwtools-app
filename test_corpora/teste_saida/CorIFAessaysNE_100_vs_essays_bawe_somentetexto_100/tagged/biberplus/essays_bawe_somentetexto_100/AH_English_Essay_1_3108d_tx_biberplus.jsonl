@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3108d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3108d_tx.txt"}
 {"start_char": 1, "end_char": 5, "word": "Upon", "xpos": "", "tags": ["PIN", "CAP", "SCONJ", "PREP"]}
 {"start_char": 6, "end_char": 9, "word": "his", "xpos": "", "tags": ["TPP3", "PRP", "SBJP"]}
 {"start_char": 10, "end_char": 17, "word": "Leaving", "xpos": "", "tags": ["CAP", "PGAS"]}

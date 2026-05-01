@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Economics_Essay_3_0206j_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Economics_Essay_3_0206j_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "There", "xpos": "", "tags": ["EX", "CAP"]}
 {"start_char": 6, "end_char": 9, "word": "are", "xpos": "", "tags": ["VPRT", "AUXB"]}
 {"start_char": 10, "end_char": 17, "word": "several", "xpos": "", "tags": ["QUAN", "JJ"]}

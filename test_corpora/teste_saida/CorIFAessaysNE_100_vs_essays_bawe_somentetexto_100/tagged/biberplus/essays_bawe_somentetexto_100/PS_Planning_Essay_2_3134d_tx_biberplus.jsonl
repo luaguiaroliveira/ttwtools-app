@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Planning_Essay_2_3134d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Planning_Essay_2_3134d_tx.txt"}
 {"start_char": 0, "end_char": 12, "word": "Introduction", "xpos": "", "tags": ["NOMZ", "CAP"]}
 {"start_char": 13, "end_char": 16, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 17, "end_char": 20, "word": "aim", "xpos": "", "tags": ["NN"]}

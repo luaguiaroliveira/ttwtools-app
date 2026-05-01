@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0710.0445.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0710.0445.txt"}
 {"start_char": 88, "end_char": 94, "word": "Making", "xpos": "", "tags": ["CAP", "PGAS"]}
 {"start_char": 95, "end_char": 104, "word": "decisions", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 105, "end_char": 110, "word": "based", "xpos": "", "tags": ["WZPAST"]}

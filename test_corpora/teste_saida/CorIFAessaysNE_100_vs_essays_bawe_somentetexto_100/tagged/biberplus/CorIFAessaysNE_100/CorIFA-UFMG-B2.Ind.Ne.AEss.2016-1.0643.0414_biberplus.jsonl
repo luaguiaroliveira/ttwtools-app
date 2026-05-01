@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0643.0414.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0643.0414.txt"}
 {"start_char": 136, "end_char": 138, "word": "My", "xpos": "", "tags": ["FPP1", "CAP", "PRP", "SBJP"]}
 {"start_char": 139, "end_char": 147, "word": "research", "xpos": "", "tags": ["NN"]}
 {"start_char": 148, "end_char": 154, "word": "treats", "xpos": "", "tags": ["NN"]}

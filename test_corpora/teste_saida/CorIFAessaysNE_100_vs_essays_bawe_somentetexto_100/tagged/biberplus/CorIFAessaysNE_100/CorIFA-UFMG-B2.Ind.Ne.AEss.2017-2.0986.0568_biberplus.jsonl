@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.0986.0568.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.0986.0568.txt"}
 {"start_char": 113, "end_char": 128, "word": "Intensification", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 129, "end_char": 131, "word": "in", "xpos": "", "tags": ["PIN", "CONJ", "PREP"]}
 {"start_char": 132, "end_char": 135, "word": "the", "xpos": "", "tags": ["ART", "DET"]}

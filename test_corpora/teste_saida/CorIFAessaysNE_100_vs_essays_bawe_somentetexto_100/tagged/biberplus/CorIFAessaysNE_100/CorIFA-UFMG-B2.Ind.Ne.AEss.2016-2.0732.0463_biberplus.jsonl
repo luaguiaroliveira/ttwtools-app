@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0732.0463.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0732.0463.txt"}
 {"start_char": 105, "end_char": 113, "word": "Nowadays", "xpos": "", "tags": ["RB", "TIME", "CAP"]}
 {"start_char": 114, "end_char": 117, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
 {"start_char": 118, "end_char": 122, "word": "main", "xpos": "", "tags": ["JJ"]}

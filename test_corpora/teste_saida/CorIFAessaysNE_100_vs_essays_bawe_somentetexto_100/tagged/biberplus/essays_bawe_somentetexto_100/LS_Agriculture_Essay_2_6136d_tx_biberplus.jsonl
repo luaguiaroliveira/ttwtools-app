@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Agriculture_Essay_2_6136d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Agriculture_Essay_2_6136d_tx.txt"}
 {"start_char": 0, "end_char": 11, "word": "Information", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 12, "end_char": 22, "word": "Technology", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 24, "end_char": 26, "word": "IT", "xpos": "", "tags": ["CAP", "NNP"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2472.1318.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2472.1318.txt"}
 {"start_char": 95, "end_char": 102, "word": "Biology", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 103, "end_char": 105, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
 {"start_char": 106, "end_char": 109, "word": "the", "xpos": "", "tags": ["ART", "DET"]}

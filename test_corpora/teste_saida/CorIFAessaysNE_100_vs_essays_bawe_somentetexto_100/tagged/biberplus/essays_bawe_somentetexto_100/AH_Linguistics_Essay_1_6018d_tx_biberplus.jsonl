@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Linguistics_Essay_1_6018d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Linguistics_Essay_1_6018d_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "When", "xpos": "", "tags": ["RB", "CAP", "SCONJ", "WH"]}
 {"start_char": 5, "end_char": 14, "word": "acquiring", "xpos": "", "tags": ["PGAS"]}
 {"start_char": 15, "end_char": 23, "word": "language", "xpos": "", "tags": ["NN"]}

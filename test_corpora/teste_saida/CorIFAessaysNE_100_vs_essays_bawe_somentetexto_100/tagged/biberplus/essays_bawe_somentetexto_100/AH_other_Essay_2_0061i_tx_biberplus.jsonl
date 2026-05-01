@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_other_Essay_2_0061i_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_other_Essay_2_0061i_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "Free", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 5, "end_char": 13, "word": "indirect", "xpos": "", "tags": ["JJ"]}
 {"start_char": 14, "end_char": 23, "word": "discourse", "xpos": "", "tags": ["NN"]}

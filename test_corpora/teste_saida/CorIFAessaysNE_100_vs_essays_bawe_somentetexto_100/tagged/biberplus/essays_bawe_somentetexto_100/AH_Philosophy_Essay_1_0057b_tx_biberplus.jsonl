@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0057b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0057b_tx.txt"}
 {"start_char": 0, "end_char": 12, "word": "Introduction", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 13, "end_char": 18, "word": "Quine", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 18, "end_char": 20, "word": "'s", "xpos": "", "tags": []}

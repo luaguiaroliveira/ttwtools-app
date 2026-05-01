@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1814.1066.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1814.1066.txt"}
 {"start_char": 92, "end_char": 100, "word": "Distance", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 101, "end_char": 110, "word": "education", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 112, "end_char": 116, "word": "from", "xpos": "", "tags": ["PIN", "PREP"]}

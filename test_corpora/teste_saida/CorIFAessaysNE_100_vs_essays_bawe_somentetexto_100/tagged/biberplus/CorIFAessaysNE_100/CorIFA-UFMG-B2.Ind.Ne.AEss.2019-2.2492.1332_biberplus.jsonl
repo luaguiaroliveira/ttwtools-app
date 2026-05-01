@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2492.1332.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2492.1332.txt"}
 {"start_char": 47, "end_char": 50, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 51, "end_char": 60, "word": "Brazilian", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 61, "end_char": 68, "word": "society", "xpos": "", "tags": ["NN"]}

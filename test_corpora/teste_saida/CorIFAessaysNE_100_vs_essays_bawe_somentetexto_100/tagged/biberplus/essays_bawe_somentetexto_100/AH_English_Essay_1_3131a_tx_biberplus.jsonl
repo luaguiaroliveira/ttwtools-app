@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3131a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3131a_tx.txt"}
 {"start_char": 0, "end_char": 1, "word": "A", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
 {"start_char": 2, "end_char": 12, "word": "simplified", "xpos": "", "tags": ["JJ"]}
 {"start_char": 13, "end_char": 20, "word": "initial", "xpos": "", "tags": ["JJ"]}

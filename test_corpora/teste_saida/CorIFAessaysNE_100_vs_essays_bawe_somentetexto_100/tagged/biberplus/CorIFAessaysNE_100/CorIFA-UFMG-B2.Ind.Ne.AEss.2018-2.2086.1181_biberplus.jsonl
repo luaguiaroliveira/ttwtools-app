@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2086.1181.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2086.1181.txt"}
 {"start_char": 101, "end_char": 109, "word": "Learning", "xpos": "", "tags": ["PRIV", "THATD", "CAP", "PGAS"]}
 {"start_char": 110, "end_char": 111, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}
 {"start_char": 112, "end_char": 115, "word": "new", "xpos": "", "tags": ["JJ"]}

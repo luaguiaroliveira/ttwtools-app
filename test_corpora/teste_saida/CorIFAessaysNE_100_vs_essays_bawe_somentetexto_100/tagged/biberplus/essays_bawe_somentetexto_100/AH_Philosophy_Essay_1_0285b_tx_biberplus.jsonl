@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0285b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0285b_tx.txt"}
 {"start_char": 0, "end_char": 6, "word": "Hobbes", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 8, "end_char": 13, "word": "claim", "xpos": "", "tags": ["PUBV", "NN"]}
 {"start_char": 14, "end_char": 18, "word": "that", "xpos": "", "tags": ["PIN", "TOBJ", "THVC", "SCONJ", "PREP"]}

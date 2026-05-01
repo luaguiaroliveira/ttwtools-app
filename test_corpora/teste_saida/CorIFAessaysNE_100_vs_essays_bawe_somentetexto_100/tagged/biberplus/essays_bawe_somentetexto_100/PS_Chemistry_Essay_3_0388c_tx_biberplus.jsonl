@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Chemistry_Essay_3_0388c_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Chemistry_Essay_3_0388c_tx.txt"}
 {"start_char": 0, "end_char": 13, "word": "Communication", "xpos": "", "tags": ["NOMZ", "CAP"]}
 {"start_char": 14, "end_char": 16, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
 {"start_char": 17, "end_char": 26, "word": "important", "xpos": "", "tags": ["JJ", "PRED"]}

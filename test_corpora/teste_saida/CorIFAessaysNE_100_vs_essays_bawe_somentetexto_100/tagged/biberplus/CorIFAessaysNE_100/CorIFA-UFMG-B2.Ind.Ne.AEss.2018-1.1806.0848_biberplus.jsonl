@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1806.0848.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1806.0848.txt"}
 {"start_char": 47, "end_char": 50, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 51, "end_char": 57, "word": "League", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 58, "end_char": 60, "word": "of", "xpos": "", "tags": ["PIN", "PREP"]}

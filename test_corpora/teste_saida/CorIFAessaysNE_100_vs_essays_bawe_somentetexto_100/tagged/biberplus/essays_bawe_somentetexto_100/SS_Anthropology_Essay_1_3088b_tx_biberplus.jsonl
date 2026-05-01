@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Anthropology_Essay_1_3088b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Anthropology_Essay_1_3088b_tx.txt"}
 {"start_char": 0, "end_char": 8, "word": "Religion", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 10, "end_char": 14, "word": "What", "xpos": "", "tags": ["CAP", "WH"]}
 {"start_char": 15, "end_char": 19, "word": "sort", "xpos": "", "tags": ["NN", "HDG"]}

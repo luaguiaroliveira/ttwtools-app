@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0702.0439.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0702.0439.txt"}
 {"start_char": 100, "end_char": 106, "word": "Brazil", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 107, "end_char": 110, "word": "has", "xpos": "", "tags": ["VPRT", "PEAS"]}
 {"start_char": 111, "end_char": 116, "word": "faced", "xpos": "", "tags": []}

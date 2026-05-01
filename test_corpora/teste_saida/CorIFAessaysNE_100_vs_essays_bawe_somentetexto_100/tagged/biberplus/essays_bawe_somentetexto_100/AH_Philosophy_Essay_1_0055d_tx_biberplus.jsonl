@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0055d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0055d_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "Do", "xpos": "", "tags": ["VPRT", "CAP"]}
 {"start_char": 3, "end_char": 6, "word": "you", "xpos": "", "tags": ["SPP2", "PRP", "SBJP"]}
 {"start_char": 7, "end_char": 14, "word": "believe", "xpos": "", "tags": ["PRIV", "INF"]}

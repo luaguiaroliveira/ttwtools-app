@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3080d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3080d_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "John", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 5, "end_char": 11, "word": "Dryden", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 12, "end_char": 18, "word": "argued", "xpos": "", "tags": ["VBD", "PUBV"]}

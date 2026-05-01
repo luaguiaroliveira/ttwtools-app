@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Food_Sciences_Essay_1_6079a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Food_Sciences_Essay_1_6079a_tx.txt"}
 {"start_char": 0, "end_char": 11, "word": "Genetically", "xpos": "", "tags": ["RB", "CAP"]}
 {"start_char": 12, "end_char": 20, "word": "modified", "xpos": "", "tags": []}
 {"start_char": 22, "end_char": 24, "word": "GM", "xpos": "", "tags": ["CAP", "NNP"]}

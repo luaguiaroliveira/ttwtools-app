@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3068a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3068a_tx.txt"}
 {"start_char": 1, "end_char": 4, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 5, "end_char": 17, "word": "Kaleidoscope", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 19, "end_char": 22, "word": "and", "xpos": "", "tags": ["ANDC", "CCONJ"]}

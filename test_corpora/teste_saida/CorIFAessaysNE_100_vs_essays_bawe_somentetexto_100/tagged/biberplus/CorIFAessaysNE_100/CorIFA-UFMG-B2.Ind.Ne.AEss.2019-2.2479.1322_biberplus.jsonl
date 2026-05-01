@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2479.1322.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2479.1322.txt"}
 {"start_char": 85, "end_char": 93, "word": "Medicine", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 94, "end_char": 97, "word": "and", "xpos": "", "tags": ["CCONJ"]}
 {"start_char": 98, "end_char": 101, "word": "art", "xpos": "", "tags": ["NN"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2094.1184.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-2.2094.1184.txt"}
 {"start_char": 112, "end_char": 115, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 116, "end_char": 124, "word": "economic", "xpos": "", "tags": ["JJ"]}
 {"start_char": 125, "end_char": 128, "word": "and", "xpos": "", "tags": ["PHC", "CCONJ"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Chemistry_Essay_3_0388d_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Chemistry_Essay_3_0388d_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "High", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 5, "end_char": 16, "word": "Performance", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 17, "end_char": 23, "word": "Liquid", "xpos": "", "tags": ["CAP", "NNP"]}

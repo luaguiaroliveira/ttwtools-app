@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Computer_Science_Essay_1_0284a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Computer_Science_Essay_1_0284a_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "When", "xpos": "", "tags": ["RB", "CAP", "SCONJ", "WH"]}
 {"start_char": 5, "end_char": 6, "word": "I", "xpos": "", "tags": ["FPP1", "CAP", "PRP", "SBJP"]}
 {"start_char": 7, "end_char": 12, "word": "first", "xpos": "", "tags": ["RB"]}

@@ -50,7 +50,7 @@ class TagRequest(BaseModel):
     # Ou aponta para pasta no disco, ou usa o corpus já no .ttwa
     source: str = "project"          # "project" | "folder"
     folder_path: str | None = None   # obrigatório se source == "folder"
-    tagger: str = "biberplus"        # "biberplus" | "mfte" | "stanza"
+    tagger: str = "biberplus"        # "biberplus" | "mfte" | "mfte_ext" | "stanza_upos" | "stanza_xpos"
     save_tagged: bool = True
     usenlp: bool = False
     n_processes: int = 4
@@ -139,10 +139,23 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
                 raw_csv = tmp / f"{corpus_dir.name}_biberfeatures_rawcount.csv"
                 ttwtools.normalize_biber_features(str(raw_csv))
                 norm_csv = tmp / f"{corpus_dir.name}_biberfeatures_norm1000.csv"
-            
+
+            elif req.tagger in ("stanza_upos", "stanza_xpos"):
+                mode = "upos" if req.tagger == "stanza_upos" else "xpos"
+                ttwtools.extract_stanza_pos_features_from_folder(
+                    folder_path_str=str(corpus_dir),
+                    mode=mode,
+                    output_dir=str(tmp),
+                    save_tagged=req.save_tagged,
+                    use_gpu=False,
+                )
+                raw_csv = tmp / f"{corpus_dir.name}_stanza_{mode}_rawcount.csv"
+                ttwtools.normalize_stanza_pos_features(str(raw_csv))
+                norm_csv = tmp / f"{corpus_dir.name}_stanza_{mode}_norm1000.csv"
+
             else:
-                # mfte ou stanza
-                extended = (req.tagger == "mfte")
+                # mfte ou mfte_ext (legacy "stanza" falls through as extended=False)
+                extended = (req.tagger == "mfte_ext")
                 ttwtools.mfte(
                     folder_path_str=str(corpus_dir),
                     output_dir=str(tmp),

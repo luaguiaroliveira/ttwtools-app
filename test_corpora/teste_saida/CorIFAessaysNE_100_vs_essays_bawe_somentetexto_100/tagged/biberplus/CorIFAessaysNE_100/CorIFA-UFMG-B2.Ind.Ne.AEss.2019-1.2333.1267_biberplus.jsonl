@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2333.1267.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2333.1267.txt"}
 {"start_char": 110, "end_char": 115, "word": "Would", "xpos": "", "tags": ["PRMD", "CAP"]}
 {"start_char": 116, "end_char": 119, "word": "you", "xpos": "", "tags": ["SPP2", "PRP", "SBJP"]}
 {"start_char": 120, "end_char": 127, "word": "confess", "xpos": "", "tags": ["PUBV", "INF"]}

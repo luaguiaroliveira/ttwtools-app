@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Law_Essay_1_0086c_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Law_Essay_1_0086c_tx.txt"}
 {"start_char": 0, "end_char": 12, "word": "INTRODUCTION", "xpos": "", "tags": ["NOMZ", "CAP"]}
 {"start_char": 14, "end_char": 18, "word": "Tort", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 19, "end_char": 21, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}

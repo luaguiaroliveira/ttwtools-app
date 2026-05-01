@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3083a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3083a_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "Wyatt", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 5, "end_char": 7, "word": "'s", "xpos": "", "tags": []}
 {"start_char": 10, "end_char": 16, "word": "Forget", "xpos": "", "tags": ["PRIV", "CAP", "INF"]}

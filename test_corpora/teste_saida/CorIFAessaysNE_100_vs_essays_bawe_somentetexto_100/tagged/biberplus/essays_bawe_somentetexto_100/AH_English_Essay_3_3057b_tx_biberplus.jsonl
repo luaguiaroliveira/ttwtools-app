@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_3_3057b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_3_3057b_tx.txt"}
 {"start_char": 0, "end_char": 8, "word": "Original", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 9, "end_char": 13, "word": "text", "xpos": "", "tags": ["NN"]}
 {"start_char": 16, "end_char": 19, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0631.0403.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0631.0403.txt"}
 {"start_char": 187, "end_char": 197, "word": "Regulators", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 198, "end_char": 206, "word": "entities", "xpos": "", "tags": ["NN"]}
 {"start_char": 207, "end_char": 210, "word": "for", "xpos": "", "tags": ["PIN", "PREP"]}

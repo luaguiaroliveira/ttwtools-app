@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Anthropology_Essay_1_3098a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Anthropology_Essay_1_3098a_tx.txt"}
 {"start_char": 0, "end_char": 9, "word": "Different", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 10, "end_char": 19, "word": "societies", "xpos": "", "tags": ["NN"]}
 {"start_char": 20, "end_char": 24, "word": "have", "xpos": "", "tags": ["VPRT"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.0997.0579.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2017-2.0997.0579.txt"}
 {"start_char": 95, "end_char": 100, "word": "Since", "xpos": "", "tags": ["OSUB", "PIN", "CAP", "SCONJ", "PREP"]}
 {"start_char": 101, "end_char": 107, "word": "fossil", "xpos": "", "tags": ["NN"]}
 {"start_char": 108, "end_char": 112, "word": "fuel", "xpos": "", "tags": ["NN"]}

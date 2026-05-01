@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_3_3071a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_3_3071a_tx.txt"}
 {"start_char": 0, "end_char": 7, "word": "Through", "xpos": "", "tags": ["PIN", "STPR", "CAP", "PREP"]}
 {"start_char": 9, "end_char": 12, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 13, "end_char": 18, "word": "Magic", "xpos": "", "tags": ["CAP", "NNP"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Comparative_American_Studies_Essay_2_0130a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Comparative_American_Studies_Essay_2_0130a_tx.txt"}
 {"start_char": 0, "end_char": 9, "word": "Following", "xpos": "", "tags": ["CAP", "PGAS"]}
 {"start_char": 10, "end_char": 13, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
 {"start_char": 14, "end_char": 22, "word": "conquest", "xpos": "", "tags": ["NN"]}

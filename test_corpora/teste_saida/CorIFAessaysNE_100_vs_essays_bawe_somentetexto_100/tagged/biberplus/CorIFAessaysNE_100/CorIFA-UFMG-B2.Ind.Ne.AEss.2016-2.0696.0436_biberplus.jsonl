@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0696.0436.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0696.0436.txt"}
 {"start_char": 96, "end_char": 98, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
 {"start_char": 99, "end_char": 103, "word": "2009", "xpos": "", "tags": ["NUM"]}
 {"start_char": 105, "end_char": 114, "word": "Brazilian", "xpos": "", "tags": ["CAP", "NNP"]}

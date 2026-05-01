@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Physics_Essay_1_6091a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Physics_Essay_1_6091a_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "Since", "xpos": "", "tags": ["OSUB", "PIN", "CAP", "SCONJ", "PREP"]}
 {"start_char": 6, "end_char": 9, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
 {"start_char": 10, "end_char": 15, "word": "times", "xpos": "", "tags": ["NN"]}

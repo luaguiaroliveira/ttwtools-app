@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_other_Essay_1_0224f_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_other_Essay_1_0224f_tx.txt"}
 {"start_char": 0, "end_char": 1, "word": "I", "xpos": "", "tags": ["FPP1", "CAP", "PRP", "SBJP"]}
 {"start_char": 2, "end_char": 6, "word": "have", "xpos": "", "tags": ["VPRT", "PEAS"]}
 {"start_char": 7, "end_char": 13, "word": "chosen", "xpos": "", "tags": []}

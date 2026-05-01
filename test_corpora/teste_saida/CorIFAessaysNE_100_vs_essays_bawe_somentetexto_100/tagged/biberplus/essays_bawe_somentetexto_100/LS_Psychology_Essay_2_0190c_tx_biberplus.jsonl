@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Psychology_Essay_2_0190c_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Psychology_Essay_2_0190c_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
 {"start_char": 5, "end_char": 10, "word": "essay", "xpos": "", "tags": ["NN"]}
 {"start_char": 11, "end_char": 15, "word": "will", "xpos": "", "tags": ["PRMD"]}

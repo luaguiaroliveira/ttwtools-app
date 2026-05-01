@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0294c_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0294c_tx.txt"}
 {"start_char": 0, "end_char": 7, "word": "Jackson", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 8, "end_char": 13, "word": "first", "xpos": "", "tags": ["RB"]}
 {"start_char": 14, "end_char": 23, "word": "presented", "xpos": "", "tags": ["VBD"]}

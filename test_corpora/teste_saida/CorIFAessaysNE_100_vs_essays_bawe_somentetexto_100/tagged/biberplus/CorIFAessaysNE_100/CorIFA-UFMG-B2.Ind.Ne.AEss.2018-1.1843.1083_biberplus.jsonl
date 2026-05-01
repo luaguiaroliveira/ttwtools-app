@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1843.1083.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1843.1083.txt"}
 {"start_char": 47, "end_char": 60, "word": "Biotechnology", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 61, "end_char": 63, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}
 {"start_char": 64, "end_char": 65, "word": "a", "xpos": "", "tags": ["ART", "DET", "INDA"]}

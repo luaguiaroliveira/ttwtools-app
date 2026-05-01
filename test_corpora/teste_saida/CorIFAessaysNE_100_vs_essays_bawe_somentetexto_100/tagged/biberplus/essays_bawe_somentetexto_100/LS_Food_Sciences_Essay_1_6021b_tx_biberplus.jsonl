@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Food_Sciences_Essay_1_6021b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Food_Sciences_Essay_1_6021b_tx.txt"}
 {"start_char": 0, "end_char": 3, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 4, "end_char": 8, "word": "food", "xpos": "", "tags": ["NN"]}
 {"start_char": 9, "end_char": 17, "word": "industry", "xpos": "", "tags": ["NN"]}

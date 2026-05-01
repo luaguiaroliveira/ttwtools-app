@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1836.1079.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1836.1079.txt"}
 {"start_char": 83, "end_char": 86, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 87, "end_char": 93, "word": "debate", "xpos": "", "tags": ["NN"]}
 {"start_char": 94, "end_char": 100, "word": "around", "xpos": "", "tags": ["PIN", "PLACE", "PREP"]}

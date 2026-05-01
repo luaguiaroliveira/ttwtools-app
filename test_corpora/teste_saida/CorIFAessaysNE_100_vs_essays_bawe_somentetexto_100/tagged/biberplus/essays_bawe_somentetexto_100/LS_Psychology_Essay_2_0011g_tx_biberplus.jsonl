@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Psychology_Essay_2_0011g_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Psychology_Essay_2_0011g_tx.txt"}
 {"start_char": 0, "end_char": 11, "word": "Qualitative", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 12, "end_char": 20, "word": "research", "xpos": "", "tags": ["NN"]}
 {"start_char": 21, "end_char": 23, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}

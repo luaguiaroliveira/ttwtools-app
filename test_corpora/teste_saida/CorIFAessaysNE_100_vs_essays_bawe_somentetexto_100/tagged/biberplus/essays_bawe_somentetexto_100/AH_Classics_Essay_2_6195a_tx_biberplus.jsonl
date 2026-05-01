@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Classics_Essay_2_6195a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Classics_Essay_2_6195a_tx.txt"}
 {"start_char": 0, "end_char": 3, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 4, "end_char": 8, "word": "Lyon", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 9, "end_char": 15, "word": "Tablet", "xpos": "", "tags": ["CAP", "NNP"]}

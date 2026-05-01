@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1857.1094.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1857.1094.txt"}
 {"start_char": 47, "end_char": 55, "word": "Nowadays", "xpos": "", "tags": ["RB", "TIME", "CAP"]}
 {"start_char": 56, "end_char": 58, "word": "it", "xpos": "", "tags": ["PIT", "PRP", "SBJP"]}
 {"start_char": 59, "end_char": 61, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}

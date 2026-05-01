@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1822.1069.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2018-1.1822.1069.txt"}
 {"start_char": 104, "end_char": 107, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 108, "end_char": 120, "word": "technologies", "xpos": "", "tags": ["NN"]}
 {"start_char": 121, "end_char": 130, "word": "involving", "xpos": "", "tags": ["WZPRES", "PGAS"]}

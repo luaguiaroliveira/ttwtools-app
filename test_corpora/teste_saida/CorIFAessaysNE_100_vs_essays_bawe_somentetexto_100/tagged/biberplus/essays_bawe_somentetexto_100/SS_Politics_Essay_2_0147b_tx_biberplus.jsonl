@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Politics_Essay_2_0147b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Politics_Essay_2_0147b_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "To", "xpos": "", "tags": ["PIN", "TO", "CAP", "PREP"]}
 {"start_char": 3, "end_char": 13, "word": "deliberate", "xpos": "", "tags": ["INF"]}
 {"start_char": 14, "end_char": 21, "word": "whether", "xpos": "", "tags": ["PIN", "SCONJ", "PREP"]}

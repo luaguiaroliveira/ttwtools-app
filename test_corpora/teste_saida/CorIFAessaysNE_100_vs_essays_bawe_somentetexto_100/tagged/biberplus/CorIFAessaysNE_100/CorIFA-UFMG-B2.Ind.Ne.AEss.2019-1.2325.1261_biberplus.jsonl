@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2325.1261.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2325.1261.txt"}
 {"start_char": 168, "end_char": 170, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "CAP", "PREP"]}
 {"start_char": 171, "end_char": 175, "word": "2007", "xpos": "", "tags": ["NUM"]}
 {"start_char": 177, "end_char": 180, "word": "the", "xpos": "", "tags": ["ART", "DET"]}

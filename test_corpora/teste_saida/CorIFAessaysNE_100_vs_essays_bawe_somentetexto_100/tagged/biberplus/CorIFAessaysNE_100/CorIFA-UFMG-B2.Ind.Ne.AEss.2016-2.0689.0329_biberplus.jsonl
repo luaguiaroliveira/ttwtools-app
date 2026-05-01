@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0689.0329.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0689.0329.txt"}
 {"start_char": 146, "end_char": 149, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 150, "end_char": 157, "word": "Salinas", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 158, "end_char": 167, "word": "Formation", "xpos": "", "tags": ["CAP", "NNP"]}

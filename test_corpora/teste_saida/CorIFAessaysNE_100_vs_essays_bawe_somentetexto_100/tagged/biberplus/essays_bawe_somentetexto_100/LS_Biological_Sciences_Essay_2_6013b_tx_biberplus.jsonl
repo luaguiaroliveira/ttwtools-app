@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Biological_Sciences_Essay_2_6013b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Biological_Sciences_Essay_2_6013b_tx.txt"}
 {"start_char": 0, "end_char": 7, "word": "Malaria", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 8, "end_char": 11, "word": "can", "xpos": "", "tags": ["POMD"]}
 {"start_char": 12, "end_char": 16, "word": "cost", "xpos": "", "tags": ["INF"]}

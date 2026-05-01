@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Chemistry_Essay_1_6207a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Chemistry_Essay_1_6207a_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "It", "xpos": "", "tags": ["PIT", "CAP", "PRP", "SBJP"]}
 {"start_char": 3, "end_char": 5, "word": "is", "xpos": "", "tags": ["PASS", "VPRT", "SPAU", "AUXB"]}
 {"start_char": 6, "end_char": 9, "word": "now", "xpos": "", "tags": ["RB", "TIME"]}

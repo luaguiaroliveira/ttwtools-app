@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2484.1326.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2484.1326.txt"}
 {"start_char": 146, "end_char": 149, "word": "Ion", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 150, "end_char": 158, "word": "channels", "xpos": "", "tags": ["NN"]}
 {"start_char": 159, "end_char": 166, "word": "consist", "xpos": "", "tags": ["VPRT"]}

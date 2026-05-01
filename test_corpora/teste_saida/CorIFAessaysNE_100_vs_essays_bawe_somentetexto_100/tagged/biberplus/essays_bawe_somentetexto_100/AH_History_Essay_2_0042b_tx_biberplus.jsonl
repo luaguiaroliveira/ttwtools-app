@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_History_Essay_2_0042b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_History_Essay_2_0042b_tx.txt"}
 {"start_char": 1, "end_char": 7, "word": "Figure", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 8, "end_char": 9, "word": "1", "xpos": "", "tags": ["NUM"]}
 {"start_char": 12, "end_char": 18, "word": "Figure", "xpos": "", "tags": ["NN", "CAP"]}

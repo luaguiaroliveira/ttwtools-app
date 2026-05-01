@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Sociology_Essay_2_3107a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Sociology_Essay_2_3107a_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "What", "xpos": "", "tags": ["CAP", "WH"]}
 {"start_char": 5, "end_char": 7, "word": "is", "xpos": "", "tags": ["VPRT", "AUXB"]}
 {"start_char": 8, "end_char": 15, "word": "perhaps", "xpos": "", "tags": ["RB"]}

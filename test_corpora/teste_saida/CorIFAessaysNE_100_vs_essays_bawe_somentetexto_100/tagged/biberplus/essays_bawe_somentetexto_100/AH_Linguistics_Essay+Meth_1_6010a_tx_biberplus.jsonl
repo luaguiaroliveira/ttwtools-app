@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Linguistics_Essay+Meth_1_6010a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Linguistics_Essay+Meth_1_6010a_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "Task", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 5, "end_char": 6, "word": "1", "xpos": "", "tags": ["NUM"]}
 {"start_char": 8, "end_char": 10, "word": "An", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}

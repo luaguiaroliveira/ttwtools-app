@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "LS_Agriculture_Essay_1_6008q_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "LS_Agriculture_Essay_1_6008q_tx.txt"}
 {"start_char": 0, "end_char": 7, "word": "Perfect", "xpos": "", "tags": ["JJ", "CAP"]}
 {"start_char": 8, "end_char": 19, "word": "competition", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 20, "end_char": 26, "word": "arises", "xpos": "", "tags": ["VPRT"]}

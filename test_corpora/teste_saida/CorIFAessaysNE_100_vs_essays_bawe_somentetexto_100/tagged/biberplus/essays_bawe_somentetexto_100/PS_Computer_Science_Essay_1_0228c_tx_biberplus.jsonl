@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "PS_Computer_Science_Essay_1_0228c_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "PS_Computer_Science_Essay_1_0228c_tx.txt"}
 {"start_char": 0, "end_char": 3, "word": "The", "xpos": "", "tags": ["ART", "CAP", "DET"]}
 {"start_char": 4, "end_char": 7, "word": "new", "xpos": "", "tags": ["JJ"]}
 {"start_char": 8, "end_char": 15, "word": "English", "xpos": "", "tags": ["CAP", "NNP"]}

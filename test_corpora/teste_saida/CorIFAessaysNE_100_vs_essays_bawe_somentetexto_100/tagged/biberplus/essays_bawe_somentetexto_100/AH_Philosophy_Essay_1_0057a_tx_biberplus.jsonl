@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_1_0057a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_1_0057a_tx.txt"}
 {"start_char": 0, "end_char": 12, "word": "Introduction", "xpos": "", "tags": ["NOMZ", "CAP"]}
 {"start_char": 13, "end_char": 15, "word": "In", "xpos": "", "tags": ["PIN", "CONJ", "STPR", "CAP", "PREP"]}
 {"start_char": 17, "end_char": 21, "word": "What", "xpos": "", "tags": ["CAP", "WH"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_2_3110b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_2_3110b_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "My", "xpos": "", "tags": ["FPP1", "CAP", "PRP", "SBJP"]}
 {"start_char": 3, "end_char": 14, "word": "Magnificent", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 15, "end_char": 19, "word": "Bull", "xpos": "", "tags": ["CAP", "NNP"]}

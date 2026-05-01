@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0714.0331.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2016-2.0714.0331.txt"}
 {"start_char": 169, "end_char": 177, "word": "Recently", "xpos": "", "tags": ["RB", "TIME", "CAP"]}
 {"start_char": 178, "end_char": 181, "word": "the", "xpos": "", "tags": ["ART", "DET"]}
 {"start_char": 182, "end_char": 188, "word": "Brazil", "xpos": "", "tags": ["CAP", "NNP"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2485.1327.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2485.1327.txt"}
 {"start_char": 47, "end_char": 51, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
 {"start_char": 52, "end_char": 57, "word": "essay", "xpos": "", "tags": ["NN"]}
 {"start_char": 58, "end_char": 62, "word": "will", "xpos": "", "tags": ["PRMD"]}

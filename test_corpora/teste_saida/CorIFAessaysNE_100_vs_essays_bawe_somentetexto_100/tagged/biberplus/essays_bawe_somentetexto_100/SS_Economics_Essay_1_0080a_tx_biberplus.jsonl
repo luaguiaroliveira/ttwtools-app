@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Economics_Essay_1_0080a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Economics_Essay_1_0080a_tx.txt"}
 {"start_char": 0, "end_char": 4, "word": "This", "xpos": "", "tags": ["DEMO", "CAP", "DET"]}
 {"start_char": 5, "end_char": 10, "word": "essay", "xpos": "", "tags": ["NN"]}
 {"start_char": 11, "end_char": 20, "word": "discusses", "xpos": "", "tags": ["VPRT"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3066a_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3066a_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "Aphra", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 6, "end_char": 10, "word": "Behn", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 11, "end_char": 17, "word": "begins", "xpos": "", "tags": ["VPRT"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2319.1256.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "CorIFA-UFMG-B2.Ind.Ne.AEss.2019-1.2319.1256.txt"}
 {"start_char": 111, "end_char": 119, "word": "Patients", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 120, "end_char": 124, "word": "with", "xpos": "", "tags": ["PIN", "PREP"]}
 {"start_char": 125, "end_char": 130, "word": "liver", "xpos": "", "tags": ["NN"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_English_Essay_1_3083b_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_English_Essay_1_3083b_tx.txt"}
 {"start_char": 0, "end_char": 6, "word": "Wilmot", "xpos": "", "tags": ["CAP", "NNP"]}
 {"start_char": 6, "end_char": 8, "word": "'s", "xpos": "", "tags": []}
 {"start_char": 10, "end_char": 14, "word": "Upon", "xpos": "", "tags": ["PIN", "CAP", "SCONJ", "PREP"]}

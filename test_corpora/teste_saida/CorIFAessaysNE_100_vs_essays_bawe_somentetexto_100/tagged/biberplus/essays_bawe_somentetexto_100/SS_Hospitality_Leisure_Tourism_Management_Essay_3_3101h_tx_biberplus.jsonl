@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "SS_Hospitality_Leisure_Tourism_Management_Essay_3_3101h_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "SS_Hospitality_Leisure_Tourism_Management_Essay_3_3101h_tx.txt"}
 {"start_char": 0, "end_char": 5, "word": "Yield", "xpos": "", "tags": ["NN", "CAP"]}
 {"start_char": 6, "end_char": 16, "word": "management", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 17, "end_char": 19, "word": "is", "xpos": "", "tags": ["BEMA", "VPRT", "AUXB"]}

@@ -1,4 +1,4 @@
-{"type": "metadata", "tagger": "biberplus", "tagger_version": "unknown", "filename": "AH_Philosophy_Essay_3_0311m_tx.txt"}
+{"type": "metadata", "tagger": "biberplus", "tagger_version": "0.4.0", "filename": "AH_Philosophy_Essay_3_0311m_tx.txt"}
 {"start_char": 0, "end_char": 2, "word": "An", "xpos": "", "tags": ["ART", "CAP", "DET", "INDA"]}
 {"start_char": 3, "end_char": 11, "word": "argument", "xpos": "", "tags": ["NOMZ"]}
 {"start_char": 12, "end_char": 20, "word": "consists", "xpos": "", "tags": ["VPRT"]}
