@@ -1,0 +1,15 @@
+﻿<CorIFA-UFMG-B2.Ind.Ne.AEss.2016-1.0634.0406>
+
+<ANAEROBIC DIGESTION OF SANITARY EFFLUENT: ADVANTAGES, DEVELOPMENTS AND LIMITATIONS>
+
+
+Independent of the culture, every population generates wastewater. This is a primordial subject that should have be treated with more importance than of the last decades. Different types of technologies have been developed in order to improve the efficiency of wastewater treatment stations.
+Upflow anaerobic sludge blanket (UASB) reactor is a form of anaerobic digester typically used for wastewater treatment in tropical countries, as Brazil for example. This technology has several advantages related to required area, low sludge generation, operational simplicity, projects costs and maintenance. It is also important to explicit the disadvantages associated to the reactor in question, such as: malodorous emissions, low tolerance to toxic loads, long start-up phase, not feasible in low temperatures (Chernicharo, 2007).
+Despite the disadvantages above mentioned, the positive topics related to the use of UASB reactors overcome it. An increasing number of studies have been searching solutions for negative aspects mainly related to malodorous emissions, caused by sulfate reduction to sulfide, a compost that smell like rotten eggs.
+In order to mitigate the emission of sulfide, the partial oxidation to elemental sulphur is a possibility, once it is viable the recovery to produce fertilizes and sulfuric acid. This oxidation can occur by biological and chemical routes. The first one is performed by phototropic sulfobacterias already existent in the superior part of UASB reactors. When compared to chemical oxidation, this type is simpler and has low costs because is not necessary add strong oxidants as iron salts, for example.
+Biological oxidation of sulfide is realized by incolor, purple and green sulfobacterias. The kind of bacteria depends on the presence or absence of oxygen in the environment. The effluent of UASB reactor is anaerobic, which means that there is no oxygen available to sulfide oxidation. In this case, biological oxidation would occur by purple and green bacteria activity in a bioreactor receiving this effluent.
+From the information presented, it is possible to conclude that the treatment line UASB reactors followed by bioreactor is a feasible treatment to wastewaters containing high concentrations of sulfate that are converted to sulfide along the anaerobic digestion. It is also relevant to emphasize that climate conditions must be considered before choose the treatment technologies.
+
+<Reference>
+
+

@@ -1,0 +1,19 @@
+<CorIFA-UFMG-B2.Ind.Ne.AEss.2019-2.2487.1199>
+
+<Professor: Climene Brito
+Student: XXX
+Class: IFA III
+Essay - Due on October 7th
+The evaluation of vascular dysfunction in mice infected by Plasmodium chabaudi.>
+
+Malaria is one of the most relevant infectious disease in the world, present in 90 countries and territories. According to the World Health Organization (WHO), since 2000, there were a lot of progress in the battle against the disease. Between 2000 and 2015, the incidence of malaria decreased to 41% and the mortality rate to 62%. In the beginning of 2016 malaria was considered endemic in 91 countries, in contrast to 2000, when 108 countries were in this list. The malaria infection still causes a huge impact in the health of people living in endemic places, as some countries in Africa and South America. In 2015 the disease caused 212 million of cases and 429.000 deaths. The African children were the most affected part of the world population.
+
+Malaria is an infection caused by a protozoa of the genus Plasmodium sp, having as disease vector mosquitoes from de genus Anopheles sp. There are around 200 species of Plasmodium that can cause the disease in different types of animals, as rodents, birds, monkeys and humans. Plasmodium vivax, Plasmodium falciparum, Plasmodium malaria, Plasmodium ovale and Plasmodium knowlesi, are species that can infect humans. The incidence of species will vary according to the endemic country.
+
+The main features of the infection are symptoms as fever, chills and headache. Malaria is a disease characterized by a very complex life cycle and protozoa affect mainly red blood cells, causing inflammation, anemia, vascular problems and splenomegaly. Some species of Plasmodium, as P. falciparum (humans), P. berghei (rodents) and P. gallinaceum (chickens), can cause further problems, as cerebral malaria, that is characterized by seizures, retinopathy, elevated intracranial pressure, coma and vasculopathy. However, some aspects of the infection still need to be elucidated.
+
+In order to increase the knowledge about the human cerebral malaria, experimental models were developed to investigate the triggers to the development of brain damages. Some researchers already proved that one of the mainly problems around the cerebral injuries, is the occlusion of micro vessels in the brain. The occlusion is caused by the agglomeration of infected or not infected red blood cells and platelets. The hazards of this occlusions are the decrease of oxygen supply to the brain; therefore, the tissue cells will suffer of hypoxia. Thus, there will be cell death, inflammation and vascular dysfunction.
+
+The inflammation and the vascular dysfunction are an extremely important consequences of the infection, that lead to an impairment mainly in resistance vessels, responsible for the maintenance of the blood pressure. There are few researches that investigate the influence of malaria infection in the vascular alterations and how this decrease of functionality in the vessels could alter the course of the disease. Therefore, the research about vascular dysfunction becomes of great relevance to improve the treatment, prognostic and the knowledge about the disease.  
+
+<REFERENCES>

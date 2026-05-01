@@ -18,6 +18,21 @@ let _corpusNames     = { c1: '', c2: '' }
 let _joinMethod      = 'intersection'
 let _shared          = null  // shared callbacks (refreshKfaSelect, showSavedBadge, etc.)
 
+// ── Fill colours (used as inline styles — no CSS rules touch these) ────────────
+const _FILL_ORANGE = 'oklch(72% 0.17 55)'
+const _FILL_GREEN  = 'oklch(62% 0.18 150)'
+const _FILL_RED    = 'oklch(60% 0.22 25)'
+// Once a fill is locked (100% + green/red), it is never touched again.
+const _fillLocked  = new Set()
+
+function _applyFill(el, pct, colour) {
+  if (!el) return
+  if (_fillLocked.has(el.id)) return   // never overwrite a finalised fill
+  el.style.width      = pct + '%'
+  el.style.background = colour
+  if (pct >= 100) _fillLocked.add(el.id)
+}
+
 // ── Step navigation ────────────────────────────────────────────────────────
 function goStep(n) {
   const steps = document.querySelectorAll('.qr-step')
@@ -47,6 +62,7 @@ function initTaggerBars(taggers) {
   const wrap = document.getElementById('qr-tagger-bars')
   if (!wrap) return
   wrap.innerHTML = ''
+  _fillLocked.clear()
   taggers.forEach(t => {
     const el = document.createElement('div')
     el.className = 'tagger-bar'
@@ -56,51 +72,58 @@ function initTaggerBars(taggers) {
         <span>${_taggerLabel(t)}</span>
         <span class="tagger-bar-status" id="tbar-status-${t}">Aguardando…</span>
       </div>
-      <div class="tagger-bar-track"><div class="tagger-bar-fill" id="tbar-fill-${t}"></div></div>`
+      <div class="tagger-bar-row">
+        <span class="tagger-bar-corpus-label">C1</span>
+        <div class="tagger-bar-track"><div class="tagger-bar-fill" id="tbar-fill-c1-${t}"></div></div>
+      </div>
+      <div class="tagger-bar-row">
+        <span class="tagger-bar-corpus-label">C2</span>
+        <div class="tagger-bar-track"><div class="tagger-bar-fill" id="tbar-fill-c2-${t}"></div></div>
+      </div>`
     wrap.appendChild(el)
+    // Initialise fills via inline style so the base CSS rule is irrelevant
+    _applyFill(document.getElementById(`tbar-fill-c1-${t}`), 0, _FILL_ORANGE)
+    _applyFill(document.getElementById(`tbar-fill-c2-${t}`), 0, _FILL_ORANGE)
   })
 }
 
-function updateTaggerBar(tagger, status, msg, pct) {
+function updateTaggerBar(tagger, status, msg, pct1, pct2, phase) {
   const card   = document.getElementById(`tbar-${tagger}`)
   const statEl = document.getElementById(`tbar-status-${tagger}`)
-  const fill   = document.getElementById(`tbar-fill-${tagger}`)
+  const fillC1 = document.getElementById(`tbar-fill-c1-${tagger}`)
+  const fillC2 = document.getElementById(`tbar-fill-c2-${tagger}`)
   if (!card) return
-  card.classList.remove('running', 'done', 'error')
 
   if (status === 'running') {
-    card.classList.add('running')
-    if (fill) {
-      fill.parentElement.classList.remove('indeterminate')
-      // Always keep fill visible — use pct if available, else minimum 5%
-      fill.style.display  = 'block'
-      fill.style.width    = pct > 0 ? pct + '%' : '5%'
-      fill.style.background = 'hsl(var(--p))'
+    card.className = 'tagger-bar running'
+    if (phase === 'c2') {
+      // C1 is finished — lock it green
+      _applyFill(fillC1, 100, _FILL_GREEN)
+      // C2 growing orange
+      _applyFill(fillC2, pct2 > 0 ? pct2 : 3, _FILL_ORANGE)
+    } else {
+      // C1 growing orange
+      _applyFill(fillC1, pct1 > 0 ? pct1 : 3, _FILL_ORANGE)
     }
+    let pctLabel = ''
+    if (phase === 'c2') pctLabel = pct2 > 0 ? ` — C2: ${pct2}%` : ' — C2…'
+    else if (pct1 > 0) pctLabel = ` — C1: ${pct1}%`
+    if (statEl) statEl.textContent = (msg || 'Em andamento') + pctLabel
   } else if (status === 'done') {
-    card.classList.add('done')
-    if (fill) {
-      fill.style.display = 'block'
-      fill.style.width   = '100%'
-      fill.style.background = ''
-      fill.parentElement.classList.remove('indeterminate')
-    }
+    card.className = 'tagger-bar done'
+    _applyFill(fillC1, 100, _FILL_GREEN)
+    _applyFill(fillC2, 100, _FILL_GREEN)
+    if (statEl) statEl.textContent = msg || 'Concluído'
   } else if (status === 'error') {
-    card.classList.add('error')
-    if (fill) {
-      fill.style.display = 'block'
-      fill.style.width   = '100%'
-      fill.style.background = ''
-      fill.parentElement.classList.remove('indeterminate')
-    }
+    card.className = 'tagger-bar error'
+    _applyFill(fillC1, 100, _FILL_RED)
+    _applyFill(fillC2, 100, _FILL_RED)
+    if (statEl) statEl.textContent = msg || 'Erro'
   } else {
-    // Waiting / queued — show empty track (fill at 0%)
-    if (fill) { fill.style.display = 'block'; fill.style.width = '0%'; fill.style.background = 'hsl(var(--p))'; }
+    // Waiting / queued — fills stay at 0 from init
+    card.className = 'tagger-bar'
+    if (statEl) statEl.textContent = msg || 'Aguardando…'
   }
-
-  // Status label: append "(N%)" when running with real pct
-  const pctLabel = (pct > 0 && status === 'running') ? ` (${pct}%)` : ''
-  if (statEl) statEl.textContent = (msg || status) + pctLabel
 }
 
 // ── Global step badges ─────────────────────────────────────────────────────
@@ -144,7 +167,7 @@ async function pollTagging() {
 
     const prog = r.taggers_progress || {}
     Object.entries(prog).forEach(([t, p]) => {
-      updateTaggerBar(t, p.status || 'running', p.msg || '', p.pct || 0)
+      updateTaggerBar(t, p.status || 'running', p.msg || '', p.pct1 || 0, p.pct2 || 0, p.phase || 'c1')
     })
 
     if (r.status === 'done') {
@@ -152,7 +175,7 @@ async function pollTagging() {
       _isRunning = false
       _setRunButtonBusy(false)
       document.dispatchEvent(new CustomEvent('project-changed'))
-      _selectedTaggers.forEach(t => updateTaggerBar(t, 'done', 'Concluído'))
+      _selectedTaggers.forEach(t => updateTaggerBar(t, 'done', 'Concluído', 100, 100, 'c2'))
       showToast('Tagging concluído!')
 
       const kfaAll = document.getElementById('qr-kfa-all')?.checked ?? true
@@ -169,7 +192,7 @@ async function pollTagging() {
       _isRunning = false
       _setRunButtonBusy(false)
       showToast(r.error || 'Erro no tagging.', 'error')
-      _selectedTaggers.forEach(t => updateTaggerBar(t, 'error', r.error || 'Erro'))
+      _selectedTaggers.forEach(t => updateTaggerBar(t, 'error', r.error || 'Erro', 0, 0, 'c1'))
     }
   } catch (err) {
     clearInterval(_pollTimer); _pollTimer = null
