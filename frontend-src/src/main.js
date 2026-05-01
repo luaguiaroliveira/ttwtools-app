@@ -10,7 +10,7 @@ import { initQuickrun }                      from './views/quickrun.js'
 import { initCorpus, loadCorpusList, refreshCorpusSelects } from './views/corpus.js'
 import { initTagging }                       from './views/tagging.js'
 import { initAnalysis }                      from './views/analysis.js'
-import { initResults, refreshKfaSelect }     from './views/results.js'
+import { initResults, refreshKfaSelect, renderResultsData } from './views/results.js'
 import { initFeatureDetail }                 from './views/feature-detail.js'
 import { initTextViewer }                    from './views/text-viewer.js'
 import { initExport }                        from './views/export.js'
@@ -19,7 +19,7 @@ import { api }                               from './api.js'
 import { state }                             from './state.js'
 
 // Shared callbacks passed to views that need cross-view coordination
-const shared = { loadCorpusList, refreshCorpusSelects, refreshKfaSelect }
+const shared = { loadCorpusList, refreshCorpusSelects, refreshKfaSelect, renderResults: renderResultsData }
 
 // Set up sidebar navigation
 setupNav()
@@ -44,8 +44,10 @@ document.addEventListener('project-changed', () => {
   state.kfaC2    = ''
   state.kfaTagger = null
   // Hide chart + table until user explicitly loads a KFA from the new project
-  document.getElementById('chart-container')?.classList.add('hidden')
-  document.getElementById('table-container')?.classList.add('hidden')
+  for (const sfx of ['', '-standalone']) {
+    document.getElementById('chart-container' + sfx)?.classList.add('hidden')
+    document.getElementById('table-container' + sfx)?.classList.add('hidden')
+  }
 })
 
 // Boot: check if a project is already open (e.g. launched with --open flag)

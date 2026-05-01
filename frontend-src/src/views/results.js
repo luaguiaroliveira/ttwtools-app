@@ -1,5 +1,6 @@
 /**
  * views/results.js — KFA results: D3 bar chart + sortable table.
+ * Supports two instances: inline (step-3 in quickrun) and standalone (#view-results).
  */
 
 import { api }              from '../api.js'
@@ -20,10 +21,6 @@ const COLS = [
   { key: 'N_Corpus2',    label: () => `N ${state.kfaC2}` },
 ]
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function visibleRows() {
   if (!state.kfaData) return []
   let rows = state.kfaData.results.slice()
@@ -37,8 +34,12 @@ function visibleRows() {
   return rows
 }
 
-function renderChart() {
-  const wrapper = document.getElementById('chart-wrapper')
+// ── Render helpers that work with either suffix ─────────────────────────────
+function _id(base, suffix) { return base + (suffix ? '-' + suffix : '') }
+
+function renderChartIn(suffix) {
+  const wrapper = document.getElementById(_id('chart-wrapper', suffix))
+  if (!wrapper) return
   drawChart(wrapper, visibleRows(), {
     metric:      state.chartMetric,
     barHeight:   state.barHeight,
@@ -50,40 +51,37 @@ function renderChart() {
   })
 }
 
-function renderTable() {
-  document.getElementById('table-container').classList.remove('hidden')
+function renderTableIn(suffix) {
+  const tableContainer = document.getElementById(_id('table-container', suffix))
+  if (tableContainer) tableContainer.classList.remove('hidden')
+  const tableId = _id('kfa-table', suffix)
 
-  // Header
-  const thead = document.querySelector('#kfa-table thead tr')
+  const thead = document.querySelector(`#${tableId} thead tr`)
+  if (!thead) return
   thead.innerHTML = COLS.map(c => {
     const cls = c.key === state.sortCol
-      ? (state.sortDir === -1 ? 'sort-desc' : 'sort-asc')
-      : ''
+      ? (state.sortDir === -1 ? 'sort-desc' : 'sort-asc') : ''
     return `<th class="${cls}" data-col="${c.key}">${c.label()}</th>`
   }).join('')
 
   thead.querySelectorAll('th').forEach(th => {
     th.addEventListener('click', () => {
       const col = th.dataset.col
-      if (state.sortCol === col) {
-        state.sortDir *= -1
-      } else {
-        state.sortCol = col
-        state.sortDir = col === 'Feature' ? 1 : -1
-      }
-      renderTable()
-      renderChart()
+      if (state.sortCol === col) state.sortDir *= -1
+      else { state.sortCol = col; state.sortDir = col === 'Feature' ? 1 : -1 }
+      renderTableIn(suffix); renderChartIn(suffix)
     })
   })
 
-  // Body
   const rows = visibleRows()
-  document.querySelector('#kfa-table tbody').innerHTML = rows.map(r => {
-    const cls = r.Effect_Size >= 0 ? 'effect-positive' : 'effect-negative'
-    const def = state.tagDefs[r.Feature]
-    const titleAttr = def ? ` title="${def.replace(/"/g, "'")}"` : ''
+  const tbody = document.querySelector(`#${tableId} tbody`)
+  if (!tbody) return
+  tbody.innerHTML = rows.map(r => {
+    const cls  = r.Effect_Size >= 0 ? 'effect-positive' : 'effect-negative'
+    const def  = state.tagDefs[r.Feature]
+    const title = def ? ` title="${def.replace(/"/g, "'")}"` : ''
     return `<tr>
-      <td class="feature-link" data-feature="${r.Feature}"${titleAttr}>${r.Feature}</td>
+      <td class="feature-link" data-feature="${r.Feature}"${title}>${r.Feature}</td>
       <td class="${cls}">${r.Effect_Size.toFixed(3)}</td>
       <td>${r.Mean_Corpus1.toFixed(3)}</td>
       <td>${r.Mean_Corpus2.toFixed(3)}</td>
@@ -95,125 +93,175 @@ function renderTable() {
   }).join('')
 }
 
-function renderResults() {
-  document.getElementById('chart-container').classList.remove('hidden')
-  renderChart()
-  renderTable()
+function renderResultsIn(suffix) {
+  const cc = document.getElementById(_id('chart-container', suffix))
+  if (cc) cc.classList.remove('hidden')
+  renderChartIn(suffix)
+  renderTableIn(suffix)
 }
 
-// ---------------------------------------------------------------------------
-// KFA select (also called from other views after new KFA)
-// ---------------------------------------------------------------------------
+// ── Load a KFA result and display in a given suffix context ─────────────────
+async function loadKfa(optStr, suffix) {
+  const { c1, c2, d, join, tagger, analysis_name, features_meta } = JSON.parse(optStr)
+  try {
+    const data = await api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name)
+    state.kfaData     = data
+    state.kfaC1       = c1
+    state.kfaC2       = c2
+    state.kfaTagger   = tagger || null
+    state.sortCol     = 'Effect_Size'
+    state.sortDir     = -1
+    state.filter      = ''
+    state.minEffect   = 0
+    state.chartMetric = 'Effect_Size'
 
+    const sfx = suffix ? '-' + suffix : ''
+    const filterEl = document.getElementById(`results-filter${sfx}`)
+    const metricEl = document.getElementById(`chart-metric${sfx}`)
+    const minDEl   = document.getElementById(`results-min-d${sfx}`)
+    if (filterEl) filterEl.value = ''
+    if (metricEl) metricEl.value = 'Effect_Size'
+    if (minDEl)   minDEl.value   = '0'
+
+    // Populate info box
+    const nameSfx = sfx
+    const infoName  = document.getElementById(`results-info-name${nameSfx}`)
+    const infoTagg  = document.getElementById(`results-info-tagger${nameSfx}`)
+    const infoFeats = document.getElementById(`results-info-features${nameSfx}`)
+    if (infoName)  infoName.textContent  = analysis_name || 'default'
+    if (infoTagg)  infoTagg.textContent  = tagger || 'biberplus'
+    if (infoFeats) {
+      const fm = features_meta || []
+      infoFeats.textContent = fm.length > 0
+        ? `${fm.length}: ${fm.slice(0,8).join(', ')}${fm.length > 8 ? '…' : ''}`
+        : 'Todos'
+    }
+
+    renderResultsIn(suffix)
+  } catch (err) {
+    showToast(err.message, 'error')
+  }
+}
+
+// ── Refresh both KFA selects ────────────────────────────────────────────────
 export async function refreshKfaSelect() {
   try {
     const { kfa_results } = await api.analysis.listKfa()
-    const sel = document.getElementById('results-kfa-select')
-    sel.innerHTML = ''
-    kfa_results.forEach(r => {
-      const opt = document.createElement('option')
-      opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name, d: r.min_effect, join: r.join_method, tagger: r.tagger_type })
-      const taggerLabel = r.tagger_type || 'biberplus'
-      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name}  (${r.join_method})  [${taggerLabel}]`
-      sel.appendChild(opt)
+
+    // Both selects: standalone and step-3 inline
+    const selIds = ['results-kfa-select-standalone', 'results-kfa-select']
+    selIds.forEach(selId => {
+      const sel = document.getElementById(selId)
+      if (!sel) return
+      const prevVal = sel.value
+      sel.innerHTML = '<option value="">-- selecione uma KFA --</option>'
+      kfa_results.forEach(r => {
+        const opt = document.createElement('option')
+        const an  = r.analysis_name && r.analysis_name !== 'default' ? ` [${r.analysis_name}]` : ''
+        opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name,
+          d: r.min_effect, join: r.join_method, tagger: r.tagger_type,
+          analysis_name: r.analysis_name, features_meta: r.features_meta })
+        opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name} (${r.join_method}) [${r.tagger_type || 'biberplus'}]${an}`
+        sel.appendChild(opt)
+      })
+      // Restore previous selection if still present
+      const still = sel.querySelector(`option[value="${CSS.escape(prevVal)}"]`)
+      if (still && prevVal) sel.value = prevVal
     })
-    // Auto-select if only one result
-    if (kfa_results.length === 1) {
-      const firstOpt = sel.querySelector('option[value]')
-      if (firstOpt) sel.value = firstOpt.value
-    }
   } catch (_) {}
 }
 
-// ---------------------------------------------------------------------------
-// Init
-// ---------------------------------------------------------------------------
+// ── Bind controls for one suffix ───────────────────────────────────────────
+function _bindControls(suffix) {
+  const sfx = suffix ? '-' + suffix : ''
 
-export function initResults() {
-  // Populate palette select
-  const paletteSelect = document.getElementById('chart-palette')
-  Object.entries(PALETTES).forEach(([key, { label }]) => {
-    const opt = document.createElement('option')
-    opt.value = key
-    opt.textContent = label
-    paletteSelect.appendChild(opt)
-  })
-  // Set default value after options are added
-  paletteSelect.value = state.palette
-
-  // Load button
-  document.getElementById('btn-load-result')?.addEventListener('click', async () => {
-    const sel = document.getElementById('results-kfa-select')
-    if (!sel.value) { showToast('Selecione uma KFA.', 'error'); return }
-    const { c1, c2, d, join, tagger } = JSON.parse(sel.value)
-    try {
-      const data       = await api.analysis.getKfa(c1, c2, d, join, tagger)
-      state.kfaData     = data
-      state.kfaC1       = c1
-      state.kfaC2       = c2
-      state.kfaTagger   = tagger || null
-      state.sortCol     = 'Effect_Size'
-      state.sortDir     = -1
-      state.filter      = ''
-      state.minEffect   = 0
-      state.chartMetric = 'Effect_Size'
-      document.getElementById('results-filter').value  = ''
-      document.getElementById('chart-metric').value    = 'Effect_Size'
-      const minDEl = document.getElementById('results-min-d')
-      if (minDEl) minDEl.value = '0'
-      renderResults()
-    } catch (err) {
-      showToast(err.message, 'error')
-    }
+  // Auto-load on select change
+  document.getElementById(`results-kfa-select${sfx}`)?.addEventListener('change', async function() {
+    if (!this.value) return
+    await loadKfa(this.value, suffix)
   })
 
-  // Filter por nome de feature
-  document.getElementById('results-filter')?.addEventListener('input', e => {
+  // Info icon toggle
+  document.getElementById(`btn-results-info${sfx}`)?.addEventListener('click', () => {
+    document.getElementById(`results-info-box${sfx}`)?.classList.toggle('hidden')
+  })
+
+  // Feature name filter
+  document.getElementById(`results-filter${sfx}`)?.addEventListener('input', e => {
     state.filter = e.target.value.trim().toLowerCase()
-    if (state.kfaData) { renderTable(); renderChart() }
+    if (state.kfaData) { renderTableIn(suffix); renderChartIn(suffix) }
   })
 
-  // Filtro mínimo |d|
-  document.getElementById('results-min-d')?.addEventListener('input', e => {
+  // Min |d| filter
+  document.getElementById(`results-min-d${sfx}`)?.addEventListener('input', e => {
     state.minEffect = parseFloat(e.target.value) || 0
-    if (state.kfaData) { renderTable(); renderChart() }
+    if (state.kfaData) { renderTableIn(suffix); renderChartIn(suffix) }
   })
 
-  // Metric selector
-  document.getElementById('chart-metric')?.addEventListener('change', e => {
+  // Chart metric selector
+  document.getElementById(`chart-metric${sfx}`)?.addEventListener('change', e => {
     state.chartMetric = e.target.value
-    if (state.kfaData) renderChart()
+    if (state.kfaData) renderChartIn(suffix)
   })
 
   // Bar thickness slider
-  document.getElementById('chart-thickness')?.addEventListener('input', e => {
+  document.getElementById(`chart-thickness${sfx}`)?.addEventListener('input', e => {
     state.barHeight = parseInt(e.target.value, 10)
-    const lbl = document.getElementById('chart-thickness-val')
+    const lbl = document.getElementById(`chart-thickness-val${sfx}`)
     if (lbl) lbl.textContent = state.barHeight
-    if (state.kfaData) renderChart()
+    if (state.kfaData) renderChartIn(suffix)
   })
 
   // Palette selector
-  document.getElementById('chart-palette')?.addEventListener('change', e => {
+  document.getElementById(`chart-palette${sfx}`)?.addEventListener('change', e => {
     state.palette = e.target.value
-    if (state.kfaData) renderChart()
+    if (state.kfaData) renderChartIn(suffix)
   })
 
-  // Click on Feature column cells → drill-down
-  document.querySelector('#kfa-table')?.addEventListener('click', e => {
+  // Feature row click → detail view
+  document.getElementById(`kfa-table${sfx}`)?.addEventListener('click', e => {
     const td = e.target.closest('td.feature-link')
     if (td) showFeatureDetail(td.dataset.feature)
   })
 
-  // ResizeObserver: redraw chart when container width changes
-  const chartContainer = document.getElementById('chart-container')
-  let _prevW = 0
-  const ro = new ResizeObserver(entries => {
-    const newW = entries[0].contentRect.width
-    if (Math.abs(newW - _prevW) > 2) {
-      _prevW = newW
-      if (state.kfaData) renderChart()
-    }
-  })
-  ro.observe(chartContainer)
+  // Populate palette select
+  const paletteSelect = document.getElementById(`chart-palette${sfx}`)
+  if (paletteSelect && paletteSelect.children.length === 0) {
+    Object.entries(PALETTES).forEach(([key, { label }]) => {
+      const opt = document.createElement('option')
+      opt.value = key; opt.textContent = label
+      paletteSelect.appendChild(opt)
+    })
+    paletteSelect.value = state.palette
+  }
+
+  // ResizeObserver
+  const chartContainer = document.getElementById(`chart-container${sfx}`)
+  if (chartContainer) {
+    let _prevW = 0
+    const ro = new ResizeObserver(entries => {
+      const newW = entries[0].contentRect.width
+      if (Math.abs(newW - _prevW) > 2) { _prevW = newW; if (state.kfaData) renderChartIn(suffix) }
+    })
+    ro.observe(chartContainer)
+  }
+}
+
+// ── Public API ──────────────────────────────────────────────────────────────
+/**
+ * Programmatically render KFA data into the inline (step-3) panel.
+ * Called from quickrun.js after loading a result.
+ */
+export function renderResultsData(data, c1, c2) {
+  state.kfaData = data; state.kfaC1 = c1; state.kfaC2 = c2
+  state.sortCol = 'Effect_Size'; state.sortDir = -1
+  state.filter = ''; state.minEffect = 0; state.chartMetric = 'Effect_Size'
+  renderResultsIn(null)  // inline = no suffix
+}
+
+export function initResults() {
+  // Standalone view
+  _bindControls('standalone')
+  // Inline step-3 panel (no suffix)
+  _bindControls(null)
 }

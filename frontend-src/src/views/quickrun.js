@@ -1,33 +1,95 @@
 /**
- * views/quickrun.js — Full pipeline (tagging → normalize → KFA → save .ttwa).
+ * views/quickrun.js — 4-step workflow:
+ *   Step 0: Configure corpora + taggers
+ *   Step 1: Tagging progress (per-tagger bars)
+ *   Step 2: KFA configuration (tag selection per tagger)
+ *   Step 3: Results (auto-load on select)
  */
 
 import { api }       from '../api.js'
 import { showToast, showView } from '../ui.js'
 
-const QR_STEPS = ['queued', 'tagging', 'normalizing', 'kfa', 'saving', 'done']
-let _jobId     = null
-let _pollTimer = null
-let _isStarting = false
-let _isRunning = false
+// ── State ──────────────────────────────────────────────────────────────────
+let _jobId           = null
+let _pollTimer       = null
+let _isStarting      = false
+let _isRunning       = false
+let _selectedTaggers = []
+let _corpusNames     = { c1: '', c2: '' }
+let _joinMethod      = 'intersection'
 
-function _setRunButtonBusy(isBusy) {
-  const btn = document.getElementById('btn-qr-run')
-  if (!btn) return
-  btn.disabled = isBusy
-  btn.textContent = isBusy ? 'Executando…' : 'Executar pipeline'
+// ── Step navigation ────────────────────────────────────────────────────────
+function goStep(n) {
+  const steps = document.querySelectorAll('.qr-step')
+  const inds  = document.querySelectorAll('#qr-stepper .step-indicator')
+  const conns = document.querySelectorAll('#qr-stepper .step-connector')
+
+  steps.forEach((el, i) => el.classList.toggle('active', i === n))
+  inds.forEach((el, i) => {
+    el.classList.remove('active', 'done')
+    if (i < n)        el.classList.add('done')
+    else if (i === n) el.classList.add('active')
+  })
+  conns.forEach((el, i) => {
+    el.style.background = i < n ? 'hsl(var(--su))' : ''
+  })
 }
 
+// ── Per-tagger progress bars ────────────────────────────────────────────────
+function _taggerLabel(t) {
+  const map = { biberplus:'BiberPlus', mfte:'MFTE', mfte_ext:'MFTE Estendido',
+    stanza_upos:'Stanza UPOS', stanza_xpos:'Stanza XPOS',
+    spacy_upos:'spaCy UPOS', spacy_ptb:'spaCy PTB' }
+  return map[t] || t
+}
+
+function initTaggerBars(taggers) {
+  const wrap = document.getElementById('qr-tagger-bars')
+  if (!wrap) return
+  wrap.innerHTML = ''
+  taggers.forEach(t => {
+    const el = document.createElement('div')
+    el.className = 'tagger-bar'
+    el.id = `tbar-${t}`
+    el.innerHTML = `
+      <div class="tagger-bar-label">
+        <span>${_taggerLabel(t)}</span>
+        <span class="tagger-bar-status" id="tbar-status-${t}">Aguardando…</span>
+      </div>
+      <div class="tagger-bar-track"><div class="tagger-bar-fill" id="tbar-fill-${t}"></div></div>`
+    wrap.appendChild(el)
+  })
+}
+
+function updateTaggerBar(tagger, status, msg) {
+  const card   = document.getElementById(`tbar-${tagger}`)
+  const statEl = document.getElementById(`tbar-status-${tagger}`)
+  const fill   = document.getElementById(`tbar-fill-${tagger}`)
+  if (!card) return
+  card.classList.remove('running', 'done', 'error')
+  if (status === 'running') {
+    card.classList.add('running')
+    // fill width drives animation via CSS
+  } else if (status === 'done') {
+    card.classList.add('done')
+    if (fill) fill.style.width = '100%'
+  } else if (status === 'error') {
+    card.classList.add('error')
+    if (fill) fill.style.width = '100%'
+  }
+  if (statEl) statEl.textContent = msg || status
+}
+
+// ── Global step badges ─────────────────────────────────────────────────────
+const QR_STEPS = ['queued','tagging','normalizing','kfa','saving','done']
 function setStep(step, isError) {
   document.querySelectorAll('.progress-step').forEach(el => {
     const s = el.dataset.step
-    el.classList.remove('active', 'done', 'error')
-    if (isError && s === step) {
-      el.classList.add('error')
-    } else if (!isError) {
-      const idx = QR_STEPS.indexOf(s)
-      const cur = QR_STEPS.indexOf(step)
-      if (idx < cur)      el.classList.add('done')
+    el.classList.remove('active','done','error')
+    if (isError && s === step) el.classList.add('error')
+    else if (!isError) {
+      const idx = QR_STEPS.indexOf(s), cur = QR_STEPS.indexOf(step)
+      if (idx < cur) el.classList.add('done')
       else if (idx === cur) el.classList.add('active')
     }
   })
@@ -35,72 +97,56 @@ function setStep(step, isError) {
 
 function setMsg(msg, tqdm) {
   const el = document.getElementById('qr-msg')
-  if (el) {
-    el.textContent = msg || ''
-    if (tqdm) el.textContent += '\n' + tqdm
-  }
+  if (el) el.textContent = (msg || '') + (tqdm ? '\n' + tqdm : '')
+}
+
+function _setRunButtonBusy(isBusy) {
+  const btn = document.getElementById('btn-qr-run')
+  if (!btn) return
+  btn.disabled    = isBusy
+  btn.textContent = isBusy ? 'Executando…' : 'Iniciar tagging →'
 }
 
 function _getSelectedTaggers() {
   return Array.from(document.querySelectorAll('.qr-tagger-cb'))
-    .filter(cb => cb.checked)
-    .map(cb => cb.value)
+    .filter(cb => cb.checked).map(cb => cb.value)
 }
 
-/** Read which categories are checked in the inline export panel */
-function _getSelectedCats() {
-  return Array.from(document.querySelectorAll('.qr-cat-cb:checked'))
-    .map(cb => cb.dataset.cat)
-}
-
-/** Export using the pre-selected categories (no modal needed) */
-async function _doAutoExport() {
-  const selectedCats = _getSelectedCats()
-  if (!selectedCats.length) return
-
-  setMsg('Exportando arquivos…')
-  try {
-    const { items } = await api.project.manifest()
-    const filtered = items.filter(i => selectedCats.includes(i.category))
-    const body = filtered.length < items.length ? { items: filtered.map(i => i.path) } : {}
-    const exp = await api.project.export(body)
-    const total = exp.corpora + exp.tagged + exp.tables + exp.kfa
-    showToast(`Exportado ${total} arquivo(s) para ${exp.dest}`)
-  } catch (e) {
-    showToast(`Exportação falhou: ${e.message}`, 'error')
-  }
-}
-
-async function poll(refreshKfaSelect) {
+// ── Poll tagging job ────────────────────────────────────────────────────────
+async function pollTagging() {
   try {
     const r = await api.quickrun.status(_jobId)
     setStep(r.step, r.status === 'error')
     setMsg(r.msg || r.message || '', r.tqdm || '')
 
+    const prog = r.taggers_progress || {}
+    Object.entries(prog).forEach(([t, p]) => {
+      updateTaggerBar(t, p.status || 'running', p.msg || '')
+    })
+
     if (r.status === 'done') {
       clearInterval(_pollTimer); _pollTimer = null
       _isRunning = false
       _setRunButtonBusy(false)
-      // update project label via custom event
       document.dispatchEvent(new CustomEvent('project-changed'))
-      try { await refreshKfaSelect() } catch (_) {}
+      _selectedTaggers.forEach(t => updateTaggerBar(t, 'done', 'Concluído'))
+      showToast('Tagging concluído!')
 
-      // Auto-export using the inline category selection
-      const autoExport = document.getElementById('qr-auto-export')?.checked
-      if (autoExport) {
-        await _doAutoExport()
+      const kfaAll = document.getElementById('qr-kfa-all')?.checked ?? true
+      if (kfaAll) {
+        await loadKfaStep(true)   // auto-run KFA with all features
       } else {
-        showToast('Análise concluída!')
+        document.getElementById('btn-qr-to-kfa')?.classList.remove('hidden')
       }
-
-      document.getElementById('btn-qr-results')?.classList.remove('hidden')
       return
     }
+
     if (r.status === 'error') {
       clearInterval(_pollTimer); _pollTimer = null
       _isRunning = false
       _setRunButtonBusy(false)
-      showToast(r.error || 'Erro na análise.', 'error')
+      showToast(r.error || 'Erro no tagging.', 'error')
+      _selectedTaggers.forEach(t => updateTaggerBar(t, 'error', r.error || 'Erro'))
     }
   } catch (err) {
     clearInterval(_pollTimer); _pollTimer = null
@@ -110,227 +156,294 @@ async function poll(refreshKfaSelect) {
   }
 }
 
-export function initQuickrun({ refreshKfaSelect }) {
-  // ── Tagger tree logic ──────────────────────────────────────────────────────
-  const allCb      = document.getElementById('qr-all')
-  const groupCbs   = Array.from(document.querySelectorAll('.qr-group-cb'))
-  const leafCbs    = Array.from(document.querySelectorAll('.qr-tagger-cb'))
-  const biberCb    = leafCbs.find(cb => cb.value === 'biberplus')
+// ── KFA step: load raw features + build tag-selection panels ───────────────
+async function loadKfaStep(autoRun) {
+  goStep(2)
+
+  const panels = document.getElementById('qr-kfa-panels')
+  if (!panels) return
+  panels.innerHTML = '<div class="text-sm text-base-content/60 italic">Carregando features…</div>'
+
+  const joinEl = document.getElementById('qr-kfa-join')
+  if (joinEl) joinEl.value = _joinMethod
+
+  let existingKfas = []
+  try { const { kfa_results } = await api.analysis.listKfa(); existingKfas = kfa_results || [] } catch (_) {}
+
+  const allTagsDone = _selectedTaggers.every(t =>
+    existingKfas.some(k => k.tagger_type === t && k.analysis_name === 'default')
+  )
+
+  const noteEl = document.getElementById('qr-kfa-all-note')
+  if (noteEl) noteEl.classList.toggle('hidden', !allTagsDone)
+
+  panels.innerHTML = ''
+
+  for (const tagger of _selectedTaggers) {
+    let features = []
+    try {
+      const r = await api.analysis.getRawFeatures(_corpusNames.c1, tagger)
+      features = r.features || []
+    } catch (_) {}
+    panels.appendChild(_buildKfaPanel(tagger, features))
+  }
+
+  if (autoRun && allTagsDone) return
+
+  if (autoRun) await _runKfa()
+}
+
+function _buildKfaPanel(tagger, features) {
+  const div = document.createElement('div')
+  div.className = 'kfa-panel'
+  div.dataset.tagger = tagger
+  div.innerHTML = `
+    <div class="kfa-panel-header" data-panel="${tagger}">
+      <span>${_taggerLabel(tagger)}</span>
+      <span class="text-xs text-base-content/60">${features.length} features</span>
+    </div>
+    <div class="kfa-panel-body" id="kfa-body-${tagger}">
+      ${features.map(f => `
+        <div class="kfa-tag-row">
+          <input type="checkbox" class="kfa-feat-cb checkbox checkbox-xs" value="${f.name}" data-tagger="${tagger}" checked />
+          <span class="kfa-tag-name">${f.name}</span>
+          <span class="kfa-tag-count">${f.total.toLocaleString()}</span>
+        </div>`).join('')}
+    </div>
+    <div class="kfa-panel-actions">
+      <button class="btn btn-xs btn-ghost kfa-select-all" data-tagger="${tagger}">Todos</button>
+      <button class="btn btn-xs btn-ghost kfa-select-none" data-tagger="${tagger}">Nenhum</button>
+    </div>`
+  div.querySelector('.kfa-panel-header').addEventListener('click', () => {
+    div.querySelector('.kfa-panel-body')?.classList.toggle('collapsed')
+  })
+  div.querySelector('.kfa-select-all').addEventListener('click', e => {
+    e.stopPropagation()
+    div.querySelectorAll('.kfa-feat-cb').forEach(cb => cb.checked = true)
+  })
+  div.querySelector('.kfa-select-none').addEventListener('click', e => {
+    e.stopPropagation()
+    div.querySelectorAll('.kfa-feat-cb').forEach(cb => cb.checked = false)
+  })
+  return div
+}
+
+async function _runKfa() {
+  const statusEl = document.getElementById('qr-kfa-status')
+  if (statusEl) { statusEl.className = 'status-box running'; statusEl.textContent = 'Executando KFA…'; statusEl.classList.remove('hidden') }
+
+  const join = document.getElementById('qr-kfa-join')?.value || _joinMethod
+  const name = document.getElementById('qr-kfa-name')?.value?.trim() || 'default'
+
+  for (const tagger of _selectedTaggers) {
+    const checked = Array.from(
+      document.querySelectorAll(`.kfa-feat-cb[data-tagger="${tagger}"]:checked`)
+    ).map(cb => cb.value)
+
+    try {
+      if (statusEl) statusEl.textContent = `KFA [${_taggerLabel(tagger)}]…`
+      await api.analysis.runKfa({
+        corpus1_name: _corpusNames.c1,
+        corpus2_name: _corpusNames.c2,
+        join, tagger1: tagger, tagger2: tagger,
+        save_to_project: true,
+        analysis_name: name,
+        include_features: checked.length > 0 ? checked : null,
+      })
+    } catch (e) {
+      if (statusEl) { statusEl.className = 'status-box error'; statusEl.textContent = `Erro KFA [${tagger}]: ${e.message}` }
+      showToast(`Erro KFA: ${e.message}`, 'error')
+      return
+    }
+  }
+
+  if (statusEl) { statusEl.className = 'status-box done'; statusEl.textContent = 'KFA concluída!' }
+  showToast('KFA concluída!')
+  goStep(3)
+  await refreshKfaSelectStep3()
+}
+
+// ── Results select in step 3 ───────────────────────────────────────────────
+export async function refreshKfaSelectStep3() {
+  try {
+    const { kfa_results } = await api.analysis.listKfa()
+    const sel = document.getElementById('results-kfa-select')
+    if (!sel) return
+    sel.innerHTML = '<option value="">-- selecione uma KFA --</option>'
+    kfa_results.forEach(r => {
+      const opt = document.createElement('option')
+      const an  = r.analysis_name && r.analysis_name !== 'default' ? ` [${r.analysis_name}]` : ''
+      opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name,
+        d: r.min_effect, join: r.join_method, tagger: r.tagger_type,
+        analysis_name: r.analysis_name, features_meta: r.features_meta })
+      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name} (${r.join_method}) [${r.tagger_type || 'biberplus'}]${an}`
+      sel.appendChild(opt)
+    })
+    const opts = sel.querySelectorAll('option[value]:not([value=""])')
+    if (opts.length > 0) { sel.value = opts[0].value; sel.dispatchEvent(new Event('change')) }
+  } catch (_) {}
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+export function initQuickrun({ refreshKfaSelect, renderResults }) {
+
+  // Tagger tree
+  const allCb    = document.getElementById('qr-all')
+  const groupCbs = Array.from(document.querySelectorAll('.qr-group-cb'))
+  const leafCbs  = Array.from(document.querySelectorAll('.qr-tagger-cb'))
+  const biberCb  = leafCbs.find(cb => cb.value === 'biberplus')
   const usenlpWrap = document.getElementById('qr-usenlp-wrap')
 
-  function _leafsOfGroup(group) {
-    return leafCbs.filter(cb => cb.dataset.group === group)
+  const _leafsOf = group => leafCbs.filter(cb => cb.dataset.group === group)
+  function _syncGroup(gcb) {
+    const lfs = _leafsOf(gcb.dataset.group), n = lfs.filter(c=>c.checked).length
+    gcb.checked = n === lfs.length; gcb.indeterminate = n > 0 && n < lfs.length
   }
-
-  function _syncGroupState(groupCb) {
-    const leaves = _leafsOfGroup(groupCb.dataset.group)
-    const checked = leaves.filter(c => c.checked).length
-    if (checked === 0) {
-      groupCb.checked = false
-      groupCb.indeterminate = false
-    } else if (checked === leaves.length) {
-      groupCb.checked = true
-      groupCb.indeterminate = false
-    } else {
-      groupCb.checked = false
-      groupCb.indeterminate = true
-    }
+  function _syncAll() {
+    const n = leafCbs.filter(c=>c.checked).length
+    allCb.checked = n === leafCbs.length; allCb.indeterminate = n>0 && n<leafCbs.length
   }
-
-  function _syncAllState() {
-    const total    = leafCbs.length
-    const checked  = leafCbs.filter(c => c.checked).length
-    if (checked === 0) {
-      allCb.checked = false
-      allCb.indeterminate = false
-    } else if (checked === total) {
-      allCb.checked = true
-      allCb.indeterminate = false
-    } else {
-      allCb.checked = false
-      allCb.indeterminate = true
-    }
-  }
-
   function _syncUsenlp() {
     if (!usenlpWrap) return
-    const visible = biberCb?.checked ?? false
-    usenlpWrap.style.display = visible ? '' : 'none'
-    if (!visible) {
-      const radio = document.querySelector('input[name="qr-biber-mode"][value="no_nlp"]')
-      if (radio) radio.checked = true
+    usenlpWrap.style.display = biberCb?.checked ? '' : 'none'
+    if (!biberCb?.checked) {
+      const r = document.querySelector('input[name="qr-biber-mode"][value="no_nlp"]')
+      if (r) r.checked = true
     }
   }
 
-  // "Todos" clicked → set all leaves
   allCb?.addEventListener('change', () => {
-    const newState = allCb.checked
-    leafCbs.forEach(cb => { cb.checked = newState })
-    groupCbs.forEach(gcb => {
-      gcb.checked = newState
-      gcb.indeterminate = false
-    })
+    leafCbs.forEach(cb => cb.checked = allCb.checked)
+    groupCbs.forEach(gcb => { gcb.checked = allCb.checked; gcb.indeterminate = false })
     _syncUsenlp()
   })
-
-  // Group checkbox clicked → set all children
   groupCbs.forEach(gcb => {
     gcb.addEventListener('change', () => {
-      _leafsOfGroup(gcb.dataset.group).forEach(cb => { cb.checked = gcb.checked })
-      gcb.indeterminate = false
-      _syncAllState()
-      _syncUsenlp()
+      _leafsOf(gcb.dataset.group).forEach(cb => cb.checked = gcb.checked)
+      gcb.indeterminate = false; _syncAll(); _syncUsenlp()
     })
   })
-
-  // Leaf checkbox clicked → update parent group + "Todos"
   leafCbs.forEach(cb => {
     cb.addEventListener('change', () => {
-      const group = cb.dataset.group
-      if (group) {
-        const gcb = groupCbs.find(g => g.dataset.group === group)
-        if (gcb) _syncGroupState(gcb)
-      }
-      _syncAllState()
-      _syncUsenlp()
+      const gcb = groupCbs.find(g => g.dataset.group === cb.dataset.group)
+      if (gcb) _syncGroup(gcb); _syncAll(); _syncUsenlp()
     })
   })
+  groupCbs.forEach(_syncGroup); _syncAll(); _syncUsenlp()
 
-  // Sync initial state
-  groupCbs.forEach(gcb => _syncGroupState(gcb))
-  _syncAllState()
-  _syncUsenlp()
-
-  // ── Toggle category panel ──────────────────────────────────────────────────
-  const autoExportCb = document.getElementById('qr-auto-export')
-  const catsPanel    = document.getElementById('qr-export-cats')
-
-  function _syncCatsPanel() {
-    if (!catsPanel) return
-    catsPanel.classList.toggle('qr-export-cats--hidden', !autoExportCb?.checked)
-  }
-
-  autoExportCb?.addEventListener('change', _syncCatsPanel)
-  _syncCatsPanel()
-
-  // ── Browse / open-folder buttons ───────────────────────────────────────────
-  const LS_CORPUS = 'qr_last_corpus_folder'
-  const LS_OUTPUT = 'qr_last_output_folder'
-
+  // Folder browse buttons
+  const LS_CORPUS = 'qr_last_corpus_folder', LS_OUTPUT = 'qr_last_output_folder'
   document.querySelectorAll('#form-quickrun .btn-open-folder').forEach(btn => {
     btn.addEventListener('click', async () => {
-      btn.disabled = true
-      const origText = btn.textContent
-      btn.textContent = '…'
-
+      btn.disabled = true; const origText = btn.textContent; btn.textContent = '…'
       const isOutput = btn.dataset.lastkey === 'output'
       const storageKey = isOutput ? LS_OUTPUT : LS_CORPUS
       const defaultLocation = localStorage.getItem(storageKey) || ''
-
       try {
         const res = await api.utils.pickFolder({ defaultLocation })
         if (res?.path) {
-          const targetId = btn.dataset.target
-          const input    = document.getElementById(targetId)
+          const input = document.getElementById(btn.dataset.target)
           if (input) {
             if (isOutput) {
-              // Suggest a .ttwa file name from corpus names
               const c1 = document.getElementById('qr-c1-name')?.value?.trim() || 'corpus1'
               const c2 = document.getElementById('qr-c2-name')?.value?.trim() || 'corpus2'
               input.value = res.path + '/' + c1 + '_vs_' + c2 + '.ttwa'
               localStorage.setItem(LS_OUTPUT, res.path)
             } else {
               input.value = res.path
-              // Auto-fill corpus name from folder name
-              const nameId = btn.dataset.nameid
-              const nameInput = nameId ? document.getElementById(nameId) : null
-              if (nameInput && !nameInput.value.trim()) {
-                const folderName = res.path.split(/[/\\]/).filter(Boolean).pop()
-                if (folderName) nameInput.value = folderName
-              }
-              // Remember parent dir as the last corpus location
-              const parentDir = res.path.split(/[/\\]/).slice(0, -1).join('/') || res.path
-              localStorage.setItem(LS_CORPUS, parentDir)
+              const nameInput = btn.dataset.nameid ? document.getElementById(btn.dataset.nameid) : null
+              if (nameInput && !nameInput.value.trim())
+                nameInput.value = res.path.split(/[/\\]/).filter(Boolean).pop() || ''
+              localStorage.setItem(LS_CORPUS, res.path.split(/[/\\]/).slice(0,-1).join('/') || res.path)
             }
             input.dispatchEvent(new Event('change'))
           }
         }
       } catch (_) {}
-
-      btn.textContent = origText
-      btn.disabled    = false
+      btn.textContent = origText; btn.disabled = false
     })
   })
 
-  // ── Form submit ────────────────────────────────────────────────────────────
+  // Form submit (step 0 → step 1)
   document.getElementById('form-quickrun')?.addEventListener('submit', async e => {
     e.preventDefault()
     if (_isStarting || _isRunning) return
 
     const get = id => document.getElementById(id)?.value?.trim()
-
     let outputPath = get('qr-output') || ''
-    if (outputPath && !outputPath.toLowerCase().endsWith('.ttwa')) {
+    if (outputPath && !outputPath.toLowerCase().endsWith('.ttwa'))
       outputPath = outputPath.replace(/\/$/, '') + '.ttwa'
-    }
+
+    _selectedTaggers = _getSelectedTaggers()
+    _corpusNames     = { c1: get('qr-c1-name'), c2: get('qr-c2-name') }
+    _joinMethod      = get('qr-join') || 'intersection'
 
     const body = {
-      corpus1_name:   get('qr-c1-name'),
-      corpus1_folder: get('qr-c1-folder'),
-      corpus2_name:   get('qr-c2-name'),
-      corpus2_folder: get('qr-c2-folder'),
-      output_ttwa:    outputPath,
-      mode:           get('qr-mode'),
-      taggers:        _getSelectedTaggers(),
-      join:           get('qr-join'),
-      min_effect:     0,
-      usenlp:         document.querySelector('input[name="qr-biber-mode"]:checked')?.value === 'use_nlp',
-      n_processes:    1,
-      overwrite:      true,
+      corpus1_name:   _corpusNames.c1, corpus1_folder: get('qr-c1-folder'),
+      corpus2_name:   _corpusNames.c2, corpus2_folder: get('qr-c2-folder'),
+      output_ttwa: outputPath, mode: get('qr-mode'),
+      taggers: _selectedTaggers, join: _joinMethod,
+      min_effect: 0,
+      usenlp: document.querySelector('input[name="qr-biber-mode"]:checked')?.value === 'use_nlp',
+      n_processes: 1, overwrite: true, tag_only: true,
     }
 
-    const required = ['corpus1_name', 'corpus1_folder', 'corpus2_name', 'corpus2_folder', 'output_ttwa']
-    if (required.some(k => !body[k])) {
-      showToast('Preencha todos os campos obrigatórios.', 'error')
-      return
-    }
+    const required = ['corpus1_name','corpus1_folder','corpus2_name','corpus2_folder','output_ttwa']
+    if (required.some(k => !body[k])) { showToast('Preencha todos os campos obrigatórios.','error'); return }
+    if (!_selectedTaggers.length) { showToast('Selecione pelo menos um tagger.','error'); return }
 
-    if (!body.taggers.length) {
-      showToast('Selecione pelo menos um tagger.', 'error')
-      return
-    }
-
-    // Reset UI
-    _isStarting = true
-    _setRunButtonBusy(true)
-    setStep('queued', false)
-    setMsg('Iniciando…')
-    document.getElementById('qr-progress')?.classList.remove('hidden')
-    document.getElementById('btn-qr-results')?.classList.add('hidden')
+    _isStarting = true; _setRunButtonBusy(true)
+    goStep(1)
+    initTaggerBars(_selectedTaggers)
+    setStep('queued', false); setMsg('Iniciando…')
+    document.getElementById('btn-qr-to-kfa')?.classList.add('hidden')
 
     try {
-      if (_pollTimer) {
-        clearInterval(_pollTimer)
-        _pollTimer = null
-      }
+      if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null }
       const { job_id } = await api.quickrun.start(body)
-      _jobId      = job_id
-      _isRunning = true
-      await poll(refreshKfaSelect)
-      if (_isRunning) {
-        _pollTimer  = setInterval(() => poll(refreshKfaSelect), 1500)
-      }
+      _jobId = job_id; _isRunning = true
+      await pollTagging()
+      if (_isRunning) _pollTimer = setInterval(pollTagging, 1500)
     } catch (err) {
-      _setRunButtonBusy(false)
-      showToast(err.message, 'error')
-    } finally {
-      _isStarting = false
-    }
+      _setRunButtonBusy(false); showToast(err.message, 'error'); goStep(0)
+    } finally { _isStarting = false }
   })
 
-  // "Ver resultados" button
-  document.getElementById('btn-qr-results')?.addEventListener('click', async () => {
-    try { await refreshKfaSelect() } catch (_) {}
-    showView('results')
+  // "Configurar KFA →" in step 1
+  document.getElementById('btn-qr-to-kfa')?.addEventListener('click', () => loadKfaStep(false))
+
+  // "Executar KFA" in step 2
+  document.getElementById('btn-qr-run-kfa')?.addEventListener('click', _runKfa)
+
+  // "Ver resultados existentes" in step 2
+  document.getElementById('btn-qr-skip-kfa')?.addEventListener('click', async () => {
+    goStep(3); await refreshKfaSelectStep3()
+  })
+
+  // Results select (step 3) — auto-load on change
+  document.getElementById('results-kfa-select')?.addEventListener('change', async function() {
+    if (!this.value) return
+    const { c1, c2, d, join, tagger, analysis_name, features_meta } = JSON.parse(this.value)
+    try {
+      const data = await api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name)
+      // Populate info box
+      const ib = document.getElementById('results-info-name')
+      const it = document.getElementById('results-info-tagger')
+      const ifs = document.getElementById('results-info-features')
+      if (ib) ib.textContent = analysis_name || 'default'
+      if (it) it.textContent = tagger || 'biberplus'
+      if (ifs) {
+        const fm = features_meta || []
+        ifs.textContent = fm.length > 0
+          ? `${fm.length}: ${fm.slice(0,8).join(', ')}${fm.length > 8 ? '…' : ''}`
+          : 'Todos'
+      }
+      if (typeof renderResults === 'function') renderResults(data, c1, c2, '')
+    } catch (err) { showToast(err.message, 'error') }
+  })
+
+  // Info toggle in step 3
+  document.getElementById('btn-results-info')?.addEventListener('click', () => {
+    document.getElementById('results-info-box')?.classList.toggle('hidden')
   })
 }

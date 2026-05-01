@@ -38,13 +38,13 @@
     <!-- HOME -->
     <section id="view-home" class="view active">
       <h1 class="text-3xl font-light mb-1">ttwtools</h1>
-      <p class="text-base-content/60 mb-6">Análise de features linguísticas Biber</p>
+      <p class="text-base-content/70 mb-6">Análise de features linguísticas Biber</p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
         <div class="card bg-primary text-primary-content shadow-md">
           <div class="card-body gap-3">
             <div class="text-3xl">▶</div>
             <h3 class="card-title text-base">Nova análise</h3>
-            <p class="text-sm opacity-80">Aponte duas pastas de corpus e execute o pipeline completo: tagging → normalização → KFA → salva <code>.ttwa</code>.</p>
+            <p class="text-sm opacity-90">Aponte duas pastas de corpus e execute o pipeline: tagging → KFA → resultados.</p>
             <div class="card-actions"><button class="btn btn-sm bg-white/20 hover:bg-white/30 border-0 text-primary-content" id="btn-home-newanalysis">Iniciar</button></div>
           </div>
         </div>
@@ -52,190 +52,318 @@
           <div class="card-body gap-3">
             <div class="text-3xl">📂</div>
             <h3 class="card-title text-base">Abrir projeto</h3>
-            <p class="text-sm text-base-content/70">Carrega um arquivo <code>.ttwa</code> existente e exibe os resultados de análise já salvos.</p>
+            <p class="text-sm text-base-content/80">Carrega um arquivo <code>.ttwa</code> existente e exibe os resultados de análise já salvos.</p>
             <div class="card-actions"><button class="btn btn-sm btn-outline" id="btn-home-open">Abrir .ttwa</button></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- NOVA ANÁLISE (quickrun) -->
+    <!-- ====================================================
+         NOVA ANÁLISE — Fluxo em 4 etapas deslizantes
+         ==================================================== -->
     <section id="view-quickrun" class="view">
-      <h1 class="text-2xl font-light mb-4">Nova análise</h1>
-      <form id="form-quickrun" class="flex flex-col gap-4 max-w-2xl">
 
-        <div class="corpus-input-row flex gap-2 items-center">
-          <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
-            data-target="qr-c1-folder" data-nameid="qr-c1-name" data-lastkey="corpus">Corpus 1…</button>
-          <input id="qr-c1-folder" type="text" placeholder="/caminho/para/corpus1"
-            class="input input-bordered input-sm flex-1 min-w-0" />
-          <input id="qr-c1-name" type="text" placeholder="nome do corpus"
-            class="input input-bordered input-sm w-36 shrink-0" />
+      <!-- Step indicator -->
+      <div class="flex items-center gap-0 mb-6 max-w-2xl" id="qr-stepper">
+        <div class="step-indicator active" data-step="0">
+          <div class="step-circle">1</div>
+          <span class="step-label">Configurar</span>
         </div>
-
-        <div class="corpus-input-row flex gap-2 items-center">
-          <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
-            data-target="qr-c2-folder" data-nameid="qr-c2-name" data-lastkey="corpus">Corpus 2…</button>
-          <input id="qr-c2-folder" type="text" placeholder="/caminho/para/corpus2"
-            class="input input-bordered input-sm flex-1 min-w-0" />
-          <input id="qr-c2-name" type="text" placeholder="nome do corpus"
-            class="input input-bordered input-sm w-36 shrink-0" />
+        <div class="step-connector"></div>
+        <div class="step-indicator" data-step="1">
+          <div class="step-circle">2</div>
+          <span class="step-label">Tagging</span>
         </div>
-
-        <!-- Taggers -->
-        <div>
-          <span class="label-text font-medium mb-2 block">Taggers</span>
-          <div class="tagger-tree bg-base-200 rounded-lg p-3 flex flex-col gap-1">
-            <label class="flex items-center gap-2 cursor-pointer py-0.5">
-              <input id="qr-all" type="checkbox" class="checkbox checkbox-sm" />
-              <span class="text-sm font-medium">Todos</span>
-            </label>
-            <div class="divider my-0.5"></div>
-            <div class="tagger-group">
-              <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="spacy" />
-                <span class="text-sm font-semibold">spaCy</span>
-              </label>
-              <div class="tagger-children pl-6 flex flex-col gap-0.5">
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_upos" data-group="spacy" />
-                  <span class="text-sm">UPOS</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_ptb" data-group="spacy" />
-                  <span class="text-sm">PTB</span>
-                </label>
-              </div>
-            </div>
-            <div class="tagger-group">
-              <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="stanza" />
-                <span class="text-sm font-semibold">Stanza</span>
-              </label>
-              <div class="tagger-children pl-6 flex flex-col gap-0.5">
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_upos" data-group="stanza" />
-                  <span class="text-sm">UPOS</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_xpos" data-group="stanza" />
-                  <span class="text-sm">XPOS</span>
-                </label>
-              </div>
-            </div>
-            <div class="tagger-group">
-              <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                <input type="checkbox" class="qr-tagger-cb checkbox checkbox-sm" value="biberplus" checked />
-                <span class="text-sm font-semibold">BiberPlus</span>
-              </label>
-              <div id="qr-usenlp-wrap" class="pl-6 flex flex-col gap-0.5">
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="radio" name="qr-biber-mode" value="no_nlp" class="radio radio-xs" checked />
-                  <span class="text-sm">Sem tokens spaCy</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="radio" name="qr-biber-mode" value="use_nlp" class="radio radio-xs" />
-                  <span class="text-sm">Com tokens spaCy</span>
-                </label>
-              </div>
-            </div>
-            <div class="tagger-group">
-              <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="mfte" />
-                <span class="text-sm font-semibold">MFTE</span>
-              </label>
-              <div class="tagger-children pl-6 flex flex-col gap-0.5">
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte" data-group="mfte" />
-                  <span class="text-sm">Simples</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte_ext" data-group="mfte" />
-                  <span class="text-sm">Estendido</span>
-                </label>
-              </div>
-            </div>
-          </div>
+        <div class="step-connector"></div>
+        <div class="step-indicator" data-step="2">
+          <div class="step-circle">3</div>
+          <span class="step-label">KFA</span>
         </div>
-
-        <div class="flex flex-wrap gap-4">
-          <label class="form-control">
-            <span class="label-text text-sm mb-1 block">Modo</span>
-            <select id="qr-mode" class="select select-bordered select-sm">
-              <option value="full">full — com textos originais</option>
-              <option value="compact">compact — apenas tagueados</option>
-            </select>
-          </label>
-          <label class="form-control">
-            <span class="label-text text-sm mb-1 block">Método KFA</span>
-            <select id="qr-join" class="select select-bordered select-sm">
-              <option value="union">union</option>
-              <option value="intersection">intersection</option>
-            </select>
-          </label>
+        <div class="step-connector"></div>
+        <div class="step-indicator" data-step="3">
+          <div class="step-circle">4</div>
+          <span class="step-label">Resultados</span>
         </div>
-
-        <fieldset class="border border-base-300 rounded-lg p-3">
-          <legend class="px-1 text-sm font-medium">Saída</legend>
-          <div class="flex gap-2 items-center">
-            <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
-              data-target="qr-output" data-lastkey="output">Salvar em…</button>
-            <input id="qr-output" type="text" placeholder="/caminho/meu_projeto.ttwa"
-              class="input input-bordered input-sm flex-1 min-w-0" />
-          </div>
-          <p class="text-xs text-base-content/50 mt-1">Caminho onde será salvo o arquivo .ttwa com os resultados</p>
-        </fieldset>
-
-        <div class="qr-export-section">
-          <label class="flex items-center gap-2 cursor-pointer mb-2">
-            <input type="checkbox" id="qr-auto-export" class="checkbox checkbox-sm" checked />
-            <span class="text-sm">Exportar ao concluir</span>
-          </label>
-          <div id="qr-export-cats" class="pl-4 flex flex-col gap-1">
-            <span class="text-xs text-base-content/60 mb-1">O que exportar:</span>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" class="qr-cat-cb checkbox checkbox-xs" data-cat="corpora" checked />
-              <span class="text-sm">📄 Textos originais</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" class="qr-cat-cb checkbox checkbox-xs" data-cat="tagged" checked />
-              <span class="text-sm">🏷️ Arquivos tagueados</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" class="qr-cat-cb checkbox checkbox-xs" data-cat="tables" checked />
-              <span class="text-sm">📊 Feature tables (CSV)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" class="qr-cat-cb checkbox checkbox-xs" data-cat="kfa" checked />
-              <span class="text-sm">📈 Resultados KFA</span>
-            </label>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary w-full" id="btn-qr-run">Executar pipeline</button>
-      </form>
-
-      <div id="qr-progress" class="progress-panel hidden mt-6 max-w-2xl">
-        <div class="flex flex-wrap gap-2 mb-3" id="qr-steps">
-          <span class="progress-step badge badge-outline" data-step="queued">Na fila</span>
-          <span class="progress-step badge badge-outline" data-step="tagging">Tagging</span>
-          <span class="progress-step badge badge-outline" data-step="normalizing">Normalização</span>
-          <span class="progress-step badge badge-outline" data-step="kfa">KFA</span>
-          <span class="progress-step badge badge-outline" data-step="saving">Salvando</span>
-          <span class="progress-step badge badge-outline" data-step="done">Concluído</span>
-        </div>
-        <pre class="text-sm bg-base-200 rounded p-3 whitespace-pre-wrap" id="qr-msg"></pre>
-        <button class="btn btn-primary mt-3 hidden" id="btn-qr-results">Ver resultados →</button>
       </div>
-    </section>
+
+      <!-- Step panels wrapper (slides) -->
+      <div class="qr-steps-wrap max-w-2xl">
+
+        <!-- ── Etapa 1: Configurar ─────────────────────────────── -->
+        <div class="qr-step active" id="qr-step-0">
+          <h2 class="text-xl font-medium mb-4 text-base-content">Configurar análise</h2>
+          <form id="form-quickrun" class="flex flex-col gap-4">
+
+            <div class="corpus-input-row flex gap-2 items-center">
+              <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
+                data-target="qr-c1-folder" data-nameid="qr-c1-name" data-lastkey="corpus">Corpus 1…</button>
+              <input id="qr-c1-folder" type="text" placeholder="/caminho/para/corpus1"
+                class="input input-bordered input-sm flex-1 min-w-0" />
+              <input id="qr-c1-name" type="text" placeholder="nome"
+                class="input input-bordered input-sm w-28 shrink-0" />
+            </div>
+
+            <div class="corpus-input-row flex gap-2 items-center">
+              <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
+                data-target="qr-c2-folder" data-nameid="qr-c2-name" data-lastkey="corpus">Corpus 2…</button>
+              <input id="qr-c2-folder" type="text" placeholder="/caminho/para/corpus2"
+                class="input input-bordered input-sm flex-1 min-w-0" />
+              <input id="qr-c2-name" type="text" placeholder="nome"
+                class="input input-bordered input-sm w-28 shrink-0" />
+            </div>
+
+            <!-- Taggers -->
+            <div>
+              <span class="label-text font-semibold text-base-content mb-2 block">Taggers</span>
+              <div class="tagger-tree bg-base-200 rounded-lg p-3 flex flex-col gap-1">
+                <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                  <input id="qr-all" type="checkbox" class="checkbox checkbox-sm" />
+                  <span class="text-sm font-medium text-base-content">Todos</span>
+                </label>
+                <div class="divider my-0.5"></div>
+                <div class="tagger-group">
+                  <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="spacy" />
+                    <span class="text-sm font-semibold text-base-content">spaCy</span>
+                  </label>
+                  <div class="tagger-children pl-6 flex flex-col gap-0.5">
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_upos" data-group="spacy" />
+                      <span class="text-sm text-base-content">UPOS</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_ptb" data-group="spacy" />
+                      <span class="text-sm text-base-content">PTB</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="tagger-group">
+                  <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="stanza" />
+                    <span class="text-sm font-semibold text-base-content">Stanza</span>
+                  </label>
+                  <div class="tagger-children pl-6 flex flex-col gap-0.5">
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_upos" data-group="stanza" />
+                      <span class="text-sm text-base-content">UPOS</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_xpos" data-group="stanza" />
+                      <span class="text-sm text-base-content">XPOS</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="tagger-group">
+                  <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                    <input type="checkbox" class="qr-tagger-cb checkbox checkbox-sm" value="biberplus" checked />
+                    <span class="text-sm font-semibold text-base-content">BiberPlus</span>
+                  </label>
+                  <div id="qr-usenlp-wrap" class="pl-6 flex flex-col gap-0.5">
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="radio" name="qr-biber-mode" value="no_nlp" class="radio radio-xs" checked />
+                      <span class="text-sm text-base-content">Sem tokens spaCy</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="radio" name="qr-biber-mode" value="use_nlp" class="radio radio-xs" />
+                      <span class="text-sm text-base-content">Com tokens spaCy</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="tagger-group">
+                  <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="mfte" />
+                    <span class="text-sm font-semibold text-base-content">MFTE</span>
+                  </label>
+                  <div class="tagger-children pl-6 flex flex-col gap-0.5">
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte" data-group="mfte" />
+                      <span class="text-sm text-base-content">Simples</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer py-0.5">
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte_ext" data-group="mfte" />
+                      <span class="text-sm text-base-content">Estendido</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+              <label class="form-control">
+                <span class="label-text text-sm font-medium text-base-content mb-1 block">Modo</span>
+                <select id="qr-mode" class="select select-bordered select-sm">
+                  <option value="full">full — com textos originais</option>
+                  <option value="compact">compact — apenas tagueados</option>
+                </select>
+              </label>
+              <label class="form-control">
+                <span class="label-text text-sm font-medium text-base-content mb-1 block">Método KFA</span>
+                <select id="qr-join" class="select select-bordered select-sm">
+                  <option value="union">union</option>
+                  <option value="intersection">intersection</option>
+                </select>
+              </label>
+            </div>
+
+            <fieldset class="border border-base-300 rounded-lg p-3">
+              <legend class="px-1 text-sm font-semibold text-base-content">Saída</legend>
+              <div class="flex gap-2 items-center">
+                <button type="button" class="btn btn-sm btn-outline shrink-0 btn-open-folder"
+                  data-target="qr-output" data-lastkey="output">Salvar em…</button>
+                <input id="qr-output" type="text" placeholder="/caminho/meu_projeto.ttwa"
+                  class="input input-bordered input-sm flex-1 min-w-0" />
+              </div>
+              <p class="text-xs text-base-content/60 mt-1">Caminho onde será salvo o arquivo .ttwa com os resultados</p>
+            </fieldset>
+
+            <div class="flex items-center gap-2 mt-1">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="qr-kfa-all" class="checkbox checkbox-sm" checked />
+                <span class="text-sm text-base-content font-medium">KFA de todos os tags (etapa 3 automática)</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-qr-run">Iniciar tagging →</button>
+          </form>
+        </div><!-- /step-0 -->
+
+        <!-- ── Etapa 2: Tagging ────────────────────────────────── -->
+        <div class="qr-step" id="qr-step-1">
+          <h2 class="text-xl font-medium mb-4 text-base-content">Tagging em andamento…</h2>
+
+          <!-- Per-tagger progress bars -->
+          <div id="qr-tagger-bars" class="flex flex-col gap-3 mb-4"></div>
+
+          <!-- Global status message -->
+          <pre class="text-sm bg-base-200 rounded p-3 whitespace-pre-wrap text-base-content/80 max-h-32 overflow-y-auto" id="qr-msg"></pre>
+
+          <!-- Overall step badges -->
+          <div class="flex flex-wrap gap-2 mt-3" id="qr-steps">
+            <span class="progress-step badge badge-outline" data-step="queued">Na fila</span>
+            <span class="progress-step badge badge-outline" data-step="tagging">Tagging</span>
+            <span class="progress-step badge badge-outline" data-step="normalizing">Normalização</span>
+            <span class="progress-step badge badge-outline" data-step="kfa">KFA</span>
+            <span class="progress-step badge badge-outline" data-step="saving">Salvando</span>
+            <span class="progress-step badge badge-outline" data-step="done">Concluído</span>
+          </div>
+
+          <button class="btn btn-primary mt-4 hidden" id="btn-qr-to-kfa">Configurar KFA →</button>
+        </div><!-- /step-1 -->
+
+        <!-- ── Etapa 3: KFA ────────────────────────────────────── -->
+        <div class="qr-step" id="qr-step-2">
+          <h2 class="text-xl font-medium mb-1 text-base-content">Key Feature Analysis</h2>
+          <p class="text-sm text-base-content/70 mb-4">Selecione os tags a incluir em cada análise. Por padrão, todos estão selecionados.</p>
+
+          <!-- KFA all-tags status / re-run note -->
+          <div id="qr-kfa-all-note" class="alert alert-info text-sm mb-4 hidden">
+            <span>KFA completa já executada para todos os tags.</span>
+          </div>
+
+          <!-- Per-tagger tag selection panels -->
+          <div id="qr-kfa-panels" class="flex flex-col gap-6"></div>
+
+          <!-- Method + name -->
+          <div class="flex flex-wrap gap-4 mt-4">
+            <label class="form-control">
+              <span class="label-text text-sm font-medium text-base-content mb-1 block">Método</span>
+              <select id="qr-kfa-join" class="select select-bordered select-sm">
+                <option value="union">union</option>
+                <option value="intersection">intersection</option>
+              </select>
+            </label>
+            <label class="form-control flex-1 min-w-40">
+              <span class="label-text text-sm font-medium text-base-content mb-1 block">Nome da análise</span>
+              <input id="qr-kfa-name" type="text" placeholder="minha_analise" value="default"
+                class="input input-bordered input-sm" />
+            </label>
+          </div>
+
+          <div class="flex gap-2 mt-4">
+            <button id="btn-qr-run-kfa" class="btn btn-primary">Executar KFA →</button>
+            <button id="btn-qr-skip-kfa" class="btn btn-outline btn-sm self-center">Ver resultados existentes</button>
+          </div>
+          <div id="qr-kfa-status" class="status-box hidden mt-3"></div>
+        </div><!-- /step-2 -->
+
+        <!-- ── Etapa 4: Resultados ─────────────────────────────── -->
+        <div class="qr-step" id="qr-step-3">
+          <h2 class="text-xl font-medium mb-4 text-base-content">Resultados</h2>
+
+          <!-- KFA selector + info icon -->
+          <div class="flex flex-wrap gap-2 items-center mb-4">
+            <select id="results-kfa-select" class="select select-bordered select-sm min-w-72">
+              <option value="">-- selecione uma KFA --</option>
+            </select>
+            <button id="btn-results-info" class="btn btn-xs btn-ghost" title="Detalhes desta análise">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </button>
+            <input id="results-filter" type="text" placeholder="Filtrar feature…"
+              class="input input-bordered input-sm ml-auto w-44" />
+          </div>
+
+          <!-- Info tooltip -->
+          <div id="results-info-box" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
+            <strong class="text-base-content">Análise:</strong> <span id="results-info-name" class="text-base-content/80"></span><br/>
+            <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger" class="text-base-content/80"></span><br/>
+            <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features" class="text-base-content/70 text-xs"></span>
+          </div>
+
+          <div id="chart-container" class="chart-box hidden">
+            <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
+              <label class="form-control">
+                <span class="label-text text-xs font-medium text-base-content mb-1 block">Visualizar</span>
+                <select id="chart-metric" class="select select-bordered select-xs min-w-40">
+                  <option value="Effect_Size">Effect size (d)</option>
+                  <option value="Mean_Corpus1">Média Corpus 1</option>
+                  <option value="Mean_Corpus2">Média Corpus 2</option>
+                  <option value="Std_Corpus1">DP Corpus 1</option>
+                  <option value="Std_Corpus2">DP Corpus 2</option>
+                  <option value="N_Corpus1">N Corpus 1</option>
+                  <option value="N_Corpus2">N Corpus 2</option>
+                </select>
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-medium text-base-content mb-1 block">Paleta</span>
+                <select id="chart-palette" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-medium text-base-content mb-1 block">Espessura <span id="chart-thickness-val">18</span>px</span>
+                <input type="range" id="chart-thickness" min="8" max="40" value="18" step="2"
+                  class="range range-xs w-36" />
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-medium text-base-content mb-1 block">|d| ≥</span>
+                <input type="number" id="results-min-d" value="0" min="0" step="0.05"
+                  class="input input-bordered input-xs w-20" />
+              </label>
+            </div>
+            <div id="chart-wrapper"></div>
+          </div>
+
+          <div id="table-container" class="table-box hidden overflow-x-auto">
+            <table id="kfa-table" class="table table-xs table-zebra">
+              <thead><tr></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div><!-- /step-3 -->
+
+      </div><!-- /qr-steps-wrap -->
+    </section><!-- /view-quickrun -->
 
     <!-- EXPORTAR PROJETO -->
     <section id="view-export" class="view">
       <h1 class="text-2xl font-light mb-4">Exportar Projeto</h1>
       <div class="max-w-xl flex flex-col gap-4">
-        <p class="text-base-content/60 text-sm">Selecione quais dados do <code>.ttwa</code> exportar para disco.</p>
+        <p class="text-base-content/70 text-sm">Selecione quais dados do <code>.ttwa</code> exportar para disco.</p>
         <label class="form-control">
-          <span class="label-text text-sm mb-1 block">Pasta de destino</span>
+          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Pasta de destino</span>
           <div class="flex gap-2">
             <input id="export-dest" type="text" placeholder="padrão: pasta ao lado do .ttwa"
               class="input input-bordered input-sm flex-1" />
@@ -260,18 +388,18 @@
       </div>
     </section>
 
-    <!-- TAGGING -->
+    <!-- TAGGING (standalone) -->
     <section id="view-tagging" class="view">
       <h1 class="text-2xl font-light mb-4">Tagging</h1>
       <form id="form-tagging" class="flex flex-col gap-4 max-w-md">
         <label class="form-control">
-          <span class="label-text text-sm mb-1 block">Corpus</span>
+          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus</span>
           <select id="tag-corpus-select" class="select select-bordered select-sm">
             <option value="">-- selecione --</option>
           </select>
         </label>
         <label class="form-control">
-          <span class="label-text text-sm mb-1 block">Tagger</span>
+          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Tagger</span>
           <select id="tag-tagger-select" class="select select-bordered select-sm">
             <option value="biberplus">BiberPlus</option>
             <option value="mfte">MFTE</option>
@@ -285,15 +413,15 @@
         <div id="tag-usenlp-wrap">
           <label class="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" id="tag-usenlp" class="checkbox checkbox-sm" />
-            <span class="text-sm">Usar spaCy (mais preciso, mais lento)</span>
+            <span class="text-sm text-base-content">Usar spaCy (mais preciso, mais lento)</span>
           </label>
         </div>
         <label class="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" id="tag-save-tagged" class="checkbox checkbox-sm" checked />
-          <span class="text-sm">Salvar tokens tagueados no .ttwa</span>
+          <span class="text-sm text-base-content">Salvar tokens tagueados no .ttwa</span>
         </label>
         <label class="form-control">
-          <span class="label-text text-sm mb-1 block">Processos paralelos</span>
+          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Processos paralelos</span>
           <input type="number" id="tag-nprocesses" value="4" min="1" max="16"
             class="input input-bordered input-sm w-28" />
         </label>
@@ -302,19 +430,19 @@
       <div id="tagging-status" class="status-box hidden mt-4"></div>
     </section>
 
-    <!-- ANALYSIS (KFA) -->
+    <!-- ANALYSIS (KFA standalone) -->
     <section id="view-analysis" class="view">
       <h1 class="text-2xl font-light mb-4">Key Feature Analysis</h1>
       <form id="form-kfa" class="flex flex-col gap-4 max-w-xl">
         <div class="flex flex-wrap gap-4">
           <label class="form-control flex-1 min-w-40">
-            <span class="label-text text-sm mb-1 block">Corpus 1</span>
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 1</span>
             <select id="kfa-corpus1" class="select select-bordered select-sm">
               <option value="">-- selecione --</option>
             </select>
           </label>
           <label class="form-control">
-            <span class="label-text text-sm mb-1 block">Tagger 1</span>
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Tagger 1</span>
             <select id="kfa-tagger1" class="select select-bordered select-sm">
               <option value="biberplus">BiberPlus</option>
               <option value="mfte">MFTE</option>
@@ -328,13 +456,13 @@
         </div>
         <div class="flex flex-wrap gap-4">
           <label class="form-control flex-1 min-w-40">
-            <span class="label-text text-sm mb-1 block">Corpus 2</span>
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 2</span>
             <select id="kfa-corpus2" class="select select-bordered select-sm">
               <option value="">-- selecione --</option>
             </select>
           </label>
           <label class="form-control">
-            <span class="label-text text-sm mb-1 block">Tagger 2</span>
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Tagger 2</span>
             <select id="kfa-tagger2" class="select select-bordered select-sm">
               <option value="biberplus">BiberPlus</option>
               <option value="mfte">MFTE</option>
@@ -347,7 +475,7 @@
           </label>
         </div>
         <label class="form-control">
-          <span class="label-text text-sm mb-1 block">Método de junção</span>
+          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Método de junção</span>
           <select id="kfa-join" class="select select-bordered select-sm w-48">
             <option value="union">union</option>
             <option value="intersection">intersection</option>
@@ -357,23 +485,36 @@
       </form>
     </section>
 
-    <!-- RESULTS -->
+    <!-- RESULTS (standalone) -->
     <section id="view-results" class="view">
       <h1 class="text-2xl font-light mb-4">Resultados</h1>
-      <div class="flex flex-wrap gap-2 items-center mb-4">
-        <select id="results-kfa-select" class="select select-bordered select-sm min-w-72">
+      <div class="flex flex-wrap gap-2 items-center mb-2">
+        <select id="results-kfa-select-standalone" class="select select-bordered select-sm min-w-72">
           <option value="">-- selecione uma KFA --</option>
         </select>
-        <button id="btn-load-result" class="btn btn-sm btn-outline">Carregar</button>
-        <input id="results-filter" type="text" placeholder="Filtrar feature…"
-          class="input input-bordered input-sm ml-auto w-48" />
+        <button id="btn-results-info-standalone" class="btn btn-xs btn-ghost" title="Detalhes desta análise">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/>
+            <line x1="12" y1="8" x2="12.01" y2="8"/>
+          </svg>
+        </button>
+        <input id="results-filter-standalone" type="text" placeholder="Filtrar feature…"
+          class="input input-bordered input-sm ml-auto w-44" />
       </div>
 
-      <div id="chart-container" class="chart-box hidden">
-        <div class="flex flex-wrap gap-4 items-end mb-3">
+      <!-- Info box -->
+      <div id="results-info-box-standalone" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
+        <strong class="text-base-content">Análise:</strong> <span id="results-info-name-standalone" class="text-base-content/80"></span><br/>
+        <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger-standalone" class="text-base-content/80"></span><br/>
+        <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features-standalone" class="text-base-content/70 text-xs"></span>
+      </div>
+
+      <div id="chart-container-standalone" class="chart-box hidden">
+        <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
           <label class="form-control">
-            <span class="label-text text-xs mb-1 block">Visualizar</span>
-            <select id="chart-metric" class="select select-bordered select-xs min-w-40">
+            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
+            <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
               <option value="Effect_Size">Effect size (d)</option>
               <option value="Mean_Corpus1">Média Corpus 1</option>
               <option value="Mean_Corpus2">Média Corpus 2</option>
@@ -384,25 +525,25 @@
             </select>
           </label>
           <label class="form-control">
-            <span class="label-text text-xs mb-1 block">Paleta</span>
-            <select id="chart-palette" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
+            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Paleta</span>
+            <select id="chart-palette-standalone" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
           </label>
           <label class="form-control">
-            <span class="label-text text-xs mb-1 block">Espessura <span id="chart-thickness-val">18</span>px</span>
-            <input type="range" id="chart-thickness" min="8" max="40" value="18" step="2"
+            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Espessura <span id="chart-thickness-val-standalone">18</span>px</span>
+            <input type="range" id="chart-thickness-standalone" min="8" max="40" value="18" step="2"
               class="range range-xs w-36" />
           </label>
           <label class="form-control">
-            <span class="label-text text-xs mb-1 block">|d| ≥</span>
-            <input type="number" id="results-min-d" value="0" min="0" step="0.05"
+            <span class="label-text text-xs font-semibold text-base-content mb-1 block">|d| ≥</span>
+            <input type="number" id="results-min-d-standalone" value="0" min="0" step="0.05"
               class="input input-bordered input-xs w-20" />
           </label>
         </div>
-        <div id="chart-wrapper"></div>
+        <div id="chart-wrapper-standalone"></div>
       </div>
 
-      <div id="table-container" class="table-box hidden overflow-x-auto">
-        <table id="kfa-table" class="table table-xs table-zebra">
+      <div id="table-container-standalone" class="table-box hidden overflow-x-auto">
+        <table id="kfa-table-standalone" class="table table-xs table-zebra">
           <thead><tr></tr></thead>
           <tbody></tbody>
         </table>
@@ -414,14 +555,14 @@
       <div class="flex items-start gap-4 mb-4">
         <button id="btn-back-results" class="btn btn-sm btn-outline shrink-0">← KFA Results</button>
         <div>
-          <h2 id="fd-feature-name" class="text-xl font-semibold"></h2>
-          <p id="fd-feature-def" class="text-sm text-base-content/60"></p>
+          <h2 id="fd-feature-name" class="text-xl font-semibold text-base-content"></h2>
+          <p id="fd-feature-def" class="text-sm text-base-content/70"></p>
         </div>
       </div>
       <div class="flex gap-4" style="height:calc(100vh - 180px)">
         <div class="flex-1 flex flex-col min-w-0">
           <div class="flex flex-wrap gap-3 items-center mb-3">
-            <span id="fd-count-label" class="text-sm text-base-content/60"></span>
+            <span id="fd-count-label" class="text-sm text-base-content/70"></span>
             <label class="flex items-center gap-1 text-sm ml-auto">
               Ordenar
               <select id="fd-sort" class="select select-bordered select-xs ml-1">
@@ -431,7 +572,7 @@
             </label>
             <div class="flex items-center gap-1">
               <button id="fd-prev" class="btn btn-xs btn-outline">‹</button>
-              <span id="fd-page-label" class="text-xs px-1"></span>
+              <span id="fd-page-label" class="text-xs px-1 text-base-content"></span>
               <button id="fd-next" class="btn btn-xs btn-outline">›</button>
             </div>
             <label class="flex items-center gap-1 text-sm">
@@ -458,7 +599,7 @@
           </div>
         </div>
         <aside class="w-52 shrink-0 flex flex-col border-l border-base-300 pl-3">
-          <div class="text-xs font-semibold text-base-content/50 uppercase mb-2">Features (effect size)</div>
+          <div class="text-xs font-semibold text-base-content/60 uppercase mb-2">Features (effect size)</div>
           <div id="fd-feat-list" class="flex-1 overflow-y-auto text-sm"></div>
         </aside>
       </div>
@@ -470,15 +611,15 @@
         <button id="btn-tv-back" class="btn btn-sm btn-outline shrink-0">← Detalhamento</button>
         <div class="flex items-center gap-1">
           <button id="btn-tv-prev" class="btn btn-xs btn-outline">‹ Anterior</button>
-          <span id="tv-file-label" class="text-sm px-2"></span>
+          <span id="tv-file-label" class="text-sm px-2 text-base-content"></span>
           <button id="btn-tv-next" class="btn btn-xs btn-outline">Próximo ›</button>
         </div>
         <div class="flex items-center gap-2 ml-auto">
-          <span class="text-xs opacity-60">A</span>
+          <span class="text-xs opacity-70 text-base-content">A</span>
           <input type="range" id="tv-font-slider" min="10" max="24" step="1" value="14"
             class="range range-xs w-28" />
-          <span class="text-sm opacity-60">A</span>
-          <span id="tv-font-val" class="text-xs w-10">14px</span>
+          <span class="text-sm opacity-70 text-base-content">A</span>
+          <span id="tv-font-val" class="text-xs w-10 text-base-content">14px</span>
         </div>
         <button id="btn-tv-print" class="btn btn-xs btn-outline" title="Imprimir / Salvar PDF">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
@@ -488,8 +629,8 @@
           Legenda
         </button>
         <div>
-          <h2 id="tv-filename" class="text-base font-medium"></h2>
-          <span id="tv-corpus-label" class="text-xs text-base-content/50"></span>
+          <h2 id="tv-filename" class="text-base font-medium text-base-content"></h2>
+          <span id="tv-corpus-label" class="text-xs text-base-content/60"></span>
         </div>
       </div>
       <div class="flex gap-4" style="height:calc(100vh - 160px)">
@@ -497,7 +638,7 @@
           <div id="tv-pages"></div>
         </div>
         <aside class="w-52 shrink-0 flex flex-col border-l border-base-300 pl-3">
-          <div class="text-xs font-semibold text-base-content/50 uppercase mb-2">Tags (contagem)</div>
+          <div class="text-xs font-semibold text-base-content/60 uppercase mb-2">Tags (contagem)</div>
           <div id="tv-tag-list" class="flex-1 overflow-y-auto text-sm"></div>
         </aside>
       </div>
@@ -509,7 +650,7 @@
   <div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div id="tv-tooltip" class="tv-tooltip" hidden></div>
     <div id="modal-box" class="bg-base-100 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-      <h3 id="modal-title" class="text-lg font-semibold mb-3"></h3>
+      <h3 id="modal-title" class="text-lg font-semibold mb-3 text-base-content"></h3>
       <div id="modal-body" class="text-sm text-base-content/80 mb-4"></div>
       <div class="flex gap-2 justify-end">
         <button id="modal-cancel" class="btn btn-sm btn-outline">Cancelar</button>
@@ -523,4 +664,3 @@
 
   <script type="module" src="/src/main.js"></script>
 </body>
-</html>
