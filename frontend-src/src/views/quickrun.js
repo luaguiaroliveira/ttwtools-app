@@ -163,7 +163,7 @@ export function initQuickrun({ refreshKfaSelect }) {
   }
 
   // "Todos" clicked → set all leaves
-  allCb?.addEventListener('sl-change', () => {
+  allCb?.addEventListener('change', () => {
     const newState = allCb.checked
     leafCbs.forEach(cb => { cb.checked = newState })
     groupCbs.forEach(gcb => {
@@ -175,7 +175,7 @@ export function initQuickrun({ refreshKfaSelect }) {
 
   // Group checkbox clicked → set all children
   groupCbs.forEach(gcb => {
-    gcb.addEventListener('sl-change', () => {
+    gcb.addEventListener('change', () => {
       _leafsOfGroup(gcb.dataset.group).forEach(cb => { cb.checked = gcb.checked })
       gcb.indeterminate = false
       _syncAllState()
@@ -185,7 +185,7 @@ export function initQuickrun({ refreshKfaSelect }) {
 
   // Leaf checkbox clicked → update parent group + "Todos"
   leafCbs.forEach(cb => {
-    cb.addEventListener('sl-change', () => {
+    cb.addEventListener('change', () => {
       const group = cb.dataset.group
       if (group) {
         const gcb = groupCbs.find(g => g.dataset.group === group)
@@ -210,7 +210,7 @@ export function initQuickrun({ refreshKfaSelect }) {
     catsPanel.classList.toggle('qr-export-cats--hidden', !autoExportCb?.checked)
   }
 
-  autoExportCb?.addEventListener('sl-change', _syncCatsPanel)
+  autoExportCb?.addEventListener('change', _syncCatsPanel)
   _syncCatsPanel()
 
   // ── Browse / open-folder buttons ───────────────────────────────────────────

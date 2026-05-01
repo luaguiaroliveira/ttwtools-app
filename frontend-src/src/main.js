@@ -2,19 +2,6 @@
  * main.js — Entry point. Bootstraps all modules.
  */
 
-// ---------------------------------------------------------------------------
-// Shoelace Web Components — set asset base path BEFORE importing components
-// ---------------------------------------------------------------------------
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js'
-setBasePath('/shoelace')  // served by FastAPI / Vite from the copied assets
-
-import '@shoelace-style/shoelace/dist/themes/dark.css'
-import '@shoelace-style/shoelace/dist/components/select/select.js'
-import '@shoelace-style/shoelace/dist/components/option/option.js'
-import '@shoelace-style/shoelace/dist/components/input/input.js'
-import '@shoelace-style/shoelace/dist/components/range/range.js'
-import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js'
-
 import './style.css'
 
 import { setupNav }                          from './ui.js'
@@ -70,3 +57,19 @@ api.tags.list().then(list => {
     state.tagDefs = Object.fromEntries(list.map(t => [t.tag, t.definition]))
   }
 }).catch(() => {})
+
+// ── Theme toggle ───────────────────────────────────────────────────────────
+;(function () {
+  const html = document.documentElement
+  const btn  = document.getElementById('btn-theme-toggle')
+  const saved = localStorage.getItem('ttw-theme') || 'ttwdark'
+  html.setAttribute('data-theme', saved)
+  if (btn) btn.textContent = saved === 'ttwdark' ? '🌙' : '☀️'
+  btn?.addEventListener('click', () => {
+    const current = html.getAttribute('data-theme') || 'ttwdark'
+    const next    = current === 'ttwdark' ? 'ttwlight' : 'ttwdark'
+    html.setAttribute('data-theme', next)
+    localStorage.setItem('ttw-theme', next)
+    btn.textContent = next === 'ttwdark' ? '🌙' : '☀️'
+  })
+})()

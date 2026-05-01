@@ -75,23 +75,11 @@ export const Modal = (() => {
 // ---------------------------------------------------------------------------
 
 export function populateSelect(selectEl, items, placeholder = '-- selecione --') {
-  selectEl.innerHTML = ''
-  // sl-select uses a placeholder attribute; no blank first option needed
-  if (selectEl.tagName.toLowerCase() === 'sl-select') {
-    selectEl.placeholder = placeholder
-    items.forEach(item => {
-      const opt = document.createElement('sl-option')
-      opt.value = item
-      opt.textContent = item
-      selectEl.appendChild(opt)
-    })
-  } else {
-    selectEl.innerHTML = `<option value="">${placeholder}</option>`
-    items.forEach(item => {
-      const opt = document.createElement('option')
-      opt.value = item
-      opt.textContent = item
-      selectEl.appendChild(opt)
-    })
-  }
+  selectEl.innerHTML = `<option value="">${placeholder}</option>`
+  items.forEach(item => {
+    const opt = document.createElement('option')
+    opt.value = item
+    opt.textContent = item
+    selectEl.appendChild(opt)
+  })
 }

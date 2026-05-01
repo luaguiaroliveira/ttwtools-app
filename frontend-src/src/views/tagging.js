@@ -55,7 +55,7 @@ export function initTagging() {
     }
   }
 
-  taggerSelect?.addEventListener('sl-change', _syncUsenlp)
+  taggerSelect?.addEventListener('change', _syncUsenlp)
   _syncUsenlp()
 
   document.getElementById('form-tagging')?.addEventListener('submit', async e => {
