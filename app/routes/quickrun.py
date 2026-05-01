@@ -145,7 +145,7 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
 
             # Be defensive with incoming payloads (e.g., stale frontend sending
             # an empty selection): always run at least one valid tagger.
-            allowed_taggers = {"biberplus", "stanza", "mfte", "mfte_ext", "stanza_upos", "stanza_xpos"}
+            allowed_taggers = {"biberplus", "stanza", "mfte", "mfte_ext", "stanza_upos", "stanza_xpos", "spacy_upos", "spacy_ptb"}
             selected_taggers: list[str] = []
             for tagger in (req.taggers or []):
                 normalized = str(tagger).strip().lower().replace("-", "_")
@@ -155,10 +155,12 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                 selected_taggers = ["biberplus"]
                 _upd("tagging", "Nenhum tagger valido selecionado; usando biberplus.")
 
-            # ── Separate taggers into BiberPlus-only and Stanza-based ────────────
+            # ── Separate taggers into three groups ─────────────────────────────
             from ttwtools.taggers.stanza_pos import STANZA_BASED_TAGGERS
+            from ttwtools.taggers.spacy_pos import SPACY_BASED_TAGGERS
             stanza_taggers = [t for t in selected_taggers if t in STANZA_BASED_TAGGERS]
-            biber_taggers  = [t for t in selected_taggers if t not in STANZA_BASED_TAGGERS]
+            spacy_taggers  = [t for t in selected_taggers if t in SPACY_BASED_TAGGERS]
+            biber_taggers  = [t for t in selected_taggers if t not in STANZA_BASED_TAGGERS and t not in SPACY_BASED_TAGGERS]
 
             # ── BiberPlus / legacy stanza taggers (each needs its own pass) ─────
             for current_tagger in biber_taggers:
@@ -241,6 +243,61 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                         else:
                             ttwtools.normalize_mfte_features(str(raw1))
                             ttwtools.normalize_mfte_features(str(raw2))
+
+                        suffix = raw1.stem.replace("_rawcount", "")
+                        norm1 = raw1.parent / f"{suffix}_norm1000.csv"
+                        norm2 = raw2.parent / f"{raw2.stem.replace('_rawcount', '')}_norm1000.csv"
+
+                        _upd("kfa", f"[{current_tagger}] Calculando KFA…")
+                        kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
+
+                        _upd("saving", f"[{current_tagger}] Salvando dados no projeto…")
+                        tagged_dir = tmp / f"{c1_folder.name}_tagged"
+                        tagged_dir2 = tmp / f"{c2_folder.name}_tagged"
+                        for cname, raw_csv, norm_csv, tagged_folder in [
+                            (req.corpus1_name, raw1, norm1, tagged_dir),
+                            (req.corpus2_name, raw2, norm2, tagged_dir2),
+                        ]:
+                            if tagged_folder.exists():
+                                proj.save_tagged_folder(cname, tagged_folder, glob=f"*_{current_tagger}.jsonl", tagger_type=current_tagger)
+                            proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
+                            proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
+                        if kfa_df is not None:
+                            proj.save_kfa_result(
+                                req.corpus1_name, req.corpus2_name, kfa_df,
+                                min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                            )
+                            total_features += len(kfa_df)
+
+            # ── spaCy-based taggers: single nlp.pipe pass per corpus ────────────
+            if spacy_taggers:
+                _upd("tagging", f"[spacy combined] Tagueando {req.corpus1_name} e {req.corpus2_name} ({', '.join(spacy_taggers)})…")
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    tmp = Path(tmpdir)
+
+                    raw_paths: dict[str, dict[str, Path]] = {}   # corpus_name → {tagger → csv_path}
+                    for corpus_folder, corpus_name in [
+                        (c1_folder, req.corpus1_name),
+                        (c2_folder, req.corpus2_name),
+                    ]:
+                        _upd("tagging", f"[spacy combined] Tagueando {corpus_name}…")
+                        raw_paths[corpus_name] = ttwtools.extract_spacy_combined_features_from_folder(
+                            folder_path_str=str(corpus_folder),
+                            taggers=spacy_taggers,
+                            output_dir=str(tmp),
+                            save_tagged=True,
+                        )
+
+                    _upd("normalizing", "[spacy combined] Normalizando features…")
+                    for current_tagger in spacy_taggers:
+                        raw1 = raw_paths[req.corpus1_name].get(current_tagger)
+                        raw2 = raw_paths[req.corpus2_name].get(current_tagger)
+                        if raw1 is None or raw2 is None:
+                            print(f"  Aviso: CSV nao encontrado para tagger '{current_tagger}'. Pulando KFA.")
+                            continue
+
+                        ttwtools.normalize_spacy_pos_features(str(raw1))
+                        ttwtools.normalize_spacy_pos_features(str(raw2))
 
                         suffix = raw1.stem.replace("_rawcount", "")
                         norm1 = raw1.parent / f"{suffix}_norm1000.csv"

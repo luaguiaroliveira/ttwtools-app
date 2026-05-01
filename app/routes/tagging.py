@@ -50,7 +50,7 @@ class TagRequest(BaseModel):
     # Ou aponta para pasta no disco, ou usa o corpus já no .ttwa
     source: str = "project"          # "project" | "folder"
     folder_path: str | None = None   # obrigatório se source == "folder"
-    tagger: str = "biberplus"        # "biberplus" | "mfte" | "mfte_ext" | "stanza_upos" | "stanza_xpos"
+    tagger: str = "biberplus"        # "biberplus" | "mfte" | "mfte_ext" | "stanza_upos" | "stanza_xpos" | "spacy_upos" | "spacy_ptb"
     save_tagged: bool = True
     usenlp: bool = False
     n_processes: int = 4
@@ -152,6 +152,18 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
                 raw_csv = tmp / f"{corpus_dir.name}_stanza_{mode}_rawcount.csv"
                 ttwtools.normalize_stanza_pos_features(str(raw_csv))
                 norm_csv = tmp / f"{corpus_dir.name}_stanza_{mode}_norm1000.csv"
+
+            elif req.tagger in ("spacy_upos", "spacy_ptb"):
+                mode = "upos" if req.tagger == "spacy_upos" else "ptb"
+                ttwtools.extract_spacy_pos_features_from_folder(
+                    folder_path_str=str(corpus_dir),
+                    mode=mode,
+                    output_dir=str(tmp),
+                    save_tagged=req.save_tagged,
+                )
+                raw_csv = tmp / f"{corpus_dir.name}_spacy_{mode}_rawcount.csv"
+                ttwtools.normalize_spacy_pos_features(str(raw_csv))
+                norm_csv = tmp / f"{corpus_dir.name}_spacy_{mode}_norm1000.csv"
 
             else:
                 # mfte ou mfte_ext (legacy "stanza" falls through as extended=False)
