@@ -25,6 +25,7 @@ class TqdmCatcher:
         self.orig_stderr = orig_stderr
         self.jobs_dict = jobs_dict
         self.buf = ""
+        self.running_taggers: set = set()  # taggers currently running — updated by _tagger_upd
 
     def write(self, s):
         self.orig_stderr.write(s)
@@ -35,6 +36,15 @@ class TqdmCatcher:
                 stripped = line.strip()
                 if stripped and '%' in stripped:
                     self.jobs_dict[self.job_id]["tqdm"] = stripped
+                    # Parse percentage and distribute to all currently-running taggers
+                    import re as _re
+                    m = _re.search(r'(\d+)%', stripped)
+                    if m:
+                        pct = int(m.group(1))
+                        tp = self.jobs_dict[self.job_id]["taggers_progress"]
+                        for t in self.running_taggers:
+                            if t in tp:
+                                tp[t]["pct"] = pct
                     break
             self.buf = lines[-1]
 
@@ -106,7 +116,13 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
         _jobs[job_id].update({"status": "running", "step": step, "message": msg})
 
     def _tagger_upd(tagger: str, status: str, msg: str = ""):
-        _jobs[job_id]["taggers_progress"][tagger] = {"status": status, "msg": msg}
+        _jobs[job_id]["taggers_progress"][tagger] = {"status": status, "msg": msg, "pct": 0}
+        # Keep TqdmCatcher's running_taggers in sync for pct parsing
+        if hasattr(sys.stderr, 'running_taggers'):
+            if status == "running":
+                sys.stderr.running_taggers.add(tagger)
+            else:
+                sys.stderr.running_taggers.discard(tagger)
 
     try:
         _upd("queued", "Inicializando pipeline...")

@@ -40,6 +40,14 @@ function _id(base, suffix) { return base + (suffix ? '-' + suffix : '') }
 function renderChartIn(suffix) {
   const wrapper = document.getElementById(_id('chart-wrapper', suffix))
   if (!wrapper) return
+
+  // If the wrapper has no width (view is hidden / display:none parent),
+  // defer the render to the next animation frame so the layout is computed.
+  if (wrapper.getBoundingClientRect().width === 0) {
+    requestAnimationFrame(() => { if (state.kfaData) renderChartIn(suffix) })
+    return
+  }
+
   drawChart(wrapper, visibleRows(), {
     metric:      state.chartMetric,
     barHeight:   state.barHeight,
@@ -143,47 +151,152 @@ async function loadKfa(optStr, suffix) {
   }
 }
 
-// ── Refresh both KFA selects ────────────────────────────────────────────────
+// ── Tagger label helper ─────────────────────────────────────────────────────
+function _taggerLabel(t) {
+  const map = { biberplus:'BiberPlus', mfte:'MFTE', mfte_ext:'MFTE Estendido',
+    stanza_upos:'Stanza UPOS', stanza_xpos:'Stanza XPOS',
+    spacy_upos:'spaCy UPOS', spacy_ptb:'spaCy PTB' }
+  return map[t] || t
+}
+
+// ── Refresh both sidebar instances ──────────────────────────────────────────
 export async function refreshKfaSelect() {
   try {
     const { kfa_results } = await api.analysis.listKfa()
-
-    // Both selects: standalone and step-3 inline
-    const selIds = ['results-kfa-select-standalone', 'results-kfa-select']
-    selIds.forEach(selId => {
-      const sel = document.getElementById(selId)
-      if (!sel) return
-      const prevVal = sel.value
-      sel.innerHTML = '<option value="">-- selecione uma KFA --</option>'
-      kfa_results.forEach(r => {
-        const opt = document.createElement('option')
-        const an  = r.analysis_name && r.analysis_name !== 'default' ? ` [${r.analysis_name}]` : ''
-        opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name,
-          d: r.min_effect, join: r.join_method, tagger: r.tagger_type,
-          analysis_name: r.analysis_name, features_meta: r.features_meta })
-        opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name} (${r.join_method}) [${r.tagger_type || 'biberplus'}]${an}`
-        sel.appendChild(opt)
-      })
-      // Restore previous selection if still present
-      const still = sel.querySelector(`option[value="${CSS.escape(prevVal)}"]`)
-      if (still && prevVal) sel.value = prevVal
-    })
+    await _populateSidebar(kfa_results, null)
+    await _populateSidebar(kfa_results, 'standalone')
   } catch (_) {}
+}
+
+// ── Show "💾 .ttwa" badge for a brief moment ────────────────────────────────
+export function showSavedBadge(suffix) {
+  const sfx = suffix ? '-' + suffix : ''
+  const badge = document.getElementById(`results-saved-badge${sfx}`)
+  if (!badge) return
+  badge.classList.remove('hidden')
+  setTimeout(() => badge.classList.add('hidden'), 4000)
+}
+
+// ── Populate sidebar tagger dropdown + analyses list ────────────────────────
+async function _populateSidebar(kfa_results, suffix) {
+  const sfx = suffix ? '-' + suffix : ''
+  const taggerSel = document.getElementById(`results-tagger-sel${sfx}`)
+  if (!taggerSel) return
+
+  // Group by tagger
+  const byTagger = {}
+  kfa_results.forEach(r => {
+    const t = r.tagger_type || 'biberplus'
+    if (!byTagger[t]) byTagger[t] = []
+    byTagger[t].push(r)
+  })
+  const taggers = Object.keys(byTagger).sort()
+
+  // Store for tagger-change handler
+  taggerSel._kfaByTagger = byTagger
+
+  // Preserve selection if still valid
+  const prevTagger = taggerSel.value
+  taggerSel.innerHTML = taggers.length === 0 ? '<option value="">-- nenhum tagger --</option>' : ''
+  taggers.forEach(t => {
+    const opt = document.createElement('option')
+    opt.value = t; opt.textContent = _taggerLabel(t)
+    taggerSel.appendChild(opt)
+  })
+  if (prevTagger && taggers.includes(prevTagger)) taggerSel.value = prevTagger
+  else if (taggers.length > 0) taggerSel.value = taggers[0]
+
+  // Populate analyses list for selected tagger
+  await _populateAnalysesList(suffix, byTagger, taggerSel.value, true)
+}
+
+// ── Populate the analyses list (radio buttons) for one tagger ──────────────
+async function _populateAnalysesList(suffix, byTagger, tagger, autoLoad) {
+  const sfx = suffix ? '-' + suffix : ''
+  const list = document.getElementById(`results-analyses-list${sfx}`)
+  if (!list) return
+
+  const analyses = byTagger[tagger] || []
+  if (analyses.length === 0) {
+    list.innerHTML = '<div class="analyses-empty">Nenhuma análise para este tagger.</div>'
+    return
+  }
+
+  list.innerHTML = ''
+  analyses.forEach((r, i) => {
+    const name = r.analysis_name || 'default'
+    const fm   = Array.isArray(r.features_meta) ? r.features_meta : []
+    const tagsLabel = fm.length > 0 ? `${fm.length} tags` : 'todos'
+    const tagsDetail = fm.length > 0
+      ? fm.slice(0, 15).join(', ') + (fm.length > 15 ? `… (+${fm.length - 15})` : '')
+      : 'Todos os tags incluídos'
+
+    const optVal = JSON.stringify({
+      c1: r.corpus1_name, c2: r.corpus2_name,
+      d: r.min_effect, join: r.join_method, tagger: r.tagger_type,
+      analysis_name: r.analysis_name, features_meta: fm
+    })
+
+    const item = document.createElement('div')
+    item.className = 'analysis-item' + (i === 0 ? ' active' : '')
+    item.dataset.value = optVal
+
+    item.innerHTML = `
+      <input type="radio" name="results-analysis${sfx}" class="radio radio-xs shrink-0"${i === 0 ? ' checked' : ''} />
+      <span class="analysis-item-name" title="${name}">${name}</span>
+      <span class="analysis-item-tags">${tagsLabel}</span>
+      <span class="analysis-item-info" title="${tagsDetail}">ℹ</span>`
+
+    const radio   = item.querySelector('input[type=radio]')
+    const infoBtn = item.querySelector('.analysis-item-info')
+
+    infoBtn.addEventListener('click', e => {
+      e.stopPropagation()
+      const ib = document.getElementById(`results-info-box${sfx}`)
+      if (!ib) return
+      const showing = !ib.classList.contains('hidden')
+      // Toggle off if same, otherwise show for this analysis
+      ib.classList.add('hidden')
+      if (!showing || ib._activeVal !== optVal) {
+        const infoName  = document.getElementById(`results-info-name${sfx}`)
+        const infoTagg  = document.getElementById(`results-info-tagger${sfx}`)
+        const infoFeats = document.getElementById(`results-info-features${sfx}`)
+        if (infoName)  infoName.textContent  = name
+        if (infoTagg)  infoTagg.textContent  = r.tagger_type || 'biberplus'
+        if (infoFeats) infoFeats.textContent = fm.length > 0
+          ? `${fm.length} tags: ${fm.join(', ')}`
+          : 'Todos os tags'
+        ib._activeVal = optVal
+        ib.classList.remove('hidden')
+      }
+    })
+
+    item.addEventListener('click', async () => {
+      list.querySelectorAll('.analysis-item').forEach(el => {
+        el.classList.remove('active')
+        el.querySelector('input[type=radio]').checked = false
+      })
+      item.classList.add('active')
+      radio.checked = true
+      await loadKfa(optVal, suffix)
+    })
+
+    list.appendChild(item)
+  })
+
+  if (autoLoad && analyses.length > 0) {
+    await loadKfa(list.querySelector('.analysis-item').dataset.value, suffix)
+  }
 }
 
 // ── Bind controls for one suffix ───────────────────────────────────────────
 function _bindControls(suffix) {
   const sfx = suffix ? '-' + suffix : ''
 
-  // Auto-load on select change
-  document.getElementById(`results-kfa-select${sfx}`)?.addEventListener('change', async function() {
-    if (!this.value) return
-    await loadKfa(this.value, suffix)
-  })
-
-  // Info icon toggle
-  document.getElementById(`btn-results-info${sfx}`)?.addEventListener('click', () => {
-    document.getElementById(`results-info-box${sfx}`)?.classList.toggle('hidden')
+  // Tagger select change → repopulate analyses list
+  document.getElementById(`results-tagger-sel${sfx}`)?.addEventListener('change', async function() {
+    const byTagger = this._kfaByTagger || {}
+    await _populateAnalysesList(suffix, byTagger, this.value, true)
   })
 
   // Feature name filter
@@ -235,7 +348,7 @@ function _bindControls(suffix) {
     paletteSelect.value = state.palette
   }
 
-  // ResizeObserver
+  // ResizeObserver — re-render when chart-container changes width
   const chartContainer = document.getElementById(`chart-container${sfx}`)
   if (chartContainer) {
     let _prevW = 0
@@ -244,6 +357,33 @@ function _bindControls(suffix) {
       if (Math.abs(newW - _prevW) > 2) { _prevW = newW; if (state.kfaData) renderChartIn(suffix) }
     })
     ro.observe(chartContainer)
+  }
+
+  // MutationObserver — re-render when the view/step becomes active.
+  // Fixes the "squeezed chart on first open" bug: the chart was drawn while
+  // the container was display:none, so getBoundingClientRect() returned width=0.
+  if (suffix === 'standalone') {
+    // Sidebar "Resultados" view
+    const viewEl = document.getElementById('view-results')
+    if (viewEl) {
+      const mo = new MutationObserver(() => {
+        if (viewEl.classList.contains('active') && state.kfaData) {
+          requestAnimationFrame(() => renderChartIn(suffix))
+        }
+      })
+      mo.observe(viewEl, { attributes: true, attributeFilter: ['class'] })
+    }
+  } else {
+    // Quickrun step-3 panel (inline, no suffix)
+    const stepEl = document.getElementById('qr-step-3')
+    if (stepEl) {
+      const mo = new MutationObserver(() => {
+        if (stepEl.classList.contains('active') && state.kfaData) {
+          requestAnimationFrame(() => renderChartIn(suffix))
+        }
+      })
+      mo.observe(stepEl, { attributes: true, attributeFilter: ['class'] })
+    }
   }
 }
 

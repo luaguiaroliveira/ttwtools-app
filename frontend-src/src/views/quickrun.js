@@ -8,7 +8,6 @@
 
 import { api }       from '../api.js'
 import { showToast, showView } from '../ui.js'
-
 // ── State ──────────────────────────────────────────────────────────────────
 let _jobId           = null
 let _pollTimer       = null
@@ -17,6 +16,7 @@ let _isRunning       = false
 let _selectedTaggers = []
 let _corpusNames     = { c1: '', c2: '' }
 let _joinMethod      = 'intersection'
+let _shared          = null  // shared callbacks (refreshKfaSelect, showSavedBadge, etc.)
 
 // ── Step navigation ────────────────────────────────────────────────────────
 function goStep(n) {
@@ -61,7 +61,7 @@ function initTaggerBars(taggers) {
   })
 }
 
-function updateTaggerBar(tagger, status, msg) {
+function updateTaggerBar(tagger, status, msg, pct) {
   const card   = document.getElementById(`tbar-${tagger}`)
   const statEl = document.getElementById(`tbar-status-${tagger}`)
   const fill   = document.getElementById(`tbar-fill-${tagger}`)
@@ -69,15 +69,27 @@ function updateTaggerBar(tagger, status, msg) {
   card.classList.remove('running', 'done', 'error')
   if (status === 'running') {
     card.classList.add('running')
-    // fill width drives animation via CSS
+    if (fill) {
+      fill.parentElement.classList.toggle('indeterminate', !pct || pct === 0)
+      if (pct > 0) {
+        fill.style.display = 'block'
+        fill.style.width = pct + '%'
+        fill.style.background = 'hsl(var(--p))'
+      } else {
+        fill.style.display = 'none'
+        fill.style.width = ''
+        fill.style.background = ''
+      }
+    }
   } else if (status === 'done') {
     card.classList.add('done')
-    if (fill) fill.style.width = '100%'
+    if (fill) { fill.style.display='block'; fill.style.width = '100%'; fill.style.background = ''; fill.parentElement.classList.remove('indeterminate') }
   } else if (status === 'error') {
     card.classList.add('error')
-    if (fill) fill.style.width = '100%'
+    if (fill) { fill.style.display='block'; fill.style.width = '100%'; fill.style.background = ''; fill.parentElement.classList.remove('indeterminate') }
   }
-  if (statEl) statEl.textContent = msg || status
+  const pctLabel = (pct > 0 && status === 'running') ? ` (${pct}%)` : ''
+  if (statEl) statEl.textContent = (msg || status) + pctLabel
 }
 
 // ── Global step badges ─────────────────────────────────────────────────────
@@ -121,7 +133,7 @@ async function pollTagging() {
 
     const prog = r.taggers_progress || {}
     Object.entries(prog).forEach(([t, p]) => {
-      updateTaggerBar(t, p.status || 'running', p.msg || '')
+      updateTaggerBar(t, p.status || 'running', p.msg || '', p.pct || 0)
     })
 
     if (r.status === 'done') {
@@ -257,35 +269,27 @@ async function _runKfa() {
     }
   }
 
-  if (statusEl) { statusEl.className = 'status-box done'; statusEl.textContent = 'KFA concluída!' }
-  showToast('KFA concluída!')
+  if (statusEl) { statusEl.className = 'status-box done'; statusEl.textContent = 'KFA concluída! Análises salvas no .ttwa ✓' }
+  showToast('KFA concluída e salva no .ttwa!')
+  // Show saved badge in the results sidebar
+  if (typeof _shared?.showSavedBadge === 'function') {
+    _shared.showSavedBadge(null)
+  }
   goStep(3)
   await refreshKfaSelectStep3()
 }
 
 // ── Results select in step 3 ───────────────────────────────────────────────
 export async function refreshKfaSelectStep3() {
-  try {
-    const { kfa_results } = await api.analysis.listKfa()
-    const sel = document.getElementById('results-kfa-select')
-    if (!sel) return
-    sel.innerHTML = '<option value="">-- selecione uma KFA --</option>'
-    kfa_results.forEach(r => {
-      const opt = document.createElement('option')
-      const an  = r.analysis_name && r.analysis_name !== 'default' ? ` [${r.analysis_name}]` : ''
-      opt.value = JSON.stringify({ c1: r.corpus1_name, c2: r.corpus2_name,
-        d: r.min_effect, join: r.join_method, tagger: r.tagger_type,
-        analysis_name: r.analysis_name, features_meta: r.features_meta })
-      opt.textContent = `${r.corpus1_name} vs ${r.corpus2_name} (${r.join_method}) [${r.tagger_type || 'biberplus'}]${an}`
-      sel.appendChild(opt)
-    })
-    const opts = sel.querySelectorAll('option[value]:not([value=""])')
-    if (opts.length > 0) { sel.value = opts[0].value; sel.dispatchEvent(new Event('change')) }
-  } catch (_) {}
+  // Delegate to the shared refreshKfaSelect from results.js (passed as prop)
+  if (typeof _shared?.refreshKfaSelect === 'function') {
+    await _shared.refreshKfaSelect()
+  }
 }
 
 // ── Init ───────────────────────────────────────────────────────────────────
-export function initQuickrun({ refreshKfaSelect, renderResults }) {
+export function initQuickrun({ refreshKfaSelect, renderResults, showSavedBadge }) {
+  _shared = { refreshKfaSelect, renderResults, showSavedBadge }
 
   // Tagger tree
   const allCb    = document.getElementById('qr-all')
@@ -418,32 +422,5 @@ export function initQuickrun({ refreshKfaSelect, renderResults }) {
   // "Ver resultados existentes" in step 2
   document.getElementById('btn-qr-skip-kfa')?.addEventListener('click', async () => {
     goStep(3); await refreshKfaSelectStep3()
-  })
-
-  // Results select (step 3) — auto-load on change
-  document.getElementById('results-kfa-select')?.addEventListener('change', async function() {
-    if (!this.value) return
-    const { c1, c2, d, join, tagger, analysis_name, features_meta } = JSON.parse(this.value)
-    try {
-      const data = await api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name)
-      // Populate info box
-      const ib = document.getElementById('results-info-name')
-      const it = document.getElementById('results-info-tagger')
-      const ifs = document.getElementById('results-info-features')
-      if (ib) ib.textContent = analysis_name || 'default'
-      if (it) it.textContent = tagger || 'biberplus'
-      if (ifs) {
-        const fm = features_meta || []
-        ifs.textContent = fm.length > 0
-          ? `${fm.length}: ${fm.slice(0,8).join(', ')}${fm.length > 8 ? '…' : ''}`
-          : 'Todos'
-      }
-      if (typeof renderResults === 'function') renderResults(data, c1, c2, '')
-    } catch (err) { showToast(err.message, 'error') }
-  })
-
-  // Info toggle in step 3
-  document.getElementById('btn-results-info')?.addEventListener('click', () => {
-    document.getElementById('results-info-box')?.classList.toggle('hidden')
   })
 }

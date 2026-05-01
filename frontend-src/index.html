@@ -88,10 +88,10 @@
       </div>
 
       <!-- Step panels wrapper (slides) -->
-      <div class="qr-steps-wrap max-w-2xl">
+      <div class="qr-steps-wrap">
 
         <!-- ── Etapa 1: Configurar ─────────────────────────────── -->
-        <div class="qr-step active" id="qr-step-0">
+        <div class="qr-step active max-w-2xl" id="qr-step-0">
           <h2 class="text-xl font-medium mb-4 text-base-content">Configurar análise</h2>
           <form id="form-quickrun" class="flex flex-col gap-4">
 
@@ -118,38 +118,38 @@
               <span class="label-text font-semibold text-base-content mb-2 block">Taggers</span>
               <div class="tagger-tree bg-base-200 rounded-lg p-3 flex flex-col gap-1">
                 <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                  <input id="qr-all" type="checkbox" class="checkbox checkbox-sm" />
+                  <input id="qr-all" type="checkbox" class="checkbox checkbox-sm" checked />
                   <span class="text-sm font-medium text-base-content">Todos</span>
                 </label>
                 <div class="divider my-0.5"></div>
                 <div class="tagger-group">
                   <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="spacy" />
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="spacy" checked />
                     <span class="text-sm font-semibold text-base-content">spaCy</span>
                   </label>
                   <div class="tagger-children pl-6 flex flex-col gap-0.5">
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_upos" data-group="spacy" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_upos" data-group="spacy" checked />
                       <span class="text-sm text-base-content">UPOS</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_ptb" data-group="spacy" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="spacy_ptb" data-group="spacy" checked />
                       <span class="text-sm text-base-content">PTB</span>
                     </label>
                   </div>
                 </div>
                 <div class="tagger-group">
                   <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="stanza" />
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="stanza" checked />
                     <span class="text-sm font-semibold text-base-content">Stanza</span>
                   </label>
                   <div class="tagger-children pl-6 flex flex-col gap-0.5">
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_upos" data-group="stanza" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_upos" data-group="stanza" checked />
                       <span class="text-sm text-base-content">UPOS</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_xpos" data-group="stanza" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="stanza_xpos" data-group="stanza" checked />
                       <span class="text-sm text-base-content">XPOS</span>
                     </label>
                   </div>
@@ -172,16 +172,16 @@
                 </div>
                 <div class="tagger-group">
                   <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="mfte" />
+                    <input type="checkbox" class="qr-group-cb checkbox checkbox-sm" data-group="mfte" checked />
                     <span class="text-sm font-semibold text-base-content">MFTE</span>
                   </label>
                   <div class="tagger-children pl-6 flex flex-col gap-0.5">
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte" data-group="mfte" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte" data-group="mfte" checked />
                       <span class="text-sm text-base-content">Simples</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer py-0.5">
-                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte_ext" data-group="mfte" />
+                      <input type="checkbox" class="qr-tagger-cb checkbox checkbox-xs" value="mfte_ext" data-group="mfte" checked />
                       <span class="text-sm text-base-content">Estendido</span>
                     </label>
                   </div>
@@ -229,7 +229,7 @@
         </div><!-- /step-0 -->
 
         <!-- ── Etapa 2: Tagging ────────────────────────────────── -->
-        <div class="qr-step" id="qr-step-1">
+        <div class="qr-step max-w-2xl" id="qr-step-1">
           <h2 class="text-xl font-medium mb-4 text-base-content">Tagging em andamento…</h2>
 
           <!-- Per-tagger progress bars -->
@@ -252,7 +252,7 @@
         </div><!-- /step-1 -->
 
         <!-- ── Etapa 3: KFA ────────────────────────────────────── -->
-        <div class="qr-step" id="qr-step-2">
+        <div class="qr-step max-w-2xl" id="qr-step-2">
           <h2 class="text-xl font-medium mb-1 text-base-content">Key Feature Analysis</h2>
           <p class="text-sm text-base-content/70 mb-4">Selecione os tags a incluir em cada análise. Por padrão, todos estão selecionados.</p>
 
@@ -281,77 +281,89 @@
           </div>
 
           <div class="flex gap-2 mt-4">
-            <button id="btn-qr-run-kfa" class="btn btn-primary">Executar KFA →</button>
+            <button id="btn-qr-run-kfa" class="btn btn-primary">Executar e salvar KFA →</button>
             <button id="btn-qr-skip-kfa" class="btn btn-outline btn-sm self-center">Ver resultados existentes</button>
           </div>
           <div id="qr-kfa-status" class="status-box hidden mt-3"></div>
+          <p class="text-xs text-base-content/50 mt-2">As análises KFA são salvas automaticamente no arquivo .ttwa do projeto.</p>
         </div><!-- /step-2 -->
 
         <!-- ── Etapa 4: Resultados ─────────────────────────────── -->
         <div class="qr-step" id="qr-step-3">
           <h2 class="text-xl font-medium mb-4 text-base-content">Resultados</h2>
+          <div class="results-layout">
 
-          <!-- KFA selector + info icon -->
-          <div class="flex flex-wrap gap-2 items-center mb-4">
-            <select id="results-kfa-select" class="select select-bordered select-sm min-w-72">
-              <option value="">-- selecione uma KFA --</option>
-            </select>
-            <button id="btn-results-info" class="btn btn-xs btn-ghost" title="Detalhes desta análise">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/>
-                <line x1="12" y1="8" x2="12.01" y2="8"/>
-              </svg>
-            </button>
-            <input id="results-filter" type="text" placeholder="Filtrar feature…"
-              class="input input-bordered input-sm ml-auto w-44" />
-          </div>
+            <!-- KFA Navigation Sidebar -->
+            <aside class="results-sidebar" id="results-sidebar">
+              <div>
+                <div class="sidebar-label">Tagger</div>
+                <select id="results-tagger-sel" class="select select-bordered select-xs w-full"></select>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <div class="sidebar-label">Análises KFA</div>
+                  <span id="results-saved-badge" class="save-badge hidden">💾 .ttwa</span>
+                </div>
+                <p class="text-xs text-base-content/50 mb-1" style="font-size:.65rem">Análises salvas no projeto .ttwa</p>
+                <div id="results-analyses-list" class="analyses-list">
+                  <div class="analyses-empty">Nenhuma análise.</div>
+                </div>
+              </div>
+            </aside>
 
-          <!-- Info tooltip -->
-          <div id="results-info-box" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
-            <strong class="text-base-content">Análise:</strong> <span id="results-info-name" class="text-base-content/80"></span><br/>
-            <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger" class="text-base-content/80"></span><br/>
-            <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features" class="text-base-content/70 text-xs"></span>
-          </div>
+            <!-- Main content -->
+            <div class="results-main">
+              <div class="flex flex-wrap gap-2 items-center mb-3">
+                <input id="results-filter" type="text" placeholder="Filtrar feature…"
+                  class="input input-bordered input-sm w-44" />
+              </div>
 
-          <div id="chart-container" class="chart-box hidden">
-            <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
-              <label class="form-control">
-                <span class="label-text text-xs font-medium text-base-content mb-1 block">Visualizar</span>
-                <select id="chart-metric" class="select select-bordered select-xs min-w-40">
-                  <option value="Effect_Size">Effect size (d)</option>
-                  <option value="Mean_Corpus1">Média Corpus 1</option>
-                  <option value="Mean_Corpus2">Média Corpus 2</option>
-                  <option value="Std_Corpus1">DP Corpus 1</option>
-                  <option value="Std_Corpus2">DP Corpus 2</option>
-                  <option value="N_Corpus1">N Corpus 1</option>
-                  <option value="N_Corpus2">N Corpus 2</option>
-                </select>
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-medium text-base-content mb-1 block">Paleta</span>
-                <select id="chart-palette" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-medium text-base-content mb-1 block">Espessura <span id="chart-thickness-val">18</span>px</span>
-                <input type="range" id="chart-thickness" min="8" max="40" value="18" step="2"
-                  class="range range-xs w-36" />
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-medium text-base-content mb-1 block">|d| ≥</span>
-                <input type="number" id="results-min-d" value="0" min="0" step="0.05"
-                  class="input input-bordered input-xs w-20" />
-              </label>
-            </div>
-            <div id="chart-wrapper"></div>
-          </div>
+              <!-- Info box (toggled per analysis) -->
+              <div id="results-info-box" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
+                <strong class="text-base-content">Análise:</strong> <span id="results-info-name" class="text-base-content/80"></span><br/>
+                <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger" class="text-base-content/80"></span><br/>
+                <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features" class="text-base-content/70 text-xs"></span>
+              </div>
+              <div id="chart-container" class="chart-box hidden">
+                <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
+                  <label class="form-control">
+                    <span class="label-text text-xs font-medium text-base-content mb-1 block">Visualizar</span>
+                    <select id="chart-metric" class="select select-bordered select-xs min-w-40">
+                      <option value="Effect_Size">Effect size (d)</option>
+                      <option value="Mean_Corpus1">Média Corpus 1</option>
+                      <option value="Mean_Corpus2">Média Corpus 2</option>
+                      <option value="Std_Corpus1">DP Corpus 1</option>
+                      <option value="Std_Corpus2">DP Corpus 2</option>
+                      <option value="N_Corpus1">N Corpus 1</option>
+                      <option value="N_Corpus2">N Corpus 2</option>
+                    </select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-medium text-base-content mb-1 block">Paleta</span>
+                    <select id="chart-palette" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-medium text-base-content mb-1 block">Espessura <span id="chart-thickness-val">18</span>px</span>
+                    <input type="range" id="chart-thickness" min="8" max="40" value="18" step="2"
+                      class="range range-xs w-36" />
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-medium text-base-content mb-1 block">|d| ≥</span>
+                    <input type="number" id="results-min-d" value="0" min="0" step="0.05"
+                      class="input input-bordered input-xs w-20" />
+                  </label>
+                </div>
+                <div id="chart-wrapper"></div>
+              </div>
 
-          <div id="table-container" class="table-box hidden overflow-x-auto">
-            <table id="kfa-table" class="table table-xs table-zebra">
-              <thead><tr></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
+              <div id="table-container" class="table-box hidden overflow-x-auto">
+                <table id="kfa-table" class="table table-xs table-zebra">
+                  <thead><tr></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div><!-- /results-main -->
+          </div><!-- /results-layout -->
         </div><!-- /step-3 -->
 
       </div><!-- /qr-steps-wrap -->
@@ -432,8 +444,11 @@
 
     <!-- ANALYSIS (KFA standalone) -->
     <section id="view-analysis" class="view">
-      <h1 class="text-2xl font-light mb-4">Key Feature Analysis</h1>
+      <h1 class="text-2xl font-light mb-1">Key Feature Analysis</h1>
+      <p class="text-sm text-base-content/60 mb-4">Selecione os corpora, o tagger e os tags a incluir na análise.</p>
       <form id="form-kfa" class="flex flex-col gap-4 max-w-xl">
+
+        <!-- Corpus + Tagger 1 -->
         <div class="flex flex-wrap gap-4">
           <label class="form-control flex-1 min-w-40">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 1</span>
@@ -454,6 +469,8 @@
             </select>
           </label>
         </div>
+
+        <!-- Corpus + Tagger 2 -->
         <div class="flex flex-wrap gap-4">
           <label class="form-control flex-1 min-w-40">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Corpus 2</span>
@@ -474,13 +491,26 @@
             </select>
           </label>
         </div>
-        <label class="form-control">
-          <span class="label-text text-sm font-semibold text-base-content mb-1 block">Método de junção</span>
-          <select id="kfa-join" class="select select-bordered select-sm w-48">
-            <option value="union">union</option>
-            <option value="intersection">intersection</option>
-          </select>
-        </label>
+
+        <!-- Tag selection panels (populated dynamically when corpus1 + tagger1 are selected) -->
+        <div id="kfa-feat-panels" class="flex flex-col gap-4"></div>
+
+        <!-- Join method + analysis name -->
+        <div class="flex flex-wrap gap-4">
+          <label class="form-control">
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Método de junção</span>
+            <select id="kfa-join" class="select select-bordered select-sm w-48">
+              <option value="union">union</option>
+              <option value="intersection">intersection</option>
+            </select>
+          </label>
+          <label class="form-control flex-1 min-w-40">
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Nome da análise</span>
+            <input id="kfa-analysis-name" type="text" placeholder="default" value="default"
+              class="input input-bordered input-sm" />
+          </label>
+        </div>
+
         <button type="submit" class="btn btn-primary">Executar KFA</button>
       </form>
     </section>
@@ -488,66 +518,80 @@
     <!-- RESULTS (standalone) -->
     <section id="view-results" class="view">
       <h1 class="text-2xl font-light mb-4">Resultados</h1>
-      <div class="flex flex-wrap gap-2 items-center mb-2">
-        <select id="results-kfa-select-standalone" class="select select-bordered select-sm min-w-72">
-          <option value="">-- selecione uma KFA --</option>
-        </select>
-        <button id="btn-results-info-standalone" class="btn btn-xs btn-ghost" title="Detalhes desta análise">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/>
-            <line x1="12" y1="8" x2="12.01" y2="8"/>
-          </svg>
-        </button>
-        <input id="results-filter-standalone" type="text" placeholder="Filtrar feature…"
-          class="input input-bordered input-sm ml-auto w-44" />
-      </div>
+      <div class="results-layout">
 
-      <!-- Info box -->
-      <div id="results-info-box-standalone" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
-        <strong class="text-base-content">Análise:</strong> <span id="results-info-name-standalone" class="text-base-content/80"></span><br/>
-        <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger-standalone" class="text-base-content/80"></span><br/>
-        <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features-standalone" class="text-base-content/70 text-xs"></span>
-      </div>
+        <!-- KFA Navigation Sidebar -->
+        <aside class="results-sidebar" id="results-sidebar-standalone">
+          <div>
+            <div class="sidebar-label">Tagger</div>
+            <select id="results-tagger-sel-standalone" class="select select-bordered select-xs w-full"></select>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <div class="sidebar-label">Análises KFA</div>
+              <span id="results-saved-badge-standalone" class="save-badge hidden">💾 .ttwa</span>
+            </div>
+            <p class="text-xs text-base-content/50 mb-1" style="font-size:.65rem">Análises salvas no projeto .ttwa</p>
+            <div id="results-analyses-list-standalone" class="analyses-list">
+              <div class="analyses-empty">Nenhuma análise.</div>
+            </div>
+          </div>
+        </aside>
 
-      <div id="chart-container-standalone" class="chart-box hidden">
-        <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
-          <label class="form-control">
-            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
-            <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
-              <option value="Effect_Size">Effect size (d)</option>
-              <option value="Mean_Corpus1">Média Corpus 1</option>
-              <option value="Mean_Corpus2">Média Corpus 2</option>
-              <option value="Std_Corpus1">DP Corpus 1</option>
-              <option value="Std_Corpus2">DP Corpus 2</option>
-              <option value="N_Corpus1">N Corpus 1</option>
-              <option value="N_Corpus2">N Corpus 2</option>
-            </select>
-          </label>
-          <label class="form-control">
-            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Paleta</span>
-            <select id="chart-palette-standalone" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
-          </label>
-          <label class="form-control">
-            <span class="label-text text-xs font-semibold text-base-content mb-1 block">Espessura <span id="chart-thickness-val-standalone">18</span>px</span>
-            <input type="range" id="chart-thickness-standalone" min="8" max="40" value="18" step="2"
-              class="range range-xs w-36" />
-          </label>
-          <label class="form-control">
-            <span class="label-text text-xs font-semibold text-base-content mb-1 block">|d| ≥</span>
-            <input type="number" id="results-min-d-standalone" value="0" min="0" step="0.05"
-              class="input input-bordered input-xs w-20" />
-          </label>
-        </div>
-        <div id="chart-wrapper-standalone"></div>
-      </div>
+        <!-- Main content -->
+        <div class="results-main">
+          <div class="flex flex-wrap gap-2 items-center mb-2">
+            <input id="results-filter-standalone" type="text" placeholder="Filtrar feature…"
+              class="input input-bordered input-sm w-44" />
+          </div>
 
-      <div id="table-container-standalone" class="table-box hidden overflow-x-auto">
-        <table id="kfa-table-standalone" class="table table-xs table-zebra">
-          <thead><tr></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+          <!-- Info box -->
+          <div id="results-info-box-standalone" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
+            <strong class="text-base-content">Análise:</strong> <span id="results-info-name-standalone" class="text-base-content/80"></span><br/>
+            <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger-standalone" class="text-base-content/80"></span><br/>
+            <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features-standalone" class="text-base-content/70 text-xs"></span>
+          </div>
+
+          <div id="chart-container-standalone" class="chart-box hidden">
+            <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
+                <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
+                  <option value="Effect_Size">Effect size (d)</option>
+                  <option value="Mean_Corpus1">Média Corpus 1</option>
+                  <option value="Mean_Corpus2">Média Corpus 2</option>
+                  <option value="Std_Corpus1">DP Corpus 1</option>
+                  <option value="Std_Corpus2">DP Corpus 2</option>
+                  <option value="N_Corpus1">N Corpus 1</option>
+                  <option value="N_Corpus2">N Corpus 2</option>
+                </select>
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Paleta</span>
+                <select id="chart-palette-standalone" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Espessura <span id="chart-thickness-val-standalone">18</span>px</span>
+                <input type="range" id="chart-thickness-standalone" min="8" max="40" value="18" step="2"
+                  class="range range-xs w-36" />
+              </label>
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">|d| ≥</span>
+                <input type="number" id="results-min-d-standalone" value="0" min="0" step="0.05"
+                  class="input input-bordered input-xs w-20" />
+              </label>
+            </div>
+            <div id="chart-wrapper-standalone"></div>
+          </div>
+
+          <div id="table-container-standalone" class="table-box hidden overflow-x-auto">
+            <table id="kfa-table-standalone" class="table table-xs table-zebra">
+              <thead><tr></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div><!-- /results-main -->
+      </div><!-- /results-layout -->
     </section>
 
     <!-- FEATURE DETAIL -->

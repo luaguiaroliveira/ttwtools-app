@@ -10,7 +10,7 @@ import { initQuickrun }                      from './views/quickrun.js'
 import { initCorpus, loadCorpusList, refreshCorpusSelects } from './views/corpus.js'
 import { initTagging }                       from './views/tagging.js'
 import { initAnalysis }                      from './views/analysis.js'
-import { initResults, refreshKfaSelect, renderResultsData } from './views/results.js'
+import { initResults, refreshKfaSelect, renderResultsData, showSavedBadge } from './views/results.js'
 import { initFeatureDetail }                 from './views/feature-detail.js'
 import { initTextViewer }                    from './views/text-viewer.js'
 import { initExport }                        from './views/export.js'
@@ -19,7 +19,7 @@ import { api }                               from './api.js'
 import { state }                             from './state.js'
 
 // Shared callbacks passed to views that need cross-view coordination
-const shared = { loadCorpusList, refreshCorpusSelects, refreshKfaSelect, renderResults: renderResultsData }
+const shared = { loadCorpusList, refreshCorpusSelects, refreshKfaSelect, renderResults: renderResultsData, showSavedBadge }
 
 // Set up sidebar navigation
 setupNav()

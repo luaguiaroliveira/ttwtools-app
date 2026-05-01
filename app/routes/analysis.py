@@ -208,8 +208,11 @@ def get_raw_features(corpus_name: str, tagger_type: str | None = None):
         raise HTTPException(status_code=404, detail="Feature table não encontrada.")
 
     file_col = "filename" if "filename" in df.columns else df.columns[0]
-    # Only keep numeric columns (exclude filename and any string meta columns)
-    feat_cols = [c for c in df.columns if c != file_col and df[c].dtype.kind in ('i', 'u', 'f')]
+    # Exclude document-level metadata columns (not linguistic features)
+    _META = {"filename", "field", "section", "Words", "TTR", "word_count", "n_words"}
+    # Only keep numeric columns that are not metadata
+    feat_cols = [c for c in df.columns
+                 if c not in _META and df[c].dtype.kind in ('i', 'u', 'f')]
     # Aggregate: sum of raw counts across all documents
     totals = df[feat_cols].sum().astype(float).sort_values(ascending=False)
     return {
