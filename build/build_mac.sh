@@ -12,9 +12,7 @@ if command -v npm >/dev/null 2>&1; then
     echo "==> Buildando frontend (Vite)..."
     (
         cd "$ROOT/frontend-src"
-        if [ ! -d node_modules ]; then
-            npm install --legacy-peer-deps
-        fi
+        npm install
         npm run build
     )
 else
