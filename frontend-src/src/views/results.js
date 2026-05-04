@@ -12,7 +12,8 @@ import { showFeatureDetail } from './feature-detail.js'
 // Column definitions
 const COLS = [
   { key: 'Feature',      label: () => 'Feature' },
-  { key: 'Effect_Size',  label: () => 'Effect size (d)' },
+  { key: 'd_biber',      label: () => 'd (KFA-Biber)' },
+  { key: 'd_pond',       label: () => 'd (KFA-pond)' },
   { key: 'Mean_Corpus1', label: () => `Média ${state.kfaC1}` },
   { key: 'Mean_Corpus2', label: () => `Média ${state.kfaC2}` },
   { key: 'Std_Corpus1',  label: () => `DP ${state.kfaC1}` },
@@ -25,9 +26,15 @@ function visibleRows() {
   if (!state.kfaData) return []
   let rows = state.kfaData.results.slice()
   if (state.filter)    rows = rows.filter(r => r.Feature.toLowerCase().includes(state.filter))
-  if (state.minEffect) rows = rows.filter(r => Math.abs(r.Effect_Size) >= state.minEffect)
+  if (state.minEffect) rows = rows.filter(r => {
+    const val = state.sortCol === 'd_pond' ? r.d_pond : r.d_biber
+    return val != null && Math.abs(val) >= state.minEffect
+  })
   rows.sort((a, b) => {
     const av = a[state.sortCol], bv = b[state.sortCol]
+    if (av == null && bv == null) return 0
+    if (av == null) return 1
+    if (bv == null) return -1
     if (typeof av === 'string') return state.sortDir * av.localeCompare(bv)
     return state.sortDir * (av - bv)
   })
@@ -59,6 +66,8 @@ function renderChartIn(suffix) {
   })
 }
 
+function _fmt(v) { return v != null ? v.toFixed(3) : '—' }
+
 function renderTableIn(suffix) {
   const tableContainer = document.getElementById(_id('table-container', suffix))
   if (tableContainer) tableContainer.classList.remove('hidden')
@@ -77,6 +86,13 @@ function renderTableIn(suffix) {
       const col = th.dataset.col
       if (state.sortCol === col) state.sortDir *= -1
       else { state.sortCol = col; state.sortDir = col === 'Feature' ? 1 : -1 }
+      // sync chart metric when sorting by an effect size column
+      if (col === 'd_biber' || col === 'd_pond') {
+        state.chartMetric = col
+        const sfxEl = suffix ? '-' + suffix : ''
+        const sel = document.getElementById(`chart-metric${sfxEl}`)
+        if (sel) sel.value = col
+      }
       renderTableIn(suffix); renderChartIn(suffix)
     })
   })
@@ -85,18 +101,20 @@ function renderTableIn(suffix) {
   const tbody = document.querySelector(`#${tableId} tbody`)
   if (!tbody) return
   tbody.innerHTML = rows.map(r => {
-    const cls  = r.Effect_Size >= 0 ? 'effect-positive' : 'effect-negative'
+    const clsB = r.d_biber != null ? (r.d_biber >= 0 ? 'effect-positive' : 'effect-negative') : ''
+    const clsP = r.d_pond  != null ? (r.d_pond  >= 0 ? 'effect-positive' : 'effect-negative') : ''
     const def  = state.tagDefs[r.Feature]
     const title = def ? ` title="${def.replace(/"/g, "'")}"` : ''
     return `<tr>
       <td class="feature-link" data-feature="${r.Feature}"${title}>${r.Feature}</td>
-      <td class="${cls}">${r.Effect_Size.toFixed(3)}</td>
-      <td>${r.Mean_Corpus1.toFixed(3)}</td>
-      <td>${r.Mean_Corpus2.toFixed(3)}</td>
-      <td>${r.Std_Corpus1.toFixed(3)}</td>
-      <td>${r.Std_Corpus2.toFixed(3)}</td>
-      <td>${r.N_Corpus1}</td>
-      <td>${r.N_Corpus2}</td>
+      <td class="${clsB}">${_fmt(r.d_biber)}</td>
+      <td class="${clsP}">${_fmt(r.d_pond)}</td>
+      <td>${_fmt(r.Mean_Corpus1)}</td>
+      <td>${_fmt(r.Mean_Corpus2)}</td>
+      <td>${_fmt(r.Std_Corpus1)}</td>
+      <td>${_fmt(r.Std_Corpus2)}</td>
+      <td>${r.N_Corpus1 ?? '—'}</td>
+      <td>${r.N_Corpus2 ?? '—'}</td>
     </tr>`
   }).join('')
 }
@@ -108,34 +126,59 @@ function renderResultsIn(suffix) {
   renderTableIn(suffix)
 }
 
+// ── Merge two KFA result arrays by Feature ──────────────────────────────────
+function _mergeMetrics(biber, pond) {
+  const byFeature = {}
+  ;(biber || []).forEach(r => { byFeature[r.Feature] = { ...r, d_biber: r.Effect_Size } })
+  ;(pond  || []).forEach(r => {
+    if (byFeature[r.Feature]) {
+      byFeature[r.Feature].d_pond = r.Effect_Size
+    } else {
+      byFeature[r.Feature] = { ...r, d_pond: r.Effect_Size }
+    }
+  })
+  return Object.values(byFeature)
+}
+
 // ── Load a KFA result and display in a given suffix context ─────────────────
 async function loadKfa(optStr, suffix) {
   const { c1, c2, d, join, tagger, analysis_name, features_meta } = JSON.parse(optStr)
   try {
-    const data = await api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name)
-    state.kfaData     = data
+    // Fetch both metrics in parallel; gracefully handle missing ones
+    const [rBiber, rPond] = await Promise.allSettled([
+      api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name, 'kfa'),
+      api.analysis.getKfa(c1, c2, d || 0, join, tagger, analysis_name, 'kfa2'),
+    ])
+    const biberResults = rBiber.status === 'fulfilled' ? rBiber.value.results : null
+    const pondResults  = rPond.status  === 'fulfilled' ? rPond.value.results  : null
+
+    if (!biberResults && !pondResults) {
+      showToast('Nenhum resultado KFA encontrado.', 'error'); return
+    }
+
+    const merged = _mergeMetrics(biberResults, pondResults)
+    state.kfaData     = { results: merged }
     state.kfaC1       = c1
     state.kfaC2       = c2
     state.kfaTagger   = tagger || null
-    state.sortCol     = 'Effect_Size'
+    state.sortCol     = 'd_biber'
     state.sortDir     = -1
     state.filter      = ''
     state.minEffect   = 0
-    state.chartMetric = 'Effect_Size'
+    state.chartMetric = 'd_biber'
 
     const sfx = suffix ? '-' + suffix : ''
     const filterEl = document.getElementById(`results-filter${sfx}`)
     const metricEl = document.getElementById(`chart-metric${sfx}`)
     const minDEl   = document.getElementById(`results-min-d${sfx}`)
     if (filterEl) filterEl.value = ''
-    if (metricEl) metricEl.value = 'Effect_Size'
+    if (metricEl) metricEl.value = 'd_biber'
     if (minDEl)   minDEl.value   = '0'
 
     // Populate info box
-    const nameSfx = sfx
-    const infoName  = document.getElementById(`results-info-name${nameSfx}`)
-    const infoTagg  = document.getElementById(`results-info-tagger${nameSfx}`)
-    const infoFeats = document.getElementById(`results-info-features${nameSfx}`)
+    const infoName  = document.getElementById(`results-info-name${sfx}`)
+    const infoTagg  = document.getElementById(`results-info-tagger${sfx}`)
+    const infoFeats = document.getElementById(`results-info-features${sfx}`)
     if (infoName)  infoName.textContent  = analysis_name || 'default'
     if (infoTagg)  infoTagg.textContent  = tagger || 'biberplus'
     if (infoFeats) {
@@ -222,14 +265,29 @@ async function _populateAnalysesList(suffix, byTagger, tagger, autoLoad) {
     return
   }
 
+  // Group by analysis_name — one item per unique name (metrics merged on load)
+  const byName = {}
+  analyses.forEach(r => {
+    const n = r.analysis_name || 'default'
+    if (!byName[n]) byName[n] = { ...r, _metrics: [] }
+    byName[n]._metrics.push(r.metric || 'kfa2')
+  })
+  const uniqueAnalyses = Object.values(byName)
+
   list.innerHTML = ''
-  analyses.forEach((r, i) => {
+  uniqueAnalyses.forEach((r, i) => {
     const name = r.analysis_name || 'default'
     const fm   = Array.isArray(r.features_meta) ? r.features_meta : []
     const tagsLabel = fm.length > 0 ? `${fm.length} tags` : 'todos'
     const tagsDetail = fm.length > 0
       ? fm.slice(0, 15).join(', ') + (fm.length > 15 ? `… (+${fm.length - 15})` : '')
       : 'Todos os tags incluídos'
+    const hasB = r._metrics.includes('kfa')
+    const hasP = r._metrics.includes('kfa2')
+    const metricBadges = [
+      hasB ? '<span class="badge badge-xs badge-outline">KFA-Biber</span>' : '',
+      hasP ? '<span class="badge badge-xs badge-outline">KFA-pond</span>'  : '',
+    ].filter(Boolean).join(' ')
 
     const optVal = JSON.stringify({
       c1: r.corpus1_name, c2: r.corpus2_name,
@@ -243,7 +301,7 @@ async function _populateAnalysesList(suffix, byTagger, tagger, autoLoad) {
 
     item.innerHTML = `
       <input type="radio" name="results-analysis${sfx}" class="radio radio-xs shrink-0"${i === 0 ? ' checked' : ''} />
-      <span class="analysis-item-name" title="${name}">${name}</span>
+      <span class="analysis-item-name" title="${name}">${name} ${metricBadges}</span>
       <span class="analysis-item-tags">${tagsLabel}</span>
       <span class="analysis-item-info" title="${tagsDetail}">ℹ</span>`
 

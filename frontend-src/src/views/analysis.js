@@ -170,6 +170,8 @@ export function initAnalysis({ refreshKfaSelect }) {
     const c2   = document.getElementById('kfa-corpus2')?.value
     const join = document.getElementById('kfa-join')?.value || 'union'
     const name = document.getElementById('kfa-analysis-name')?.value?.trim() || 'default'
+    const metricSel = document.getElementById('kfa-metric')?.value || 'both'
+    const metrics = metricSel === 'both' ? ['kfa', 'kfa2'] : [metricSel]
 
     if (!c1 || !c2) { showToast('Selecione os dois corpora.', 'error'); return }
     if (c1 === c2)  { showToast('Os corpora devem ser diferentes.', 'error'); return }
@@ -195,17 +197,20 @@ export function initAnalysis({ refreshKfaSelect }) {
 
         if (checked.length === 0) continue  // user deselected everything — skip
 
-        await api.analysis.runKfa({
-          corpus1_name:     c1,
-          corpus2_name:     c2,
-          min_effect_size:  0,
-          join,
-          save_to_project:  true,
-          tagger1:          tagger,
-          tagger2:          tagger,
-          analysis_name:    name,
-          include_features: checked,
-        })
+        for (const metric of metrics) {
+          await api.analysis.runKfa({
+            corpus1_name:     c1,
+            corpus2_name:     c2,
+            min_effect_size:  0,
+            join,
+            save_to_project:  true,
+            tagger1:          tagger,
+            tagger2:          tagger,
+            analysis_name:    name,
+            metric,
+            include_features: checked,
+          })
+        }
         ran++
       }
 

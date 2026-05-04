@@ -25,6 +25,7 @@ class KFARequest(BaseModel):
     tagger1: str | None = None
     tagger2: str | None = None
     analysis_name: str = "default"
+    metric: str = "kfa"            # "kfa" (Biber & Egbert) ou "kfa2" (ponderada pelo tamanho)
     include_features: list[str] | None = None  # None = todos os features
 
 
@@ -77,6 +78,7 @@ def run_kfa(req: KFARequest):
             corpus2_path=str(p2),
             min_effect_size=0.0,   # sempre salva todos os d
             join=req.join,
+            metric=req.metric,
         )
 
     # Filter features if a subset is specified
@@ -99,6 +101,7 @@ def run_kfa(req: KFARequest):
                 join_method=req.join,
                 tagger_type=kfa_tagger,
                 analysis_name=req.analysis_name,
+                metric=req.metric,
                 features_meta=features_meta,
             )
 
@@ -107,6 +110,7 @@ def run_kfa(req: KFARequest):
         "corpus2": req.corpus2_name,
         "tagger": kfa_tagger,
         "analysis_name": req.analysis_name,
+        "metric": req.metric,
         "n_features": len(results_df),
         "results": results_df.to_dict(orient="records"),
     }
@@ -130,6 +134,7 @@ def get_kfa_result(
     join: str = "union",
     tagger: str | None = None,
     analysis_name: str | None = None,
+    metric: str | None = None,
 ):
     """Retorna uma KFA já armazenada."""
     _require_project()
@@ -138,7 +143,7 @@ def get_kfa_result(
     with TTWAProject.open(app_state.current_project_path) as proj:
         df = proj.load_kfa_result(
             corpus1, corpus2, min_effect=0.0, join_method=join,
-            tagger_type=tagger, analysis_name=analysis_name,
+            tagger_type=tagger, analysis_name=analysis_name, metric=metric,
         )
 
     if df is None:

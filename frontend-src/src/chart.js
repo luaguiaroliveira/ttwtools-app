@@ -23,7 +23,7 @@ export const PALETTES = {
   biber: {
     label: 'Biber (padrão)',
     fn: (rows, metric) => {
-      const isEffect = metric === 'Effect_Size'
+      const isEffect = metric === 'Effect_Size' || metric === 'd_biber' || metric === 'd_pond'
       return rows.map(r =>
         isEffect ? (r[metric] >= 0 ? '#e07b39' : '#5b9cf6') : '#e07b39'
       )
@@ -114,7 +114,7 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
   const _axisLineColor = _rgba(_bcColor, 0.20)
   const _gridLineColor = _rgba(_bcColor, 0.10)
 
-  const isEffect = metric === 'Effect_Size'
+  const isEffect = metric === 'Effect_Size' || metric === 'd_biber' || metric === 'd_pond'
   const margin   = { top: 6, right: 28, bottom: 32, left: 170 }
   const totalW   = Math.max(wrapper.getBoundingClientRect().width || 600, 320)
   const w        = totalW - margin.left - margin.right

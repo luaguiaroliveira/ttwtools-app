@@ -76,10 +76,11 @@ export const api = {
   analysis: {
     runKfa:       body              => request('POST', '/api/analysis/kfa', body),
     listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),
-    getKfa:       (c1, c2, d, join, tagger, analysisName) => {
+    getKfa:       (c1, c2, d, join, tagger, analysisName, metric) => {
       let url = `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}`
       if (tagger)       url += `&tagger=${encodeURIComponent(tagger)}`
       if (analysisName) url += `&analysis_name=${encodeURIComponent(analysisName)}`
+      if (metric)       url += `&metric=${encodeURIComponent(metric)}`
       return request('GET', url)
     },
     getRawFeatures: (corpusName, taggerType) =>

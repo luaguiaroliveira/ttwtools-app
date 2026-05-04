@@ -264,13 +264,21 @@
           <!-- Per-tagger tag selection panels -->
           <div id="qr-kfa-panels" class="flex flex-col gap-6"></div>
 
-          <!-- Method + name -->
+          <!-- Method + metric + name -->
           <div class="flex flex-wrap gap-4 mt-4">
             <label class="form-control">
-              <span class="label-text text-sm font-medium text-base-content mb-1 block">Método</span>
+              <span class="label-text text-sm font-medium text-base-content mb-1 block">Método (join)</span>
               <select id="qr-kfa-join" class="select select-bordered select-sm">
                 <option value="union">union</option>
                 <option value="intersection">intersection</option>
+              </select>
+            </label>
+            <label class="form-control">
+              <span class="label-text text-sm font-medium text-base-content mb-1 block">Fórmula KFA</span>
+              <select id="qr-kfa-metric" class="select select-bordered select-sm">
+                <option value="both" selected>KFA + KFA2 (ambas)</option>
+                <option value="kfa">KFA — Biber &amp; Egbert</option>
+                <option value="kfa2">KFA2 — ponderada pelo tamanho</option>
               </select>
             </label>
             <label class="form-control flex-1 min-w-40">
@@ -279,6 +287,7 @@
                 class="input input-bordered input-sm" />
             </label>
           </div>
+          <p class="text-xs text-base-content/50 mt-1">KFA (Biber &amp; Egbert): SD<sub>pooled</sub> = √((SD₁²+SD₂²)/2). KFA2: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
 
           <div class="flex gap-2 mt-4">
             <button id="btn-qr-run-kfa" class="btn btn-primary">Executar e salvar KFA →</button>
@@ -329,7 +338,8 @@
                   <label class="form-control">
                     <span class="label-text text-xs font-medium text-base-content mb-1 block">Visualizar</span>
                     <select id="chart-metric" class="select select-bordered select-xs min-w-40">
-                      <option value="Effect_Size">Effect size (d)</option>
+                      <option value="d_biber" selected>d (KFA-Biber)</option>
+                      <option value="d_pond">d (KFA-pond)</option>
                       <option value="Mean_Corpus1">Média Corpus 1</option>
                       <option value="Mean_Corpus2">Média Corpus 2</option>
                       <option value="Std_Corpus1">DP Corpus 1</option>
@@ -469,7 +479,7 @@
         <!-- Tag selection panels (auto-populated per detected tagger) -->
         <div id="kfa-feat-panels" class="flex flex-col gap-4"></div>
 
-        <!-- Join method + analysis name -->
+        <!-- Join method + metric + analysis name -->
         <div class="flex flex-wrap gap-4 max-w-xl">
           <label class="form-control">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Método de junção</span>
@@ -478,12 +488,21 @@
               <option value="intersection">intersection</option>
             </select>
           </label>
+          <label class="form-control">
+            <span class="label-text text-sm font-semibold text-base-content mb-1 block">Fórmula KFA</span>
+            <select id="kfa-metric" class="select select-bordered select-sm w-48">
+              <option value="both" selected>KFA + KFA2 (ambas)</option>
+              <option value="kfa">KFA — Biber &amp; Egbert</option>
+              <option value="kfa2">KFA2 — ponderada pelo tamanho</option>
+            </select>
+          </label>
           <label class="form-control flex-1 min-w-40">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Nome da análise</span>
             <input id="kfa-analysis-name" type="text" placeholder="default" value="default"
               class="input input-bordered input-sm" />
           </label>
         </div>
+        <p class="text-xs text-base-content/50 -mt-1">KFA (Biber &amp; Egbert): SD<sub>pooled</sub> = √((SD₁²+SD₂²)/2). KFA2: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
 
         <button type="submit" class="btn btn-primary max-w-xl">Executar KFA</button>
       </form>
@@ -531,7 +550,8 @@
               <label class="form-control">
                 <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
                 <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
-                  <option value="Effect_Size">Effect size (d)</option>
+                  <option value="d_biber" selected>d (KFA-Biber)</option>
+                  <option value="d_pond">d (KFA-pond)</option>
                   <option value="Mean_Corpus1">Média Corpus 1</option>
                   <option value="Mean_Corpus2">Média Corpus 2</option>
                   <option value="Std_Corpus1">DP Corpus 1</option>

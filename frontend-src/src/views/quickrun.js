@@ -280,26 +280,31 @@ async function _runKfa() {
 
   const join = document.getElementById('qr-kfa-join')?.value || _joinMethod
   const name = document.getElementById('qr-kfa-name')?.value?.trim() || 'default'
+  const metricSel = document.getElementById('qr-kfa-metric')?.value || 'both'
+  const metrics = metricSel === 'both' ? ['kfa', 'kfa2'] : [metricSel]
 
   for (const tagger of _selectedTaggers) {
     const checked = Array.from(
       document.querySelectorAll(`.kfa-feat-cb[data-tagger="${tagger}"]:checked`)
     ).map(cb => cb.value)
 
-    try {
-      if (statusEl) statusEl.textContent = `KFA [${_taggerLabel(tagger)}]…`
-      await api.analysis.runKfa({
-        corpus1_name: _corpusNames.c1,
-        corpus2_name: _corpusNames.c2,
-        join, tagger1: tagger, tagger2: tagger,
-        save_to_project: true,
-        analysis_name: name,
-        include_features: checked.length > 0 ? checked : null,
-      })
-    } catch (e) {
-      if (statusEl) { statusEl.className = 'status-box error'; statusEl.textContent = `Erro KFA [${tagger}]: ${e.message}` }
-      showToast(`Erro KFA: ${e.message}`, 'error')
-      return
+    for (const metric of metrics) {
+      try {
+        if (statusEl) statusEl.textContent = `KFA [${_taggerLabel(tagger)}] (${metric})…`
+        await api.analysis.runKfa({
+          corpus1_name: _corpusNames.c1,
+          corpus2_name: _corpusNames.c2,
+          join, tagger1: tagger, tagger2: tagger,
+          save_to_project: true,
+          analysis_name: name,
+          metric,
+          include_features: checked.length > 0 ? checked : null,
+        })
+      } catch (e) {
+        if (statusEl) { statusEl.className = 'status-box error'; statusEl.textContent = `Erro KFA [${tagger}] (${metric}): ${e.message}` }
+        showToast(`Erro KFA: ${e.message}`, 'error')
+        return
+      }
     }
   }
 

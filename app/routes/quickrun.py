@@ -80,6 +80,7 @@ class QuickRunRequest(BaseModel):
     overwrite: bool = True
     taggers: list[str] = Field(default_factory=lambda: ["biberplus"])
     tag_only: bool = False    # True = para após tagging (sem KFA)
+    kfa_metrics: list[str] = Field(default_factory=lambda: ["kfa", "kfa2"])  # métricas a calcular e salvar
 
 
 # ---------------------------------------------------------------------------
@@ -244,13 +245,16 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
 
                     if not req.tag_only:
                         _upd("kfa", f"[{current_tagger}] Calculando KFA…")
-                        kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
-                        if kfa_df is not None:
-                            proj.save_kfa_result(
-                                req.corpus1_name, req.corpus2_name, kfa_df,
-                                min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
-                            )
-                            total_features += len(kfa_df)
+                        _kfa_metrics = [m for m in req.kfa_metrics if m in ("kfa", "kfa2")] or ["kfa"]
+                        for _metric in _kfa_metrics:
+                            kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join, metric=_metric)
+                            if kfa_df is not None:
+                                proj.save_kfa_result(
+                                    req.corpus1_name, req.corpus2_name, kfa_df,
+                                    min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                                    metric=_metric,
+                                )
+                                total_features += len(kfa_df)
 
                     _tagger_upd(current_tagger, "done", "Concluído")
 
@@ -312,13 +316,16 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                             proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
                         if not req.tag_only:
                             _upd("kfa", f"[{current_tagger}] Calculando KFA…")
-                            kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
-                            if kfa_df is not None:
-                                proj.save_kfa_result(
-                                    req.corpus1_name, req.corpus2_name, kfa_df,
-                                    min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
-                                )
-                                total_features += len(kfa_df)
+                            _kfa_metrics = [m for m in req.kfa_metrics if m in ("kfa", "kfa2")] or ["kfa"]
+                            for _metric in _kfa_metrics:
+                                kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join, metric=_metric)
+                                if kfa_df is not None:
+                                    proj.save_kfa_result(
+                                        req.corpus1_name, req.corpus2_name, kfa_df,
+                                        min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                                        metric=_metric,
+                                    )
+                                    total_features += len(kfa_df)
                         _tagger_upd(current_tagger, "done", "Concluído")
 
             # ── spaCy-based taggers: single nlp.pipe pass per corpus ────────────
@@ -360,9 +367,6 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                         norm1 = raw1.parent / f"{suffix}_norm1000.csv"
                         norm2 = raw2.parent / f"{raw2.stem.replace('_rawcount', '')}_norm1000.csv"
 
-                        _upd("kfa", f"[{current_tagger}] Calculando KFA…")
-                        kfa_df = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join)
-
                         _upd("saving", f"[{current_tagger}] Salvando dados no projeto…")
                         tagged_dir = tmp / f"{c1_folder.name}_tagged"
                         tagged_dir2 = tmp / f"{c2_folder.name}_tagged"
@@ -374,12 +378,18 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
                                 proj.save_tagged_folder(cname, tagged_folder, glob=f"*_{current_tagger}.jsonl", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, raw_csv, "rawcount", tagger_type=current_tagger)
                             proj.save_feature_table_from_csv(cname, norm_csv, "norm1000", tagger_type=current_tagger)
-                        if not req.tag_only and kfa_df is not None:
-                            proj.save_kfa_result(
-                                req.corpus1_name, req.corpus2_name, kfa_df,
-                                min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
-                            )
-                            total_features += len(kfa_df)
+                        if not req.tag_only:
+                            _upd("kfa", f"[{current_tagger}] Calculando KFA…")
+                            _kfa_metrics = [m for m in req.kfa_metrics if m in ("kfa", "kfa2")] or ["kfa"]
+                            for _metric in _kfa_metrics:
+                                _kfa_df_m = ttwtools.kfa(str(norm1), str(norm2), min_effect_size=0.0, join=req.join, metric=_metric)
+                                if _kfa_df_m is not None:
+                                    proj.save_kfa_result(
+                                        req.corpus1_name, req.corpus2_name, _kfa_df_m,
+                                        min_effect=0.0, join_method=req.join, tagger_type=current_tagger,
+                                        metric=_metric,
+                                    )
+                                    total_features += len(_kfa_df_m)
                         _tagger_upd(current_tagger, "done", "Concluído")
 
             proj.close()

@@ -12,12 +12,12 @@ export const state = {
   kfaTagger:  null,   // tagger_type salvo com a KFA (null = auto-detect)
 
   // Chart options
-  chartMetric: 'Effect_Size',
+  chartMetric: 'd_biber',
   barHeight:   18,
   palette:     'biber',
 
   // Table sort/filter
-  sortCol:   'Effect_Size',
+  sortCol:   'd_biber',
   sortDir:   -1,
   filter:    '',
   minEffect: 0,
