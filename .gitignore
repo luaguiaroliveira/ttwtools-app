@@ -43,6 +43,6 @@ wheels/
 .project
 .pydevproject
 node_modules/
-
+.nosync/
 
 ttwa_files/

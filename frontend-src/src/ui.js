@@ -2,19 +2,45 @@
  * ui.js — Navigation, toast, modal.
  */
 
+import { createIcons, icons } from 'lucide'
+
+// Render all lucide icons in the document
+export function renderLucideIcons() {
+  createIcons({ icons })
+}
+
 // ---------------------------------------------------------------------------
 // Navigation
 // ---------------------------------------------------------------------------
 
+// View order used to determine slide direction
+const VIEW_ORDER = ['home', 'quickrun', 'corpus', 'tagging', 'analysis', 'results', 'export', 'feature-detail', 'text-viewer']
+
 export function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
+  const current = document.querySelector('.view.active')
+  const next    = document.getElementById(`view-${name}`)
+  if (!next || next === current) return
+
+  const curIdx  = current ? VIEW_ORDER.indexOf(current.id.replace('view-', '')) : -1
+  const nextIdx = VIEW_ORDER.indexOf(name)
+  const fromLeft = nextIdx < curIdx
+
+  current?.classList.remove('active')
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'))
-  document.getElementById(`view-${name}`)?.classList.add('active')
-  document.querySelector(`.nav-btn[data-view="${name}"]`)?.classList.add('active')
+
+  next.classList.remove('from-left')
+  next.classList.add('active')
+  if (fromLeft) next.classList.add('from-left')
+
+  // Highlight all nav buttons (sidebar, menu actions, menu triggers) matching the active view
+  document.querySelectorAll('.nav-btn[data-view]').forEach(b => {
+    b.classList.toggle('active', b.dataset.view === name)
+  })
 }
 
 export function setupNav() {
-  document.querySelectorAll('.nav-btn').forEach(btn => {
+  // nav-btn elements with data-view just call showView
+  document.querySelectorAll('.nav-btn[data-view]').forEach(btn => {
     btn.addEventListener('click', () => showView(btn.dataset.view))
   })
 }
@@ -66,6 +92,12 @@ export const Modal = (() => {
   btnOk.addEventListener('click',  () => hide(true))
   btnCan.addEventListener('click', () => hide(false))
   overlay.addEventListener('click', e => { if (e.target === overlay) hide(false) })
+  // Enter key confirms; Escape cancels
+  document.addEventListener('keydown', e => {
+    if (overlay.classList.contains('hidden')) return
+    if (e.key === 'Enter'  && e.target?.tagName !== 'TEXTAREA') { e.preventDefault(); hide(true) }
+    if (e.key === 'Escape') { e.preventDefault(); hide(false) }
+  })
 
   return { show, hide }
 })()

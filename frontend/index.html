@@ -4,38 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-B6VzlV47.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-B0b8Vmms.css">
+  <script type="module" crossorigin src="/assets/index-C1fD4neX.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-BFEwPybj.css">
 </head>
-<body class="flex h-screen overflow-hidden bg-base-100 text-base-content">
+<body class="flex flex-col h-screen overflow-hidden bg-base-100 text-base-content">
 
-  <!-- ===== Sidebar ===== -->
-  <aside class="w-44 shrink-0 flex flex-col bg-base-200 border-r border-base-300 h-screen">
-    <div class="px-4 py-4 text-lg font-light tracking-wide border-b border-base-300 select-none">
-      ttw<strong class="font-bold">tools</strong>
+  <!-- ===== Menu Bar ===== -->
+  <header id="menubar" class="menubar">
+    <!-- App name -->
+    <span class="menubar-brand">ttw<strong>tools</strong></span>
+
+    <!-- Arquivo menu -->
+    <div class="menu-item" id="menu-arquivo">
+      <button class="menu-trigger" id="trig-arquivo">
+        <i data-lucide="folder-open" class="menu-icon"></i> Arquivo
+      </button>
+      <div class="menu-dropdown" id="drop-arquivo">
+        <button class="menu-action" id="mnu-new-analysis" data-view="quickrun">
+          <i data-lucide="plus-circle"></i> Nova análise
+        </button>
+        <button class="menu-action" id="mnu-open-ttwa">
+          <i data-lucide="folder-open"></i> Abrir análise…
+        </button>
+        <div class="menu-separator"></div>
+        <button class="menu-action" id="mnu-save-ttwa">
+          <i data-lucide="save"></i> Salvar
+        </button>
+        <button class="menu-action" id="mnu-export" data-view="export">
+          <i data-lucide="package-open"></i> Exportar…
+        </button>
+      </div>
     </div>
-    <nav class="flex flex-col gap-1 p-2 flex-1 overflow-y-auto" id="sidebar-nav">
-      <button class="nav-btn btn btn-ghost btn-sm justify-start active" data-view="home">Início</button>
-      <button class="nav-btn btn btn-ghost btn-sm justify-start" data-view="quickrun">Nova análise</button>
-      <button class="nav-btn btn btn-ghost btn-sm justify-start" data-view="tagging">Tagging</button>
-      <button class="nav-btn btn btn-ghost btn-sm justify-start" data-view="analysis">KFA</button>
-      <button class="nav-btn btn btn-ghost btn-sm justify-start" data-view="results">Resultados</button>
-      <button class="nav-btn btn btn-ghost btn-sm justify-start" data-view="export">Exportar</button>
+
+    <!-- Spacer -->
+    <div class="flex-1"></div>
+
+    <!-- Project name + theme toggle -->
+    <div class="menubar-right">
+      <i data-lucide="file-archive" class="menu-icon opacity-50" style="width:14px;height:14px"></i>
+      <span id="project-label" class="menubar-project" title="">Nenhum projeto</span>
+      <button id="btn-theme-toggle" class="menu-trigger" title="Alternar tema">
+        <i data-lucide="moon" id="theme-icon" class="menu-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Layout: sidebar + main ===== -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- Left sidebar -->
+    <nav id="sidebar">
+      <button class="sidebar-btn nav-btn" data-view="tagging">
+        <i data-lucide="tag"></i>
+        <span>Tagging</span>
+      </button>
+      <button class="sidebar-btn nav-btn" data-view="analysis">
+        <i data-lucide="bar-chart-2"></i>
+        <span>KFA</span>
+      </button>
+      <button class="sidebar-btn nav-btn" data-view="results">
+        <i data-lucide="chart-no-axes-combined"></i>
+        <span>Resultados</span>
+      </button>
     </nav>
-    <div class="p-3 border-t border-base-300 space-y-2">
-      <div id="project-label" class="text-xs text-base-content/60 truncate" title="">Nenhum projeto</div>
-      <div class="flex gap-1">
-        <button id="btn-new-project" class="btn btn-xs btn-outline flex-1">Novo</button>
-        <button id="btn-open-project" class="btn btn-xs btn-outline flex-1">Abrir</button>
-      </div>
-      <div class="flex justify-end">
-        <button id="btn-theme-toggle" class="btn btn-xs btn-ghost" title="Alternar tema">🌙</button>
-      </div>
-    </div>
-  </aside>
 
-  <!-- ===== Main content ===== -->
-  <main id="main" class="flex-1 overflow-y-auto p-6">
+    <!-- Main content -->
+    <main id="main" class="flex-1 overflow-y-auto p-6 view-transition-root">
+
+    <!-- Hidden nav buttons kept for JS compatibility -->
+    <div hidden>
+      <button id="btn-new-project" class="nav-btn" data-view="home"></button>
+      <button id="btn-open-project" class="nav-btn" data-view="home"></button>
+    </div>
 
     <!-- HOME -->
     <section id="view-home" class="view active">
@@ -44,7 +84,6 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
         <div class="card bg-primary text-primary-content shadow-md">
           <div class="card-body gap-3">
-            <div class="text-3xl">▶</div>
             <h3 class="card-title text-base">Nova análise</h3>
             <p class="text-sm opacity-90">Aponte duas pastas de corpus e execute o pipeline: tagging → KFA → resultados.</p>
             <div class="card-actions"><button class="btn btn-sm bg-white/20 hover:bg-white/30 border-0 text-primary-content" id="btn-home-newanalysis">Iniciar</button></div>
@@ -52,10 +91,9 @@
         </div>
         <div class="card bg-base-200 shadow-md">
           <div class="card-body gap-3">
-            <div class="text-3xl">📂</div>
             <h3 class="card-title text-base">Abrir projeto</h3>
             <p class="text-sm text-base-content/80">Carrega um arquivo <code>.ttwa</code> existente e exibe os resultados de análise já salvos.</p>
-            <div class="card-actions"><button class="btn btn-sm btn-outline" id="btn-home-open">Abrir .ttwa</button></div>
+            <div class="card-actions"><button class="btn btn-sm btn-outline" id="btn-home-open">Abrir .ttwa…</button></div>
           </div>
         </div>
       </div>
@@ -278,9 +316,9 @@
             <label class="form-control">
               <span class="label-text text-sm font-medium text-base-content mb-1 block">Fórmula KFA</span>
               <select id="qr-kfa-metric" class="select select-bordered select-sm">
-                <option value="both" selected>KFA + KFA2 (ambas)</option>
-                <option value="kfa">KFA — Biber &amp; Egbert</option>
-                <option value="kfa2">KFA2 — ponderada pelo tamanho</option>
+                <option value="both" selected>KFA-Biber + KFA-pond (ambas)</option>
+                <option value="kfa">KFA-Biber</option>
+                <option value="kfa2">KFA-pond</option>
               </select>
             </label>
             <label class="form-control flex-1 min-w-40">
@@ -289,7 +327,7 @@
                 class="input input-bordered input-sm" />
             </label>
           </div>
-          <p class="text-xs text-base-content/50 mt-1">KFA (Biber &amp; Egbert): SD<sub>pooled</sub> = √((SD₁²+SD₂²)/2). KFA2: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
+          <p class="text-xs text-base-content/50 mt-1">KFA-Biber (Biber &amp; Egbert): SD<sub>pooled</sub> = &radic;((SD&sup1;&sup2;+SD&sup2;&sup2;)/2). KFA-pond: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
 
           <div class="flex gap-2 mt-4">
             <button id="btn-qr-run-kfa" class="btn btn-primary">Executar e salvar KFA →</button>
@@ -493,9 +531,9 @@
           <label class="form-control">
             <span class="label-text text-sm font-semibold text-base-content mb-1 block">Fórmula KFA</span>
             <select id="kfa-metric" class="select select-bordered select-sm w-48">
-              <option value="both" selected>KFA + KFA2 (ambas)</option>
-              <option value="kfa">KFA — Biber &amp; Egbert</option>
-              <option value="kfa2">KFA2 — ponderada pelo tamanho</option>
+              <option value="both" selected>KFA-Biber + KFA-pond (ambas)</option>
+              <option value="kfa">KFA-Biber</option>
+              <option value="kfa2">KFA-pond</option>
             </select>
           </label>
           <label class="form-control flex-1 min-w-40">
@@ -504,7 +542,7 @@
               class="input input-bordered input-sm" />
           </label>
         </div>
-        <p class="text-xs text-base-content/50 -mt-1">KFA (Biber &amp; Egbert): SD<sub>pooled</sub> = √((SD₁²+SD₂²)/2). KFA2: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
+        <p class="text-xs text-base-content/50 -mt-1">KFA-Biber (Biber &amp; Egbert): SD<sub>pooled</sub> = &radic;((SD&sup1;&sup2;+SD&sup2;&sup2;)/2). KFA-pond: SD<sub>pooled</sub> ponderado pelo n de documentos.</p>
 
         <button type="submit" class="btn btn-primary max-w-xl">Executar KFA</button>
       </form>
@@ -685,6 +723,7 @@
     </section>
 
   </main>
+  </div><!-- flex wrapper -->
 
   <!-- ===== Modal ===== -->
   <div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
