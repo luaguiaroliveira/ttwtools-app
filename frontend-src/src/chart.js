@@ -115,7 +115,7 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
   const _gridLineColor = _rgba(_bcColor, 0.10)
 
   const isEffect = metric === 'Effect_Size' || metric === 'd_biber' || metric === 'd_pond'
-  const margin   = { top: 6, right: 28, bottom: 32, left: 170 }
+  const margin   = { top: 22, right: 28, bottom: 36, left: 170 }
   const totalW   = Math.max(wrapper.getBoundingClientRect().width || 600, 320)
   const w        = totalW - margin.left - margin.right
   const rowH     = barHeight + 4
@@ -194,10 +194,17 @@ export function drawChart(wrapper, rows, { metric, barHeight, c1 = '', c2 = '', 
       .attr('stroke-width', 1.5)
   }
 
-  // X axis
+  // X axis (bottom)
   g.append('g')
     .attr('transform', `translate(0,${h})`)
     .call(d3.axisBottom(x).ticks(6).tickSize(4))
+    .call(sel => sel.select('.domain').attr('stroke', _axisLineColor))
+    .call(sel => sel.selectAll('text').attr('fill', _bcColor).attr('font-size', '11px'))
+    .call(sel => sel.selectAll('line').attr('stroke', _axisLineColor))
+
+  // X axis (top) — mirror, same ticks
+  g.append('g')
+    .call(d3.axisTop(x).ticks(6).tickSize(4))
     .call(sel => sel.select('.domain').attr('stroke', _axisLineColor))
     .call(sel => sel.selectAll('text').attr('fill', _bcColor).attr('font-size', '11px'))
     .call(sel => sel.selectAll('line').attr('stroke', _axisLineColor))

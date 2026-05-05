@@ -265,10 +265,19 @@
 #chart-wrapper,
 #chart-wrapper-standalone {
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: auto;
   max-height: 55vh;
-  padding: .5rem 0;
+  padding: .5rem 0 .5rem;
   position: relative;
+  min-width: 0;
+}
+/* table inside flex row needs min-width:0 to allow scroll */
+#table-container,
+#table-container-standalone {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 55vh;
 }
 #chart-wrapper svg text,
 #chart-wrapper-standalone svg text { font-family: inherit; }
@@ -293,27 +302,66 @@
 #kfa-table th.sort-desc::after, #kfa-table-standalone th.sort-desc::after { content: ' ▼'; color: hsl(var(--p)); }
 
 /* ── Results layout with KFA sidebar ────────────────────────────── */
-.results-layout {
+/* ── Results: KFA horizontal selector bar ────────────────────────── */
+.results-kfa-bar {
   display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-}
-.results-sidebar {
-  width: 13rem;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: .75rem;
+  align-items: center;
+  gap: .5rem;
   background: hsl(var(--b2));
   border: 1px solid hsl(var(--b3));
   border-radius: .5rem;
-  padding: .75rem;
-  overflow-y: auto;
-  max-height: calc(100vh - 180px);
-  position: sticky;
-  top: 0;
+  padding: .45rem .75rem;
+  margin-bottom: .5rem;
+  min-height: 2.4rem;
+  overflow: hidden;
 }
-.results-main { flex: 1; min-width: 0; }
+.kfa-bar-icon {
+  color: hsl(var(--bc) / .45);
+  flex-shrink: 0;
+}
+.kfa-bar-tagger {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  flex-shrink: 0;
+}
+.kfa-bar-tagger-sel {
+  min-width: 8rem;
+}
+.kfa-bar-divider {
+  width: 1px;
+  align-self: stretch;
+  background: hsl(var(--b3));
+  flex-shrink: 0;
+  margin: 0 .25rem;
+}
+.kfa-bar-analyses-wrap {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.kfa-bar-analyses-list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap;
+  gap: .25rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.kfa-bar-analyses-list::-webkit-scrollbar { display: none; }
+/* Override vertical layout for analysis items inside the horizontal bar */
+.kfa-bar-analyses-list .analysis-item {
+  flex-shrink: 0;
+  white-space: nowrap;
+  border: 1px solid hsl(var(--b3));
+  border-radius: .35rem;
+}
+
+.results-main { min-width: 0; }
 .sidebar-label {
   font-size: .65rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: .06em;

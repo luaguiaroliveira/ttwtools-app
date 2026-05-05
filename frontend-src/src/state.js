@@ -54,6 +54,12 @@ export const state = {
   // Opção do bubble chart
   bubbleSizeEnc: 'std',   // 'std' (DP médio) | 'n' (N total)
 
+  // Modo de exibição do barchart: 'chart' | 'both' | 'table'
+  barchartView: 'both',
+
+  // Corpus selecionado no heatmap (comparison tab): 'c1' | 'c2'
+  heatmapCorpus: 'c1',
+
   // Cache dos dados brutos por documento (carregado sob demanda)
   rawData: null,
 

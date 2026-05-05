@@ -319,17 +319,33 @@ export function renderHistogram(suffix, rawData, rows, topN = 20, selectedFeatur
 
   const t = _theme()
 
-  const topFeats = rows.slice(0, topN).map(r => r.feature ?? r.Feature)
-  const feat = (selectedFeature && topFeats.includes(selectedFeature)) ? selectedFeature : topFeats[0]
+  // Use rawData.features as authoritative list (matches what was actually fetched)
+  const availableFeats = rawData?.features ?? rows.slice(0, topN).map(r => r.feature ?? r.Feature)
+  const feat = (selectedFeature && availableFeats.includes(selectedFeature))
+    ? selectedFeature
+    : availableFeats[0]
   if (!feat) return
 
-  const vals1 = (rawData.corpus1?.docs ?? []).map(d => Number(d[feat]) || 0)
-  const vals2 = (rawData.corpus2?.docs ?? []).map(d => Number(d[feat]) || 0)
+  const vals1 = (rawData.corpus1?.docs ?? []).map(d => {
+    const v = Number(d[feat])
+    return isFinite(v) ? v : null
+  }).filter(v => v !== null)
+  const vals2 = (rawData.corpus2?.docs ?? []).map(d => {
+    const v = Number(d[feat])
+    return isFinite(v) ? v : null
+  }).filter(v => v !== null)
+
+  if (vals1.length + vals2.length === 0) {
+    el.innerHTML = `<div class="viz-soon-box"><p class="text-base-content/50 text-sm">Sem dados para a feature <strong>${feat}</strong>.</p></div>`
+    return
+  }
 
   const allVals = [...vals1, ...vals2]
-  const minV = Math.min(...allVals), maxV = Math.max(...allVals)
+  const minV = Math.min(...allVals)
+  const maxV = Math.max(...allVals)
+  const spread = maxV - minV
   const nbins = Math.max(10, Math.min(40, Math.round(Math.sqrt(allVals.length) * 1.5)))
-  const binWidth = (maxV - minV) / (nbins || 1) || 1
+  const binWidth = spread > 0 ? spread / nbins : 1
 
   const makeTrace = (vals, name, fill) => ({
     type: 'histogram', x: vals, name, opacity: 0.6,
@@ -340,12 +356,12 @@ export function renderHistogram(suffix, rawData, rows, topN = 20, selectedFeatur
   })
 
   function _kde(vals) {
-    if (!vals.length) return { xs: [], ys: [] }
-    const n   = vals.length
+    if (!vals.length || spread === 0) return { xs: [], ys: [] }
+    const n    = vals.length
     const mean = vals.reduce((a, b) => a + b, 0) / n
-    const std  = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / n)
-    const h    = 1.06 * std * Math.pow(n, -0.2) || 1
-    const xs   = Array.from({ length: 80 }, (_, i) => minV + i * (maxV - minV) / 79)
+    const std  = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / n) || binWidth
+    const h    = 1.06 * std * Math.pow(n, -0.2)
+    const xs   = Array.from({ length: 80 }, (_, i) => minV + i * spread / 79)
     const ys   = xs.map(x =>
       vals.reduce((s, xi) => s + Math.exp(-0.5 * ((x - xi) / h) ** 2), 0)
         / (n * h * Math.sqrt(2 * Math.PI))

@@ -297,7 +297,7 @@ export function renderBubble(suffix, rows, topN = 20, sizeEncoding = 'std', c1Na
  * @param {string} c1Name   — nome do corpus 1
  * @param {string} c2Name   — nome do corpus 2
  */
-export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1', c2Name = 'Corpus 2') {
+export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1', c2Name = 'Corpus 2', onPointClick = null) {
   const el = document.getElementById(`plotly-strip-${suffix}`)
   if (!el) return
 
@@ -317,27 +317,32 @@ export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1
   const t = _theme()
 
   function _buildTrace(corpusData, color, name, pointPos) {
-    const xArr = [], yArr = []
+    const xArr = [], yArr = [], textArr = []
     for (const feat of topFeatures) {
       for (const doc of corpusData.docs) {
         xArr.push(feat)
         yArr.push(doc[feat] ?? 0)
+        textArr.push(doc.filename ?? '')
       }
     }
     return {
       type: 'box',
       x: xArr,
       y: yArr,
+      text: textArr,
+      customdata: textArr,
       name,
       boxpoints: 'all',
       jitter: 0.35,
       pointpos: pointPos,
-      marker: { color, opacity: 0.55, size: 4, line: { width: 0 } },
+      marker: { color, opacity: 0.55, size: 6, line: { width: 0 },
+                symbol: onPointClick ? 'circle' : 'circle' },
       line: { color: 'transparent' },
       fillcolor: 'transparent',
       whiskerwidth: 0,
       showlegend: true,
-      hovertemplate: '<b>%{x}</b><br>' + name + ': %{y:.3f}<extra></extra>',
+      hovertemplate: '<b>%{x}</b><br>' + name + ': %{y:.3f}<br><span style="font-size:0.75em;opacity:0.7">%{customdata}</span>' +
+        (onPointClick ? '<br><i style="font-size:0.7em">clique para abrir</i>' : '') + '<extra></extra>',
     }
   }
 
@@ -372,9 +377,20 @@ export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1
     hovermode: 'closest',
   }
 
-  Plotly.react(el, [_buildTrace(rawData.corpus1, C1_COLOR, c1Name, -0.45),
-                    _buildTrace(rawData.corpus2, C2_COLOR, c2Name,  0.45)],
-    layout, PLOTLY_CONFIG)
+  const traces = [_buildTrace(rawData.corpus1, C1_COLOR, c1Name, -0.45),
+                  _buildTrace(rawData.corpus2, C2_COLOR, c2Name,  0.45)]
+
+  Plotly.react(el, traces, layout, PLOTLY_CONFIG)
+
+  if (onPointClick) {
+    el.on('plotly_click', data => {
+      const pt = data?.points?.[0]
+      if (!pt) return
+      const filename = pt.customdata
+      const corpusName = pt.data.name
+      onPointClick(filename, corpusName)
+    })
+  }
 }
 
 // ── Coordenadas paralelas ─────────────────────────────────────────────────────

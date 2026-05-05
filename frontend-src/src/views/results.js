@@ -8,9 +8,10 @@ import { showToast }        from '../ui.js'
 import { state }            from '../state.js'
 import { drawChart, PALETTES } from '../chart.js'
 import { showFeatureDetail } from './feature-detail.js'
-import { renderScatter, renderBubble, renderStrip, renderParcoords } from './viz-comparison.js'
-import { renderRadar, renderViolin, renderHeatmap, renderHistogram } from './viz-single.js'
+import { renderScatter, renderBubble, renderStrip } from './viz-comparison.js'
+import { renderRadar, renderViolin, renderHeatmap } from './viz-single.js'
 import { initReduction, setReductionReady } from './viz-reduction.js'
+import { showTextViewer } from './text-viewer.js'
 
 // Column definitions
 const COLS = [
@@ -72,8 +73,6 @@ function renderChartIn(suffix) {
 function _fmt(v) { return v != null ? v.toFixed(3) : '—' }
 
 function renderTableIn(suffix) {
-  const tableContainer = document.getElementById(_id('table-container', suffix))
-  if (tableContainer) tableContainer.classList.remove('hidden')
   const tableId = _id('kfa-table', suffix)
 
   const thead = document.querySelector(`#${tableId} thead tr`)
@@ -125,17 +124,23 @@ function renderTableIn(suffix) {
 function renderResultsIn(suffix) {
   const cc = document.getElementById(_id('chart-container', suffix))
   if (cc) cc.classList.remove('hidden')
+  _applyBarchartView(suffix)
   renderChartIn(suffix)
   renderTableIn(suffix)
   // Render the active Plotly visualization (only standalone has tabs)
   if (suffix) {
     setReductionReady(suffix, true)
-    // Populate histogram feature selector
+    // Populate histogram feature selector (sorted by |d_biber|, matching rawData fetch order)
     const sfx = suffix ? `-${suffix}` : ''
     const featSel = document.getElementById(`histogram-feature-sel${sfx}`)
     if (featSel) {
       const rows = state.kfaData?.results || []
-      const topFeats = rows.slice(0, state.topN).map(r => r.Feature).filter(Boolean)
+      const topFeats = rows
+        .slice()
+        .sort((a, b) => Math.abs(b.d_biber ?? 0) - Math.abs(a.d_biber ?? 0))
+        .slice(0, state.topN)
+        .map(r => r.Feature)
+        .filter(Boolean)
       featSel.innerHTML = topFeats.map(f => `<option value="${f}">${f}</option>`).join('')
       state.histogramFeature = topFeats[0] || null
     }
@@ -368,6 +373,20 @@ async function _populateAnalysesList(suffix, byTagger, tagger, autoLoad) {
   }
 }
 
+// ── Apply barchart view mode (chart | both | table) ────────────────────────
+function _applyBarchartView(suffix) {
+  const sfx = suffix ? '-' + suffix : ''
+  const chartWrap = document.getElementById(`chart-wrapper${sfx}`)
+  const tableWrap = document.getElementById(`table-container${sfx}`)
+  const divider   = document.getElementById(`barchart-divider${sfx}`)
+  const v = state.barchartView
+  if (chartWrap) chartWrap.style.display = (v === 'table')  ? 'none' : ''
+  if (tableWrap) tableWrap.style.display  = (v === 'chart')  ? 'none' : ''
+  if (divider)   divider.style.display    = (v === 'both')   ? '' : 'none'
+  // If just showed chart, re-render (was hidden, width was 0)
+  if (v !== 'table' && state.kfaData) requestAnimationFrame(() => renderChartIn(suffix))
+}
+
 // ── Bind controls for one suffix ───────────────────────────────────────────
 function _bindControls(suffix) {
   const sfx = suffix ? '-' + suffix : ''
@@ -390,10 +409,15 @@ function _bindControls(suffix) {
     if (state.kfaData) { renderTableIn(suffix); renderChartIn(suffix) }
   })
 
-  // Chart metric selector
+  // Chart metric selector — re-render chart AND re-sort table by same metric
   document.getElementById(`chart-metric${sfx}`)?.addEventListener('change', e => {
     state.chartMetric = e.target.value
-    if (state.kfaData) renderChartIn(suffix)
+    // Also update table sort column so both stay in sync
+    if (['d_biber', 'd_pond', 'Mean_Corpus1', 'Mean_Corpus2', 'Std_Corpus1', 'Std_Corpus2', 'N_Corpus1', 'N_Corpus2'].includes(e.target.value)) {
+      state.sortCol = e.target.value
+      state.sortDir = -1
+    }
+    if (state.kfaData) { renderChartIn(suffix); renderTableIn(suffix) }
   })
 
   // Bar thickness slider
@@ -409,6 +433,43 @@ function _bindControls(suffix) {
     state.palette = e.target.value
     if (state.kfaData) renderChartIn(suffix)
   })
+
+  // Barchart view toggle (chart | both | table)
+  const viewToggle = document.getElementById(`barchart-view-toggle${sfx}`)
+  if (viewToggle) {
+    viewToggle.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-view]')
+      if (!btn) return
+      state.barchartView = btn.dataset.view
+      viewToggle.querySelectorAll('button').forEach(b => b.classList.toggle('btn-active', b === btn))
+      _applyBarchartView(suffix)
+    })
+  }
+
+  // Barchart drag-resize divider
+  const divider = document.getElementById(`barchart-divider${sfx}`)
+  const chartWrap = document.getElementById(`chart-wrapper${sfx}`)
+  const tableWrap = document.getElementById(`table-container${sfx}`)
+  if (divider && chartWrap && tableWrap) {
+    let dragging = false, startX = 0, startCW = 0, startTW = 0
+    divider.addEventListener('pointerdown', e => {
+      dragging = true
+      startX = e.clientX
+      startCW = chartWrap.getBoundingClientRect().width
+      startTW = tableWrap.getBoundingClientRect().width
+      divider.setPointerCapture(e.pointerId)
+      e.preventDefault()
+    })
+    divider.addEventListener('pointermove', e => {
+      if (!dragging) return
+      const dx = e.clientX - startX
+      const totalW = startCW + startTW
+      const newCW = Math.max(120, Math.min(totalW - 120, startCW + dx))
+      chartWrap.style.flex = `${newCW} 0 0`
+      tableWrap.style.flex = `${totalW - newCW} 0 0`
+    })
+    divider.addEventListener('pointerup', () => { dragging = false })
+  }
 
   // Feature row click → detail view
   document.getElementById(`kfa-table${sfx}`)?.addEventListener('click', e => {
@@ -427,15 +488,16 @@ function _bindControls(suffix) {
     paletteSelect.value = state.palette
   }
 
-  // ResizeObserver — re-render when chart-container changes width
-  const chartContainer = document.getElementById(`chart-container${sfx}`)
-  if (chartContainer) {
+  // ResizeObserver — re-render when chart-wrapper changes width
+  // (the wrapper flexes when the table is shown/hidden alongside it)
+  const chartWrapperEl = document.getElementById(`chart-wrapper${sfx}`)
+  if (chartWrapperEl) {
     let _prevW = 0
     const ro = new ResizeObserver(entries => {
       const newW = entries[0].contentRect.width
       if (Math.abs(newW - _prevW) > 2) { _prevW = newW; if (state.kfaData) renderChartIn(suffix) }
     })
-    ro.observe(chartContainer)
+    ro.observe(chartWrapperEl)
   }
 
   // MutationObserver — re-render when the view/step becomes active.
@@ -505,6 +567,16 @@ function _withRawData(suffix, onReady) {
   api.viz.rawdata(state.kfaC1, state.kfaC2, tagger1, tagger2, topFeatures)
     .then(data => {
       state.rawData = data
+      // Sync histogram feature selector to actual rawData features
+      const sfx = suffix ? `-${suffix}` : ''
+      const featSel = document.getElementById(`histogram-feature-sel${sfx}`)
+      if (featSel && data.features?.length) {
+        const current = state.histogramFeature
+        featSel.innerHTML = data.features.map(f => `<option value="${f}">${f}</option>`).join('')
+        // Keep current selection if it's still available, else default to first
+        if (current && data.features.includes(current)) featSel.value = current
+        else state.histogramFeature = data.features[0] || null
+      }
       onReady(data)
     })
     .catch(err => {
@@ -527,6 +599,21 @@ function _withHeatmapData(suffix, corpusKey, onReady) {
     })
 }
 
+// ── Open text viewer from a point click in rawdata charts ───────────────────
+function _openTextFromPoint(filename, corpusName) {
+  if (!filename) return
+  // Build a minimal file list from rawData so the viewer can navigate
+  const rd = state.rawData
+  if (!rd) return
+  const files = [
+    ...(rd.corpus1?.docs ?? []).map(d => ({ filename: d.filename, corpus: state.kfaC1 })),
+    ...(rd.corpus2?.docs ?? []).map(d => ({ filename: d.filename, corpus: state.kfaC2 })),
+  ]
+  const idx = files.findIndex(f => f.filename === filename &&
+    (corpusName ? f.corpus === corpusName : true))
+  if (idx >= 0) showTextViewer(files, idx, null)
+}
+
 function _renderActiveViz(suffix) {
   // Only the standalone view has the extra tabs
   if (!suffix) return
@@ -542,19 +629,16 @@ function _renderActiveViz(suffix) {
     } else if (viz === 'bubble') {
       renderBubble(suffix, rows, state.topN, state.bubbleSizeEnc, c1, c2)
     } else if (viz === 'strip') {
-      _withRawData(suffix, rd => renderStrip(suffix, rd, rows, state.topN, c1, c2))
-    } else if (viz === 'parcoords') {
-      _withRawData(suffix, rd => renderParcoords(suffix, rd, rows, state.topN, c1, c2))
+      _withRawData(suffix, rd => renderStrip(suffix, rd, rows, state.topN, c1, c2, _openTextFromPoint))
+    } else if (viz === 'heatmap') {
+      const corpusKey = state.heatmapCorpus || 'c1'
+      _withHeatmapData(suffix, corpusKey, hd => renderHeatmap(suffix, hd))
     }
   } else if (tab === 'single') {
     if (state.singleViz === 'radar') {
       renderRadar(suffix, rows, state.topN, state.radarBoth, c1, c2, state.singleCorpus)
     } else if (state.singleViz === 'violin') {
       _withRawData(suffix, rd => renderViolin(suffix, rd, rows, state.topN, c1, c2))
-    } else if (state.singleViz === 'heatmap') {
-      _withHeatmapData(suffix, state.singleCorpus, hd => renderHeatmap(suffix, hd))
-    } else if (state.singleViz === 'histogram') {
-      _withRawData(suffix, rd => renderHistogram(suffix, rd, rows, state.topN, state.histogramFeature, c1, c2))
     }
   }
 }
@@ -654,6 +738,9 @@ function _bindTabControls(suffix) {
   // ── Top-N control ──
   document.getElementById(`results-topn${sfx}`)?.addEventListener('change', e => {
     state.topN = Math.max(5, parseInt(e.target.value, 10) || 20)
+    state.rawData = null   // invalidate rawdata cache (topN changed)
+    delete state[`heatmap_${state.kfaC1}`]
+    delete state[`heatmap_${state.kfaC2}`]
     _renderActiveViz(suffix)
   })
 
@@ -675,9 +762,13 @@ function _bindTabControls(suffix) {
     _renderActiveViz(suffix)
   })
 
-  // ── Histogram feature selector ──
-  document.getElementById(`histogram-feature-sel${sfx}`)?.addEventListener('change', e => {
-    state.histogramFeature = e.target.value
+  // ── Histogram feature selector — REMOVED (histograma retirado) ──
+
+  // ── Heatmap corpus selector (comparison tab) ──
+  document.getElementById(`heatmap-corpus-sel${sfx}`)?.addEventListener('change', e => {
+    state.heatmapCorpus = e.target.value
+    delete state[`heatmap_${state.kfaC1}`]
+    delete state[`heatmap_${state.kfaC2}`]
     _renderActiveViz(suffix)
   })
 
