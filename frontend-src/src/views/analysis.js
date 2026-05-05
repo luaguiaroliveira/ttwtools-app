@@ -54,7 +54,7 @@ function _buildTagPanel(tagger, features) {
     </div>`
 
   div.querySelector('.kfa-panel-header').addEventListener('click', () => {
-    div.querySelector('.kfa-panel-body')?.classList.toggle('collapsed')
+    div.classList.toggle('collapsed')
   })
   div.querySelector('.kfa-sa-all').addEventListener('click', e => {
     e.stopPropagation()
@@ -69,13 +69,12 @@ function _buildTagPanel(tagger, features) {
 
 // ── Try all taggers for corpus1; show a panel for each with features ─────────
 let _loadingFeatures = false
+let _activeC1 = null
+let _activeC2 = null
 
 async function _loadAllFeatures() {
   const panels = document.getElementById('kfa-feat-panels')
-  if (!panels) return
-
-  const c1 = document.getElementById('kfa-corpus1')?.value
-  if (!c1) { panels.innerHTML = ''; return }
+  if (!panels || !_activeC1) return
 
   if (_loadingFeatures) return
   _loadingFeatures = true
@@ -90,7 +89,7 @@ async function _loadAllFeatures() {
     const results = []
     for (const tagger of ALL_TAGGERS) {
       try {
-        const r = await api.analysis.getRawFeatures(c1, tagger)
+        const r = await api.analysis.getRawFeatures(_activeC1, tagger)
         const features = r.features || []
         if (features.length > 0) results.push({ tagger, features })
       } catch (_) { /* tagger not run for this corpus — skip silently */ }
@@ -113,51 +112,47 @@ async function _loadAllFeatures() {
   }
 }
 
-// ── Auto-populate corpus pair from the first existing KFA result ─────────────
+// ── Auto-populate corpus pair ────────────────────────────────────────────────
 async function _autoPopulateFromProject() {
   try {
+    // 1. Try from existing KFA results
     const { kfa_results } = await api.analysis.listKfa()
-    if (!kfa_results || kfa_results.length === 0) return
-
-    const first = kfa_results[0]
-    const c1Sel = document.getElementById('kfa-corpus1')
-    const c2Sel = document.getElementById('kfa-corpus2')
-
-    // Only set if not already chosen
-    if (c1Sel && !c1Sel.value && first.corpus1_name) {
-      const opt = Array.from(c1Sel.options).find(o => o.value === first.corpus1_name)
-      if (opt) c1Sel.value = first.corpus1_name
-    }
-    if (c2Sel && !c2Sel.value && first.corpus2_name) {
-      const opt = Array.from(c2Sel.options).find(o => o.value === first.corpus2_name)
-      if (opt) c2Sel.value = first.corpus2_name
+    if (kfa_results && kfa_results.length > 0) {
+      _activeC1 = kfa_results[0].corpus1_name
+      _activeC2 = kfa_results[0].corpus2_name
+    } else {
+      // 2. Fallback to project manifest corpora
+      const { items } = await api.project.manifest()
+      const corpora = [...new Set(items.filter(i => i.category === 'corpora').map(i => i.corpus))].sort()
+      if (corpora.length > 0) {
+        _activeC1 = corpora[0]
+        _activeC2 = corpora.length > 1 ? corpora[1] : corpora[0]
+      }
     }
 
-    // Now load features for the auto-selected corpus1
-    if (document.getElementById('kfa-corpus1')?.value) {
+    if (_activeC1 && _activeC2) {
+      const wrap = document.getElementById('kfa-corpora-wrap')
+      const badge1 = document.getElementById('kfa-badge-c1')
+      const badge2 = document.getElementById('kfa-badge-c2')
+      if (wrap) wrap.classList.remove('hidden')
+      if (badge1) badge1.textContent = _activeC1
+      if (badge2) badge2.textContent = _activeC2
       await _loadAllFeatures()
+    } else {
+      const panels = document.getElementById('kfa-feat-panels')
+      if (panels) panels.innerHTML = '<div class="text-sm text-base-content/50 italic py-2">Nenhum corpus encontrado no projeto.</div>'
     }
-  } catch (_) { /* no project open yet — ignore */ }
+  } catch (_) { /* no project open yet or error — ignore */ }
 }
 
 // ── Public init ──────────────────────────────────────────────────────────────
 export function initAnalysis({ refreshKfaSelect }) {
-  // Reload panels when corpus1 changes
-  document.getElementById('kfa-corpus1')?.addEventListener('change', _loadAllFeatures)
-
   // When view-analysis becomes visible, auto-populate + load features
   const viewEl = document.getElementById('view-analysis')
   if (viewEl) {
     new MutationObserver(() => {
       if (viewEl.classList.contains('active')) {
-        const c1 = document.getElementById('kfa-corpus1')?.value
-        if (c1) {
-          // corpus already selected → just refresh panels
-          _loadAllFeatures()
-        } else {
-          // try to pre-fill from existing project results
-          _autoPopulateFromProject()
-        }
+        _autoPopulateFromProject()
       }
     }).observe(viewEl, { attributes: true, attributeFilter: ['class'] })
   }
@@ -166,20 +161,17 @@ export function initAnalysis({ refreshKfaSelect }) {
   document.getElementById('form-kfa')?.addEventListener('submit', async e => {
     e.preventDefault()
 
-    const c1   = document.getElementById('kfa-corpus1')?.value
-    const c2   = document.getElementById('kfa-corpus2')?.value
     const join = document.getElementById('kfa-join')?.value || 'union'
     const name = document.getElementById('kfa-analysis-name')?.value?.trim() || 'default'
     const metricSel = document.getElementById('kfa-metric')?.value || 'both'
     const metrics = metricSel === 'both' ? ['kfa', 'kfa2'] : [metricSel]
 
-    if (!c1 || !c2) { showToast('Selecione os dois corpora.', 'error'); return }
-    if (c1 === c2)  { showToast('Os corpora devem ser diferentes.', 'error'); return }
+    if (!_activeC1 || !_activeC2) { showToast('Corpora não definidos.', 'error'); return }
 
     // Collect one panel per detected tagger
     const panelEls = document.querySelectorAll('#kfa-feat-panels .kfa-panel')
     if (panelEls.length === 0) {
-      showToast('Nenhuma feature disponível. Selecione um corpus tagueado.', 'error')
+      showToast('Nenhuma feature disponível.', 'error')
       return
     }
 
@@ -199,8 +191,8 @@ export function initAnalysis({ refreshKfaSelect }) {
 
         for (const metric of metrics) {
           await api.analysis.runKfa({
-            corpus1_name:     c1,
-            corpus2_name:     c2,
+            corpus1_name:     _activeC1,
+            corpus2_name:     _activeC2,
             min_effect_size:  0,
             join,
             save_to_project:  true,

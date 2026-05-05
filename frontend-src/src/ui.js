@@ -18,10 +18,10 @@ const VIEW_ORDER = ['home', 'quickrun', 'corpus', 'tagging', 'analysis', 'result
 
 export function showView(name) {
   const current = document.querySelector('.view.active')
-  const next    = document.getElementById(`view-${name}`)
+  const next = document.getElementById(`view-${name}`)
   if (!next || next === current) return
 
-  const curIdx  = current ? VIEW_ORDER.indexOf(current.id.replace('view-', '')) : -1
+  const curIdx = current ? VIEW_ORDER.indexOf(current.id.replace('view-', '')) : -1
   const nextIdx = VIEW_ORDER.indexOf(name)
   const fromLeft = nextIdx < curIdx
 
@@ -66,17 +66,17 @@ export function showToast(msg, type = 'success', duration = 3500) {
 
 export const Modal = (() => {
   const overlay = document.getElementById('modal-overlay')
-  const title   = document.getElementById('modal-title')
-  const body    = document.getElementById('modal-body')
-  const btnOk   = document.getElementById('modal-confirm')
-  const btnCan  = document.getElementById('modal-cancel')
+  const title = document.getElementById('modal-title')
+  const body = document.getElementById('modal-body')
+  const btnOk = document.getElementById('modal-confirm')
+  const btnCan = document.getElementById('modal-cancel')
 
   let _resolve = null
 
   function show({ titleText, bodyHTML, confirmLabel = 'Confirmar', cancelLabel = 'Cancelar', onMount = null }) {
-    title.textContent  = titleText
-    body.innerHTML     = bodyHTML
-    btnOk.textContent  = confirmLabel
+    title.textContent = titleText
+    body.innerHTML = bodyHTML
+    btnOk.textContent = confirmLabel
     btnCan.textContent = cancelLabel
     overlay.classList.remove('hidden')
     if (onMount) onMount()
@@ -89,13 +89,13 @@ export const Modal = (() => {
     setTimeout(() => { body.innerHTML = '' }, 0)
   }
 
-  btnOk.addEventListener('click',  () => hide(true))
+  btnOk.addEventListener('click', () => hide(true))
   btnCan.addEventListener('click', () => hide(false))
   overlay.addEventListener('click', e => { if (e.target === overlay) hide(false) })
   // Enter key confirms; Escape cancels
   document.addEventListener('keydown', e => {
     if (overlay.classList.contains('hidden')) return
-    if (e.key === 'Enter'  && e.target?.tagName !== 'TEXTAREA') { e.preventDefault(); hide(true) }
+    if (e.key === 'Enter' && e.target?.tagName !== 'TEXTAREA') { e.preventDefault(); hide(true) }
     if (e.key === 'Escape') { e.preventDefault(); hide(false) }
   })
 

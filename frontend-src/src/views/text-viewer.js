@@ -8,7 +8,6 @@
  */
 
 import { Previewer } from 'pagedjs'
-import { annotate } from 'rough-notation'
 import { api } from '../api.js'
 import { showView } from '../ui.js'
 import { state } from '../state.js'
@@ -750,8 +749,125 @@ function _getType(tagName) {
 }
 
 // ---------------------------------------------------------------------------
-// Rough Notation annotations — SVG overlays, zero layout impact
+// SVG-based annotations — clean overlays with subtle hand-drawn feel
 // ---------------------------------------------------------------------------
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+// Tuning knobs — tweak for more/less hand-drawn feel
+const ANN_ROUGHNESS = 0.8   // px of random jitter on endpoints (0 = perfect)
+const ANN_BOWING = 1.5   // px of random curve deflection at midpoints (0 = straight)
+
+/** Small random offset for endpoint positions */
+function _jit(v) { return v + (Math.random() - 0.5) * 2 * ANN_ROUGHNESS }
+/** Random deflection for curve midpoints */
+function _bow() { return (Math.random() - 0.5) * 2 * ANN_BOWING }
+
+/** Draw a slightly wobbly line as a quadratic bezier path string */
+function _wobblyLine(x1, y1, x2, y2) {
+  const mx = (x1 + x2) / 2 + _bow()
+  const my = (y1 + y2) / 2 + _bow()
+  return `M${_jit(x1)},${_jit(y1)} Q${mx},${my} ${_jit(x2)},${_jit(y2)}`
+}
+
+/** Draw a wobbly rectangle (4 sides) as a single path string */
+function _wobblyRect(x, y, w, h) {
+  // Four corners with jitter
+  const tl = [_jit(x), _jit(y)]
+  const tr = [_jit(x + w), _jit(y)]
+  const br = [_jit(x + w), _jit(y + h)]
+  const bl = [_jit(x), _jit(y + h)]
+  // Midpoints with bowing
+  const mt = [(x + x + w) / 2 + _bow(), y + _bow()]           // top mid
+  const mr = [x + w + _bow(), (y + y + h) / 2 + _bow()]       // right mid
+  const mb = [(x + x + w) / 2 + _bow(), y + h + _bow()]       // bottom mid
+  const ml = [x + _bow(), (y + y + h) / 2 + _bow()]           // left mid
+  return `M${tl[0]},${tl[1]} Q${mt[0]},${mt[1]} ${tr[0]},${tr[1]} `
+    + `Q${mr[0]},${mr[1]} ${br[0]},${br[1]} `
+    + `Q${mb[0]},${mb[1]} ${bl[0]},${bl[1]} `
+    + `Q${ml[0]},${ml[1]} ${tl[0]},${tl[1]}Z`
+}
+
+/** Draw a wobbly ellipse approximated with 4 cubic beziers */
+function _wobblyEllipse(cx, cy, rx, ry) {
+  // Kappa for cubic bezier circle approximation ≈ 0.5522847498
+  const k = 0.5522847498
+  const j = _jit, b = _bow
+  const ox = rx * k, oy = ry * k
+  return `M${j(cx)},${j(cy - ry)} `
+    + `C${j(cx + ox) + b()},${j(cy - ry) + b()} ${j(cx + rx) + b()},${j(cy - oy) + b()} ${j(cx + rx)},${j(cy)} `
+    + `C${j(cx + rx) + b()},${j(cy + oy) + b()} ${j(cx + ox) + b()},${j(cy + ry) + b()} ${j(cx)},${j(cy + ry)} `
+    + `C${j(cx - ox) + b()},${j(cy + ry) + b()} ${j(cx - rx) + b()},${j(cy + oy) + b()} ${j(cx - rx)},${j(cy)} `
+    + `C${j(cx - rx) + b()},${j(cy - oy) + b()} ${j(cx - ox) + b()},${j(cy - ry) + b()} ${j(cx)},${j(cy - ry)}Z`
+}
+
+function _createAnnotationSVG(el, type, color, strokeWidth) {
+  const svg = document.createElementNS(SVG_NS, 'svg')
+  svg.setAttribute('class', 'tv-ann-svg')
+  svg.style.cssText = 'position:absolute;top:0;left:0;overflow:visible;pointer-events:none;width:100px;height:100px'
+
+  // For highlight, insert before (SVG renders behind text); others after.
+  if (type === 'highlight') {
+    const pos = window.getComputedStyle(el).position
+    if (!pos || pos === 'static') el.style.position = 'relative'
+    el.insertAdjacentElement('beforebegin', svg)
+  } else {
+    el.insertAdjacentElement('afterend', svg)
+  }
+
+  // Get element rect relative to the SVG
+  const svgRect = svg.getBoundingClientRect()
+  const elRect = el.getBoundingClientRect()
+  const x = elRect.left - svgRect.left
+  const y = elRect.top - svgRect.top
+  const w = elRect.width
+  const h = elRect.height
+
+  const pad = type === 'circle' ? 4 : type === 'highlight' ? 2 : 1
+  const path = document.createElementNS(SVG_NS, 'path')
+
+  switch (type) {
+    case 'highlight': {
+      path.setAttribute('d', _wobblyRect(x - pad, y - 1, w + pad * 2, h + 2))
+      path.setAttribute('fill', color)
+      path.setAttribute('stroke', 'none')
+      break
+    }
+    case 'underline': {
+      path.setAttribute('d', _wobblyLine(x, y + h + 1, x + w, y + h + 1))
+      path.setAttribute('fill', 'none')
+      path.setAttribute('stroke', color)
+      path.setAttribute('stroke-width', strokeWidth)
+      path.setAttribute('stroke-linecap', 'round')
+      break
+    }
+    case 'box': {
+      path.setAttribute('d', _wobblyRect(x - pad, y - pad, w + pad * 2, h + pad * 2))
+      path.setAttribute('fill', 'none')
+      path.setAttribute('stroke', color)
+      path.setAttribute('stroke-width', strokeWidth)
+      break
+    }
+    case 'circle': {
+      path.setAttribute('d', _wobblyEllipse(x + w / 2, y + h / 2, w / 2 + pad, h / 2 + pad))
+      path.setAttribute('fill', 'none')
+      path.setAttribute('stroke', color)
+      path.setAttribute('stroke-width', strokeWidth)
+      break
+    }
+    case 'strike-through': {
+      path.setAttribute('d', _wobblyLine(x, y + h / 2, x + w, y + h / 2))
+      path.setAttribute('fill', 'none')
+      path.setAttribute('stroke', color)
+      path.setAttribute('stroke-width', strokeWidth)
+      path.setAttribute('stroke-linecap', 'round')
+      break
+    }
+  }
+
+  svg.appendChild(path)
+  return svg
+}
+
 function _applyTag(tagName) {
   if (_annotationInstances[tagName]?.length) return
 
@@ -759,6 +875,7 @@ function _applyTag(tagName) {
   const fill = _getFill(tagName)
   const stroke = _getStroke(tagName)
   const color = type === 'highlight' ? fill : stroke
+  const sw = type === 'underline' ? 2 : 1.5
 
   const escapedTag = tagName.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
   const elements = document.querySelectorAll(
@@ -766,37 +883,26 @@ function _applyTag(tagName) {
   )
   if (!elements.length) return
 
-  const annotations = []
+  const svgs = []
   for (const el of elements) {
-    const ann = annotate(el, {
-      type,
-      color,
-      animate: false,
-      padding: type === 'circle' ? [2, 4] : type === 'highlight' ? [1, 2] : [0, 1],
-      strokeWidth: type === 'underline' ? 2 : 1.5,
-      multiline: false,
-      iterations: 1,
-      bowing: 0.1,
-      roughness: 0.1,
-    })
-    ann.show()
-    annotations.push(ann)
+    const svg = _createAnnotationSVG(el, type, color, sw)
+    svgs.push(svg)
   }
 
-  _annotationInstances[tagName] = annotations
+  _annotationInstances[tagName] = svgs
 }
 
 function _removeTag(tagName) {
-  const anns = _annotationInstances[tagName]
-  if (anns) {
-    anns.forEach(a => a.remove())
+  const svgs = _annotationInstances[tagName]
+  if (svgs) {
+    svgs.forEach(svg => svg.remove())
     delete _annotationInstances[tagName]
   }
 }
 
 function _clearAnnotations() {
-  Object.values(_annotationInstances).forEach(anns => {
-    anns.forEach(a => a.remove())
+  Object.values(_annotationInstances).forEach(svgs => {
+    svgs.forEach(svg => svg.remove())
   })
   _annotationInstances = {}
 }

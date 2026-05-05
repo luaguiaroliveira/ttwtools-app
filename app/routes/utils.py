@@ -101,3 +101,18 @@ def pick_file(default_location: str = ""):
         return JSONResponse(status_code=204, content={"path": ""})
     except Exception as exc:
         return JSONResponse(status_code=500, content={"detail": str(exc)})
+
+
+@router.post("/quit")
+def quit_app():
+    """Encerra o servidor e o processo."""
+    import os
+    import threading
+
+    def _shutdown():
+        import time
+        time.sleep(0.3)  # allow response to be sent
+        os._exit(0)
+
+    threading.Thread(target=_shutdown, daemon=True).start()
+    return {"status": "shutting_down"}

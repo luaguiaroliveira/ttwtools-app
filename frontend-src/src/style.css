@@ -179,6 +179,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.active-tagger-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .7rem;
+  font-weight: 600;
+  color: hsl(var(--p));
+  background: hsl(var(--p) / .12);
+  border: 1px solid hsl(var(--p) / .25);
+  border-radius: 999px;
+  padding: .15rem .55rem .15rem .4rem;
+  margin-right: .5rem;
+  white-space: nowrap;
+  transition: opacity .2s;
+}
+.active-tagger-badge.hidden { display: none; }
 
 /* ── Navigation active highlight (kept for compat) ───────────────── */
 .nav-btn { border: none; background: transparent; cursor: pointer; }
@@ -579,11 +595,21 @@
   color: hsl(var(--bc)); cursor: pointer; user-select: none;
   border-bottom: 1px solid hsl(var(--b3));
 }
+.kfa-panel-header::after {
+  content: '▼';
+  font-size: .7rem;
+  color: hsl(var(--bc) / .4);
+  transition: transform 0.2s ease;
+  margin-left: .5rem;
+}
+.kfa-panel.collapsed .kfa-panel-header::after {
+  transform: rotate(-90deg);
+}
 .kfa-panel-header:hover { background: hsl(var(--b3) / .5); }
 .kfa-panel-body {
   max-height: 260px; overflow-y: auto; padding: .5rem .9rem;
 }
-.kfa-panel-body.collapsed { max-height: 0; padding: 0; overflow: hidden; }
+.kfa-panel.collapsed .kfa-panel-body { max-height: 0; padding: 0; overflow: hidden; }
 .kfa-tag-row {
   display: flex; align-items: center; gap: .5rem;
   padding: .2rem 0; border-bottom: 1px solid hsl(var(--b3) / .4);

@@ -261,7 +261,7 @@ function _buildKfaPanel(tagger, features) {
       <button class="btn btn-xs btn-ghost kfa-select-none" data-tagger="${tagger}">Nenhum</button>
     </div>`
   div.querySelector('.kfa-panel-header').addEventListener('click', () => {
-    div.querySelector('.kfa-panel-body')?.classList.toggle('collapsed')
+    div.classList.toggle('collapsed')
   })
   div.querySelector('.kfa-select-all').addEventListener('click', e => {
     e.stopPropagation()

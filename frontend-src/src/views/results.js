@@ -188,6 +188,7 @@ async function loadKfa(optStr, suffix) {
     state.kfaC1       = c1
     state.kfaC2       = c2
     state.kfaTagger   = tagger || null
+    updateActiveTaggerBadge(state.kfaTagger)
     state.sortCol     = 'd_biber'
     state.sortDir     = -1
     state.filter      = ''
@@ -222,11 +223,24 @@ async function loadKfa(optStr, suffix) {
 }
 
 // ── Tagger label helper ─────────────────────────────────────────────────────
-function _taggerLabel(t) {
+export function _taggerLabel(t) {
   const map = { biberplus:'BiberPlus', mfte:'MFTE', mfte_ext:'MFTE Estendido',
     stanza_upos:'Stanza UPOS', stanza_xpos:'Stanza XPOS',
     spacy_upos:'spaCy UPOS', spacy_ptb:'spaCy PTB' }
   return map[t] || t
+}
+
+/** Update the persistent active-tagger badge in the menubar */
+export function updateActiveTaggerBadge(tagger) {
+  const badge = document.getElementById('active-tagger-badge')
+  const label = document.getElementById('active-tagger-label')
+  if (!badge || !label) return
+  if (tagger) {
+    label.textContent = _taggerLabel(tagger)
+    badge.classList.remove('hidden')
+  } else {
+    badge.classList.add('hidden')
+  }
 }
 
 // ── Refresh both sidebar instances ──────────────────────────────────────────
@@ -541,6 +555,7 @@ export function renderResultsData(data, c1, c2) {
   delete state[`heatmap_${c1}`]
   delete state[`heatmap_${c2}`]
   Object.keys(state).filter(k => k.startsWith('heatmap_combined_')).forEach(k => delete state[k])
+  updateActiveTaggerBadge(state.kfaTagger)
   state.sortCol = 'Effect_Size'; state.sortDir = -1
   state.filter = ''; state.minEffect = 0; state.chartMetric = 'Effect_Size'
   renderResultsIn(null)  // inline = no suffix

@@ -25,31 +25,31 @@ async function upload(path, formData) {
 
 export const api = {
   project: {
-    current:        ()     => request('GET',  '/api/project/current'),
-    create:         body   => request('POST', '/api/project/create', body),
-    open:           body   => request('POST', '/api/project/open',   body),
-    openStatus:     jobId  => request('GET',  `/api/project/open-status/${jobId}`),
-    summary:        ()     => request('GET',  '/api/project/summary'),
-    meta:           ()     => request('GET',  '/api/project/meta'),
-    manifest:       ()     => request('GET',  '/api/project/manifest'),
-    export:         body   => request('POST', '/api/project/export', body),
-    upgrade:        (compress = true) => request('POST', '/api/project/upgrade', { compress }),
-    upgradeStatus:  jobId  => request('GET',  `/api/project/upgrade/status/${jobId}`),
-    saveAs:         body   => request('POST', '/api/project/saveas', body),
-    saveAsStatus:   jobId  => request('GET',  `/api/project/saveas-status/${jobId}`),
-    pendingOpen:    ()     => request('GET',  '/api/project/pending-open'),
+    current: () => request('GET', '/api/project/current'),
+    create: body => request('POST', '/api/project/create', body),
+    open: body => request('POST', '/api/project/open', body),
+    openStatus: jobId => request('GET', `/api/project/open-status/${jobId}`),
+    summary: () => request('GET', '/api/project/summary'),
+    meta: () => request('GET', '/api/project/meta'),
+    manifest: () => request('GET', '/api/project/manifest'),
+    export: body => request('POST', '/api/project/export', body),
+    upgrade: (compress = true) => request('POST', '/api/project/upgrade', { compress }),
+    upgradeStatus: jobId => request('GET', `/api/project/upgrade/status/${jobId}`),
+    saveAs: body => request('POST', '/api/project/saveas', body),
+    saveAsStatus: jobId => request('GET', `/api/project/saveas-status/${jobId}`),
+    pendingOpen: () => request('GET', '/api/project/pending-open'),
   },
 
   corpus: {
-    list:          ()             => request('GET',  '/api/corpus/list'),
-    files:         name          => request('GET',  `/api/corpus/${encodeURIComponent(name)}/files`),
-    taggedTokens:  (corpus, fn, tagger) => {
+    list: () => request('GET', '/api/corpus/list'),
+    files: name => request('GET', `/api/corpus/${encodeURIComponent(name)}/files`),
+    taggedTokens: (corpus, fn, tagger) => {
       const suffix = tagger ? `?tagger_type=${encodeURIComponent(tagger)}` : ''
-      return request('GET',  `/api/corpus/${encodeURIComponent(corpus)}/tagged-tokens/${encodeURIComponent(fn)}${suffix}`)
+      return request('GET', `/api/corpus/${encodeURIComponent(corpus)}/tagged-tokens/${encodeURIComponent(fn)}${suffix}`)
     },
-    importFolder:  body         => request('POST', '/api/corpus/import-folder', body),
-    importTagged:  body         => request('POST', '/api/corpus/import-tagged', body),
-    uploadFile:    (name, file) => {
+    importFolder: body => request('POST', '/api/corpus/import-folder', body),
+    importTagged: body => request('POST', '/api/corpus/import-tagged', body),
+    uploadFile: (name, file) => {
       const fd = new FormData()
       fd.append('corpus_name', name)
       fd.append('file', file)
@@ -58,8 +58,8 @@ export const api = {
   },
 
   tagging: {
-    run:    body  => request('POST', '/api/tagging/run', body),
-    status: jobId => request('GET',  `/api/tagging/status/${jobId}`),
+    run: body => request('POST', '/api/tagging/run', body),
+    status: jobId => request('GET', `/api/tagging/status/${jobId}`),
   },
 
   utils: {
@@ -74,8 +74,8 @@ export const api = {
   },
 
   quickrun: {
-    start:  body  => request('POST', '/api/quickrun/start',           body),
-    status: jobId => request('GET',  `/api/quickrun/status/${jobId}`),
+    start: body => request('POST', '/api/quickrun/start', body),
+    status: jobId => request('GET', `/api/quickrun/status/${jobId}`),
   },
 
   tags: {
@@ -85,8 +85,8 @@ export const api = {
   viz: {
     rawdata: (c1, c2, tagger1 = null, tagger2 = null, features = null) => {
       const p = new URLSearchParams({ c1, c2 })
-      if (tagger1)  p.set('tagger1', tagger1)
-      if (tagger2)  p.set('tagger2', tagger2)
+      if (tagger1) p.set('tagger1', tagger1)
+      if (tagger2) p.set('tagger2', tagger2)
       if (features) features.forEach(f => p.append('features', f))
       return request('GET', `/api/viz/rawdata?${p}`)
     },
@@ -104,13 +104,13 @@ export const api = {
   },
 
   analysis: {
-    runKfa:       body              => request('POST', '/api/analysis/kfa', body),
-    listKfa:      ()                => request('GET',  '/api/analysis/kfa/list'),
-    getKfa:       (c1, c2, d, join, tagger, analysisName, metric) => {
+    runKfa: body => request('POST', '/api/analysis/kfa', body),
+    listKfa: () => request('GET', '/api/analysis/kfa/list'),
+    getKfa: (c1, c2, d, join, tagger, analysisName, metric) => {
       let url = `/api/analysis/kfa/${encodeURIComponent(c1)}/${encodeURIComponent(c2)}?min_effect=${d}&join=${join}`
-      if (tagger)       url += `&tagger=${encodeURIComponent(tagger)}`
+      if (tagger) url += `&tagger=${encodeURIComponent(tagger)}`
       if (analysisName) url += `&analysis_name=${encodeURIComponent(analysisName)}`
-      if (metric)       url += `&metric=${encodeURIComponent(metric)}`
+      if (metric) url += `&metric=${encodeURIComponent(metric)}`
       return request('GET', url)
     },
     getRawFeatures: (corpusName, taggerType) =>
@@ -123,8 +123,8 @@ export const api = {
       if (params.length) url += '?' + params.join('&')
       return request('GET', url)
     },
-    featureTable: (name, type)      =>
+    featureTable: (name, type) =>
       request('GET', `/api/analysis/features/${encodeURIComponent(name)}/${type}`),
-    listFeatures: ()                => request('GET',  '/api/analysis/features/list'),
+    listFeatures: () => request('GET', '/api/analysis/features/list'),
   },
 }
