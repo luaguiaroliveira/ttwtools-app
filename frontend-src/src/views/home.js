@@ -8,12 +8,12 @@ import { showView, showToast, Modal } from '../ui.js'
 // Exposed so other views can call it after project changes
 export async function updateProjectLabel() {
   try {
-    const { path } = await api.project.current()
+    const { display_path } = await api.project.current()
     const label = document.getElementById('project-label')
-    if (path) {
-      const parts = path.replace(/\\/g, '/').split('/')
+    if (display_path) {
+      const parts = display_path.replace(/\\/g, '/').split('/')
       label.textContent = parts[parts.length - 1]
-      label.title = path
+      label.title = display_path
     } else {
       label.textContent = 'Nenhum projeto'
       label.title = ''
@@ -60,7 +60,7 @@ export async function openProject() {
   } catch (_) {
     path = await new Promise(resolve => {
       const fi = document.createElement('input')
-      fi.type = 'file'; fi.accept = '.ttwa'
+      fi.type = 'file'; fi.accept = '.ttwa,.ttwt'
       fi.style.cssText = 'position:fixed;opacity:0;width:1px;height:1px;top:0;left:0'
       document.body.appendChild(fi)
       const cleanup = () => { try { document.body.removeChild(fi) } catch (_) {} }
@@ -72,11 +72,22 @@ export async function openProject() {
   if (!path) return
   try {
     const res = await api.project.open({ path })
-    showToast('Projeto aberto.')
-    await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
-    // Offer v0.2 upgrade if file is v0.1
-    if (res?.schema_version && res.schema_version < '0.2') {
-      _showUpgradeModal()
+
+    if (res?.status === 'decompressing') {
+      // .ttwt — show progress overlay, then proceed after decompression
+      const job = await _showOpenProgressModal(res.job_id)
+      if (!job) return
+      showToast('Arquivo .ttwt aberto.')
+      await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
+      if (job.result?.schema_version && job.result.schema_version < '0.2') {
+        _showUpgradeModal()
+      }
+    } else {
+      showToast('Projeto aberto.')
+      await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
+      if (res?.schema_version && res.schema_version < '0.2') {
+        _showUpgradeModal()
+      }
     }
   } catch (err) {
     showToast(err.message, 'error')
@@ -118,6 +129,19 @@ export function initHome({ loadCorpusList, refreshCorpusSelects, refreshKfaSelec
   document.getElementById('btn-new-project')?.addEventListener('click',  () => newProject())
   document.getElementById('btn-open-project')?.addEventListener('click', () => openProject())
   document.getElementById('btn-home-newanalysis')?.addEventListener('click', () => showView('quickrun'))
+
+  // Save as
+  document.getElementById('mnu-saveas')?.addEventListener('click', () => _showSaveAsModal())
+
+  // macOS runtime: when the window regains focus, check if macOS sent an
+  // 'odoc' Apple Event while the app was in the background (user opened a
+  // second file from Finder).
+  window.addEventListener('focus', async () => {
+    try {
+      const { path } = await api.project.pendingOpen()
+      if (path) await _handlePendingOpen(path)
+    } catch (_) {}
+  })
 }
 
 // ---------------------------------------------------------------------------
@@ -127,6 +151,14 @@ export function initHome({ loadCorpusList, refreshCorpusSelects, refreshKfaSelec
 export async function checkInitialProject({ loadCorpusList, refreshCorpusSelects, refreshKfaSelect }) {
   await updateProjectLabel()
   try {
+    // Check for a file queued by Apple Event (macOS file association) or --open .ttwt
+    const { path: pending } = await api.project.pendingOpen()
+    if (pending) {
+      _sharedCallbacks = _sharedCallbacks || { loadCorpusList, refreshCorpusSelects, refreshKfaSelect }
+      await _handlePendingOpen(pending)
+      return
+    }
+    // Normal startup: check if a project is already open
     const { path } = await api.project.current()
     if (path) {
       await loadCorpusList()
@@ -135,6 +167,164 @@ export async function checkInitialProject({ loadCorpusList, refreshCorpusSelects
       showView('corpus')
     }
   } catch (_) {}
+}
+
+// ---------------------------------------------------------------------------
+// Open-progress modal (.ttwt decompression)
+// ---------------------------------------------------------------------------
+
+/** Handle a file path that arrived via Apple Event (pending-open). */
+async function _handlePendingOpen(path) {
+  if (!_sharedCallbacks) return
+  const { loadCorpusList, refreshCorpusSelects, refreshKfaSelect } = _sharedCallbacks
+  try {
+    const res = await api.project.open({ path })
+    if (res?.status === 'decompressing') {
+      const job = await _showOpenProgressModal(res.job_id)
+      if (!job) return
+      showToast('Arquivo .ttwt aberto.')
+      await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
+      if (job.result?.schema_version && job.result.schema_version < '0.2') _showUpgradeModal()
+    } else {
+      showToast('Projeto aberto.')
+      await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
+      if (res?.schema_version && res.schema_version < '0.2') _showUpgradeModal()
+    }
+  } catch (err) {
+    showToast(err.message, 'error')
+  }
+}
+
+/** Returns the completed job object or null if cancelled/errored. */
+async function _showOpenProgressModal(jobId) {
+  const overlay = document.getElementById('open-overlay')
+  const bar     = document.getElementById('open-bar')
+  const pctEl   = document.getElementById('open-pct')
+  const msgEl   = document.getElementById('open-msg')
+
+  bar.value = 0; pctEl.textContent = '0%'; msgEl.textContent = 'Iniciando…'
+  overlay.classList.remove('hidden')
+
+  return new Promise(resolve => {
+    const timer = setInterval(async () => {
+      try {
+        const job = await api.project.openStatus(jobId)
+        const pct = job.total > 0 ? Math.round((job.done / job.total) * 100) : 0
+        bar.value = pct; pctEl.textContent = pct + '%'
+        msgEl.textContent = job.message || ''
+
+        if (job.status === 'done') {
+          clearInterval(timer)
+          bar.value = 100; pctEl.textContent = '100%'
+          overlay.classList.add('hidden')
+          resolve(job)
+        } else if (job.status === 'error') {
+          clearInterval(timer)
+          overlay.classList.add('hidden')
+          showToast(job.error || 'Erro ao abrir .ttwt.', 'error')
+          resolve(null)
+        }
+      } catch (_) {}
+    }, 500)
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Save-as modal
+// ---------------------------------------------------------------------------
+
+function _showSaveAsModal() {
+  const overlay   = document.getElementById('saveas-overlay')
+  const form      = document.getElementById('saveas-form')
+  const pathInput = document.getElementById('saveas-path')
+  const pickBtn   = document.getElementById('saveas-pick-btn')
+  const progressW = document.getElementById('saveas-progress-wrap')
+  const bar       = document.getElementById('saveas-bar')
+  const pctEl     = document.getElementById('saveas-pct')
+  const msgEl     = document.getElementById('saveas-msg')
+  const resultEl  = document.getElementById('saveas-result')
+  const btns      = document.getElementById('saveas-btns')
+  const cancelBtn = document.getElementById('saveas-cancel-btn')
+  const okBtn     = document.getElementById('saveas-ok-btn')
+
+  // Reset
+  form.classList.remove('hidden')
+  progressW.classList.add('hidden')
+  resultEl.classList.add('hidden')
+  resultEl.textContent = ''
+  btns.classList.remove('hidden')
+  cancelBtn.textContent = 'Cancelar'
+  okBtn.classList.remove('hidden')
+  bar.value = 0; pctEl.textContent = '0%'; msgEl.textContent = 'Iniciando…'
+  overlay.classList.remove('hidden')
+
+  // Pre-fill extension based on selected format
+  const _syncExt = () => {
+    const fmt = document.querySelector('input[name="saveas-fmt"]:checked')?.value || 'ttwt'
+    const cur = pathInput.value.trim()
+    if (!cur) return
+    const base = cur.replace(/\.(ttwt|ttwa)$/i, '')
+    pathInput.value = base + '.' + fmt
+  }
+  document.querySelectorAll('input[name="saveas-fmt"]').forEach(r => r.addEventListener('change', _syncExt))
+
+  pickBtn.onclick = async () => {
+    try {
+      const res = await api.utils.pickFolder()
+      if (res?.path) pathInput.value = res.path.replace(/\/$/,'') + '/'
+    } catch (_) {}
+  }
+
+  let _pollTimer = null
+  const _close = () => { overlay.classList.add('hidden'); if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null } }
+  cancelBtn.onclick = _close
+
+  okBtn.onclick = async () => {
+    const path = pathInput.value.trim()
+    if (!path) { showToast('Informe o caminho de saída.', 'error'); return }
+    const fmt = document.querySelector('input[name="saveas-fmt"]:checked')?.value || 'ttwt'
+    // Ensure correct extension
+    const outPath = path.replace(/\.(ttwt|ttwa)$/i, '') + '.' + fmt
+
+    form.classList.add('hidden')
+    btns.classList.add('hidden')
+    progressW.classList.remove('hidden')
+    msgEl.textContent = 'Iniciando…'
+    bar.value = 0; pctEl.textContent = '0%'
+
+    let jobId
+    try {
+      const res = await api.project.saveAs({ path: outPath, format: fmt })
+      jobId = res.job_id
+    } catch (err) {
+      showToast(err.message, 'error'); _close(); return
+    }
+
+    _pollTimer = setInterval(async () => {
+      try {
+        const job = await api.project.saveAsStatus(jobId)
+        const pct = job.total > 0 ? Math.round((job.done / job.total) * 100) : 0
+        bar.value = pct; pctEl.textContent = pct + '%'
+        msgEl.textContent = job.message || ''
+
+        if (job.status === 'done') {
+          clearInterval(_pollTimer); _pollTimer = null
+          bar.value = 100; pctEl.textContent = '100%'
+          progressW.classList.add('hidden')
+          resultEl.classList.remove('hidden')
+          const sz = job.result?.size ? (job.result.size / 1024 / 1024).toFixed(1) + ' MB' : ''
+          const p  = job.result?.path || outPath
+          resultEl.innerHTML = `<p class="text-success font-medium">Salvo com sucesso!</p><p class="text-xs text-base-content/60 mt-1 break-all">${p}${sz ? ' — ' + sz : ''}</p>`
+          btns.classList.remove('hidden')
+          cancelBtn.textContent = 'Fechar'
+          okBtn.classList.add('hidden')
+        } else if (job.status === 'error') {
+          clearInterval(_pollTimer); _pollTimer = null
+          showToast(job.error || 'Erro ao salvar.', 'error'); _close()
+        }
+      } catch (_) {}
+    }, 400)
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -28,6 +28,9 @@
         <button class="menu-action" id="mnu-save-ttwa">
           <i data-lucide="save"></i> Salvar
         </button>
+        <button class="menu-action" id="mnu-saveas">
+          <i data-lucide="save-all"></i> Salvar como…
+        </button>
         <button class="menu-action" id="mnu-export" data-view="export">
           <i data-lucide="package-open"></i> Exportar…
         </button>
@@ -732,7 +735,86 @@
   </main>
   </div><!-- flex wrapper -->
 
-  <!-- ===== Modal ===== -->
+  <!-- ===== Open-progress overlay (.ttwt decompression) ===== -->
+  <div id="open-overlay" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-base-100 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <i data-lucide="archive" class="text-primary" style="width:22px;height:22px"></i>
+        <h3 class="text-lg font-semibold text-base-content">Abrindo arquivo .ttwt</h3>
+      </div>
+      <p class="text-sm text-base-content/70">Descomprimindo para memória de trabalho…</p>
+      <div class="flex flex-col gap-2">
+        <div class="flex justify-between text-xs text-base-content/60">
+          <span id="open-msg">Iniciando…</span>
+          <span id="open-pct">0%</span>
+        </div>
+        <progress id="open-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Save-as modal ===== -->
+  <div id="saveas-overlay" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-base-100 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 flex flex-col gap-4">
+      <div class="flex items-center gap-3">
+        <i data-lucide="save-all" class="text-primary" style="width:22px;height:22px"></i>
+        <h3 class="text-lg font-semibold text-base-content">Salvar como…</h3>
+      </div>
+
+      <!-- path row -->
+      <div id="saveas-form" class="flex flex-col gap-3">
+        <label class="flex flex-col gap-1">
+          <span class="text-sm font-medium">Caminho de saída</span>
+          <div class="flex gap-2">
+            <input id="saveas-path" type="text" class="input input-bordered input-sm flex-1"
+              placeholder="/caminho/arquivo.ttwt" />
+            <button id="saveas-pick-btn" class="btn btn-sm btn-outline" title="Escolher pasta">
+              <i data-lucide="folder-open" style="width:14px;height:14px"></i>
+            </button>
+          </div>
+        </label>
+
+        <!-- format selector -->
+        <div class="flex flex-col gap-1">
+          <span class="text-sm font-medium">Formato</span>
+          <label class="flex items-start gap-2 cursor-pointer">
+            <input type="radio" name="saveas-fmt" value="ttwt" class="radio radio-sm radio-primary mt-0.5" checked />
+            <span class="text-sm">
+              <strong>.ttwt</strong>
+              <span class="text-base-content/60"> — lzma máximo, arquivo menor (~10× vs .ttwa v0.1)</span>
+              <span class="badge badge-xs badge-primary ml-1">recomendado</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-2 cursor-pointer">
+            <input type="radio" name="saveas-fmt" value="ttwa" class="radio radio-sm radio-primary mt-0.5" />
+            <span class="text-sm">
+              <strong>.ttwa</strong>
+              <span class="text-base-content/60"> — SQLite padrão, compatível com ferramentas externas</span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- progress (hidden until running) -->
+      <div id="saveas-progress-wrap" class="hidden flex flex-col gap-2">
+        <div class="flex justify-between text-xs text-base-content/60">
+          <span id="saveas-msg">Iniciando…</span>
+          <span id="saveas-pct">0%</span>
+        </div>
+        <progress id="saveas-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+      </div>
+
+      <!-- result (hidden until done) -->
+      <div id="saveas-result" class="hidden text-sm"></div>
+
+      <div class="flex gap-2 justify-end" id="saveas-btns">
+        <button id="saveas-cancel-btn" class="btn btn-sm btn-outline">Cancelar</button>
+        <button id="saveas-ok-btn" class="btn btn-sm btn-primary">
+          <i data-lucide="save-all" style="width:14px;height:14px"></i> Salvar
+        </button>
+      </div>
+    </div>
+  </div>
   <div id="modal-overlay" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
     <div id="tv-tooltip" class="tv-tooltip" hidden></div>
     <div id="modal-box" class="bg-base-100 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">

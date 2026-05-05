@@ -53,6 +53,10 @@ def _prewarm_torch() -> None:
 
 def main() -> None:
     _prewarm_torch()
+    # Register macOS 'odoc' handler as early as possible so queued startup
+    # events are delivered naturally when webview.start() runs the Cocoa loop.
+    _register_macos_open_handler()
+
     parser = argparse.ArgumentParser(prog="ttwtools-app")
     parser.add_argument(
         "--mode",
@@ -64,20 +68,100 @@ def main() -> None:
     parser.add_argument("--port", type=int, default=8765, help="Porta do servidor HTTP.")
     parser.add_argument(
         "--open",
-        metavar="FILE.ttwa",
+        metavar="FILE",
         default=None,
-        help="Abre um arquivo .ttwa ao iniciar.",
+        help="Abre um arquivo .ttwa ou .ttwt ao iniciar.",
     )
     args = parser.parse_args()
 
+    # Prefer --open flag; fall back to bare positional sys.argv (CLI / dev use).
+    open_file = args.open
+    if not open_file:
+        for arg in sys.argv[1:]:
+            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwt'):
+                open_file = arg
+                break
+
     from app.server import build_app
 
-    fastapi_app = build_app(open_file=args.open)
+    fastapi_app = build_app(open_file=open_file)
 
     if args.mode == "web":
         _run_server_foreground(fastapi_app, args.host, args.port)
     else:
         _run_desktop(fastapi_app, args.host, args.port)
+
+
+# ---------------------------------------------------------------------------
+# macOS Apple Event support for file-open associations
+# ---------------------------------------------------------------------------
+#
+# Design:
+# - ONE handler instance defined at MODULE LEVEL so it is never GC'd and the
+#   ObjC class is registered once (frozen-app-safe).
+# - Handles BOTH the startup case (odoc queued before run loop starts) and the
+#   runtime case (user opens another file while app is already running).
+# - Events are queued by the system; they are delivered on the first run loop
+#   iteration inside webview.start(), so we do NOT need to pump a run loop
+#   manually. We just register the handler early and let pywebview's event
+#   loop deliver the event naturally.
+# - Sets app_state.pending_open_path; frontend polls /api/project/pending-open
+#   on startup (checkInitialProject) and on window focus.
+
+_odoc_handler = None   # module-level reference — must survive forever
+
+
+def _macos_odoc_paths(event) -> list[str]:
+    """Extract file paths from an Apple Event 'odoc' descriptor."""
+    from urllib.parse import urlparse, unquote
+    out: list[str] = []
+    try:
+        # keyDirectObject = '----' = 0x2D2D2D2D
+        desc = event.paramDescriptorForKeyword_(0x2D2D2D2D)
+        if desc is None:
+            return out
+        for i in range(1, desc.numberOfItems() + 1):
+            item = desc.descriptorAtIndex_(i)
+            # coerce to file URL type 'furl' = 0x6675726C
+            furl = item.coerceToDescriptorType_(0x6675726C)
+            if furl:
+                raw = furl.stringValue()   # e.g. 'file:///Users/…/file.ttwa'
+                out.append(unquote(urlparse(raw).path))
+    except Exception:
+        pass
+    return out
+
+
+def _register_macos_open_handler() -> None:
+    """Register the 'odoc' Apple Event handler.  Safe to call before the Cocoa
+    run loop starts; the OS queues startup events and delivers them on the
+    first run loop iteration inside webview.start()."""
+    global _odoc_handler
+    if sys.platform != 'darwin':
+        return
+    try:
+        from AppKit import NSAppleEventManager, NSObject
+
+        # Class defined at call-site but stored globally — this is fine because
+        # this function is called exactly once at startup.
+        class _ODHandler(NSObject):
+            def handleOdoc_reply_(self, event, reply):  # selector: handleOdoc:reply:
+                paths = _macos_odoc_paths(event)
+                if not paths:
+                    return
+                from app import state as _s
+                _s.pending_open_path = paths[0]
+
+        _odoc_handler = _ODHandler.alloc().init()
+        NSAppleEventManager.sharedAppleEventManager() \
+            .setEventHandler_andSelector_forEventClass_andEventID_(
+                _odoc_handler,
+                'handleOdoc:reply:',
+                0x61657674,   # kCoreEventClass  'aevt'
+                0x6F646F63,   # kAEOpenDocuments 'odoc'
+            )
+    except Exception as exc:
+        print(f'[ttwtools] Apple Event handler unavailable: {exc}', flush=True)
 
 
 # ---------------------------------------------------------------------------

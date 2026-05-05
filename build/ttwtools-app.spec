@@ -139,11 +139,47 @@ if sys.platform == 'darwin':
         bundle_identifier='br.edu.ttwtools.app',
         info_plist={
             'NSHighResolutionCapable': True,
-            'CFBundleDocumentTypes': [{
-                'CFBundleTypeName':       'TTW Archive',
-                'CFBundleTypeExtensions': ['ttwa'],
-                'CFBundleTypeMIMETypes':  ['application/x-ttwa+sqlite3'],
-                'CFBundleTypeRole':       'Editor',
-            }],
+            # Document-type associations (.ttwa and .ttwt)
+            'CFBundleDocumentTypes': [
+                {
+                    'CFBundleTypeName':       'TTW Archive',
+                    'CFBundleTypeExtensions': ['ttwa'],
+                    'CFBundleTypeMIMETypes':  ['application/x-ttwa+sqlite3'],
+                    'CFBundleTypeRole':       'Editor',
+                    'LSHandlerRank':          'Owner',
+                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwa'],
+                    'CFBundleTypeIconFile':   'icon',
+                },
+                {
+                    'CFBundleTypeName':       'TTW Compressed Archive',
+                    'CFBundleTypeExtensions': ['ttwt'],
+                    'CFBundleTypeMIMETypes':  ['application/x-ttwt'],
+                    'CFBundleTypeRole':       'Editor',
+                    'LSHandlerRank':          'Owner',
+                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwt'],
+                    'CFBundleTypeIconFile':   'icon',
+                },
+            ],
+            # UTI declarations so Finder recognises the file types
+            'UTExportedTypeDeclarations': [
+                {
+                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwa',
+                    'UTTypeDescription':      'TTW Archive',
+                    'UTTypeConformsTo':       ['public.data', 'public.item'],
+                    'UTTypeTagSpecification': {
+                        'public.filename-extension': ['ttwa'],
+                        'public.mime-type':          'application/x-ttwa+sqlite3',
+                    },
+                },
+                {
+                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwt',
+                    'UTTypeDescription':      'TTW Compressed Archive',
+                    'UTTypeConformsTo':       ['public.data', 'public.item'],
+                    'UTTypeTagSpecification': {
+                        'public.filename-extension': ['ttwt'],
+                        'public.mime-type':          'application/x-ttwt',
+                    },
+                },
+            ],
         },
     )

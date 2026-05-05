@@ -16,8 +16,10 @@ from app import state as app_state
 
 router = APIRouter()
 
-# upgrade job registry
+# Job registries
 _upgrade_jobs: dict[str, dict] = {}
+_open_jobs:    dict[str, dict] = {}
+_saveas_jobs:  dict[str, dict] = {}
 
 
 # ---------------------------------------------------------------------------
@@ -49,6 +51,11 @@ class UpgradeRequest(BaseModel):
     compress: bool = True
 
 
+class SaveAsRequest(BaseModel):
+    path: str
+    format: str  # 'ttwt' | 'ttwa'
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -77,16 +84,46 @@ def create_project(req: CreateProjectRequest):
 
 @router.post("/open")
 def open_project(req: OpenProjectRequest):
-    """Define o arquivo .ttwa ativo."""
-    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY
+    """Abre um arquivo .ttwa (direto) ou .ttwt (inicia descompressão em background)."""
     p = Path(req.path).resolve()
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"Arquivo não encontrado: {p}")
+
+    if p.suffix.lower() == ".ttwt":
+        # Decompression is slow — run in background and return a job_id
+        job_id = str(uuid.uuid4())
+        _open_jobs[job_id] = {
+            "status": "running",
+            "done": 0,
+            "total": 0,
+            "message": "Iniciando descompressão…",
+            "result": None,
+            "error": None,
+        }
+        threading.Thread(
+            target=_run_open_ttwt,
+            args=(job_id, str(p)),
+            daemon=True,
+        ).start()
+        return {"status": "decompressing", "job_id": job_id}
+
+    # .ttwa — open immediately
+    _cleanup_temp_ttwt()
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY
     app_state.current_project_path = str(p)
-    # Return schema_version so frontend can offer upgrade for v0.1 files
+    app_state.source_ttwt_path = None
     with TTWAProject.open(p) as proj:
         schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
     return {"status": "opened", "path": str(p), "schema_version": schema_v}
+
+
+@router.get("/open-status/{job_id}")
+def open_status(job_id: str):
+    """Status de um job de abertura de .ttwt."""
+    job = _open_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job não encontrado.")
+    return job
 
 
 @router.get("/summary")
@@ -111,8 +148,21 @@ def project_meta():
 
 @router.get("/current")
 def current_project():
-    """Retorna o caminho do projeto aberto (ou null)."""
-    return {"path": app_state.current_project_path}
+    """Retorna o caminho do projeto aberto e o caminho de exibição (original .ttwt ou .ttwa)."""
+    display = app_state.source_ttwt_path or app_state.current_project_path
+    return {"path": app_state.current_project_path, "display_path": display}
+
+
+@router.get("/pending-open")
+def pending_open():
+    """Retorna e limpa um arquivo pendente de abertura (via Apple Event ou --open para .ttwt).
+
+    O frontend consulta este endpoint na inicialização e no evento 'focus' da janela.
+    Se retornar {"path": null}, não há nada pendente.
+    """
+    path = app_state.pending_open_path
+    app_state.pending_open_path = None   # consume it
+    return {"path": path}
 
 
 @router.get("/manifest")
@@ -272,12 +322,58 @@ def export_project(req: ExportRequest):
 
 
 # ---------------------------------------------------------------------------
+# Save as
+# ---------------------------------------------------------------------------
+
+@router.post("/saveas")
+def saveas_project(req: SaveAsRequest):
+    """Inicia exportação do projeto atual para um novo arquivo (.ttwa ou .ttwt)."""
+    _require_project()
+    if req.format not in ("ttwt", "ttwa"):
+        raise HTTPException(status_code=400, detail="Formato inválido. Use 'ttwt' ou 'ttwa'.")
+    job_id = str(uuid.uuid4())
+    _saveas_jobs[job_id] = {
+        "status": "running",
+        "done": 0,
+        "total": 0,
+        "message": "Iniciando…",
+        "result": None,
+        "error": None,
+    }
+    threading.Thread(
+        target=_run_saveas,
+        args=(job_id, app_state.current_project_path, req.path, req.format),
+        daemon=True,
+    ).start()
+    return {"job_id": job_id}
+
+
+@router.get("/saveas-status/{job_id}")
+def saveas_status(job_id: str):
+    """Status de um job de save-as."""
+    job = _saveas_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job não encontrado.")
+    return job
+
+
+# ---------------------------------------------------------------------------
 # Helper
 # ---------------------------------------------------------------------------
 
 def _require_project():
     if not app_state.current_project_path:
         raise HTTPException(status_code=400, detail="Nenhum projeto aberto. Use /api/project/open primeiro.")
+
+
+def _cleanup_temp_ttwt() -> None:
+    """Apaga o .ttwa temporário criado ao abrir um .ttwt, se houver."""
+    if app_state.source_ttwt_path and app_state.current_project_path:
+        try:
+            Path(app_state.current_project_path).unlink(missing_ok=True)
+        except Exception:
+            pass
+    app_state.source_ttwt_path = None
 
 
 # ---------------------------------------------------------------------------
@@ -332,6 +428,94 @@ def _run_upgrade(job_id: str, project_path: str, compress: bool) -> None:
         })
     except Exception as exc:
         _upgrade_jobs[job_id].update({
+            "status": "error",
+            "error": str(exc),
+            "message": str(exc),
+        })
+
+
+def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
+    """Descomprime .ttwt para .ttwa temporário e define como projeto atual."""
+    import os
+    import tempfile
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, decompress_from_ttwt
+
+    def _progress(done: int, total: int):
+        mb_done  = done  // (1024 * 1024)
+        mb_total = total // (1024 * 1024)
+        _open_jobs[job_id].update({
+            "done": done, "total": total,
+            "message": f"Descomprimindo… {mb_done} MB / {mb_total} MB",
+        })
+
+    try:
+        fd, tmp_path = tempfile.mkstemp(suffix=".ttwa", prefix="ttwt_")
+        os.close(fd)
+        decompress_from_ttwt(source_ttwt, tmp_path, progress_cb=_progress)
+
+        _cleanup_temp_ttwt()
+
+        with TTWAProject.open(tmp_path) as proj:
+            schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
+
+        app_state.current_project_path = tmp_path
+        app_state.source_ttwt_path = source_ttwt
+
+        _open_jobs[job_id].update({
+            "status": "done",
+            "message": "Pronto!",
+            "result": {
+                "path": source_ttwt,
+                "schema_version": schema_v,
+                "ttwt_size": os.path.getsize(source_ttwt),
+                "ttwa_size": os.path.getsize(tmp_path),
+            },
+        })
+    except Exception as exc:
+        _open_jobs[job_id].update({
+            "status": "error",
+            "error": str(exc),
+            "message": str(exc),
+        })
+
+
+def _run_saveas(job_id: str, source: str, dest: str, fmt: str) -> None:
+    """Copia/comprime o projeto para um novo arquivo."""
+    import os
+    from ttwtools.project import compress_to_ttwt
+
+    def _progress(done: int, total: int):
+        label = "Comprimindo" if fmt == "ttwt" else "Copiando"
+        mb_done  = done  // (1024 * 1024)
+        mb_total = total // (1024 * 1024)
+        _saveas_jobs[job_id].update({
+            "done": done, "total": total,
+            "message": f"{label}… {mb_done} MB / {mb_total} MB",
+        })
+
+    try:
+        Path(dest).parent.mkdir(parents=True, exist_ok=True)
+        if fmt == "ttwt":
+            compress_to_ttwt(source, dest, progress_cb=_progress)
+        else:  # 'ttwa' — copy in chunks
+            total = os.path.getsize(source)
+            done = 0
+            with open(source, "rb") as src, open(dest, "wb") as out:
+                while True:
+                    chunk = src.read(65536)
+                    if not chunk:
+                        break
+                    out.write(chunk)
+                    done += len(chunk)
+                    _progress(done, total)
+
+        _saveas_jobs[job_id].update({
+            "status": "done",
+            "message": "Salvo com sucesso.",
+            "result": {"path": dest, "size": os.path.getsize(dest)},
+        })
+    except Exception as exc:
+        _saveas_jobs[job_id].update({
             "status": "error",
             "error": str(exc),
             "message": str(exc),

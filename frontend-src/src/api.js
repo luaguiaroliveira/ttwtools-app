@@ -28,12 +28,16 @@ export const api = {
     current:        ()     => request('GET',  '/api/project/current'),
     create:         body   => request('POST', '/api/project/create', body),
     open:           body   => request('POST', '/api/project/open',   body),
+    openStatus:     jobId  => request('GET',  `/api/project/open-status/${jobId}`),
     summary:        ()     => request('GET',  '/api/project/summary'),
     meta:           ()     => request('GET',  '/api/project/meta'),
     manifest:       ()     => request('GET',  '/api/project/manifest'),
     export:         body   => request('POST', '/api/project/export', body),
     upgrade:        (compress = true) => request('POST', '/api/project/upgrade', { compress }),
     upgradeStatus:  jobId  => request('GET',  `/api/project/upgrade/status/${jobId}`),
+    saveAs:         body   => request('POST', '/api/project/saveas', body),
+    saveAsStatus:   jobId  => request('GET',  `/api/project/saveas-status/${jobId}`),
+    pendingOpen:    ()     => request('GET',  '/api/project/pending-open'),
   },
 
   corpus: {

@@ -137,25 +137,18 @@ def get_tagged_tokens(corpus_name: str, filename: str, tagger_type: str | None =
                 tagged_tagger = entry["tagger_type"]
                 break
 
-        row = None
+        content = None
         if tagged_name and tagged_tagger:
-            row = proj._con.execute(
-                "SELECT content FROM tagged_files WHERE corpus_name=? AND filename=? AND tagger_type=?",
-                (corpus_name, tagged_name, tagged_tagger),
-            ).fetchone()
+            # Use proj.get_tagged_file() so v0.2 zlib-compressed content is decoded.
+            content = proj.get_tagged_file(corpus_name, tagged_name, tagged_tagger)
 
-        raw_row = proj._con.execute(
-            "SELECT content FROM corpus_files WHERE corpus_name=? AND filename=?",
-            (corpus_name, filename),
-        ).fetchone()
+        raw_text = proj.get_corpus_file(corpus_name, filename)
 
-    if not row:
+    if not content:
         raise HTTPException(
             status_code=404,
             detail=f"Arquivo tagueado não encontrado para '{filename}'.",
         )
-
-    content = row[0]
     tokens: list[dict] = []
 
     # Detect format: JSONL (starts with '{') or legacy TSV
@@ -196,8 +189,6 @@ def get_tagged_tokens(corpus_name: str, filename: str, tagger_type: str | None =
                 word = line
                 tags = []
             tokens.append({"word": word, "tags": tags})
-
-    raw_text = raw_row[0] if raw_row else None
 
     return {
         "corpus_name": corpus_name,

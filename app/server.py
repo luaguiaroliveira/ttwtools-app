@@ -77,7 +77,12 @@ def build_app(open_file: str | None = None) -> FastAPI:
     from app import state as app_state
 
     if open_file:
-        app_state.current_project_path = str(Path(open_file).resolve())
+        p = Path(open_file).resolve()
+        if p.suffix.lower() == '.ttwt':
+            # .ttwt needs decompression — queue for frontend (shows progress bar)
+            app_state.pending_open_path = str(p)
+        else:
+            app_state.current_project_path = str(p)
 
     # ------------------------------------------------------------------
     # Frontend estático
