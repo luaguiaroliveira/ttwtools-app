@@ -83,18 +83,18 @@ export const api = {
   },
 
   viz: {
-    /**
-     * Retorna os valores norm/1000 por documento para dois corpora.
-     * @param {string}   c1, c2   — nomes dos corpora
-     * @param {string}   tagger1, tagger2 — tipo de tagger (opcional)
-     * @param {string[]} features — lista de features; null = todas
-     */
     rawdata: (c1, c2, tagger1 = null, tagger2 = null, features = null) => {
       const p = new URLSearchParams({ c1, c2 })
       if (tagger1)  p.set('tagger1', tagger1)
       if (tagger2)  p.set('tagger2', tagger2)
       if (features) features.forEach(f => p.append('features', f))
       return request('GET', `/api/viz/rawdata?${p}`)
+    },
+    reduction: (body) => request('POST', '/api/viz/reduction', body),
+    heatmap: (corpus, taggerType = null, topN = 30) => {
+      const p = new URLSearchParams({ corpus, top_n: topN })
+      if (taggerType) p.set('tagger_type', taggerType)
+      return request('GET', `/api/viz/heatmap?${p}`)
     },
   },
 

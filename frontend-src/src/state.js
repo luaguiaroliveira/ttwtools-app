@@ -56,5 +56,8 @@ export const state = {
 
   // Cache dos dados brutos por documento (carregado sob demanda)
   rawData: null,
+
+  // Feature selecionada no histograma
+  histogramFeature: null,
 }
 

@@ -258,3 +258,130 @@ export function renderViolin(suffix, rawData, rows, topN = 15, c1Name = 'Corpus 
 
   Plotly.react(el, traces, layout, PLOTLY_CONFIG)
 }
+
+// ── Heatmap clusterizado ──────────────────────────────────────────────────────
+
+/**
+ * renderHeatmap — feature table de UM corpus como heatmap clusterizado.
+ * @param {string} suffix
+ * @param {object} heatmapData — resposta de GET /api/viz/heatmap
+ */
+export function renderHeatmap(suffix, heatmapData) {
+  const el = document.getElementById(suffix ? `plotly-heatmap-${suffix}` : 'plotly-heatmap')
+  if (!el) return
+
+  const t = _theme()
+  const { z, x, y, corpus } = heatmapData
+
+  const trace = {
+    type: 'heatmap',
+    z, x, y,
+    colorscale: 'RdBu',
+    reversescale: true,
+    zmid: 0,
+    colorbar: {
+      title: { text: 'norm/1000', font: { size: 10, color: t.font_color } },
+      tickfont: { size: 9, color: t.font_color },
+      len: 0.7,
+    },
+    hovertemplate: '<b>%{y}</b><br><b>%{x}</b><br>%{z:.2f}<extra></extra>',
+  }
+
+  const fontSizeY = Math.max(6, Math.min(10, Math.floor(500 / (y?.length || 30))))
+  const fontSizeX = Math.max(6, Math.min(10, Math.floor(800 / (x?.length || 30))))
+
+  Plotly.react(el, [trace], {
+    paper_bgcolor: t.paper_bgcolor,
+    plot_bgcolor:  t.plot_bgcolor,
+    title: { text: corpus || '', font: { size: 12, color: t.font_color }, x: 0.5 },
+    font: { color: t.font_color, family: 'inherit', size: 10 },
+    xaxis: {
+      tickangle: -45, tickfont: { size: fontSizeX },
+      gridcolor: t.grid_color, tickcolor: t.font_color,
+    },
+    yaxis: {
+      tickfont: { size: fontSizeY }, autorange: 'reversed',
+      tickcolor: t.font_color,
+    },
+    margin: { l: 130, r: 80, t: 40, b: 120 },
+    height: Math.max(400, Math.min(900, (y?.length || 30) * 18 + 180)),
+  }, PLOTLY_CONFIG)
+}
+
+// ── Histograma + KDE ──────────────────────────────────────────────────────────
+
+/**
+ * renderHistogram — histogramas sobrepostos + curva KDE (Gaussian) para uma feature.
+ */
+export function renderHistogram(suffix, rawData, rows, topN = 20, selectedFeature = null, c1Name = 'Corpus 1', c2Name = 'Corpus 2') {
+  const el = document.getElementById(suffix ? `plotly-histogram-${suffix}` : 'plotly-histogram')
+  if (!el) return
+
+  const t = _theme()
+
+  const topFeats = rows.slice(0, topN).map(r => r.feature ?? r.Feature)
+  const feat = (selectedFeature && topFeats.includes(selectedFeature)) ? selectedFeature : topFeats[0]
+  if (!feat) return
+
+  const vals1 = (rawData.corpus1?.docs ?? []).map(d => Number(d[feat]) || 0)
+  const vals2 = (rawData.corpus2?.docs ?? []).map(d => Number(d[feat]) || 0)
+
+  const allVals = [...vals1, ...vals2]
+  const minV = Math.min(...allVals), maxV = Math.max(...allVals)
+  const nbins = Math.max(10, Math.min(40, Math.round(Math.sqrt(allVals.length) * 1.5)))
+  const binWidth = (maxV - minV) / (nbins || 1) || 1
+
+  const makeTrace = (vals, name, fill) => ({
+    type: 'histogram', x: vals, name, opacity: 0.6,
+    marker: { color: fill },
+    nbinsx: nbins,
+    xbins: { start: minV, end: maxV, size: binWidth },
+    hovertemplate: `<b>${name}</b><br>Intervalo: %{x}<br>Qtd: %{y}<extra></extra>`,
+  })
+
+  function _kde(vals) {
+    if (!vals.length) return { xs: [], ys: [] }
+    const n   = vals.length
+    const mean = vals.reduce((a, b) => a + b, 0) / n
+    const std  = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / n)
+    const h    = 1.06 * std * Math.pow(n, -0.2) || 1
+    const xs   = Array.from({ length: 80 }, (_, i) => minV + i * (maxV - minV) / 79)
+    const ys   = xs.map(x =>
+      vals.reduce((s, xi) => s + Math.exp(-0.5 * ((x - xi) / h) ** 2), 0)
+        / (n * h * Math.sqrt(2 * Math.PI))
+    )
+    return { xs, ys }
+  }
+
+  const kde1 = _kde(vals1)
+  const kde2 = _kde(vals2)
+
+  Plotly.react(el, [
+    makeTrace(vals1, c1Name, C1_FILL),
+    makeTrace(vals2, c2Name, C2_FILL),
+    {
+      type: 'scatter', mode: 'lines', name: `KDE ${c1Name}`, showlegend: false,
+      x: kde1.xs, y: kde1.ys.map(y => y * vals1.length * binWidth),
+      line: { color: C1_COLOR, width: 2 },
+      hovertemplate: `<b>KDE ${c1Name}</b><br>%{x:.2f}: %{y:.3f}<extra></extra>`,
+    },
+    {
+      type: 'scatter', mode: 'lines', name: `KDE ${c2Name}`, showlegend: false,
+      x: kde2.xs, y: kde2.ys.map(y => y * vals2.length * binWidth),
+      line: { color: C2_COLOR, width: 2 },
+      hovertemplate: `<b>KDE ${c2Name}</b><br>%{x:.2f}: %{y:.3f}<extra></extra>`,
+    },
+  ], {
+    paper_bgcolor: t.paper_bgcolor, plot_bgcolor: t.plot_bgcolor,
+    font: { color: t.font_color, family: 'inherit', size: 11 },
+    title: { text: feat, font: { size: 13, color: t.font_color }, x: 0.5 },
+    barmode: 'overlay',
+    xaxis: { title: { text: 'norm/1000', font: { size: 10 } }, gridcolor: t.grid_color, zerolinecolor: t.grid_color, tickfont: { size: 9 } },
+    yaxis: { title: { text: 'Frequência', font: { size: 10 } }, gridcolor: t.grid_color, tickfont: { size: 9 } },
+    legend: {
+      font: { size: 10, color: t.font_color }, bgcolor: 'transparent', borderwidth: 0,
+      orientation: 'h', x: 0.5, xanchor: 'center', y: 1.03, yanchor: 'bottom',
+    },
+    margin: { l: 55, r: 20, t: 55, b: 55 }, height: 420, hovermode: 'closest',
+  }, PLOTLY_CONFIG)
+}

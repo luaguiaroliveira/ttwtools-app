@@ -8,8 +8,8 @@ import { showToast }        from '../ui.js'
 import { state }            from '../state.js'
 import { drawChart, PALETTES } from '../chart.js'
 import { showFeatureDetail } from './feature-detail.js'
-import { renderScatter, renderBubble, renderStrip } from './viz-comparison.js'
-import { renderRadar, renderViolin }                from './viz-single.js'
+import { renderScatter, renderBubble, renderStrip, renderParcoords } from './viz-comparison.js'
+import { renderRadar, renderViolin, renderHeatmap, renderHistogram } from './viz-single.js'
 import { initReduction, setReductionReady } from './viz-reduction.js'
 
 // Column definitions
@@ -130,6 +130,15 @@ function renderResultsIn(suffix) {
   // Render the active Plotly visualization (only standalone has tabs)
   if (suffix) {
     setReductionReady(suffix, true)
+    // Populate histogram feature selector
+    const sfx = suffix ? `-${suffix}` : ''
+    const featSel = document.getElementById(`histogram-feature-sel${sfx}`)
+    if (featSel) {
+      const rows = state.kfaData?.results || []
+      const topFeats = rows.slice(0, state.topN).map(r => r.Feature).filter(Boolean)
+      featSel.innerHTML = topFeats.map(f => `<option value="${f}">${f}</option>`).join('')
+      state.histogramFeature = topFeats[0] || null
+    }
     requestAnimationFrame(() => _renderActiveViz(suffix))
   }
 }
@@ -167,6 +176,9 @@ async function loadKfa(optStr, suffix) {
     const merged = _mergeMetrics(biberResults, pondResults)
     state.kfaData     = { results: merged }
     state.rawData     = null   // invalidate rawdata cache for new KFA result
+    // invalidate heatmap caches
+    delete state[`heatmap_${c1}`]
+    delete state[`heatmap_${c2}`]
     state.kfaC1       = c1
     state.kfaC2       = c2
     state.kfaTagger   = tagger || null
@@ -462,6 +474,9 @@ function _bindControls(suffix) {
 export function renderResultsData(data, c1, c2) {
   state.kfaData = data; state.kfaC1 = c1; state.kfaC2 = c2
   state.rawData = null   // invalidate rawdata cache
+  // invalidate heatmap caches
+  delete state[`heatmap_${c1}`]
+  delete state[`heatmap_${c2}`]
   state.sortCol = 'Effect_Size'; state.sortDir = -1
   state.filter = ''; state.minEffect = 0; state.chartMetric = 'Effect_Size'
   renderResultsIn(null)  // inline = no suffix
@@ -476,8 +491,6 @@ export function renderResultsData(data, c1, c2) {
 function _withRawData(suffix, onReady) {
   if (state.rawData) { onReady(state.rawData); return }
 
-  const sfx = `-${suffix}`
-  const statusId = `plotly-strip${sfx}`   // use the first rawdata container as feedback
   const tagger1 = state.kfaTagger || null
   const tagger2 = state.kfaTagger || null
 
@@ -499,6 +512,21 @@ function _withRawData(suffix, onReady) {
     })
 }
 
+function _withHeatmapData(suffix, corpusKey, onReady) {
+  const corpus = corpusKey === 'c1' ? state.kfaC1 : state.kfaC2
+  const cacheKey = `heatmap_${corpus}`
+  if (state[cacheKey]) { onReady(state[cacheKey]); return }
+
+  api.viz.heatmap(corpus, state.kfaTagger, state.topN)
+    .then(data => {
+      state[cacheKey] = data
+      onReady(data)
+    })
+    .catch(err => {
+      showToast(`Erro ao carregar heatmap: ${err.message}`, 'error')
+    })
+}
+
 function _renderActiveViz(suffix) {
   // Only the standalone view has the extra tabs
   if (!suffix) return
@@ -515,12 +543,18 @@ function _renderActiveViz(suffix) {
       renderBubble(suffix, rows, state.topN, state.bubbleSizeEnc, c1, c2)
     } else if (viz === 'strip') {
       _withRawData(suffix, rd => renderStrip(suffix, rd, rows, state.topN, c1, c2))
+    } else if (viz === 'parcoords') {
+      _withRawData(suffix, rd => renderParcoords(suffix, rd, rows, state.topN, c1, c2))
     }
   } else if (tab === 'single') {
     if (state.singleViz === 'radar') {
       renderRadar(suffix, rows, state.topN, state.radarBoth, c1, c2, state.singleCorpus)
     } else if (state.singleViz === 'violin') {
       _withRawData(suffix, rd => renderViolin(suffix, rd, rows, state.topN, c1, c2))
+    } else if (state.singleViz === 'heatmap') {
+      _withHeatmapData(suffix, state.singleCorpus, hd => renderHeatmap(suffix, hd))
+    } else if (state.singleViz === 'histogram') {
+      _withRawData(suffix, rd => renderHistogram(suffix, rd, rows, state.topN, state.histogramFeature, c1, c2))
     }
   }
 }
@@ -638,6 +672,12 @@ function _bindTabControls(suffix) {
   // ── Bubble size encoding ──
   document.getElementById(`bubble-size-enc${sfx}`)?.addEventListener('change', e => {
     state.bubbleSizeEnc = e.target.value
+    _renderActiveViz(suffix)
+  })
+
+  // ── Histogram feature selector ──
+  document.getElementById(`histogram-feature-sel${sfx}`)?.addEventListener('change', e => {
+    state.histogramFeature = e.target.value
     _renderActiveViz(suffix)
   })
 

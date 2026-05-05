@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TTWtools</title>
-  <script type="module" crossorigin src="/assets/index-zfLY2mcq.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CG6bLCFn.css">
+  <script type="module" crossorigin src="/assets/index-BNB52UF3.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B7d-b74f.css">
 </head>
 <body class="flex flex-col h-screen overflow-hidden bg-base-100 text-base-content">
 
@@ -627,7 +627,7 @@
               <button class="viz-subtab active" data-viz="barchart">Bar chart KFA</button>
               <button class="viz-subtab" data-viz="scatter">Scatter C1×C2</button>
               <button class="viz-subtab" data-viz="bubble">Bubble chart</button>
-              <button class="viz-subtab viz-subtab--soon" data-viz="parcoords" disabled title="Requer /api/viz/rawdata">Coord. paralelas</button>
+              <button class="viz-subtab" data-viz="parcoords">Coord. paralelas</button>
               <button class="viz-subtab" data-viz="strip">Strip plot</button>
             </div>
 
@@ -699,12 +699,13 @@
               <div id="plotly-bubble-standalone" class="plotly-box"></div>
             </div>
 
-            <!-- ── Sub-painel: Coord. paralelas (em desenvolvimento) ── -->
+            <!-- ── Sub-painel: Coord. paralelas ── -->
             <div class="viz-subpanel" id="comp-viz-parcoords-standalone">
-              <div class="viz-soon-box">
-                <p>Coordenadas paralelas</p>
-                <p class="text-sm opacity-60 mt-1">Cada linha = um texto, cada eixo = uma feature (top-N por |d|), cor = corpus.<br>Requer endpoint <code>/api/viz/rawdata</code> — em desenvolvimento.</p>
-              </div>
+              <p class="text-xs text-base-content/50 mb-2">
+                Cada linha = um texto. Cada eixo = uma feature (top-N por |d|). Cor = corpus.
+                Arraste as faixas de seleção sobre os eixos para filtrar subconjuntos de textos.
+              </p>
+              <div id="plotly-parcoords-standalone" class="plotly-box"></div>
             </div>
 
             <!-- ── Sub-painel: Strip/Jitter plot ── -->
@@ -736,8 +737,8 @@
             <div class="viz-subtabs" id="single-subtabs-standalone">
               <button class="viz-subtab active" data-viz="radar">Radar</button>
               <button class="viz-subtab" data-viz="violin">Violin / Box</button>
-              <button class="viz-subtab viz-subtab--soon" data-viz="heatmap" disabled title="Requer /api/viz/heatmap">Heatmap</button>
-              <button class="viz-subtab viz-subtab--soon" data-viz="histogram" disabled title="Requer /api/viz/rawdata">Histograma</button>
+              <button class="viz-subtab" data-viz="heatmap">Heatmap</button>
+              <button class="viz-subtab" data-viz="histogram">Histograma</button>
             </div>
 
             <!-- ── Sub-painel: Radar chart ── -->
@@ -762,20 +763,28 @@
               <div id="plotly-violin-standalone" class="plotly-box"></div>
             </div>
 
-            <!-- ── Sub-painel: Heatmap (em desenvolvimento) ── -->
+            <!-- ── Sub-painel: Heatmap ── -->
             <div class="viz-subpanel" id="single-viz-heatmap-standalone">
-              <div class="viz-soon-box">
-                <p>Heatmap texto × feature (clusterizado)</p>
-                <p class="text-sm opacity-60 mt-1">Linhas e colunas reordenadas por clusterização hierárquica.<br>Requer endpoint <code>/api/viz/heatmap</code> — em desenvolvimento.</p>
-              </div>
+              <p class="text-xs text-base-content/50 mb-2">
+                Feature table do corpus selecionado, com textos e features reordenados por clusterização hierárquica (ward).
+              </p>
+              <div id="plotly-heatmap-standalone" class="plotly-box"></div>
             </div>
 
-            <!-- ── Sub-painel: Histograma (em desenvolvimento) ── -->
+            <!-- ── Sub-painel: Histograma + KDE ── -->
             <div class="viz-subpanel" id="single-viz-histogram-standalone">
-              <div class="viz-soon-box">
-                <p>Histograma + KDE por feature</p>
-                <p class="text-sm opacity-60 mt-1">Histogramas sobrepostos (C1 vs C2) com curva de densidade.<br>Requer endpoint <code>/api/viz/rawdata</code> — em desenvolvimento.</p>
+              <div class="flex flex-wrap gap-3 items-end mb-3">
+                <label class="form-control">
+                  <span class="label-text text-xs font-semibold text-base-content mb-1 block">Feature</span>
+                  <select id="histogram-feature-sel-standalone" class="select select-bordered select-xs min-w-52">
+                    <!-- populado por results.js quando os dados são carregados -->
+                  </select>
+                </label>
               </div>
+              <p class="text-xs text-base-content/50 mb-2">
+                Histogramas sobrepostos + curva KDE gaussiana. C1 = laranja, C2 = azul.
+              </p>
+              <div id="plotly-histogram-standalone" class="plotly-box"></div>
             </div>
 
           </div><!-- /tab corpus individual -->
@@ -801,15 +810,7 @@
 
             <div id="reduction-status-standalone" class="hidden text-xs text-base-content/60 bg-base-200 rounded p-2 mb-3 max-w-xl"></div>
 
-            <div id="plotly-reduction-standalone" class="plotly-box" style="min-height:420px">
-              <div class="viz-soon-box h-full flex flex-col items-center justify-center">
-                <p>Redução dimensional</p>
-                <p class="text-sm opacity-60 mt-1 max-w-sm text-center">
-                  Selecione um método e clique em <strong>Calcular</strong>.<br>
-                  Requer endpoint <code>/api/viz/reduction</code> — em desenvolvimento.
-                </p>
-              </div>
-            </div>
+            <div id="plotly-reduction-standalone" class="plotly-box" style="min-height:420px"></div>
 
           </div><!-- /tab redução dimensional -->
 

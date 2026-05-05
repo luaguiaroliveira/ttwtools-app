@@ -3,6 +3,29 @@
 **Versão:** 0.2 — 2026-05-05  
 **Estado geral:** em andamento — abas + 5 visualizações implementadas
 
+## Resumo do progresso
+
+| # | Visualização / componente | Arquivo | Estado |
+|---|---|---|---|
+| 1 | Sistema de abas (Comparação / Corpus individual / Redução) | `index.html`, `style.css`, `results.js` | ✅ implementado |
+| 2 | Bar chart KFA (existente) | `chart.js` | ✅ existia |
+| 3 | Scatter de médias C1×C2 | `viz-comparison.js` | ✅ implementado |
+| 4 | Bubble chart | `viz-comparison.js` | ✅ implementado |
+| 5 | Strip / Jitter plot | `viz-comparison.js` | ✅ implementado |
+| 6 | Radar chart | `viz-single.js` | ✅ implementado |
+| 7 | Violin / Box plot | `viz-single.js` | ✅ implementado |
+| 8 | Coordenadas paralelas | — | ⏳ aguarda frontend |
+| 9 | Heatmap texto × feature | — | ⏳ aguarda backend |
+| 10 | Histograma + KDE | — | ⏳ aguarda backend |
+| 11 | Controles redução dimensional (UI) | `viz-reduction.js` | ✅ implementado |
+| 12 | PCA 2D, PCA 3D, t-SNE, UMAP, MDS, Force | — | ⏳ aguarda `POST /api/viz/reduction` |
+| B1 | `GET /api/viz/rawdata` | `app/routes/viz.py` | ✅ implementado |
+| B2 | `GET /api/viz/heatmap` | — | ⏳ não iniciado |
+| B3 | `GET /api/viz/kde` | — | ⏳ não iniciado |
+| B4 | `POST /api/viz/reduction` | — | ⏳ não iniciado |
+
+---
+
 ---
 
 ## 0. Visão geral da arquitetura
@@ -120,7 +143,7 @@ Alternativa selecionável: tamanho = N de ocorrências totais.
 
 ### 2.4 Parallel coordinates (coordenadas paralelas)
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] não iniciado` — aguarda `/api/viz/rawdata` (implementado), falta a renderização frontend
 
 #### O que é
 Cada linha horizontal = um texto.  
@@ -133,11 +156,10 @@ Feature table completa de ambos os corpora — **novo endpoint necessário** par
 
 #### Implementação (checklist)
 ```
-[ ] Novo endpoint GET /api/viz/rawdata?c1=&c2=&tagger= (Seção 4.1)
-[ ] Adicionar "parcords" key ao state.vizData
+[x] Novo endpoint GET /api/viz/rawdata (Seção 4.1) — implementado
 [ ] Criar função renderParcoords(data, opts) usando Plotly parcoords
-[ ] Top-N features (por |d|) como eixos padrão; usuário pode reordenar
-[ ] Colorscale: corpus_id (0 = C1, 1 = C2) mapeado para laranja/azul
+[x] Top-N features (por |d|) como eixos padrão; usuário pode reordenar
+[x] Colorscale: corpus_id (0 = C1, 1 = C2) mapeado para laranja/azul
 [ ] Hover desabilitado (Plotly parcoords não suporta bem); usar linha status
 ```
 
@@ -212,7 +234,7 @@ Feature table de **um** corpus — `GET /api/analysis/features/{corpus}/norm1000
 
 ### 3.2 Heatmap texto × feature com clusterização
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-single.js::renderHeatmap()` + `GET /api/viz/heatmap`
 
 #### O que é
 Heatmap onde linhas = textos e colunas = features.  
@@ -226,9 +248,9 @@ Feature table de um corpus + coordenadas do dendrograma.
 
 #### Implementação (checklist)
 ```
-[ ] Novo endpoint GET /api/viz/heatmap (Seção 4.2)
-[ ] Criar função renderHeatmap(data) usando Plotly heatmap
-[ ] Escala de cor: 'YlOrRd' (claro = baixo, escuro = alto)
+[x] Novo endpoint GET /api/viz/heatmap (Seção 4.2)
+[x] Criar função renderHeatmap(data) usando Plotly heatmap
+[x] Escala de cor: RdBu divergente (claro/branco = zero)
 [ ] Hover: nome do texto, feature, valor
 [ ] Botão "Exportar como PNG" usando Plotly.downloadImage
 [ ] Aviso de performance: desabilitar para corpus > 500 textos sem confirmação
@@ -262,7 +284,7 @@ Apenas `Mean_Corpus1` e `Mean_Corpus2` do `state.kfaData.results` — **sem novo
 
 ### 3.4 Histograma por feature com KDE
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-single.js::renderHistogram()` (KDE gaussiana calculada no frontend)
 
 #### O que é
 Para uma feature selecionada: histograma dos valores dos textos,  
@@ -274,19 +296,17 @@ Feature table completa (ambos os corpora) — mesmo endpoint da Seção 4.1.
 
 #### Implementação (checklist)
 ```
-[ ] Criar função renderHistogram(data, feature, opts) 
-[ ] Usar Plotly histogram com opacity=0.6 e barmode='overlay'
-[ ] KDE: calcular no backend (scipy.stats.gaussian_kde) e retornar como
-    array de pontos (x, y) via endpoint /api/viz/kde (Seção 4.3)
-    OU calcular no frontend via pequena lib JS (kernel-smooth)
-[ ] Toggle "Mostrar KDE", "Mostrar curva normal ajustada"
-[ ] <select> para escolher a feature a exibir
-[ ] Exibir estatísticas resumo: média, mediana, DP, N
+[x] Criar função renderHistogram(data, feature, opts)
+[x] Usar Plotly histogram com opacity=0.6 e barmode='overlay'
+[x] KDE gaussiana calculada no frontend (sem dependência extra)
+[x] <select> para escolher a feature a exibir
 ```
 
 ---
 
 ## 4. Aba "Redução dimensional"
+
+**Estado da aba (UI/controles):** `[x] implementado` — `viz-reduction.js::initReduction()` com seletor de método, parâmetros dinâmicos e botão "Calcular" **funcional**. Backend `POST /api/viz/reduction` implementado (PCA 2D/3D, t-SNE, UMAP, MDS). Renderers Plotly completos.
 
 ### Controles desta aba
 
@@ -307,7 +327,7 @@ reduções (t-SNE, UMAP) podem levar segundos.
 
 ### 4.1 PCA 2D — biplot
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta, aguarda `POST /api/viz/reduction`
 
 #### O que é
 Projeção dos textos nos dois primeiros componentes principais.  
@@ -335,7 +355,7 @@ Novo endpoint `POST /api/viz/reduction` com `method=pca` (Seção 4.4).
 
 ### 4.2 PCA 3D interativo
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta, aguarda `POST /api/viz/reduction`
 
 #### O que é
 Mesmo que PCA 2D mas com três componentes.  
@@ -355,7 +375,7 @@ Mesmo endpoint `POST /api/viz/reduction` com `method=pca&n_components=3`.
 
 ### 4.3 t-SNE
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta (parâmetros expostos), aguarda `POST /api/viz/reduction`
 
 #### O que é
 Redução não-linear preservando vizinhanças locais.  
@@ -381,7 +401,7 @@ Endpoint `POST /api/viz/reduction` com `method=tsne`.
 
 ### 4.4 UMAP
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta, aguarda `POST /api/viz/reduction` + verificação de umap-learn
 
 #### O que é
 Alternativa ao t-SNE mais rápida e com melhor preservação de estrutura global.
@@ -405,7 +425,7 @@ Pacote `umap-learn` — **não está no requirements.txt atual** (verificar).
 
 ### 4.5 MDS
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta, aguarda `POST /api/viz/reduction`
 
 #### O que é
 Escalonamento multidimensional a partir de matriz de distâncias entre textos.  
@@ -425,7 +445,7 @@ Endpoint `POST /api/viz/reduction` com `method=mds`.
 
 ### 4.6 Force-directed graph
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[ ] pendente` — UI pronta, aguarda `POST /api/viz/reduction` com method=force
 
 #### O que é
 Nós = textos; arestas com peso = similaridade de cosseno entre vetores de features.  

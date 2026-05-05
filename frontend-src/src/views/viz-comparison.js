@@ -376,3 +376,70 @@ export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1
                     _buildTrace(rawData.corpus2, C2_COLOR, c2Name,  0.45)],
     layout, PLOTLY_CONFIG)
 }
+
+// ── Coordenadas paralelas ─────────────────────────────────────────────────────
+
+/**
+ * renderParcoords — exibe os textos dos dois corpora como linhas em um
+ * gráfico de coordenadas paralelas (eixo por feature linguística).
+ *
+ * @param {string}  suffix     — 'standalone' | null (inline quickrun)
+ * @param {object}  rawData    — resposta de /api/viz/rawdata
+ * @param {array}   rows       — lista de features da tabela KFA
+ * @param {number}  topN       — top-N features a exibir
+ * @param {string}  c1Name, c2Name — nomes dos corpora
+ */
+export function renderParcoords(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1', c2Name = 'Corpus 2') {
+  const el = document.getElementById(suffix ? `plotly-parcoords-${suffix}` : 'plotly-parcoords')
+  if (!el) return
+
+  const t = _theme()
+  const topFeats = rows.slice(0, topN).map(r => r.feature)
+
+  // Combine docs de ambos os corpora; color por corpus (0 = C1, 1 = C2)
+  const docs1 = rawData.corpus1?.docs ?? []
+  const docs2 = rawData.corpus2?.docs ?? []
+  const allDocs  = [...docs1.map(d => ({ ...d, _c: 0 })), ...docs2.map(d => ({ ...d, _c: 1 }))]
+
+  const colorScale = [[0, C1_COLOR], [1, C2_COLOR]]
+
+  const dimensions = topFeats.map(feat => {
+    const vals = allDocs.map(d => Number(d[feat]) || 0)
+    return {
+      label: feat,
+      values: vals,
+      range: [Math.min(...vals), Math.max(...vals)],
+    }
+  })
+
+  const trace = {
+    type: 'parcoords',
+    line: {
+      color:       allDocs.map(d => d._c),
+      colorscale:  colorScale,
+      showscale:   false,
+      opacity:     0.45,
+    },
+    dimensions,
+  }
+
+  // Legend synthetic traces
+  const legendTraces = [c1Name, c2Name].map((name, i) => ({
+    type: 'scatter', mode: 'markers', name,
+    x: [null], y: [null],
+    marker: { color: i === 0 ? C1_COLOR : C2_COLOR, size: 8 },
+    showlegend: true,
+  }))
+
+  Plotly.react(el, [trace, ...legendTraces], {
+    paper_bgcolor: t.paper_bgcolor,
+    plot_bgcolor:  t.plot_bgcolor,
+    font: { color: t.font_color, family: 'inherit', size: 10 },
+    legend: {
+      font: { size: 10, color: t.font_color }, bgcolor: 'transparent', borderwidth: 0,
+      orientation: 'h', x: 0.5, xanchor: 'center', y: 1.03, yanchor: 'bottom',
+    },
+    margin: { l: 60, r: 60, t: 50, b: 30 },
+    height: 500,
+  }, PLOTLY_CONFIG)
+}
