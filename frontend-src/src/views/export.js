@@ -225,9 +225,11 @@ export function initExport() {
     const prev = btn.textContent
     btn.textContent = '…'
     try {
-      const res = await api.utils.pickFolder()
+      const defaultLocation = localStorage.getItem('last_export_folder') || ''
+      const res = await api.utils.pickFolder({ defaultLocation })
       if (res?.path) {
         document.getElementById('export-dest').value = res.path
+        localStorage.setItem('last_export_folder', res.path)
       }
     } catch (_) {}
     btn.textContent = prev

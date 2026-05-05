@@ -1,5 +1,19 @@
 # Changelog — ttwtools-app
 
+## [0.3.6] — 2026-05-05
+
+### Interface — uniformização de diálogos de arquivo
+
+- **Botão "Escolher pasta…" movido para a esquerda** em todos os campos de caminho (exportar e salvar como), tornando o layout consistente com o formulário de nova análise.
+- **Salvar como**: botão passa a exibir texto ("Escolher pasta…") em vez de ícone; pasta escolhida popula automaticamente nome de arquivo sugerido (stem do projeto atual + extensão selecionada).
+- **Memória de última pasta por contexto** — cada diálogo lembra sua própria pasta via localStorage:
+  - Abrir `.ttwa`/`.ttwt` → `last_ttwa_folder`
+  - Salvar como → `last_saveas_folder`
+  - Exportar projeto → `last_export_folder`
+  - Corpus / saída nova análise → `qr_last_corpus_folder` / `qr_last_output_folder` (já existiam)
+- **`pick-file` aceita `default_location`** (backend `utils.py` + `api.js`): o seletor nativo abre na última pasta usada.
+- **`pick-file` aceita `.ttwt`**: adicionado ao filtro de tipos no seletor macOS/tkinter.
+
 ## [Unreleased] — 2026-05-01
 
 ### Frontend (frontend-src/)

@@ -65,14 +65,18 @@ def pick_folder(default_location: str = ""):
 
 
 @router.get("/pick-file")
-def pick_file():
-    """Abre o seletor de arquivo nativo do macOS e retorna o caminho escolhido."""
+def pick_file(default_location: str = ""):
+    """Abre o seletor de arquivo nativo do sistema e retorna o caminho escolhido."""
     try:
         if platform.system() == "Darwin":
+            loc_clause = (
+                f' default location POSIX file "{default_location}"'
+                if default_location else ""
+            )
             script = (
                 'POSIX path of (choose file '
-                'with prompt "Selecione um arquivo .ttwa:" '
-                'of type {"ttwa", "public.data"})'
+                'with prompt "Selecione um arquivo .ttwa ou .ttwt:" '
+                f'of type {{"ttwa", "ttwt", "public.data"}}{loc_clause})'
             )
             result = subprocess.run(
                 ["osascript", "-e", script],
@@ -80,10 +84,11 @@ def pick_file():
             )
             path = result.stdout.strip().rstrip("/") if result.returncode == 0 else ""
         else:
+            init_dir = f", initialdir='{default_location}'" if default_location else ""
             script = (
                 "import tkinter as tk; from tkinter import filedialog; "
                 "root = tk.Tk(); root.withdraw(); root.wm_attributes('-topmost', True); "
-                "p = filedialog.askopenfilename(filetypes=[('TTWA','*.ttwa'),('Todos','*')]); print(p)"
+                f"p = filedialog.askopenfilename(filetypes=[('TTWA/TTWT','*.ttwa *.ttwt'),('Todos','*')]{init_dir}); print(p)"
             )
             result = subprocess.run(
                 [sys.executable, "-c", script],

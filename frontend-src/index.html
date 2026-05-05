@@ -437,9 +437,9 @@
         <label class="form-control">
           <span class="label-text text-sm font-semibold text-base-content mb-1 block">Pasta de destino</span>
           <div class="flex gap-2">
+            <button type="button" class="btn btn-sm btn-outline shrink-0" id="btn-export-browse">Escolher pasta…</button>
             <input id="export-dest" type="text" placeholder="padrão: pasta ao lado do .ttwa"
-              class="input input-bordered input-sm flex-1" />
-            <button type="button" class="btn btn-sm btn-outline" id="btn-export-browse">Escolher pasta</button>
+              class="input input-bordered input-sm flex-1 min-w-0" />
           </div>
         </label>
         <div id="export-tree" class="exp-tree"></div>
@@ -766,11 +766,9 @@
         <label class="flex flex-col gap-1">
           <span class="text-sm font-medium">Caminho de saída</span>
           <div class="flex gap-2">
-            <input id="saveas-path" type="text" class="input input-bordered input-sm flex-1"
+            <button id="saveas-pick-btn" class="btn btn-sm btn-outline shrink-0">Escolher pasta…</button>
+            <input id="saveas-path" type="text" class="input input-bordered input-sm flex-1 min-w-0"
               placeholder="/caminho/arquivo.ttwt" />
-            <button id="saveas-pick-btn" class="btn btn-sm btn-outline" title="Escolher pasta">
-              <i data-lucide="folder-open" style="width:14px;height:14px"></i>
-            </button>
           </div>
         </label>
 

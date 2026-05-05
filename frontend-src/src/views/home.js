@@ -97,7 +97,8 @@ export async function openProject() {
 
   let path = null
   try {
-    const res = await api.utils.pickFile()
+    const defaultLocation = localStorage.getItem('last_ttwa_folder') || ''
+    const res = await api.utils.pickFile({ defaultLocation })
     path = res?.path ?? null
   } catch (_) {
     path = await new Promise(resolve => {
@@ -112,6 +113,10 @@ export async function openProject() {
     })
   }
   if (!path) return
+
+  // Salvar pasta na memória para próxima vez
+  const folder = path.replace(/\/[^/]+$/, '')
+  if (folder) localStorage.setItem('last_ttwa_folder', folder)
 
   // Mostra overlay imediatamente — antes mesmo do parse/decompression
   _showOpenOverlay('Abrindo arquivo…', 'Carregando projeto…')
@@ -347,8 +352,22 @@ function _showSaveAsModal() {
 
   pickBtn.onclick = async () => {
     try {
-      const res = await api.utils.pickFolder()
-      if (res?.path) pathInput.value = res.path.replace(/\/$/,'') + '/'
+      const defaultLocation = localStorage.getItem('last_saveas_folder') || ''
+      const res = await api.utils.pickFolder({ defaultLocation })
+      if (res?.path) {
+        const folder = res.path.replace(/\/$/, '')
+        localStorage.setItem('last_saveas_folder', folder)
+        const fmt = document.querySelector('input[name="saveas-fmt"]:checked')?.value || 'ttwt'
+        // Derive stem: from current input, or from project label
+        const cur = pathInput.value.trim()
+        const curStem = cur ? cur.replace(/\.(ttwt|ttwa)$/i, '').split(/[/\\]/).filter(Boolean).pop() : ''
+        const labelText = document.getElementById('project-label')?.textContent?.trim() ?? ''
+        const labelStem = labelText && !/nenhum/i.test(labelText)
+          ? labelText.replace(/\.(ttwt|ttwa)$/i, '').split(/[/\\]/).filter(Boolean).pop()
+          : ''
+        const stem = curStem || labelStem || 'projeto'
+        pathInput.value = folder + '/' + stem + '.' + fmt
+      }
     } catch (_) {}
   }
 
@@ -391,6 +410,9 @@ function _showSaveAsModal() {
           resultEl.classList.remove('hidden')
           const sz = job.result?.size ? (job.result.size / 1024 / 1024).toFixed(1) + ' MB' : ''
           const p  = job.result?.path || outPath
+          // Remember the folder for next time
+          const savedFolder = p.replace(/\/[^/]+$/, '')
+          if (savedFolder) localStorage.setItem('last_saveas_folder', savedFolder)
           resultEl.innerHTML = `<p class="text-success font-medium">Salvo com sucesso!</p><p class="text-xs text-base-content/60 mt-1 break-all">${p}${sz ? ' — ' + sz : ''}</p>`
           btns.classList.remove('hidden')
           cancelBtn.textContent = 'Fechar'
