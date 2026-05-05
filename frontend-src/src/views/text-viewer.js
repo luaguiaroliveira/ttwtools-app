@@ -45,11 +45,61 @@ let _legendVisible    = true
 let _pagedStyles      = []  // <style> elements injected by Paged.js — removed on re-render
 
 // ---------------------------------------------------------------------------
+// WebKit / PyWebView compatibility patch for PagedJS
+// ---------------------------------------------------------------------------
+// PagedJS's Chunker does: this.element.offsetParent.getBoundingClientRect()
+// In WebKit (used by PyWebView), position:fixed elements always have
+// offsetParent === null (per spec). PagedJS doesn't guard this → TypeError.
+// Patch the getter once so null becomes document.documentElement.
+;(function _patchOffsetParentForPagedJS() {
+  const proto = HTMLElement.prototype
+  const desc  = Object.getOwnPropertyDescriptor(proto, 'offsetParent')
+  if (!desc?.get) return
+  Object.defineProperty(proto, 'offsetParent', {
+    get() {
+      return desc.get.call(this) ?? document.documentElement
+    },
+    configurable: true,
+  })
+})()
+
+// ---------------------------------------------------------------------------
 // Init (once)
 // ---------------------------------------------------------------------------
 export function initTextViewer() {
+  // Resize handle between text pane and tag sidebar
+  const handle = document.getElementById('tv-resize-handle')
+  const aside  = document.getElementById('tv-tag-aside')
+  if (handle && aside) {
+    let dragging = false
+    let startX   = 0
+    let startW   = 0
+    handle.addEventListener('mousedown', e => {
+      dragging = true
+      startX   = e.clientX
+      startW   = aside.getBoundingClientRect().width
+      handle.classList.add('dragging')
+      document.body.style.cursor    = 'col-resize'
+      document.body.style.userSelect = 'none'
+      e.preventDefault()
+    })
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return
+      const delta  = startX - e.clientX   // drag left → wider
+      const newW   = Math.max(112, Math.min(480, startW + delta))
+      aside.style.width = `${newW}px`
+    })
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return
+      dragging = false
+      handle.classList.remove('dragging')
+      document.body.style.cursor    = ''
+      document.body.style.userSelect = ''
+    })
+  }
+
   document.getElementById('btn-tv-back')?.addEventListener('click', () => {
-    showView('feature-detail')
+    showView(state.tvOriginView || 'feature-detail')
   })
 
   document.getElementById('btn-tv-prev')?.addEventListener('click', () => {
@@ -168,10 +218,11 @@ function _positionTooltip(tooltip, e) {
 // ---------------------------------------------------------------------------
 // Public entry
 // ---------------------------------------------------------------------------
-export function showTextViewer(files, index, activeTag) {
-  state.tvFiles   = files
-  state.tvIndex   = index
-  state.tvFeature = activeTag
+export function showTextViewer(files, index, activeTag, originView = null) {
+  state.tvFiles      = files
+  state.tvIndex      = index
+  state.tvFeature    = activeTag
+  state.tvOriginView = originView || 'feature-detail'
   showView('text-viewer')
   _loadFile()
 }

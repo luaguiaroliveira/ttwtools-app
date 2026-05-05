@@ -96,6 +96,11 @@ export const api = {
       if (taggerType) p.set('tagger_type', taggerType)
       return request('GET', `/api/viz/heatmap?${p}`)
     },
+    heatmapCombined: (c1, c2, taggerType = null, topN = 30) => {
+      const p = new URLSearchParams({ c1, c2, top_n: topN })
+      if (taggerType) p.set('tagger_type', taggerType)
+      return request('GET', `/api/viz/heatmap_combined?${p}`)
+    },
   },
 
   analysis: {

@@ -388,12 +388,97 @@ export function renderStrip(suffix, rawData, rows, topN = 20, c1Name = 'Corpus 1
       if (!pt) return
       const filename = pt.customdata
       const corpusName = pt.data.name
-      onPointClick(filename, corpusName)
+      const featureName = pt.x
+      onPointClick(filename, corpusName, featureName)
     })
   }
 }
 
-// ── Coordenadas paralelas ─────────────────────────────────────────────────────
+// ── Heatmap comparativo (ambos os corpora) ────────────────────────────────────
+
+/**
+ * renderHeatmapComparison — heatmap com textos dos DOIS corpora clusterizados juntos.
+ * Usa uma faixa lateral estreita (trace separado, xaxis2) para identificar o corpus de cada texto.
+ *
+ * @param {string} suffix
+ * @param {object} data — resposta de GET /api/viz/heatmap_combined
+ */
+export function renderHeatmapComparison(suffix, data) {
+  const el = document.getElementById(suffix ? `plotly-heatmap-${suffix}` : 'plotly-heatmap')
+  if (!el) return
+
+  const t = _theme()
+  const { z, x, y, corpus_labels, c1_name, c2_name } = data
+
+  const corpusZ = corpus_labels.map(l => [l === c1_name ? 0 : 1])
+  const fontSizeY = Math.max(6, Math.min(10, Math.floor(500 / (y?.length || 30))))
+  const fontSizeX = Math.max(6, Math.min(10, Math.floor(800 / (x?.length || 30))))
+
+  // Faixa lateral: 1 coluna, colorscale bicolor (C1 / C2)
+  const traceStrip = {
+    type: 'heatmap',
+    z: corpusZ,
+    y,
+    x: [''],
+    xaxis: 'x2',
+    colorscale: [[0, C1_COLOR], [1, C2_COLOR]],
+    showscale: false,
+    hovertemplate: '%{y}<br>%{customdata}<extra></extra>',
+    customdata: corpus_labels.map(l => [l]),
+    zmin: 0, zmax: 1,
+  }
+
+  // Heatmap principal: features × textos
+  const traceMain = {
+    type: 'heatmap',
+    z, x, y,
+    colorscale: 'RdBu',
+    reversescale: true,
+    zmid: 0,
+    colorbar: {
+      title: { text: 'norm/1000', font: { size: 10, color: t.font_color } },
+      tickfont: { size: 9, color: t.font_color },
+      len: 0.7,
+      x: 1.02,
+    },
+    hovertemplate: '<b>%{y}</b><br><b>%{x}</b><br>%{z:.2f}<extra></extra>',
+  }
+
+  Plotly.react(el, [traceStrip, traceMain], {
+    paper_bgcolor: t.paper_bgcolor,
+    plot_bgcolor:  t.plot_bgcolor,
+    font: { color: t.font_color, family: 'inherit', size: 10 },
+    xaxis: {
+      domain: [0.06, 1],
+      tickangle: -45,
+      tickfont: { size: fontSizeX },
+      gridcolor: t.grid_color,
+      tickcolor: t.font_color,
+    },
+    xaxis2: {
+      domain: [0, 0.045],
+      tickfont: { size: 0 },
+      showticklabels: false,
+      fixedrange: true,
+    },
+    yaxis: {
+      tickfont: { size: fontSizeY },
+      autorange: 'reversed',
+      tickcolor: t.font_color,
+      domain: [0, 1],
+    },
+    // Legenda manual via anotações
+    annotations: [
+      { x: 0.022, y: 1.04, xref: 'paper', yref: 'paper', text: `■ ${c1_name}`,
+        font: { color: C1_COLOR, size: 10 }, showarrow: false, xanchor: 'center' },
+      { x: 0.022, y: 1.01, xref: 'paper', yref: 'paper', text: `■ ${c2_name}`,
+        font: { color: C2_COLOR, size: 10 }, showarrow: false, xanchor: 'center' },
+    ],
+    margin: { l: 130, r: 80, t: 50, b: 120 },
+    height: Math.max(400, Math.min(900, (y?.length || 30) * 18 + 200)),
+    hovermode: 'closest',
+  }, PLOTLY_CONFIG)
+}
 
 /**
  * renderParcoords — exibe os textos dos dois corpora como linhas em um

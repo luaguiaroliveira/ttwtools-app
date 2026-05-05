@@ -369,3 +369,83 @@ def get_heatmap(
         "row_order": row_order,
         "col_order": col_order,
     }
+
+
+# ---------------------------------------------------------------------------
+# GET /api/viz/heatmap_combined
+# ---------------------------------------------------------------------------
+
+@router.get("/heatmap_combined")
+def get_heatmap_combined(
+    c1: str,
+    c2: str,
+    tagger_type: Optional[str] = None,
+    top_n: int = 30,
+):
+    """
+    Heatmap comparativo com textos dos DOIS corpora clusterizados juntos.
+    Cada linha é um documento; os dois corpora são agrupados pelo mesmo dendrograma.
+    Retorna corpus_labels para que o frontend pinte a faixa lateral de identificação.
+    """
+    import numpy as np
+    import pandas as pd
+
+    _require_project()
+
+    df1, tagger = _load_feature_table(c1, tagger_type)
+    df2, _      = _load_feature_table(c2, tagger_type or tagger)
+
+    feats1 = set(_feat_cols(df1))
+    feats2 = set(_feat_cols(df2))
+    common = sorted(feats1 & feats2)
+    if not common:
+        raise HTTPException(
+            status_code=422,
+            detail="Nenhuma feature em comum entre os dois corpora.",
+        )
+
+    file_col1 = "filename" if "filename" in df1.columns else df1.columns[0]
+    file_col2 = "filename" if "filename" in df2.columns else df2.columns[0]
+
+    mat1 = df1[common].fillna(0.0).values.astype(float)
+    mat2 = df2[common].fillna(0.0).values.astype(float)
+    mat  = np.vstack([mat1, mat2])
+
+    filenames1 = df1[file_col1].astype(str).tolist()
+    filenames2 = df2[file_col2].astype(str).tolist()
+    all_filenames   = filenames1 + filenames2
+    corpus_labels   = [c1] * len(filenames1) + [c2] * len(filenames2)
+
+    # Select top_n features by variance across combined matrix
+    variances = pd.Series(np.var(mat, axis=0), index=common)
+    top_feats = variances.nlargest(top_n).index.tolist()
+    mat = mat[:, [common.index(f) for f in top_feats]]
+
+    def _cluster_order_combined(data, axis):
+        from scipy.cluster.hierarchy import linkage, leaves_list
+        from scipy.spatial.distance import pdist
+        try:
+            dist = pdist(data if axis == 0 else data.T, metric="euclidean")
+            Z    = linkage(dist, method="ward")
+            return leaves_list(Z).tolist()
+        except Exception:
+            return list(range(data.shape[0] if axis == 0 else data.shape[1]))
+
+    n_docs = len(all_filenames)
+    if n_docs >= 2 and len(top_feats) >= 2:
+        row_order = _cluster_order_combined(mat, 0)
+        col_order = _cluster_order_combined(mat, 1)
+        mat           = mat[np.ix_(row_order, col_order)]
+        top_feats     = [top_feats[i] for i in col_order]
+        all_filenames = [all_filenames[i] for i in row_order]
+        corpus_labels = [corpus_labels[i] for i in row_order]
+
+    return {
+        "c1_name": c1,
+        "c2_name": c2,
+        "tagger":  tagger,
+        "z":             [[_safe_float(v) for v in row] for row in mat],
+        "x":             top_feats,
+        "y":             all_filenames,
+        "corpus_labels": corpus_labels,
+    }

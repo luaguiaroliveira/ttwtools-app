@@ -619,6 +619,19 @@
 #tv-pages .pagedjs_pages { display: flex !important; flex-direction: column; align-items: center; gap: 2rem; padding: 2rem; background: transparent; }
 #tv-pages .pagedjs_page  { box-shadow: 0 4px 28px rgba(0,0,0,.5), 0 1px 5px rgba(0,0,0,.3); border-radius: 2px; background: #fff; }
 
+/* Resize handle between text pane and tag sidebar */
+#tv-resize-handle {
+  width: 5px;
+  cursor: col-resize;
+  flex-shrink: 0;
+  background: transparent;
+  transition: background 0.15s;
+}
+#tv-resize-handle:hover,
+#tv-resize-handle.dragging {
+  background: oklch(var(--p) / 0.35);
+}
+
 .tv-text { font-size: 14px; line-height: 1.85; color: #111; word-break: normal; overflow-wrap: break-word; }
 .tv-line { display: block; white-space: pre-wrap; }
 .tv-sp   { white-space: pre; }

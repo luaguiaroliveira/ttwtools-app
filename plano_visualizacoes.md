@@ -1,28 +1,41 @@
 # Plano de Implementação — Visualizações da Tela "Resultados"
 
-**Versão:** 0.2 — 2026-05-05  
-**Estado geral:** em andamento — abas + 5 visualizações implementadas
+**Versão:** 0.4 — 2026-05-05  
+**Estado geral:** em andamento — abas + 6 visualizações implementadas; text-viewer integrado
 
 ## Resumo do progresso
 
 | # | Visualização / componente | Arquivo | Estado |
 |---|---|---|---|
 | 1 | Sistema de abas (Comparação / Corpus individual / Redução) | `index.html`, `style.css`, `results.js` | ✅ implementado |
-| 2 | Bar chart KFA (existente) | `chart.js` | ✅ existia |
+| 2 | Bar chart KFA (existente) — top x-axis mirror, margin.top=22 | `chart.js` | ✅ melhorado |
 | 3 | Scatter de médias C1×C2 | `viz-comparison.js` | ✅ implementado |
 | 4 | Bubble chart | `viz-comparison.js` | ✅ implementado |
-| 5 | Strip / Jitter plot | `viz-comparison.js` | ✅ implementado |
+| 5 | Strip / Jitter plot + click → text-viewer | `viz-comparison.js` | ✅ implementado |
 | 6 | Radar chart | `viz-single.js` | ✅ implementado |
 | 7 | Violin / Box plot | `viz-single.js` | ✅ implementado |
-| 8 | Coordenadas paralelas | — | ⏳ aguarda frontend |
-| 9 | Heatmap texto × feature | — | ⏳ aguarda backend |
-| 10 | Histograma + KDE | — | ⏳ aguarda backend |
+| 8 | Coordenadas paralelas | — | ❌ **removido** (sem utilidade prática) |
+| 9 | Heatmap comparativo (ambos corpora clusterizados juntos) | `viz-comparison.js`, `app/routes/viz.py` | ✅ implementado |
+| 10 | Histograma + KDE | — | ❌ **removido** (aba individual simplificada) |
 | 11 | Controles redução dimensional (UI) | `viz-reduction.js` | ✅ implementado |
 | 12 | PCA 2D, PCA 3D, t-SNE, UMAP, MDS, Force | — | ⏳ aguarda `POST /api/viz/reduction` |
 | B1 | `GET /api/viz/rawdata` | `app/routes/viz.py` | ✅ implementado |
-| B2 | `GET /api/viz/heatmap` | — | ⏳ não iniciado |
-| B3 | `GET /api/viz/kde` | — | ⏳ não iniciado |
-| B4 | `POST /api/viz/reduction` | — | ⏳ não iniciado |
+| B2 | `GET /api/viz/heatmap` | `app/routes/viz.py` | ✅ implementado (corpus individual, mantido) |
+| B3 | `GET /api/viz/heatmap_combined` | `app/routes/viz.py` | ✅ implementado (novidade desta sessão) |
+| B4 | `GET /api/viz/kde` | — | ⏳ não iniciado |
+| B5 | `POST /api/viz/reduction` | `app/routes/viz.py` | ✅ implementado |
+
+### Mudanças estruturais desta sessão (v0.3 → v0.4)
+
+| # | Pedido do usuário | Solução implementada |
+|---|---|---|
+| 1 | Retirar coordenadas paralelas | Removido de subtabs, painel, imports e dispatch |
+| 2 | Retirar histograma da aba individual | Removido de subtabs, painel, imports e dispatch |
+| 3 | Heatmap deve comparar ambos os corpora | Novo endpoint `/api/viz/heatmap_combined` + `renderHeatmapComparison()` com faixa lateral corpus |
+| 4 | Click em strip plot → abre texto com tag já selecionado | `pt.x` (feature name) passado como `activeTag`; `_openTextFromPoint(filename, corpus, feature)` |
+| 5 | Painel de tags comprimido → handler de resize | `#tv-resize-handle` div entre text-pane e aside; drag JS em `initTextViewer` |
+| 6 | Botão "Detalhamento" deve voltar para a tela anterior | `state.tvOriginView` salvo em `showTextViewer`; btn-tv-back usa esse valor |
+| 7 | Bug: `null is not an object (offsetParent)` em PyWebView | Monkey-patch `HTMLElement.prototype.offsetParent` para retornar `document.documentElement` quando `null` |
 
 ---
 
@@ -141,27 +154,9 @@ Alternativa selecionável: tamanho = N de ocorrências totais.
 
 ---
 
-### 2.4 Parallel coordinates (coordenadas paralelas)
+### 2.4 ~~Parallel coordinates~~ — **REMOVIDO**
 
-**Estado:** `[ ] não iniciado` — aguarda `/api/viz/rawdata` (implementado), falta a renderização frontend
-
-#### O que é
-Cada linha horizontal = um texto.  
-Cada eixo vertical = uma feature (top-N por \|d\|).  
-Cor da linha = corpus de origem (laranja C1, azul C2).  
-Permite selecionar faixas em cada eixo para filtrar textos interativamente.
-
-#### Dados necessários
-Feature table completa de ambos os corpora — **novo endpoint necessário** para retornar as duas tabelas combinadas (ver Seção 4.1).
-
-#### Implementação (checklist)
-```
-[x] Novo endpoint GET /api/viz/rawdata (Seção 4.1) — implementado
-[ ] Criar função renderParcoords(data, opts) usando Plotly parcoords
-[x] Top-N features (por |d|) como eixos padrão; usuário pode reordenar
-[x] Colorscale: corpus_id (0 = C1, 1 = C2) mapeado para laranja/azul
-[ ] Hover desabilitado (Plotly parcoords não suporta bem); usar linha status
-```
+**Estado:** `[x] removido` — sem utilidade prática, subtab e painel eliminados.
 
 ---
 
@@ -173,17 +168,15 @@ Feature table completa de ambos os corpora — **novo endpoint necessário** par
 Para cada feature selecionada: pontos individuais (um por texto) dispostos  
 em duas colunas verticais (C1 | C2), com jitter horizontal aleatório.  
 Revela toda a distribuição, não só resumos — mostra outliers individuais.  
-Click em ponto → abre text-viewer para aquele texto.
-
-#### Dados necessários
-Feature table completa — mesmo endpoint do parallel coordinates (Seção 4.1).
+Click em ponto → abre text-viewer para aquele texto, com a feature do eixo X já selecionada para highlight.
 
 #### Implementação (checklist)
 ```
 [x] renderStrip() em viz-comparison.js
 [x] Plotly box com boxpoints='all', jitter=0.35, box+whisker transparentes
 [x] Colorir pontos por corpus (laranja C1, azul C2)
-[ ] Click em ponto → showTextViewer()
+[x] customdata com filename por ponto; plotly_click → onPointClick(filename, corpus, feature)
+[x] _openTextFromPoint(filename, corpus, feature) → showTextViewer(..., feature, 'results')
 [x] Top-N features controlado pelo controle global
 [ ] Overlay com médias e DP
 ```
@@ -232,33 +225,40 @@ Feature table de **um** corpus — `GET /api/analysis/features/{corpus}/norm1000
 
 ---
 
-### 3.2 Heatmap texto × feature com clusterização
+### 3.2 Heatmap comparativo (ambos corpora)
 
-**Estado:** `[x] implementado` — `viz-single.js::renderHeatmap()` + `GET /api/viz/heatmap`
+**Estado:** `[x] implementado` — `viz-comparison.js::renderHeatmapComparison()` + `GET /api/viz/heatmap_combined`
 
 #### O que é
-Heatmap onde linhas = textos e colunas = features.  
-Cor = valor normalizado (escala sequencial, ex: YlOrRd).  
-Linhas e colunas reordenadas por clusterização hierárquica (ward linkage, distância euclidiana).  
-Permite enxergar grupos de textos com perfil similar e features que co-ocorrem.
+Heatmap onde linhas = todos os textos dos dois corpora clusterizados juntos.  
+Colunas = top-N features (por variância combinada), reordenadas por ward linkage.  
+Faixa lateral estreita (`xaxis2`) identifica o corpus de cada texto (laranja C1, azul C2).  
+Se os textos dos dois corpora têm perfis linguísticos distintos, as cores se agrupam naturalmente.
 
 #### Dados necessários
-Feature table de um corpus + coordenadas do dendrograma.  
-**Novo endpoint** `GET /api/viz/heatmap?corpus=&tagger=` que retorna dados já clusterizados (Seção 4.2).
+`GET /api/viz/heatmap_combined?c1=&c2=&top_n=` — retorna `z, x, y, corpus_labels, c1_name, c2_name`.
 
 #### Implementação (checklist)
 ```
-[x] Novo endpoint GET /api/viz/heatmap (Seção 4.2)
-[x] Criar função renderHeatmap(data) usando Plotly heatmap
-[x] Escala de cor: RdBu divergente (claro/branco = zero)
-[ ] Hover: nome do texto, feature, valor
-[ ] Botão "Exportar como PNG" usando Plotly.downloadImage
-[ ] Aviso de performance: desabilitar para corpus > 500 textos sem confirmação
+[x] Endpoint GET /api/viz/heatmap_combined (app/routes/viz.py)
+[x] Interseção de features comuns entre os dois corpora
+[x] Clusterização hierárquica (ward) sobre matriz combinada (n_c1 + n_c2) × n_features
+[x] renderHeatmapComparison() em viz-comparison.js
+[x] Faixa lateral de identificação de corpus (Plotly xaxis2)
+[x] Legenda com nomes dos corpora via annotations
+[x] Cache por (c1, c2, topN) em state.heatmap_combined_*
+[ ] Click em linha → showTextViewer()
 ```
 
 ---
 
-### 3.3 Radar chart — perfil do corpus
+### 3.3 ~~Histograma + KDE~~ — **REMOVIDO da aba individual**
+
+**Estado:** `[x] removido` — código do `renderHistogram` permanece em `viz-single.js` mas subtab e painel foram eliminados.
+
+---
+
+### 3.4 Radar chart — perfil do corpus
 
 **Estado:** `[x] implementado` — `viz-single.js::renderRadar()`
 
@@ -580,7 +580,18 @@ Resposta (force):
 
 ---
 
-## 6. Dependências novas
+## 6. Text Viewer — melhorias implementadas
+
+| Melhoria | Implementação |
+|---|---|
+| Click em strip plot passa feature para highlight | `onPointClick(filename, corpus, feature)` → `showTextViewer(files, idx, feature, 'results')` |
+| Botão "Detalhamento" volta para a tela de origem | `state.tvOriginView` salvo em `showTextViewer`; `btn-tv-back` usa `showView(state.tvOriginView)` |
+| Painel de tags com handler de resize | `#tv-resize-handle` div; drag JS em `initTextViewer`; min 112px, max 480px |
+| Bug offsetParent em PyWebView (PagedJS) | Monkey-patch de `HTMLElement.prototype.offsetParent` → fallback para `document.documentElement` |
+
+---
+
+## 7. Dependências novas
 
 ### Backend (Python)
 
@@ -610,7 +621,7 @@ D3 (já presente) é mantido para o bar chart atual e para o force-directed grap
 
 ---
 
-## 7. Mudanças nos arquivos existentes
+## 8. Mudanças nos arquivos existentes
 
 | Arquivo | Mudança necessária |
 |---|---|
@@ -629,7 +640,7 @@ como módulos separados importados por `results.js`.
 
 ---
 
-## 8. Ordem de implementação recomendada
+## 9. Ordem de implementação recomendada
 
 As etapas abaixo são ordenadas por menor dependência → maior retorno visual imediato.
 
@@ -657,7 +668,7 @@ As etapas abaixo são ordenadas por menor dependência → maior retorno visual 
 
 ---
 
-## 9. Notas de UX
+## 10. Notas de UX
 
 - **Performance:** mostrar spinner durante fetch de rawdata e reduction. Para corpus > 200 textos, exibir aviso de tempo estimado antes de calcular t-SNE/UMAP.
 - **Feature table ausente:** se o corpus selecionado não tiver `norm1000` salva, mostrar mensagem "Execute o tagging primeiro" com botão de ação.

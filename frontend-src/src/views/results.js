@@ -8,8 +8,8 @@ import { showToast }        from '../ui.js'
 import { state }            from '../state.js'
 import { drawChart, PALETTES } from '../chart.js'
 import { showFeatureDetail } from './feature-detail.js'
-import { renderScatter, renderBubble, renderStrip } from './viz-comparison.js'
-import { renderRadar, renderViolin, renderHeatmap } from './viz-single.js'
+import { renderScatter, renderBubble, renderStrip, renderHeatmapComparison } from './viz-comparison.js'
+import { renderRadar, renderViolin } from './viz-single.js'
 import { initReduction, setReductionReady } from './viz-reduction.js'
 import { showTextViewer } from './text-viewer.js'
 
@@ -184,6 +184,7 @@ async function loadKfa(optStr, suffix) {
     // invalidate heatmap caches
     delete state[`heatmap_${c1}`]
     delete state[`heatmap_${c2}`]
+    Object.keys(state).filter(k => k.startsWith('heatmap_combined_')).forEach(k => delete state[k])
     state.kfaC1       = c1
     state.kfaC2       = c2
     state.kfaTagger   = tagger || null
@@ -539,6 +540,7 @@ export function renderResultsData(data, c1, c2) {
   // invalidate heatmap caches
   delete state[`heatmap_${c1}`]
   delete state[`heatmap_${c2}`]
+  Object.keys(state).filter(k => k.startsWith('heatmap_combined_')).forEach(k => delete state[k])
   state.sortCol = 'Effect_Size'; state.sortDir = -1
   state.filter = ''; state.minEffect = 0; state.chartMetric = 'Effect_Size'
   renderResultsIn(null)  // inline = no suffix
@@ -599,8 +601,22 @@ function _withHeatmapData(suffix, corpusKey, onReady) {
     })
 }
 
+function _withCombinedHeatmapData(suffix, onReady) {
+  const cacheKey = `heatmap_combined_${state.kfaC1}_${state.kfaC2}_${state.topN}`
+  if (state[cacheKey]) { onReady(state[cacheKey]); return }
+
+  api.viz.heatmapCombined(state.kfaC1, state.kfaC2, state.kfaTagger, state.topN)
+    .then(data => {
+      state[cacheKey] = data
+      onReady(data)
+    })
+    .catch(err => {
+      showToast(`Erro ao carregar heatmap comparativo: ${err.message}`, 'error')
+    })
+}
+
 // ── Open text viewer from a point click in rawdata charts ───────────────────
-function _openTextFromPoint(filename, corpusName) {
+function _openTextFromPoint(filename, corpusName, featureName) {
   if (!filename) return
   // Build a minimal file list from rawData so the viewer can navigate
   const rd = state.rawData
@@ -611,7 +627,7 @@ function _openTextFromPoint(filename, corpusName) {
   ]
   const idx = files.findIndex(f => f.filename === filename &&
     (corpusName ? f.corpus === corpusName : true))
-  if (idx >= 0) showTextViewer(files, idx, null)
+  if (idx >= 0) showTextViewer(files, idx, featureName || null, 'results')
 }
 
 function _renderActiveViz(suffix) {
@@ -631,8 +647,7 @@ function _renderActiveViz(suffix) {
     } else if (viz === 'strip') {
       _withRawData(suffix, rd => renderStrip(suffix, rd, rows, state.topN, c1, c2, _openTextFromPoint))
     } else if (viz === 'heatmap') {
-      const corpusKey = state.heatmapCorpus || 'c1'
-      _withHeatmapData(suffix, corpusKey, hd => renderHeatmap(suffix, hd))
+      _withCombinedHeatmapData(suffix, hd => renderHeatmapComparison(suffix, hd))
     }
   } else if (tab === 'single') {
     if (state.singleViz === 'radar') {
@@ -764,13 +779,7 @@ function _bindTabControls(suffix) {
 
   // ── Histogram feature selector — REMOVED (histograma retirado) ──
 
-  // ── Heatmap corpus selector (comparison tab) ──
-  document.getElementById(`heatmap-corpus-sel${sfx}`)?.addEventListener('change', e => {
-    state.heatmapCorpus = e.target.value
-    delete state[`heatmap_${state.kfaC1}`]
-    delete state[`heatmap_${state.kfaC2}`]
-    _renderActiveViz(suffix)
-  })
+  // Heatmap combinado: sem seletor de corpus (ambos exibidos juntos)
 
   // ── MutationObserver: re-render when standalone view becomes active ──
   const viewEl = document.getElementById('view-results')
