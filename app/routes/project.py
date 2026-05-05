@@ -4,15 +4,20 @@ routes/project.py — Gerenciamento de arquivos .ttwa (abrir, criar, resumo, exp
 
 from __future__ import annotations
 
+import threading
+import uuid
 from pathlib import Path
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 from pydantic import BaseModel
 
 from app import state as app_state
 
 router = APIRouter()
+
+# upgrade job registry
+_upgrade_jobs: dict[str, dict] = {}
 
 
 # ---------------------------------------------------------------------------
@@ -38,6 +43,10 @@ class ExportRequest(BaseModel):
     """
     items: list[str] | None = None
     dest_folder: str | None = None
+
+
+class UpgradeRequest(BaseModel):
+    compress: bool = True
 
 
 # ---------------------------------------------------------------------------
@@ -69,11 +78,15 @@ def create_project(req: CreateProjectRequest):
 @router.post("/open")
 def open_project(req: OpenProjectRequest):
     """Define o arquivo .ttwa ativo."""
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY
     p = Path(req.path).resolve()
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"Arquivo não encontrado: {p}")
     app_state.current_project_path = str(p)
-    return {"status": "opened", "path": str(p)}
+    # Return schema_version so frontend can offer upgrade for v0.1 files
+    with TTWAProject.open(p) as proj:
+        schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
+    return {"status": "opened", "path": str(p), "schema_version": schema_v}
 
 
 @router.get("/summary")
@@ -203,16 +216,19 @@ def export_project(req: ExportRequest):
                 counts["corpora"] += 1
 
             rows = proj._con.execute(
-                "SELECT filename, tagger_type, content FROM tagged_files WHERE corpus_name = ?",
+                "SELECT filename, tagger_type FROM tagged_files WHERE corpus_name = ?",
                 (cname,),
             ).fetchall()
             for row in rows:
                 path_key = f"tagged/{row['tagger_type']}/{cname}/{row['filename']}"
                 if selected is not None and path_key not in selected:
                     continue
+                content = proj.get_tagged_file(cname, row["filename"], tagger_type=row["tagger_type"])
+                if content is None:
+                    continue
                 out = dest / "tagged" / row["tagger_type"] / cname
                 out.mkdir(parents=True, exist_ok=True)
-                (out / row["filename"]).write_text(row["content"], encoding="utf-8")
+                (out / row["filename"]).write_text(content, encoding="utf-8")
                 counts["tagged"] += 1
 
         for ft in proj.list_feature_tables():
@@ -262,3 +278,61 @@ def export_project(req: ExportRequest):
 def _require_project():
     if not app_state.current_project_path:
         raise HTTPException(status_code=400, detail="Nenhum projeto aberto. Use /api/project/open primeiro.")
+
+
+# ---------------------------------------------------------------------------
+# Upgrade endpoints (v0.1 → v0.2)
+# ---------------------------------------------------------------------------
+
+@router.post("/upgrade")
+def upgrade_project(req: UpgradeRequest):
+    """Inicia a migração do projeto aberto para o formato v0.2 em background."""
+    _require_project()
+    job_id = str(uuid.uuid4())
+    _upgrade_jobs[job_id] = {
+        "status": "running",
+        "done": 0,
+        "total": 0,
+        "message": "Iniciando migração…",
+        "result": None,
+        "error": None,
+    }
+    threading.Thread(
+        target=_run_upgrade,
+        args=(job_id, app_state.current_project_path, req.compress),
+        daemon=True,
+    ).start()
+    return {"job_id": job_id}
+
+
+@router.get("/upgrade/status/{job_id}")
+def upgrade_status(job_id: str):
+    """Retorna o status de um job de migração."""
+    job = _upgrade_jobs.get(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job não encontrado.")
+    return job
+
+
+def _run_upgrade(job_id: str, project_path: str, compress: bool) -> None:
+    from ttwtools.project import TTWAProject
+
+    def _progress(done: int, total: int, message: str):
+        _upgrade_jobs[job_id].update({"done": done, "total": total, "message": message})
+
+    try:
+        with TTWAProject.open(project_path) as proj:
+            result = proj.upgrade_to_v2(compress=compress, progress_cb=_progress)
+        _upgrade_jobs[job_id].update({
+            "status": "done",
+            "done": result.get("rows_converted", 0),
+            "total": result.get("rows_converted", 0),
+            "message": "Migração concluída.",
+            "result": result,
+        })
+    except Exception as exc:
+        _upgrade_jobs[job_id].update({
+            "status": "error",
+            "error": str(exc),
+            "message": str(exc),
+        })

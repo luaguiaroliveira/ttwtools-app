@@ -81,6 +81,7 @@ class QuickRunRequest(BaseModel):
     taggers: list[str] = Field(default_factory=lambda: ["biberplus"])
     tag_only: bool = False    # True = para após tagging (sem KFA)
     kfa_metrics: list[str] = Field(default_factory=lambda: ["kfa", "kfa2"])  # métricas a calcular e salvar
+    compress: bool = True     # True = formato v0.2 comprimido (padrão); False = v0.1 sem compressão
 
 
 # ---------------------------------------------------------------------------
@@ -173,7 +174,7 @@ def _run_pipeline(job_id: str, req: QuickRunRequest) -> None:
             from ttwtools.project import TTWAProject, TTWA_MODE_FULL, TTWA_MODE_COMPACT
             mode = TTWA_MODE_FULL if req.mode == "full" else TTWA_MODE_COMPACT
 
-            proj = TTWAProject.create(out_ttwa, name=f"{req.corpus1_name} vs {req.corpus2_name}", overwrite=req.overwrite)
+            proj = TTWAProject.create(out_ttwa, name=f"{req.corpus1_name} vs {req.corpus2_name}", overwrite=req.overwrite, compress=req.compress)
             proj.set_meta("project_mode", mode)
 
             if req.mode == "full":

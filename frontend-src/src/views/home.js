@@ -71,9 +71,13 @@ export async function openProject() {
   }
   if (!path) return
   try {
-    await api.project.open({ path })
+    const res = await api.project.open({ path })
     showToast('Projeto aberto.')
     await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
+    // Offer v0.2 upgrade if file is v0.1
+    if (res?.schema_version && res.schema_version < '0.2') {
+      _showUpgradeModal()
+    }
   } catch (err) {
     showToast(err.message, 'error')
   }
@@ -131,4 +135,97 @@ export async function checkInitialProject({ loadCorpusList, refreshCorpusSelects
       showView('corpus')
     }
   } catch (_) {}
+}
+
+// ---------------------------------------------------------------------------
+// Upgrade modal (v0.1 → v0.2)
+// ---------------------------------------------------------------------------
+
+function _showUpgradeModal() {
+  const overlay  = document.getElementById('upgrade-overlay')
+  const startBtn = document.getElementById('upgrade-start-btn')
+  const cancelBtn= document.getElementById('upgrade-cancel-btn')
+  const compressCb = document.getElementById('upgrade-compress-cb')
+  const progressWrap = document.getElementById('upgrade-progress-wrap')
+  const btns     = document.getElementById('upgrade-btns')
+  const bar      = document.getElementById('upgrade-bar')
+  const pctEl    = document.getElementById('upgrade-pct')
+  const msgEl    = document.getElementById('upgrade-msg')
+  const resultEl = document.getElementById('upgrade-result')
+  const compressRow = document.getElementById('upgrade-compress-row')
+
+  // Reset state
+  progressWrap.classList.add('hidden')
+  resultEl.classList.add('hidden')
+  resultEl.textContent = ''
+  compressRow.classList.remove('hidden')
+  btns.classList.remove('hidden')
+  bar.value = 0
+  pctEl.textContent = '0%'
+  msgEl.textContent = 'Iniciando…'
+  overlay.classList.remove('hidden')
+
+  let _pollTimer = null
+
+  function _close() {
+    overlay.classList.add('hidden')
+    if (_pollTimer) { clearInterval(_pollTimer); _pollTimer = null }
+  }
+
+  cancelBtn.onclick = _close
+
+  startBtn.onclick = async () => {
+    const compress = compressCb.checked
+    compressRow.classList.add('hidden')
+    btns.classList.add('hidden')
+    progressWrap.classList.remove('hidden')
+    msgEl.textContent = 'Iniciando…'
+    bar.value = 0; pctEl.textContent = '0%'
+
+    let jobId
+    try {
+      const res = await api.project.upgrade(compress)
+      jobId = res.job_id
+    } catch (err) {
+      showToast(err.message, 'error')
+      _close()
+      return
+    }
+
+    _pollTimer = setInterval(async () => {
+      try {
+        const job = await api.project.upgradeStatus(jobId)
+        const pct = job.total > 0 ? Math.round((job.done / job.total) * 100) : 0
+        bar.value = pct; pctEl.textContent = pct + '%'
+        msgEl.textContent = job.message || ''
+
+        if (job.status === 'done') {
+          clearInterval(_pollTimer); _pollTimer = null
+          bar.value = 100; pctEl.textContent = '100%'
+          progressWrap.classList.add('hidden')
+          resultEl.classList.remove('hidden')
+          const r = job.result || {}
+          const before = r.size_before ? (r.size_before / 1024 / 1024).toFixed(0) + ' MB' : '—'
+          const after  = r.size_after  ? (r.size_after  / 1024 / 1024).toFixed(0) + ' MB' : '—'
+          const dedup  = r.rows_deduped  || 0
+          const conv   = r.rows_converted || 0
+          resultEl.innerHTML = `
+            <p class="text-success font-medium mb-1">Migração concluída!</p>
+            <ul class="text-xs text-base-content/70 list-disc pl-4 space-y-0.5">
+              <li>Arquivos comprimidos: <strong>${conv}</strong></li>
+              <li>Linhas de tagger unificadas: <strong>${dedup}</strong></li>
+              <li>Tamanho: <strong>${before}</strong> → <strong>${after}</strong></li>
+            </ul>`
+          // Show close button
+          btns.classList.remove('hidden')
+          cancelBtn.textContent = 'Fechar'
+          startBtn.classList.add('hidden')
+        } else if (job.status === 'error') {
+          clearInterval(_pollTimer); _pollTimer = null
+          showToast(job.error || 'Erro na migração.', 'error')
+          _close()
+        }
+      } catch (_) {}
+    }, 500)
+  }
 }

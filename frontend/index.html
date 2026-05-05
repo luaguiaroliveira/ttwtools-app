@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ttwtools</title>
-  <script type="module" crossorigin src="/assets/index-C1fD4neX.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-BFEwPybj.css">
+  <script type="module" crossorigin src="/assets/index-BPbjQMTa.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D1gqeHUv.css">
 </head>
 <body class="flex flex-col h-screen overflow-hidden bg-base-100 text-base-content">
 
@@ -261,6 +261,15 @@
               <label class="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" id="qr-kfa-all" class="checkbox checkbox-sm" checked />
                 <span class="text-sm text-base-content font-medium">KFA de todos os tags (etapa 3 automática)</span>
+              </label>
+            </div>
+
+            <!-- Compression option -->
+            <div class="flex items-center gap-2 mt-1">
+              <label class="flex items-center gap-2 cursor-pointer" title="Formato v0.2: tagged files comprimidos com zlib (~4× menor). Desmarque para v0.1 legado.">
+                <input type="checkbox" id="qr-compress" class="checkbox checkbox-sm checkbox-primary" checked />
+                <span class="text-sm text-base-content font-medium">Salvar comprimido — v0.2 (recomendado)</span>
+                <span class="badge badge-xs badge-primary opacity-70">~4× menor</span>
               </label>
             </div>
 
@@ -734,6 +743,41 @@
       <div class="flex gap-2 justify-end">
         <button id="modal-cancel" class="btn btn-sm btn-outline">Cancelar</button>
         <button id="modal-confirm" class="btn btn-sm btn-primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Upgrade v0.2 modal ===== -->
+  <div id="upgrade-overlay" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-base-100 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 flex flex-col gap-4">
+      <div id="upgrade-header" class="flex items-center gap-3">
+        <i data-lucide="package-open" class="text-primary" style="width:22px;height:22px"></i>
+        <h3 class="text-lg font-semibold text-base-content">Migrar para formato v0.2</h3>
+      </div>
+      <p class="text-sm text-base-content/75" id="upgrade-desc">
+        Este projeto está no formato v0.1 (sem compressão). O formato v0.2 usa compressão zlib
+        e unificação de taggers, reduzindo o tamanho do arquivo em até <strong>4×</strong>.
+      </p>
+      <!-- compress toggle -->
+      <label id="upgrade-compress-row" class="flex items-center gap-3 cursor-pointer select-none">
+        <input id="upgrade-compress-cb" type="checkbox" class="checkbox checkbox-sm checkbox-primary" checked />
+        <span class="text-sm">Comprimir conteúdo (recomendado)</span>
+      </label>
+      <!-- progress area (hidden until running) -->
+      <div id="upgrade-progress-wrap" class="hidden flex flex-col gap-2">
+        <div class="flex justify-between text-xs text-base-content/60">
+          <span id="upgrade-msg">Iniciando…</span>
+          <span id="upgrade-pct">0%</span>
+        </div>
+        <progress id="upgrade-bar" class="progress progress-primary w-full" value="0" max="100"></progress>
+      </div>
+      <!-- result area (hidden until done) -->
+      <div id="upgrade-result" class="hidden text-sm"></div>
+      <div class="flex gap-2 justify-end" id="upgrade-btns">
+        <button id="upgrade-cancel-btn" class="btn btn-sm btn-outline">Agora não</button>
+        <button id="upgrade-start-btn" class="btn btn-sm btn-primary">
+          <i data-lucide="zap" style="width:14px;height:14px"></i> Migrar
+        </button>
       </div>
     </div>
   </div>

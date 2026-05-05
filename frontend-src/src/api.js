@@ -25,13 +25,15 @@ async function upload(path, formData) {
 
 export const api = {
   project: {
-    current:  ()     => request('GET',  '/api/project/current'),
-    create:   body   => request('POST', '/api/project/create', body),
-    open:     body   => request('POST', '/api/project/open',   body),
-    summary:  ()     => request('GET',  '/api/project/summary'),
-    meta:     ()     => request('GET',  '/api/project/meta'),
-    manifest: ()     => request('GET',  '/api/project/manifest'),
-    export:   body   => request('POST', '/api/project/export', body),
+    current:        ()     => request('GET',  '/api/project/current'),
+    create:         body   => request('POST', '/api/project/create', body),
+    open:           body   => request('POST', '/api/project/open',   body),
+    summary:        ()     => request('GET',  '/api/project/summary'),
+    meta:           ()     => request('GET',  '/api/project/meta'),
+    manifest:       ()     => request('GET',  '/api/project/manifest'),
+    export:         body   => request('POST', '/api/project/export', body),
+    upgrade:        (compress = true) => request('POST', '/api/project/upgrade', { compress }),
+    upgradeStatus:  jobId  => request('GET',  `/api/project/upgrade/status/${jobId}`),
   },
 
   corpus: {

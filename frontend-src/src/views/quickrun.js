@@ -429,6 +429,7 @@ export function initQuickrun({ refreshKfaSelect, renderResults, showSavedBadge }
       min_effect: 0,
       usenlp: document.querySelector('input[name="qr-biber-mode"]:checked')?.value === 'use_nlp',
       n_processes: 1, overwrite: true, tag_only: true,
+      compress: document.getElementById('qr-compress')?.checked ?? true,
     }
 
     const required = ['corpus1_name','corpus1_folder','corpus2_name','corpus2_folder','output_ttwa']
