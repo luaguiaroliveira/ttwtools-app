@@ -146,7 +146,7 @@ ensure_release() {
 asset_for_target() {
   local target="$1"
   case "$target" in
-    mac-arm64) echo "$ROOT/dist/dist-macsillicon/TTWtools-macOS-silicon.dmg" ;;
+    mac-arm64) echo "$ROOT/dist/dist-macsilicon/TTWtools-macOS-silicon.dmg" ;;
     mac-intel) echo "$ROOT/dist/dist-macintel/TTWtools-macOS-intel.dmg" ;;
     windows-x64) echo "$ROOT/dist_windowsx86_64/ttwtools-windows-x86_64.zip" ;;
     linux-x64) echo "$ROOT/dist_linuxx86_64/ttwtools-linux-x86_64.tar.gz" ;;
