@@ -72,9 +72,15 @@ jobs:
           npm ci
           npm run build
 
-      # ── 6. PyInstaller ─────────────────────────────────────────────────
-      # Nota: en_core_web_sm já está declarado em environment.yml (pip)
-      # e é instalado pelo setup-miniconda — não precisa de download separado.
+      # ── 6. Modelos spaCy ────────────────────────────────────────────────
+      # Instalado via `spacy download` e não via pip direto porque en-core-web-sm
+      # declara Requires-Python <3.14 em seus metadados PyPI, bloqueando o pip.
+      # O comando spacy download usa pip install com URL direta, ignorando isso.
+      - name: Download modelos spaCy
+        shell: bash -l {0}
+        run: python -m spacy download en_core_web_sm
+
+      # ── 7. PyInstaller ─────────────────────────────────────────────────
       - name: Build com PyInstaller
         shell: bash -l {0}
         run: |
