@@ -72,7 +72,14 @@ jobs:
           npm ci
           npm run build
 
-      # ── 6. Modelos spaCy ────────────────────────────────────────────────
+      # ── 6. Pacotes locais (não estão no PyPI) ─────────────────────────
+      - name: Instalar pacotes locais
+        shell: bash -l {0}
+        run: |
+          pip install -e libs/ttwtools
+          pip install -e .
+
+      # ── 7. Modelos spaCy ────────────────────────────────────────────────
       # Instalado via `spacy download` e não via pip direto porque en-core-web-sm
       # declara Requires-Python <3.14 em seus metadados PyPI, bloqueando o pip.
       # O comando spacy download usa pip install com URL direta, ignorando isso.
@@ -80,7 +87,7 @@ jobs:
         shell: bash -l {0}
         run: python -m spacy download en_core_web_sm
 
-      # ── 7. PyInstaller ─────────────────────────────────────────────────
+      # ── 9. PyInstaller ─────────────────────────────────────────────────
       - name: Build com PyInstaller
         shell: bash -l {0}
         run: |
@@ -89,7 +96,7 @@ jobs:
             --workpath build/_work \
             --noconfirm
 
-      # ── 7. Criar DMG ───────────────────────────────────────────────────
+      # ── 10. Criar DMG ───────────────────────────────────────────────────
       - name: Instalar create-dmg
         run: brew install create-dmg
 
@@ -119,7 +126,7 @@ jobs:
             "dist/"
           echo "DMG_NAME=${DMG_NAME}" >> "$GITHUB_ENV"
 
-      # ── 8. Upload do artefato ──────────────────────────────────────────
+      # ── 11. Upload do artefato ──────────────────────────────────────────
       - name: Upload DMG como artefato
         uses: actions/upload-artifact@v4
         with:

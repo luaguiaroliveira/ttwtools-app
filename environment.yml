@@ -111,8 +111,7 @@ dependencies:
       - threadpoolctl==3.6.0
       - torch==2.11.0
       - tqdm==4.67.3
-      - ttwtools==0.1.0
-      - ttwtools-app==0.1.0
+      # ttwtools e ttwtools-app são pacotes locais — instalados no workflow via pip install -e
       - typer==0.24.1
       - typing-extensions==4.15.0
       - typing-inspection==0.4.2
