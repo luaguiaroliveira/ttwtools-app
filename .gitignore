@@ -60,5 +60,4 @@ ttwa_files/
 dist-release/
 
 # Local installers (nao versionar)
-Miniconda3-latest-MacOSX-x86_64.sh
 Miniconda3*.sh

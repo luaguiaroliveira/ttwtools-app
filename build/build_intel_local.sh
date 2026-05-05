@@ -25,9 +25,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONDA_X86="$HOME/miniconda3-x86"
 ENV_NAME="ttw311-x86"
 PYTHON_VERSION="3.11"
-DIST_DIR="$ROOT/dist_macx86_64"
+DIST_DIR="$ROOT/dist/dist-macintel"
 WORK_DIR="$ROOT/build/_work_macx86_64"
-DMG_PATH="$DIST_DIR/ttwtools-macos-x86_64.dmg"
+DMG_PATH="$DIST_DIR/TTWtools-macOS-intel.dmg"
 
 # ── Instalar Miniconda x86_64 se necessário ────────────────────────────────
 if [ ! -f "$CONDA_X86/bin/conda" ]; then
@@ -109,10 +109,10 @@ echo "→ Gerando DMG (x86_64) ..."
 TMP_DMG_DIR="$ROOT/build/_dmg_macx86_64"
 rm -rf "$TMP_DMG_DIR"
 mkdir -p "$TMP_DMG_DIR"
-cp -R "$DIST_DIR/ttwtools.app" "$TMP_DMG_DIR/"
+cp -R "$DIST_DIR/TTWtools.app" "$TMP_DMG_DIR/"
 rm -f "$DMG_PATH"
 hdiutil create \
-  -volname "ttwtools macOS x86_64" \
+  -volname "TTWtools macOS Intel" \
   -srcfolder "$TMP_DMG_DIR" \
   -ov \
   -format UDZO \
@@ -120,6 +120,6 @@ hdiutil create \
 rm -rf "$TMP_DMG_DIR"
 
 echo ""
-echo "✔ Build Intel concluído: $DIST_DIR/ttwtools.app"
+echo "✔ Build Intel concluído: $DIST_DIR/TTWtools.app"
 echo "  DMG: $DMG_PATH"
-echo "  Verificar arquitetura: file '$DIST_DIR/ttwtools.app/Contents/MacOS/ttwtools'"
+echo "  Verificar arquitetura: file '$DIST_DIR/TTWtools.app/Contents/MacOS/TTWtools'"

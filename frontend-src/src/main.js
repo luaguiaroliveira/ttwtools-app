@@ -14,7 +14,7 @@ import { initResults, refreshKfaSelect, renderResultsData, showSavedBadge } from
 import { initFeatureDetail }                          from './views/feature-detail.js'
 import { initTextViewer }                             from './views/text-viewer.js'
 import { initExport }                                 from './views/export.js'
-import { updateProjectLabel, openProject, newProject } from './views/home.js'
+import { updateProjectLabel, openProject, newProject, startNewAnalysis } from './views/home.js'
 import { api }                                        from './api.js'
 import { state }                                      from './state.js'
 
@@ -51,7 +51,7 @@ renderLucideIcons()
   document.addEventListener('click', closeAll)
 
   // menu-action items that aren't nav-btn: wire specific handlers
-  document.getElementById('mnu-new-analysis')?.addEventListener('click', () => { closeAll(); showView('quickrun') })
+  document.getElementById('mnu-new-analysis')?.addEventListener('click', () => { closeAll(); startNewAnalysis() })
   document.getElementById('mnu-export')?.addEventListener('click',       () => { closeAll(); showView('export') })
   document.getElementById('mnu-open-ttwa')?.addEventListener('click',    () => { closeAll(); openProject() })
   document.getElementById('mnu-save-ttwa')?.addEventListener('click',    async () => {

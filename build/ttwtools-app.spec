@@ -105,7 +105,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='ttwtools',
+    name='TTWtools',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -127,14 +127,14 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='ttwtools',
+    name='TTWtools',
 )
 
 # macOS: criar .app bundle
 if sys.platform == 'darwin':
     app = BUNDLE(
         coll,
-        name='ttwtools.app',
+        name='TTWtools.app',
         icon=str(ROOT / 'build' / 'icon.icns') if (ROOT / 'build' / 'icon.icns').exists() else None,
         bundle_identifier='br.edu.ttwtools.app',
         info_plist={

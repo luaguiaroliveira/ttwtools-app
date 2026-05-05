@@ -4,9 +4,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-DIST_DIR="$ROOT/dist_macarm64"
+DIST_DIR="$ROOT/dist/dist-macsillicon"
 WORK_DIR="$ROOT/build/_work_macarm64"
-DMG_PATH="$DIST_DIR/ttwtools-macos-arm64.dmg"
+DMG_PATH="$DIST_DIR/TTWtools-macOS-silicon.dmg"
 
 echo "==> Instalando dependências de build..."
 pip install pyinstaller pyinstaller-hooks-contrib
@@ -52,10 +52,10 @@ echo "==> Gerando DMG (arm64)..."
 TMP_DMG_DIR="$ROOT/build/_dmg_macarm64"
 rm -rf "$TMP_DMG_DIR"
 mkdir -p "$TMP_DMG_DIR"
-cp -R "$DIST_DIR/ttwtools.app" "$TMP_DMG_DIR/"
+cp -R "$DIST_DIR/TTWtools.app" "$TMP_DMG_DIR/"
 rm -f "$DMG_PATH"
 hdiutil create \
-    -volname "ttwtools macOS arm64" \
+    -volname "TTWtools macOS Silicon" \
     -srcfolder "$TMP_DMG_DIR" \
     -ov \
     -format UDZO \
@@ -64,5 +64,5 @@ rm -rf "$TMP_DMG_DIR"
 
 echo ""
 echo "==> Build concluído!"
-echo "    App: $DIST_DIR/ttwtools.app"
+echo "    App: $DIST_DIR/TTWtools.app"
 echo "    DMG: $DMG_PATH"

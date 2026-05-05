@@ -5,6 +5,42 @@
 import { api }       from '../api.js'
 import { showView, showToast, Modal } from '../ui.js'
 
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function _hasOpenProject() {
+  return document.getElementById('project-label')?.textContent?.trim() !== 'Nenhum projeto'
+}
+
+async function _confirmCloseAnalysis(action = 'abrir outro projeto') {
+  return Modal.show({
+    titleText: 'Análise já aberta',
+    bodyHTML: `<p>Você tem uma análise aberta. Deseja fechá-la para <strong>${action}</strong>?</p>`,
+    confirmLabel: 'Fechar e continuar',
+    cancelLabel: 'Cancelar',
+  })
+}
+
+function _showOpenOverlay(title, subtitle) {
+  const overlay    = document.getElementById('open-overlay')
+  const titleEl    = document.getElementById('open-title')
+  const subtitleEl = document.getElementById('open-subtitle')
+  const pctEl      = document.getElementById('open-pct')
+  const msgEl      = document.getElementById('open-msg')
+  const bar        = document.getElementById('open-bar')
+  if (titleEl)    titleEl.textContent    = title
+  if (subtitleEl) subtitleEl.textContent = subtitle
+  if (pctEl)      pctEl.textContent      = ''
+  if (msgEl)      msgEl.textContent      = 'Aguarde…'
+  if (bar)        bar.value              = 0
+  overlay.classList.remove('hidden')
+}
+
+function _hideOpenOverlay() {
+  document.getElementById('open-overlay')?.classList.add('hidden')
+}
+
 // Exposed so other views can call it after project changes
 export async function updateProjectLabel() {
   try {
@@ -53,6 +89,12 @@ let _sharedCallbacks = null   // set by initHome
 export async function openProject() {
   if (!_sharedCallbacks) return
   const { loadCorpusList, refreshCorpusSelects, refreshKfaSelect } = _sharedCallbacks
+
+  if (_hasOpenProject()) {
+    const ok = await _confirmCloseAnalysis('abrir outro projeto')
+    if (!ok) return
+  }
+
   let path = null
   try {
     const res = await api.utils.pickFile()
@@ -70,11 +112,23 @@ export async function openProject() {
     })
   }
   if (!path) return
+
+  // Mostra overlay imediatamente — antes mesmo do parse/decompression
+  _showOpenOverlay('Abrindo arquivo…', 'Carregando projeto…')
+
   try {
     const res = await api.project.open({ path })
 
     if (res?.status === 'decompressing') {
-      // .ttwt — show progress overlay, then proceed after decompression
+      // .ttwt — atualiza overlay para progresso de descompressão
+      const titleEl    = document.getElementById('open-title')
+      const subtitleEl = document.getElementById('open-subtitle')
+      const pctEl      = document.getElementById('open-pct')
+      const bar        = document.getElementById('open-bar')
+      if (titleEl)    titleEl.textContent    = 'Abrindo arquivo .ttwt'
+      if (subtitleEl) subtitleEl.textContent = 'Descomprimindo para memória de trabalho…'
+      if (pctEl)      pctEl.textContent      = '0%'
+      if (bar)        bar.value              = 0
       const job = await _showOpenProgressModal(res.job_id)
       if (!job) return
       showToast('Arquivo .ttwt aberto.')
@@ -83,6 +137,7 @@ export async function openProject() {
         _showUpgradeModal()
       }
     } else {
+      _hideOpenOverlay()
       showToast('Projeto aberto.')
       await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
       if (res?.schema_version && res.schema_version < '0.2') {
@@ -90,8 +145,17 @@ export async function openProject() {
       }
     }
   } catch (err) {
+    _hideOpenOverlay()
     showToast(err.message, 'error')
   }
+}
+
+export async function startNewAnalysis() {
+  if (_hasOpenProject()) {
+    const ok = await _confirmCloseAnalysis('iniciar uma nova análise')
+    if (!ok) return
+  }
+  showView('quickrun')
 }
 
 export async function newProject() {
@@ -128,7 +192,7 @@ export function initHome({ loadCorpusList, refreshCorpusSelects, refreshKfaSelec
   document.getElementById('btn-home-open')?.addEventListener('click',    () => openProject())
   document.getElementById('btn-new-project')?.addEventListener('click',  () => newProject())
   document.getElementById('btn-open-project')?.addEventListener('click', () => openProject())
-  document.getElementById('btn-home-newanalysis')?.addEventListener('click', () => showView('quickrun'))
+  document.getElementById('btn-home-newanalysis')?.addEventListener('click', () => startNewAnalysis())
 
   // Save as
   document.getElementById('mnu-saveas')?.addEventListener('click', () => _showSaveAsModal())
@@ -177,20 +241,33 @@ export async function checkInitialProject({ loadCorpusList, refreshCorpusSelects
 async function _handlePendingOpen(path) {
   if (!_sharedCallbacks) return
   const { loadCorpusList, refreshCorpusSelects, refreshKfaSelect } = _sharedCallbacks
+
+  _showOpenOverlay('Abrindo arquivo…', 'Carregando projeto…')
+
   try {
     const res = await api.project.open({ path })
     if (res?.status === 'decompressing') {
+      const titleEl    = document.getElementById('open-title')
+      const subtitleEl = document.getElementById('open-subtitle')
+      const pctEl      = document.getElementById('open-pct')
+      const bar        = document.getElementById('open-bar')
+      if (titleEl)    titleEl.textContent    = 'Abrindo arquivo .ttwt'
+      if (subtitleEl) subtitleEl.textContent = 'Descomprimindo para memória de trabalho…'
+      if (pctEl)      pctEl.textContent      = '0%'
+      if (bar)        bar.value              = 0
       const job = await _showOpenProgressModal(res.job_id)
       if (!job) return
       showToast('Arquivo .ttwt aberto.')
       await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
       if (job.result?.schema_version && job.result.schema_version < '0.2') _showUpgradeModal()
     } else {
+      _hideOpenOverlay()
       showToast('Projeto aberto.')
       await _afterProjectOpened(loadCorpusList, refreshCorpusSelects, refreshKfaSelect)
       if (res?.schema_version && res.schema_version < '0.2') _showUpgradeModal()
     }
   } catch (err) {
+    _hideOpenOverlay()
     showToast(err.message, 'error')
   }
 }

@@ -196,7 +196,7 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
 
     url = f"http://{host}:{port}"
     webview.create_window(
-        title="ttwtools",
+        title="TTWtools",
         url=url,
         width=1280,
         height=800,

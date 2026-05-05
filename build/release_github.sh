@@ -13,6 +13,8 @@ INPUT_TAG=""
 TAG=""
 REPO=""
 DRY_RUN=0
+ASSET_TAG=""
+TMP_RELEASE_DIR=""
 
 usage() {
   cat <<'EOF'
@@ -90,6 +92,25 @@ release_upload_asset() {
   fi
 }
 
+prepare_versioned_asset_copy() {
+  local asset="$1"
+  local base_name stem extension versioned_name versioned_path
+
+  base_name="$(basename "$asset")"
+  stem="${base_name%.*}"
+  extension="${base_name##*.}"
+
+  if [[ "$extension" == "$base_name" ]]; then
+    versioned_name="${stem}-${ASSET_TAG}"
+  else
+    versioned_name="${stem}-${ASSET_TAG}.${extension}"
+  fi
+
+  versioned_path="$TMP_RELEASE_DIR/$versioned_name"
+  cp "$asset" "$versioned_path"
+  echo "$versioned_path"
+}
+
 resolve_release_tag() {
   local alt_tag
 
@@ -125,8 +146,8 @@ ensure_release() {
 asset_for_target() {
   local target="$1"
   case "$target" in
-    mac-arm64) echo "$ROOT/dist_macarm64/ttwtools-macos-arm64.dmg" ;;
-    mac-intel) echo "$ROOT/dist_macx86_64/ttwtools-macos-x86_64.dmg" ;;
+    mac-arm64) echo "$ROOT/dist/dist-macsillicon/TTWtools-macOS-silicon.dmg" ;;
+    mac-intel) echo "$ROOT/dist/dist-macintel/TTWtools-macOS-intel.dmg" ;;
     windows-x64) echo "$ROOT/dist_windowsx86_64/ttwtools-windows-x86_64.zip" ;;
     linux-x64) echo "$ROOT/dist_linuxx86_64/ttwtools-linux-x86_64.tar.gz" ;;
     *) die "Alvo desconhecido: $target" ;;
@@ -174,7 +195,14 @@ IFS=',' read -r -a TARGET_ARRAY <<< "$TARGETS"
 
 resolve_release_tag
 
+if [[ "$TAG" == v* ]]; then
+  ASSET_TAG="$TAG"
+else
+  ASSET_TAG="v$TAG"
+fi
+
 ASSETS=()
+UPLOAD_ASSETS=()
 log "Validando artefatos para alvos: $TARGETS"
 for target in "${TARGET_ARRAY[@]}"; do
   asset="$(asset_for_target "$target")"
@@ -182,18 +210,31 @@ for target in "${TARGET_ARRAY[@]}"; do
   ASSETS+=("$asset")
 done
 
+TMP_RELEASE_DIR="$(mktemp -d "$ROOT/build/_release_assets.XXXXXX")"
+trap '[[ -n "$TMP_RELEASE_DIR" ]] && rm -rf "$TMP_RELEASE_DIR"' EXIT
+
+for asset in "${ASSETS[@]}"; do
+  UPLOAD_ASSETS+=("$(prepare_versioned_asset_copy "$asset")")
+done
+
 if [[ "$DRY_RUN" -eq 1 ]]; then
   log "Dry-run ativo; sem upload."
-  printf '%s\n' "Tag resolvida: $TAG" "Arquivos detectados:" "${ASSETS[@]}"
+  printf '%s\n' "Tag resolvida: $TAG" "Arquivos detectados (origem -> upload):"
+  for i in "${!ASSETS[@]}"; do
+    printf '  %s -> %s\n' "${ASSETS[$i]}" "$(basename "${UPLOAD_ASSETS[$i]}")"
+  done
   exit 0
 fi
 
 ensure_release
 
-for asset in "${ASSETS[@]}"; do
+for asset in "${UPLOAD_ASSETS[@]}"; do
   log "Enviando $(basename "$asset")"
   release_upload_asset "$asset"
 done
 
 log "Release finalizada com sucesso."
-printf '%s\n' "Tag: $TAG" "Arquivos enviados:" "${ASSETS[@]}"
+printf '%s\n' "Tag: $TAG" "Arquivos enviados:"
+for asset in "${UPLOAD_ASSETS[@]}"; do
+  printf '  %s\n' "$(basename "$asset")"
+done
