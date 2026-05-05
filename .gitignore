@@ -15,11 +15,13 @@ __pycache__/
 env/
 venv/
 ENV/
-build/
-# Exceções: arquivos de build necessários para o CI
-!build/ttwtools-app.spec
-!build/icon.icns
+# Build: ignorar artefatos, manter scripts e hooks versionados
+build/**
+!build/
 !build/*.sh
+!build/*.bat
+!build/*.spec
+!build/*.icns
 !build/hooks/
 !build/hooks/**
 develop-eggs/
