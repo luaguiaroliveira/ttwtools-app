@@ -19,8 +19,10 @@ jobs:
         include:
           - runner: macos-14     # Apple Silicon (arm64)
             arch: arm64
-          - runner: macos-13     # Intel (x86_64)
-            arch: x86_64
+          # Intel (x86_64): macos-13 foi descontinuado no plano gratuito do GitHub.
+          # Para builds Intel, use um self-hosted runner ou conta paga.
+          # - runner: macos-13
+          #   arch: x86_64
 
     runs-on: ${{ matrix.runner }}
     name: Build ${{ matrix.arch }}
