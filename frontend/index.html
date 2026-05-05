@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TTWtools</title>
-  <script type="module" crossorigin src="/assets/index-B0g3rTrG.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/index-CGBAKO4Y.css">
+  <script type="module" crossorigin src="/assets/index-zfLY2mcq.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CG6bLCFn.css">
 </head>
 <body class="flex flex-col h-screen overflow-hidden bg-base-100 text-base-content">
 
@@ -585,57 +585,234 @@
 
         <!-- Main content -->
         <div class="results-main">
+
+          <!-- ── Global controls (acima das abas) ─────────────── -->
           <div class="flex flex-wrap gap-2 items-center mb-2">
             <input id="results-filter-standalone" type="text" placeholder="Filtrar feature…"
               class="input input-bordered input-sm w-44" />
+            <label class="form-control">
+              <span class="label-text text-xs font-semibold text-base-content mb-1 block">Top N features</span>
+              <input type="number" id="results-topn-standalone" value="20" min="5" max="200" step="5"
+                class="input input-bordered input-xs w-20" title="Limita visualizações densas às N features com maior |d|" />
+            </label>
           </div>
 
-          <!-- Info box -->
+          <!-- Info box (inalterado) -->
           <div id="results-info-box-standalone" class="hidden bg-base-200 border border-base-300 rounded-lg p-3 text-sm mb-3 max-w-xl">
             <strong class="text-base-content">Análise:</strong> <span id="results-info-name-standalone" class="text-base-content/80"></span><br/>
             <strong class="text-base-content">Tagger:</strong> <span id="results-info-tagger-standalone" class="text-base-content/80"></span><br/>
             <strong class="text-base-content">Tags incluídos:</strong> <span id="results-info-features-standalone" class="text-base-content/70 text-xs"></span>
           </div>
 
-          <div id="chart-container-standalone" class="chart-box hidden">
-            <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
-              <label class="form-control">
-                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
-                <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
-                  <option value="d_biber" selected>d (KFA-Biber)</option>
-                  <option value="d_pond">d (KFA-pond)</option>
-                  <option value="Mean_Corpus1">Média Corpus 1</option>
-                  <option value="Mean_Corpus2">Média Corpus 2</option>
-                  <option value="Std_Corpus1">DP Corpus 1</option>
-                  <option value="Std_Corpus2">DP Corpus 2</option>
-                  <option value="N_Corpus1">N Corpus 1</option>
-                  <option value="N_Corpus2">N Corpus 2</option>
-                </select>
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Paleta</span>
-                <select id="chart-palette-standalone" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Espessura <span id="chart-thickness-val-standalone">18</span>px</span>
-                <input type="range" id="chart-thickness-standalone" min="8" max="40" value="18" step="2"
-                  class="range range-xs w-36" />
-              </label>
-              <label class="form-control">
-                <span class="label-text text-xs font-semibold text-base-content mb-1 block">|d| ≥</span>
-                <input type="number" id="results-min-d-standalone" value="0" min="0" step="0.05"
-                  class="input input-bordered input-xs w-20" />
-              </label>
-            </div>
-            <div id="chart-wrapper-standalone"></div>
+          <!-- ── Barra de abas principais ───────────────────────── -->
+          <div class="res-tabs" id="res-tabs-standalone" role="tablist">
+            <button class="res-tab active" data-tab="comparison">
+              <span>Comparação</span>
+            </button>
+            <button class="res-tab" data-tab="single">
+              <span>Corpus individual</span>
+            </button>
+            <button class="res-tab" data-tab="reduction">
+              <span>Redução dimensional</span>
+            </button>
           </div>
 
-          <div id="table-container-standalone" class="table-box hidden overflow-x-auto">
-            <table id="kfa-table-standalone" class="table table-xs table-zebra">
-              <thead><tr></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
+          <!-- ══════════════════════════════════════════════════════
+               ABA: COMPARAÇÃO
+               ══════════════════════════════════════════════════════ -->
+          <div class="res-tab-panel active" id="res-panel-comparison-standalone">
+
+            <!-- Sub-abas de tipo de visualização -->
+            <div class="viz-subtabs" id="comp-subtabs-standalone">
+              <button class="viz-subtab active" data-viz="barchart">Bar chart KFA</button>
+              <button class="viz-subtab" data-viz="scatter">Scatter C1×C2</button>
+              <button class="viz-subtab" data-viz="bubble">Bubble chart</button>
+              <button class="viz-subtab viz-subtab--soon" data-viz="parcoords" disabled title="Requer /api/viz/rawdata">Coord. paralelas</button>
+              <button class="viz-subtab" data-viz="strip">Strip plot</button>
+            </div>
+
+            <!-- ── Sub-painel: Bar chart KFA (conteúdo existente) ── -->
+            <div class="viz-subpanel active" id="comp-viz-barchart-standalone">
+              <div id="chart-container-standalone" class="chart-box hidden">
+                <div class="flex flex-wrap gap-4 items-end mb-3 p-3 pb-0">
+                  <label class="form-control">
+                    <span class="label-text text-xs font-semibold text-base-content mb-1 block">Visualizar</span>
+                    <select id="chart-metric-standalone" class="select select-bordered select-xs min-w-40">
+                      <option value="d_biber" selected>d (KFA-Biber)</option>
+                      <option value="d_pond">d (KFA-pond)</option>
+                      <option value="Mean_Corpus1">Média Corpus 1</option>
+                      <option value="Mean_Corpus2">Média Corpus 2</option>
+                      <option value="Std_Corpus1">DP Corpus 1</option>
+                      <option value="Std_Corpus2">DP Corpus 2</option>
+                      <option value="N_Corpus1">N Corpus 1</option>
+                      <option value="N_Corpus2">N Corpus 2</option>
+                    </select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-semibold text-base-content mb-1 block">Paleta</span>
+                    <select id="chart-palette-standalone" class="select select-bordered select-xs min-w-36"><!-- populated by results.js --></select>
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-semibold text-base-content mb-1 block">Espessura <span id="chart-thickness-val-standalone">18</span>px</span>
+                    <input type="range" id="chart-thickness-standalone" min="8" max="40" value="18" step="2"
+                      class="range range-xs w-36" />
+                  </label>
+                  <label class="form-control">
+                    <span class="label-text text-xs font-semibold text-base-content mb-1 block">|d| ≥</span>
+                    <input type="number" id="results-min-d-standalone" value="0" min="0" step="0.05"
+                      class="input input-bordered input-xs w-20" />
+                  </label>
+                </div>
+                <div id="chart-wrapper-standalone"></div>
+              </div>
+              <div id="table-container-standalone" class="table-box hidden overflow-x-auto">
+                <table id="kfa-table-standalone" class="table table-xs table-zebra">
+                  <thead><tr></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div><!-- /barchart -->
+
+            <!-- ── Sub-painel: Scatter C1×C2 ── -->
+            <div class="viz-subpanel" id="comp-viz-scatter-standalone">
+              <p class="text-xs text-base-content/50 mb-2">
+                Cada ponto é uma feature. Eixo X = média Corpus 1, eixo Y = média Corpus 2.
+                Cor = tamanho do efeito <em>d</em> (azul → C2, laranja → C1). Linha pontilhada = igualdade.
+              </p>
+              <div id="plotly-scatter-standalone" class="plotly-box"></div>
+            </div>
+
+            <!-- ── Sub-painel: Bubble chart ── -->
+            <div class="viz-subpanel" id="comp-viz-bubble-standalone">
+              <div class="flex flex-wrap gap-3 items-end mb-3">
+                <label class="form-control">
+                  <span class="label-text text-xs font-semibold text-base-content mb-1 block">Tamanho da bolha</span>
+                  <select id="bubble-size-enc-standalone" class="select select-bordered select-xs">
+                    <option value="std">DP médio (variabilidade)</option>
+                    <option value="n">N total de textos</option>
+                  </select>
+                </label>
+              </div>
+              <p class="text-xs text-base-content/50 mb-2">
+                Como o scatter de médias, mas o tamanho da bolha codifica uma terceira dimensão.
+              </p>
+              <div id="plotly-bubble-standalone" class="plotly-box"></div>
+            </div>
+
+            <!-- ── Sub-painel: Coord. paralelas (em desenvolvimento) ── -->
+            <div class="viz-subpanel" id="comp-viz-parcoords-standalone">
+              <div class="viz-soon-box">
+                <p>Coordenadas paralelas</p>
+                <p class="text-sm opacity-60 mt-1">Cada linha = um texto, cada eixo = uma feature (top-N por |d|), cor = corpus.<br>Requer endpoint <code>/api/viz/rawdata</code> — em desenvolvimento.</p>
+              </div>
+            </div>
+
+            <!-- ── Sub-painel: Strip/Jitter plot ── -->
+            <div class="viz-subpanel" id="comp-viz-strip-standalone">
+              <p class="text-xs text-base-content/50 mb-2">
+                Cada ponto = um texto. Eixo X = feature (top-N por |d|), eixo Y = valor norm/1000. Cor = corpus.
+              </p>
+              <div id="plotly-strip-standalone" class="plotly-box"></div>
+            </div>
+
+          </div><!-- /tab comparação -->
+
+          <!-- ══════════════════════════════════════════════════════
+               ABA: CORPUS INDIVIDUAL
+               ══════════════════════════════════════════════════════ -->
+          <div class="res-tab-panel" id="res-panel-single-standalone">
+
+            <div class="flex flex-wrap items-center gap-4 mb-3">
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Corpus</span>
+                <select id="single-corpus-sel-standalone" class="select select-bordered select-sm">
+                  <option value="c1">Corpus 1</option>
+                  <option value="c2">Corpus 2</option>
+                </select>
+              </label>
+            </div>
+
+            <!-- Sub-abas -->
+            <div class="viz-subtabs" id="single-subtabs-standalone">
+              <button class="viz-subtab active" data-viz="radar">Radar</button>
+              <button class="viz-subtab" data-viz="violin">Violin / Box</button>
+              <button class="viz-subtab viz-subtab--soon" data-viz="heatmap" disabled title="Requer /api/viz/heatmap">Heatmap</button>
+              <button class="viz-subtab viz-subtab--soon" data-viz="histogram" disabled title="Requer /api/viz/rawdata">Histograma</button>
+            </div>
+
+            <!-- ── Sub-painel: Radar chart ── -->
+            <div class="viz-subpanel active" id="single-viz-radar-standalone">
+              <div class="flex flex-wrap gap-3 items-center mb-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="radar-both-standalone" class="checkbox checkbox-sm" checked />
+                  <span class="text-sm text-base-content">Sobrepor ambos os corpora</span>
+                </label>
+                <p class="text-xs text-base-content/50 ml-2">
+                  Eixos normalizados por feature (0–max). Usar "Top N features" acima para controlar a quantidade de eixos.
+                </p>
+              </div>
+              <div id="plotly-radar-standalone" class="plotly-box"></div>
+            </div>
+
+            <!-- ── Sub-painel: Violin/Box ── -->
+            <div class="viz-subpanel" id="single-viz-violin-standalone">
+              <p class="text-xs text-base-content/50 mb-2">
+                Distribuição norm/1000 de cada texto. Violino + box + pontos individuais, C1 e C2 lado a lado por feature.
+              </p>
+              <div id="plotly-violin-standalone" class="plotly-box"></div>
+            </div>
+
+            <!-- ── Sub-painel: Heatmap (em desenvolvimento) ── -->
+            <div class="viz-subpanel" id="single-viz-heatmap-standalone">
+              <div class="viz-soon-box">
+                <p>Heatmap texto × feature (clusterizado)</p>
+                <p class="text-sm opacity-60 mt-1">Linhas e colunas reordenadas por clusterização hierárquica.<br>Requer endpoint <code>/api/viz/heatmap</code> — em desenvolvimento.</p>
+              </div>
+            </div>
+
+            <!-- ── Sub-painel: Histograma (em desenvolvimento) ── -->
+            <div class="viz-subpanel" id="single-viz-histogram-standalone">
+              <div class="viz-soon-box">
+                <p>Histograma + KDE por feature</p>
+                <p class="text-sm opacity-60 mt-1">Histogramas sobrepostos (C1 vs C2) com curva de densidade.<br>Requer endpoint <code>/api/viz/rawdata</code> — em desenvolvimento.</p>
+              </div>
+            </div>
+
+          </div><!-- /tab corpus individual -->
+
+          <!-- ══════════════════════════════════════════════════════
+               ABA: REDUÇÃO DIMENSIONAL
+               ══════════════════════════════════════════════════════ -->
+          <div class="res-tab-panel" id="res-panel-reduction-standalone">
+
+            <div class="flex flex-wrap gap-4 items-end mb-3">
+              <label class="form-control">
+                <span class="label-text text-xs font-semibold text-base-content mb-1 block">Método</span>
+                <select id="reduction-method-standalone" class="select select-bordered select-sm">
+                  <!-- populado por viz-reduction.js -->
+                </select>
+              </label>
+              <!-- Parâmetros dinâmicos por método (injetados por viz-reduction.js) -->
+              <div id="reduction-params-standalone" class="flex flex-wrap gap-3 items-end"></div>
+              <button class="btn btn-sm btn-primary" id="btn-reduction-calc-standalone" disabled>
+                Calcular
+              </button>
+            </div>
+
+            <div id="reduction-status-standalone" class="hidden text-xs text-base-content/60 bg-base-200 rounded p-2 mb-3 max-w-xl"></div>
+
+            <div id="plotly-reduction-standalone" class="plotly-box" style="min-height:420px">
+              <div class="viz-soon-box h-full flex flex-col items-center justify-center">
+                <p>Redução dimensional</p>
+                <p class="text-sm opacity-60 mt-1 max-w-sm text-center">
+                  Selecione um método e clique em <strong>Calcular</strong>.<br>
+                  Requer endpoint <code>/api/viz/reduction</code> — em desenvolvimento.
+                </p>
+              </div>
+            </div>
+
+          </div><!-- /tab redução dimensional -->
+
         </div><!-- /results-main -->
       </div><!-- /results-layout -->
     </section>

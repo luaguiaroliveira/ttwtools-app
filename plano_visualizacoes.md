@@ -1,7 +1,7 @@
 # Plano de Implementação — Visualizações da Tela "Resultados"
 
-**Versão:** 0.1 — 2026-05-05  
-**Estado geral:** `[ ] não iniciado`
+**Versão:** 0.2 — 2026-05-05  
+**Estado geral:** em andamento — abas + 5 visualizações implementadas
 
 ---
 
@@ -27,6 +27,8 @@
 
 ## 1. Interface gráfica — estrutura da tela "Resultados"
 
+**Estado:** `[x] implementado` — HTML em `index.html`, CSS em `style.css`, JS em `results.js`
+
 ### Layout proposto
 
 A tela "Resultados" (`#view-results`) ganha três abas no topo:
@@ -45,9 +47,9 @@ As outras duas aparecem somente quando os dados necessários estão carregados.
 | Seletor KFA / análise | `<select>` (já existe) | Qual KFA carregar |
 | Corpus 1 / Corpus 2 | label somente leitura | Mostra os dois corpora em foco |
 | Tagger | label somente leitura | Tagger da análise carregada |
-| Top-N features | `<input number>` default 20 | Limita visualizações densas |
-| Filtro de features | `<input text>` (já existe) | Filtra por nome |
-| Efeito mínimo \|d\| | `<input number>` (já existe) | Aplica a todas as visualizações |
+| Top-N features | `<input number>` default 20 | Limita visualizações densas | `[x]` |
+| Filtro de features | `<input text>` (já existe) | Filtra por nome | `[x]` |
+| Efeito mínimo \|d\| | `<input number>` (já existe) | Aplica a todas as visualizações | `[x]` |
 
 ---
 
@@ -63,7 +65,7 @@ Nenhuma alteração necessária aqui.
 
 ### 2.2 Scatter de médias (Corpus 1 × Corpus 2)
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-comparison.js::renderScatter()`
 
 #### O que é
 Gráfico de dispersão onde cada ponto é uma feature.  
@@ -83,20 +85,20 @@ Gráfico de dispersão onde cada ponto é uma feature.
 
 #### Implementação (checklist)
 ```
-[ ] Adicionar sub-tab "Scatter" dentro da aba Comparação
-[ ] Criar função renderScatter(rows, opts) em chart.js ou novo scatter.js
-[ ] Traçar reta y = x com Plotly shapes
-[ ] Colorir pontos por d_biber com escala RdBu divergente (Plotly colorscale)
-[ ] Hover template com Feature, d_biber, Mean_C1, Mean_C2
+[x] Adicionar sub-tab "Scatter" dentro da aba Comparação
+[x] Criar função renderScatter() em viz-comparison.js
+[x] Traçar reta y = x com Plotly shapes
+[x] Colorir pontos por d_biber com escala divergente azul→cinza→laranja
+[x] Hover template com Feature, d_biber, Mean_C1, Mean_C2, Std
 [ ] Click em ponto → showFeatureDetail(feature)
-[ ] Responde aos filtros globais (top-N, efeito mínimo)
+[x] Responde ao controle Top-N global
 ```
 
 ---
 
 ### 2.3 Bubble chart (Scatter + terceira dimensão)
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-comparison.js::renderBubble()`
 
 #### O que é
 Igual ao scatter de médias, mas o tamanho da bolha codifica o desvio-padrão médio  
@@ -108,10 +110,10 @@ Alternativa selecionável: tamanho = N de ocorrências totais.
 
 #### Implementação (checklist)
 ```
-[ ] Reutilizar a função renderScatter com param bubbleMode: true
-[ ] Adicionar <select> "Tamanho da bolha: DP médio | N total"
-[ ] Normalizar tamanhos para intervalo [6, 30] px
-[ ] Mesma interatividade do scatter
+[x] renderBubble() separado em viz-comparison.js
+[x] <select> "Tamanho da bolha: DP médio | N total" → state.bubbleSizeEnc
+[x] Tamanhos normalizados para intervalo [8, 36] px
+[ ] Click em ponto → showFeatureDetail(feature)
 ```
 
 ---
@@ -143,7 +145,7 @@ Feature table completa de ambos os corpora — **novo endpoint necessário** par
 
 ### 2.5 Strip / Jitter plot
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-comparison.js::renderStrip()`
 
 #### O que é
 Para cada feature selecionada: pontos individuais (um por texto) dispostos  
@@ -156,12 +158,12 @@ Feature table completa — mesmo endpoint do parallel coordinates (Seção 4.1).
 
 #### Implementação (checklist)
 ```
-[ ] Criar função renderStrip(data, feature, opts) em chart.js
-[ ] Usar Plotly stripmode='overlay' + jitter=0.3
-[ ] Colorir pontos por corpus
-[ ] Click em ponto → api.corpus.taggedTokens() → showTextViewer()
-[ ] Controle "Feature exibida": <select> com as top-N features
-[ ] Overlay com médias (linha horizontal) e DP (caixa translúcida)
+[x] renderStrip() em viz-comparison.js
+[x] Plotly box com boxpoints='all', jitter=0.35, box+whisker transparentes
+[x] Colorir pontos por corpus (laranja C1, azul C2)
+[ ] Click em ponto → showTextViewer()
+[x] Top-N features controlado pelo controle global
+[ ] Overlay com médias e DP
 ```
 
 ---
@@ -182,7 +184,7 @@ Todos os gráficos desta aba reagem ao corpus selecionado e à lista de features
 
 ### 3.1 Box / Violin plot por feature
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-single.js::renderViolin()`
 
 #### O que é
 Um violin (ou box) por feature, mostrando a distribuição dos valores norm1000  
@@ -198,12 +200,12 @@ Feature table de **um** corpus — `GET /api/analysis/features/{corpus}/norm1000
 
 #### Implementação (checklist)
 ```
-[ ] Criar função renderViolin(data, features, opts) em novo viz-single.js
-[ ] Usar Plotly violin com box visible
-[ ] Toggle <input checkbox> "Mostrar como box plot"
-[ ] Cores: paleta existente do app (laranja C1, azul C2)
-[ ] Click em ponto outlier → showTextViewer()
-[ ] Responsivo: scroll horizontal quando N features > 15
+[x] renderViolin() em viz-single.js
+[x] Plotly violin com box visible, meanline, C1 lado esquerdo / C2 lado direito
+[ ] Toggle violin ↔ box
+[x] Cores: laranja C1, azul C2
+[ ] Click em outlier → showTextViewer()
+[ ] Scroll horizontal quando N features > 15
 ```
 
 ---
@@ -236,7 +238,7 @@ Feature table de um corpus + coordenadas do dendrograma.
 
 ### 3.3 Radar chart — perfil do corpus
 
-**Estado:** `[ ] não iniciado`
+**Estado:** `[x] implementado` — `viz-single.js::renderRadar()`
 
 #### O que é
 Gráfico de teia (spider/radar) onde cada eixo radial é uma feature.  
@@ -249,11 +251,11 @@ Apenas `Mean_Corpus1` e `Mean_Corpus2` do `state.kfaData.results` — **sem novo
 
 #### Implementação (checklist)
 ```
-[ ] Criar função renderRadar(rows, opts) usando Plotly scatterpolar
-[ ] Top-N features controlado pelo controle global
-[ ] Toggle "Sobrepor ambos os corpora" → dois polígonos coloridos
-[ ] Normalização dos eixos: escala independente por feature (0–max) ou global
-[ ] Legenda com nomes dos corpora
+[x] renderRadar() em viz-single.js usando Plotly scatterpolar
+[x] Top-N features controlado pelo controle global
+[x] Toggle "Sobrepor ambos os corpora" (state.radarBoth) → dois polígonos
+[x] Normalização por feature (0–max entre C1 e C2); hover mostra valor real
+[x] Legenda com nomes dos corpora
 ```
 
 ---
@@ -453,18 +455,18 @@ para peso acima de um limiar (default: top-K arestas por nó).
 ### 5.1 `GET /api/viz/rawdata`
 
 ```
-Parâmetros: c1, c2, tagger
+Parâmetros: c1, c2, tagger1, tagger2, features[] (opcional)
 Resposta:
 {
-  "corpus1": { "name": str, "rows": [ {"_filename": str, "feat1": float, ...} ] },
-  "corpus2": { "name": str, "rows": [ {"_filename": str, "feat1": float, ...} ] },
-  "features": [ str, ... ]          // union ou intersection das colunas
+  "corpus1": { "name": str, "tagger": str, "n_docs": int, "docs": [{"filename": str, "feat1": float, ...}] },
+  "corpus2": { "name": str, "tagger": str, "n_docs": int, "docs": [{"filename": str, "feat1": float, ...}] },
+  "features": [ str, ... ]          // interseção de colunas numéricas
 }
 ```
 
-**Usado por:** parallel coordinates (2.4), strip plot (2.5), histograma (3.4).  
-**Implementação:** lê `load_feature_table` de ambos os corpora e serializa.  
-**Estado:** `[ ] não iniciado`
+**Usado por:** strip plot (2.5), violin/box (3.1), coordenadas paralelas (2.4), histograma (3.4).  
+**Implementação:** `app/routes/viz.py` — lê `load_feature_table` de ambos, filtra NaN/Inf.  
+**Estado:** `[x] implementado`
 
 ---
 

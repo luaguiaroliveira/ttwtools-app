@@ -13,6 +13,7 @@
     "d3": "^7.9.0",
     "lucide": "^1.14.0",
     "pagedjs": "^0.4.3",
+    "plotly.js-dist-min": "^3.5.1",
     "rough-notation": "^0.5.1"
   },
   "devDependencies": {

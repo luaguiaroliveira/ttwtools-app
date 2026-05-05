@@ -1,5 +1,5 @@
 /**
- * views/results.js — KFA results: D3 bar chart + sortable table.
+ * views/results.js — KFA results: D3 bar chart + sortable table + novas visualizações.
  * Supports two instances: inline (step-3 in quickrun) and standalone (#view-results).
  */
 
@@ -8,6 +8,9 @@ import { showToast }        from '../ui.js'
 import { state }            from '../state.js'
 import { drawChart, PALETTES } from '../chart.js'
 import { showFeatureDetail } from './feature-detail.js'
+import { renderScatter, renderBubble, renderStrip } from './viz-comparison.js'
+import { renderRadar, renderViolin }                from './viz-single.js'
+import { initReduction, setReductionReady } from './viz-reduction.js'
 
 // Column definitions
 const COLS = [
@@ -124,6 +127,11 @@ function renderResultsIn(suffix) {
   if (cc) cc.classList.remove('hidden')
   renderChartIn(suffix)
   renderTableIn(suffix)
+  // Render the active Plotly visualization (only standalone has tabs)
+  if (suffix) {
+    setReductionReady(suffix, true)
+    requestAnimationFrame(() => _renderActiveViz(suffix))
+  }
 }
 
 // ── Merge two KFA result arrays by Feature ──────────────────────────────────
@@ -158,6 +166,7 @@ async function loadKfa(optStr, suffix) {
 
     const merged = _mergeMetrics(biberResults, pondResults)
     state.kfaData     = { results: merged }
+    state.rawData     = null   // invalidate rawdata cache for new KFA result
     state.kfaC1       = c1
     state.kfaC2       = c2
     state.kfaTagger   = tagger || null
@@ -452,14 +461,203 @@ function _bindControls(suffix) {
  */
 export function renderResultsData(data, c1, c2) {
   state.kfaData = data; state.kfaC1 = c1; state.kfaC2 = c2
+  state.rawData = null   // invalidate rawdata cache
   state.sortCol = 'Effect_Size'; state.sortDir = -1
   state.filter = ''; state.minEffect = 0; state.chartMetric = 'Effect_Size'
   renderResultsIn(null)  // inline = no suffix
 }
 
+// ── Render the active viz in the current tab ─────────────────────────────────
+
+/**
+ * Loads rawdata from the backend (once per KFA result) and caches in state.rawData.
+ * Calls `onReady(rawData)` when data is available.
+ */
+function _withRawData(suffix, onReady) {
+  if (state.rawData) { onReady(state.rawData); return }
+
+  const sfx = `-${suffix}`
+  const statusId = `plotly-strip${sfx}`   // use the first rawdata container as feedback
+  const tagger1 = state.kfaTagger || null
+  const tagger2 = state.kfaTagger || null
+
+  // Build features list from kfa results to keep payload small
+  const rows = state.kfaData?.results || []
+  const topFeatures = rows
+    .slice()
+    .sort((a, b) => Math.abs(b.d_biber ?? 0) - Math.abs(a.d_biber ?? 0))
+    .slice(0, Math.max(state.topN * 2, 40))   // fetch 2× topN as buffer
+    .map(r => r.Feature)
+
+  api.viz.rawdata(state.kfaC1, state.kfaC2, tagger1, tagger2, topFeatures)
+    .then(data => {
+      state.rawData = data
+      onReady(data)
+    })
+    .catch(err => {
+      showToast(`Erro ao carregar dados brutos: ${err.message}`, 'error')
+    })
+}
+
+function _renderActiveViz(suffix) {
+  // Only the standalone view has the extra tabs
+  if (!suffix) return
+
+  const rows = state.kfaData?.results || []
+  const c1 = state.kfaC1, c2 = state.kfaC2
+
+  const tab = state.activeResultsTab
+  if (tab === 'comparison') {
+    const viz = state.compViz
+    if (viz === 'scatter') {
+      renderScatter(suffix, rows, state.topN, c1, c2)
+    } else if (viz === 'bubble') {
+      renderBubble(suffix, rows, state.topN, state.bubbleSizeEnc, c1, c2)
+    } else if (viz === 'strip') {
+      _withRawData(suffix, rd => renderStrip(suffix, rd, rows, state.topN, c1, c2))
+    }
+  } else if (tab === 'single') {
+    if (state.singleViz === 'radar') {
+      renderRadar(suffix, rows, state.topN, state.radarBoth, c1, c2, state.singleCorpus)
+    } else if (state.singleViz === 'violin') {
+      _withRawData(suffix, rd => renderViolin(suffix, rd, rows, state.topN, c1, c2))
+    }
+  }
+}
+
+// ── Tab switching helpers ────────────────────────────────────────────────────
+
+/**
+ * Switch the main results tab (comparison | single | reduction).
+ * Scoped to one suffix so inline and standalone don't interfere.
+ */
+function _switchMainTab(suffix, tabName) {
+  const sfx = suffix ? `-${suffix}` : ''
+
+  // Update tab buttons
+  const tabBar = document.getElementById(`res-tabs${sfx}`)
+  tabBar?.querySelectorAll('.res-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName)
+  })
+
+  // Show/hide panels
+  const panelIds = ['comparison', 'single', 'reduction']
+  panelIds.forEach(id => {
+    const panel = document.getElementById(`res-panel-${id}${sfx}`)
+    if (panel) panel.classList.toggle('active', id === tabName)
+  })
+
+  state.activeResultsTab = tabName
+  _renderActiveViz(suffix)
+}
+
+/**
+ * Switch a sub-tab within a given group (comp-subtabs | single-subtabs).
+ */
+function _switchSubtab(subtabsId, panelPrefix, vizName) {
+  const bar = document.getElementById(subtabsId)
+  bar?.querySelectorAll('.viz-subtab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.viz === vizName)
+  })
+
+  // Show/hide viz subpanels based on the active sub-tab bar
+  // Panels are siblings of the subtabs bar — find them by ID convention
+  const container = bar?.closest('.res-tab-panel')
+  if (!container) return
+
+  container.querySelectorAll('.viz-subpanel').forEach(panel => {
+    panel.classList.remove('active')
+  })
+  const active = document.getElementById(`${panelPrefix}-${vizName}-${subtabsId.includes('standalone') ? 'standalone' : ''}`)
+  if (active) active.classList.add('active')
+}
+
+// ── Bind tab controls for standalone view ────────────────────────────────────
+function _bindTabControls(suffix) {
+  if (!suffix) return   // inline step-3 has no tabs
+
+  const sfx = `-${suffix}`
+
+  // ── Main tabs ──
+  document.getElementById(`res-tabs${sfx}`)?.addEventListener('click', e => {
+    const tab = e.target.closest('.res-tab')
+    if (!tab || tab.disabled) return
+    _switchMainTab(suffix, tab.dataset.tab)
+  })
+
+  // ── Comparison sub-tabs ──
+  document.getElementById(`comp-subtabs${sfx}`)?.addEventListener('click', e => {
+    const btn = e.target.closest('.viz-subtab')
+    if (!btn || btn.disabled) return
+    const viz = btn.dataset.viz
+    state.compViz = viz
+
+    const bar = document.getElementById(`comp-subtabs${sfx}`)
+    bar?.querySelectorAll('.viz-subtab').forEach(b => b.classList.toggle('active', b.dataset.viz === viz))
+
+    document.querySelectorAll(`#res-panel-comparison${sfx} .viz-subpanel`).forEach(p => p.classList.remove('active'))
+    document.getElementById(`comp-viz-${viz}${sfx}`)?.classList.add('active')
+
+    _renderActiveViz(suffix)
+  })
+
+  // ── Single corpus sub-tabs ──
+  document.getElementById(`single-subtabs${sfx}`)?.addEventListener('click', e => {
+    const btn = e.target.closest('.viz-subtab')
+    if (!btn || btn.disabled) return
+    const viz = btn.dataset.viz
+    state.singleViz = viz
+
+    const bar = document.getElementById(`single-subtabs${sfx}`)
+    bar?.querySelectorAll('.viz-subtab').forEach(b => b.classList.toggle('active', b.dataset.viz === viz))
+
+    document.querySelectorAll(`#res-panel-single${sfx} .viz-subpanel`).forEach(p => p.classList.remove('active'))
+    document.getElementById(`single-viz-${viz}${sfx}`)?.classList.add('active')
+
+    _renderActiveViz(suffix)
+  })
+
+  // ── Top-N control ──
+  document.getElementById(`results-topn${sfx}`)?.addEventListener('change', e => {
+    state.topN = Math.max(5, parseInt(e.target.value, 10) || 20)
+    _renderActiveViz(suffix)
+  })
+
+  // ── Corpus selector (individual tab) ──
+  document.getElementById(`single-corpus-sel${sfx}`)?.addEventListener('change', e => {
+    state.singleCorpus = e.target.value
+    _renderActiveViz(suffix)
+  })
+
+  // ── Radar "Sobrepor ambos" toggle ──
+  document.getElementById(`radar-both${sfx}`)?.addEventListener('change', e => {
+    state.radarBoth = e.target.checked
+    _renderActiveViz(suffix)
+  })
+
+  // ── Bubble size encoding ──
+  document.getElementById(`bubble-size-enc${sfx}`)?.addEventListener('change', e => {
+    state.bubbleSizeEnc = e.target.value
+    _renderActiveViz(suffix)
+  })
+
+  // ── MutationObserver: re-render when standalone view becomes active ──
+  const viewEl = document.getElementById('view-results')
+  if (viewEl) {
+    const mo = new MutationObserver(() => {
+      if (viewEl.classList.contains('active') && state.kfaData) {
+        requestAnimationFrame(() => _renderActiveViz(suffix))
+      }
+    })
+    mo.observe(viewEl, { attributes: true, attributeFilter: ['class'] })
+  }
+}
+
 export function initResults() {
   // Standalone view
   _bindControls('standalone')
+  _bindTabControls('standalone')
+  initReduction('standalone')
   // Inline step-3 panel (no suffix)
   _bindControls(null)
 }

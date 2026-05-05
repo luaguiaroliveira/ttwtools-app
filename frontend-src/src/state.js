@@ -11,7 +11,7 @@ export const state = {
   kfaC2:      '',
   kfaTagger:  null,   // tagger_type salvo com a KFA (null = auto-detect)
 
-  // Chart options
+  // Chart options (bar chart existente)
   chartMetric: 'd_biber',
   barHeight:   18,
   palette:     'biber',
@@ -32,4 +32,29 @@ export const state = {
   tvFiles:   [],
   tvIndex:   0,
   tvFeature: '',
+
+  // ── Novas visualizações ──────────────────────────────────────────
+  // Número máximo de features exibidas em visualizações densas
+  topN: 20,
+
+  // Aba principal ativa em #view-results (comparison | single | reduction)
+  activeResultsTab: 'comparison',
+
+  // Sub-aba ativa em cada aba principal
+  compViz:      'barchart',   // barchart | scatter | bubble | parcoords | strip
+  singleViz:    'radar',      // radar | violin | heatmap | histogram
+  reductionViz: 'pca2d',      // pca2d | pca3d | tsne | umap | mds | force
+
+  // Corpus selecionado na aba "Corpus individual" ('c1' | 'c2')
+  singleCorpus: 'c1',
+
+  // Opções do radar chart
+  radarBoth: true,   // true = sobrepor ambos os corpora
+
+  // Opção do bubble chart
+  bubbleSizeEnc: 'std',   // 'std' (DP médio) | 'n' (N total)
+
+  // Cache dos dados brutos por documento (carregado sob demanda)
+  rawData: null,
 }
+
