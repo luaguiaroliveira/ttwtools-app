@@ -110,26 +110,40 @@ def main() -> None:
 
 _odoc_handler = None   # module-level reference — must survive forever
 
-
-def _macos_odoc_paths(event) -> list[str]:
-    """Extract file paths from an Apple Event 'odoc' descriptor."""
-    from urllib.parse import urlparse, unquote
-    out: list[str] = []
+# ---------------------------------------------------------------------------
+# _ODHandler must be defined at MODULE LEVEL.
+# In PyInstaller frozen apps, NSObject subclasses defined inside functions
+# fail silently: ObjC class registration happens at class-body execution time
+# and may be discarded or fail to register when nested inside a function scope.
+# ---------------------------------------------------------------------------
+if sys.platform == 'darwin':
     try:
-        # keyDirectObject = '----' = 0x2D2D2D2D
-        desc = event.paramDescriptorForKeyword_(0x2D2D2D2D)
-        if desc is None:
-            return out
-        for i in range(1, desc.numberOfItems() + 1):
-            item = desc.descriptorAtIndex_(i)
-            # coerce to file URL type 'furl' = 0x6675726C
-            furl = item.coerceToDescriptorType_(0x6675726C)
-            if furl:
-                raw = furl.stringValue()   # e.g. 'file:///Users/…/file.ttwa'
-                out.append(unquote(urlparse(raw).path))
+        from AppKit import NSObject as _NSObject
+
+        class _ODHandler(_NSObject):
+            def handleOdoc_reply_(self, event, reply):  # selector: handleOdoc:reply:
+                from urllib.parse import urlparse, unquote
+                try:
+                    desc = event.paramDescriptorForKeyword_(0x2D2D2D2D)
+                    if desc is None:
+                        return
+                    for i in range(1, desc.numberOfItems() + 1):
+                        item = desc.descriptorAtIndex_(i)
+                        furl = item.coerceToDescriptorType_(0x6675726C)
+                        if furl:
+                            raw = furl.stringValue()
+                            path = unquote(urlparse(raw).path)
+                            if path:
+                                from app import state as _s
+                                _s.pending_open_path = path
+                                return  # use first file only
+                except Exception:
+                    pass
+
     except Exception:
-        pass
-    return out
+        _ODHandler = None  # type: ignore[assignment,misc]
+else:
+    _ODHandler = None  # type: ignore[assignment,misc]
 
 
 def _register_macos_open_handler() -> None:
@@ -137,20 +151,10 @@ def _register_macos_open_handler() -> None:
     run loop starts; the OS queues startup events and delivers them on the
     first run loop iteration inside webview.start()."""
     global _odoc_handler
-    if sys.platform != 'darwin':
+    if sys.platform != 'darwin' or _ODHandler is None:
         return
     try:
-        from AppKit import NSAppleEventManager, NSObject
-
-        # Class defined at call-site but stored globally — this is fine because
-        # this function is called exactly once at startup.
-        class _ODHandler(NSObject):
-            def handleOdoc_reply_(self, event, reply):  # selector: handleOdoc:reply:
-                paths = _macos_odoc_paths(event)
-                if not paths:
-                    return
-                from app import state as _s
-                _s.pending_open_path = paths[0]
+        from AppKit import NSAppleEventManager
 
         _odoc_handler = _ODHandler.alloc().init()
         NSAppleEventManager.sharedAppleEventManager() \
@@ -160,6 +164,7 @@ def _register_macos_open_handler() -> None:
                 0x61657674,   # kCoreEventClass  'aevt'
                 0x6F646F63,   # kAEOpenDocuments 'odoc'
             )
+        print('[ttwtools] Apple Event odoc handler registered.', flush=True)
     except Exception as exc:
         print(f'[ttwtools] Apple Event handler unavailable: {exc}', flush=True)
 

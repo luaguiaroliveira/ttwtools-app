@@ -16,6 +16,11 @@ env/
 venv/
 ENV/
 build/
+# Exceções: arquivos de build necessários para o CI
+!build/ttwtools-app.spec
+!build/icon.icns
+!build/build_mac.sh
+!build/hooks/
 develop-eggs/
 dist/
 downloads/
