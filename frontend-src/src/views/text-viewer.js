@@ -7,18 +7,18 @@
  *   showTextViewer(files, index, activeTag) — navigate to this view
  */
 
-import { Previewer }  from 'pagedjs'
-import { annotate }   from 'rough-notation'
-import { api }       from '../api.js'
-import { showView }  from '../ui.js'
-import { state }     from '../state.js'
+import { Previewer } from 'pagedjs'
+import { annotate } from 'rough-notation'
+import { api } from '../api.js'
+import { showView } from '../ui.js'
+import { state } from '../state.js'
 
 // ---------------------------------------------------------------------------
 // Colour palettes  (index 0 = active feature — always orange)
 // ---------------------------------------------------------------------------
-const PALETTE_FILL   = [
+const PALETTE_FILL = [
   'rgba(224,123,57,0.35)', 'rgba(91,156,246,0.35)', 'rgba(62,207,142,0.35)',
-  'rgba(224,85,85,0.35)',  'rgba(155,93,229,0.35)', 'rgba(255,202,58,0.35)',
+  'rgba(224,85,85,0.35)', 'rgba(155,93,229,0.35)', 'rgba(255,202,58,0.35)',
   'rgba(26,157,200,0.35)', 'rgba(82,183,136,0.35)',
 ]
 const PALETTE_STROKE = [
@@ -28,8 +28,8 @@ const N_SLOTS = PALETTE_FILL.length          // 8
 const ANN_TYPES = [
   ['highlight', 'highlight'],
   ['underline', 'underline'],
-  ['box',       'box'],
-  ['circle',    'circle'],
+  ['box', 'box'],
+  ['circle', 'circle'],
   ['strike-through', 'strike'],
 ]
 
@@ -37,33 +37,33 @@ const ANN_TYPES = [
 // Module state
 // ---------------------------------------------------------------------------
 let _annotationInstances = {}  // tagName → [RoughAnnotation, …]
-let _tagColorIdx      = {}  // tagName → palette index (0–7)
-let _tagTypes         = {}  // tagName → annotation type (persists across files)
-let _tagCustomColors  = {}  // tagName → { fill: string, stroke: string } (user override)
-let _paletteNext      = 0
-let _lastLines        = []  // cached merged lines
-let _lastFilename     = ''  // cached filename for footer
-let _legendVisible    = true
-let _pagedStyles      = []  // <style> elements injected by Paged.js — removed on re-render
+let _tagColorIdx = {}  // tagName → palette index (0–7)
+let _tagTypes = {}  // tagName → annotation type (persists across files)
+let _tagCustomColors = {}  // tagName → { fill: string, stroke: string } (user override)
+let _paletteNext = 0
+let _lastLines = []  // cached merged lines
+let _lastFilename = ''  // cached filename for footer
+let _legendVisible = true
+let _pagedStyles = []  // <style> elements injected by Paged.js — removed on re-render
 
-// ---------------------------------------------------------------------------
-// WebKit / PyWebView compatibility patch for PagedJS
-// ---------------------------------------------------------------------------
-// PagedJS's Chunker does: this.element.offsetParent.getBoundingClientRect()
-// In WebKit (used by PyWebView), position:fixed elements always have
-// offsetParent === null (per spec). PagedJS doesn't guard this → TypeError.
-// Patch the getter once so null becomes document.documentElement.
-;(function _patchOffsetParentForPagedJS() {
-  const proto = HTMLElement.prototype
-  const desc  = Object.getOwnPropertyDescriptor(proto, 'offsetParent')
-  if (!desc?.get) return
-  Object.defineProperty(proto, 'offsetParent', {
-    get() {
-      return desc.get.call(this) ?? document.documentElement
-    },
-    configurable: true,
-  })
-})()
+  // ---------------------------------------------------------------------------
+  // WebKit / PyWebView compatibility patch for PagedJS
+  // ---------------------------------------------------------------------------
+  // PagedJS's Chunker does: this.element.offsetParent.getBoundingClientRect()
+  // In WebKit (used by PyWebView), position:fixed elements always have
+  // offsetParent === null (per spec). PagedJS doesn't guard this → TypeError.
+  // Patch the getter once so null becomes document.documentElement.
+  ; (function _patchOffsetParentForPagedJS() {
+    const proto = HTMLElement.prototype
+    const desc = Object.getOwnPropertyDescriptor(proto, 'offsetParent')
+    if (!desc?.get) return
+    Object.defineProperty(proto, 'offsetParent', {
+      get() {
+        return desc.get.call(this) ?? document.documentElement
+      },
+      configurable: true,
+    })
+  })()
 
 // ---------------------------------------------------------------------------
 // Init (once)
@@ -71,31 +71,31 @@ let _pagedStyles      = []  // <style> elements injected by Paged.js — removed
 export function initTextViewer() {
   // Resize handle between text pane and tag sidebar
   const handle = document.getElementById('tv-resize-handle')
-  const aside  = document.getElementById('tv-tag-aside')
+  const aside = document.getElementById('tv-tag-aside')
   if (handle && aside) {
     let dragging = false
-    let startX   = 0
-    let startW   = 0
+    let startX = 0
+    let startW = 0
     handle.addEventListener('mousedown', e => {
       dragging = true
-      startX   = e.clientX
-      startW   = aside.getBoundingClientRect().width
+      startX = e.clientX
+      startW = aside.getBoundingClientRect().width
       handle.classList.add('dragging')
-      document.body.style.cursor    = 'col-resize'
+      document.body.style.cursor = 'col-resize'
       document.body.style.userSelect = 'none'
       e.preventDefault()
     })
     document.addEventListener('mousemove', e => {
       if (!dragging) return
-      const delta  = startX - e.clientX   // drag left → wider
-      const newW   = Math.max(112, Math.min(480, startW + delta))
+      const delta = startX - e.clientX   // drag left → wider
+      const newW = Math.max(112, Math.min(480, startW + delta))
       aside.style.width = `${newW}px`
     })
     document.addEventListener('mouseup', () => {
       if (!dragging) return
       dragging = false
       handle.classList.remove('dragging')
-      document.body.style.cursor    = ''
+      document.body.style.cursor = ''
       document.body.style.userSelect = ''
     })
   }
@@ -160,20 +160,20 @@ export function initTextViewer() {
     e.preventDefault()
     e.stopPropagation()
     const row = swatch.closest('.tv-tag-row')
-    const cb  = row?.querySelector('input.tv-tag-cb')
+    const cb = row?.querySelector('input.tv-tag-cb')
     if (!cb || cb.disabled) return
     _pickerTag = cb.dataset.tag
     // Position the hidden input near the mouse so the picker opens close to it
     colorPicker.style.left = (e.clientX - 160) + 'px'
-    colorPicker.style.top  = e.clientY + 'px'
+    colorPicker.style.top = e.clientY + 'px'
     colorPicker.value = _hexFromColor(_getStroke(_pickerTag))
     colorPicker.click()
   }, true)
 
   colorPicker.addEventListener('input', () => {
     if (!_pickerTag) return
-    const hex    = colorPicker.value
-    const fill   = hex + '59'
+    const hex = colorPicker.value
+    const fill = hex + '59'
     const stroke = hex
     _tagCustomColors[_pickerTag] = { fill, stroke }
     const cb = document.querySelector(`#tv-tag-list input.tv-tag-cb[data-tag="${_attr(_pickerTag)}"]`)
@@ -237,15 +237,15 @@ export function initTextViewer() {
 
     // Only show if the selection is inside #tv-pages
     const anchor = sel.anchorNode
-    const focus  = sel.focusNode
-    const pages  = document.getElementById('tv-pages')
+    const focus = sel.focusNode
+    const pages = document.getElementById('tv-pages')
     if (!pages || (!pages.contains(anchor) && !pages.contains(focus))) {
       _hideSelToolbar()
       return
     }
 
     const range = sel.getRangeAt(0)
-    const rect  = range.getBoundingClientRect()
+    const rect = range.getBoundingClientRect()
     if (!rect.width && !rect.height) { _hideSelToolbar(); return }
 
     const charCount = text.length
@@ -258,11 +258,11 @@ export function initTextViewer() {
     selToolbar.classList.remove('hidden')
 
     // Position above the selection
-    const tbW   = selToolbar.offsetWidth  || 180
-    const tbH   = selToolbar.offsetHeight || 32
-    const pad   = 8
-    let   left  = rect.left + rect.width / 2 - tbW / 2
-    let   top   = rect.top - tbH - pad
+    const tbW = selToolbar.offsetWidth || 180
+    const tbH = selToolbar.offsetHeight || 32
+    const pad = 8
+    let left = rect.left + rect.width / 2 - tbW / 2
+    let top = rect.top - tbH - pad
 
     // Keep within viewport
     if (left < pad) left = pad
@@ -270,7 +270,7 @@ export function initTextViewer() {
     if (top < pad) top = rect.bottom + pad   // flip below if no room above
 
     selToolbar.style.left = `${left}px`
-    selToolbar.style.top  = `${top}px`
+    selToolbar.style.top = `${top}px`
   }
 
   function _hideSelToolbar() {
@@ -302,13 +302,13 @@ export function initTextViewer() {
 
   // Copy button
   selToolbar.querySelector('#tv-sel-copy').addEventListener('click', () => {
-    const sel  = window.getSelection()
+    const sel = window.getSelection()
     const text = sel ? sel.toString() : ''
     if (!text) return
 
     navigator.clipboard.writeText(text).then(() => {
       // Show brief "Copiado!" feedback
-      const btn     = selToolbar.querySelector('#tv-sel-copy')
+      const btn = selToolbar.querySelector('#tv-sel-copy')
       const origHTML = btn.innerHTML
       btn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -331,24 +331,24 @@ export function initTextViewer() {
 }
 
 function _positionTooltip(tooltip, e) {
-  const pad   = 12
-  const tw    = tooltip.offsetWidth  || 220
-  const th    = tooltip.offsetHeight || 40
-  let   left  = e.clientX + pad
-  let   top   = e.clientY + pad
-  if (left + tw > window.innerWidth  - pad) left = e.clientX - tw - pad
-  if (top  + th > window.innerHeight - pad) top  = e.clientY - th - pad
+  const pad = 12
+  const tw = tooltip.offsetWidth || 220
+  const th = tooltip.offsetHeight || 40
+  let left = e.clientX + pad
+  let top = e.clientY + pad
+  if (left + tw > window.innerWidth - pad) left = e.clientX - tw - pad
+  if (top + th > window.innerHeight - pad) top = e.clientY - th - pad
   tooltip.style.left = `${left}px`
-  tooltip.style.top  = `${top}px`
+  tooltip.style.top = `${top}px`
 }
 
 // ---------------------------------------------------------------------------
 // Public entry
 // ---------------------------------------------------------------------------
 export function showTextViewer(files, index, activeTag, originView = null) {
-  state.tvFiles      = files
-  state.tvIndex      = index
-  state.tvFeature    = activeTag
+  state.tvFiles = files
+  state.tvIndex = index
+  state.tvFeature = activeTag
   state.tvOriginView = originView || 'feature-detail'
   showView('text-viewer')
   _loadFile()
@@ -369,7 +369,7 @@ async function _loadFile() {
   document.getElementById('tv-filename').textContent = file.filename
   const corpEl = document.getElementById('tv-corpus-label')
   corpEl.textContent = file.corpus
-  corpEl.className   = `tv-corpus ${file.corpus === state.kfaC1 ? 'fd-corpus1' : 'fd-corpus2'}`
+  corpEl.className = `tv-corpus ${file.corpus === state.kfaC1 ? 'fd-corpus1' : 'fd-corpus2'}`
 
   document.getElementById('tv-file-label').textContent =
     `${state.tvIndex + 1} / ${state.tvFiles.length}`
@@ -390,7 +390,7 @@ async function _loadFile() {
       state.kfaTagger || undefined,
     )
     const lines = _mergeLines(raw_text, tokens)
-    _lastLines    = lines
+    _lastLines = lines
     _lastFilename = file.filename
     await _renderText(lines, file.filename)
     _renderTagSidebar(tokens)
@@ -398,7 +398,7 @@ async function _loadFile() {
     // Pages are painted (renderText awaited a RAF). Apply annotations now.
     if (state.tvFeature) {
       const tag = state.tvFeature
-      const cb  = document.querySelector(
+      const cb = document.querySelector(
         `#tv-tag-list input.tv-tag-cb[data-tag="${CSS.escape(tag)}"]`
       )
       if (cb && !cb.disabled) {
@@ -450,7 +450,7 @@ function _mergeLines(rawText, tokens) {
 
       // Keep consuming tokens while their concatenation is still a prefix of word
       while (qi < queue.length && built.length < word.length) {
-        const tok     = queue[qi]
+        const tok = queue[qi]
         const prospect = built + tok.word
 
         if (word.toLowerCase().startsWith(prospect.toLowerCase())) {
@@ -671,11 +671,11 @@ function _renderTagSidebar(tokens) {
   allTags.forEach(tag => { if ((counts[tag] || 0) > 0) _getColorIdx(tag) })
 
   list.innerHTML = allTags.map(tag => {
-    const count   = counts[tag] || 0
-    const zero    = count === 0
-    const title   = state.tagDefs[tag]
+    const count = counts[tag] || 0
+    const zero = count === 0
+    const title = state.tagDefs[tag]
       ? ` title="${state.tagDefs[tag].replace(/"/g, "'")}"` : ''
-    const swatch  = zero ? '#3a3f50' : _getStroke(tag)
+    const swatch = zero ? '#3a3f50' : _getStroke(tag)
     const curType = _getType(tag)
     const typeOpts = ANN_TYPES.map(([val, lbl]) =>
       `<option value="${val}"${val === curType ? ' selected' : ''}>${lbl}</option>`
@@ -728,7 +728,7 @@ function _getColorIdx(tagName) {
 
 // Return fill/stroke honoring custom override
 function _getFill(tagName) {
-  return _tagCustomColors[tagName]?.fill   ?? PALETTE_FILL[_getColorIdx(tagName)]
+  return _tagCustomColors[tagName]?.fill ?? PALETTE_FILL[_getColorIdx(tagName)]
 }
 function _getStroke(tagName) {
   return _tagCustomColors[tagName]?.stroke ?? PALETTE_STROKE[_getColorIdx(tagName)]
@@ -755,10 +755,10 @@ function _getType(tagName) {
 function _applyTag(tagName) {
   if (_annotationInstances[tagName]?.length) return
 
-  const type   = _getType(tagName)
-  const fill   = _getFill(tagName)
+  const type = _getType(tagName)
+  const fill = _getFill(tagName)
   const stroke = _getStroke(tagName)
-  const color  = type === 'highlight' ? fill : stroke
+  const color = type === 'highlight' ? fill : stroke
 
   const escapedTag = tagName.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
   const elements = document.querySelectorAll(
@@ -771,12 +771,13 @@ function _applyTag(tagName) {
     const ann = annotate(el, {
       type,
       color,
-      animate:     false,
-      padding:     type === 'circle' ? [2, 4] : type === 'highlight' ? [1, 2] : [0, 1],
+      animate: false,
+      padding: type === 'circle' ? [2, 4] : type === 'highlight' ? [1, 2] : [0, 1],
       strokeWidth: type === 'underline' ? 2 : 1.5,
-      multiline:   false,
-      iterations:  1,
-      roughness:   0.3,
+      multiline: false,
+      iterations: 1,
+      bowing: 0.1,
+      roughness: 0.1,
     })
     ann.show()
     annotations.push(ann)
@@ -819,20 +820,20 @@ function _updateLegend() {
 
   // Build one item per active tag
   const items = active.map(tag => {
-    const type    = _getType(tag)
-    const fill    = _getFill(tag)
-    const stroke  = _getStroke(tag)
-    const def     = state.tagDefs[tag] || ''
+    const type = _getType(tag)
+    const fill = _getFill(tag)
+    const stroke = _getStroke(tag)
+    const def = state.tagDefs[tag] || ''
 
     // Sample span styled to echo the annotation type
     let sampleStyle = ''
     switch (type) {
-      case 'highlight':      sampleStyle = `background:${fill};border-radius:2px;padding:0 4px`; break
-      case 'underline':      sampleStyle = `border-bottom:2px solid ${stroke};padding-bottom:1px`; break
-      case 'box':            sampleStyle = `outline:1.5px solid ${stroke};border-radius:2px;padding:0 3px`; break
-      case 'circle':         sampleStyle = `outline:2px solid ${stroke};border-radius:50%;padding:0 4px`; break
+      case 'highlight': sampleStyle = `background:${fill};border-radius:2px;padding:0 4px`; break
+      case 'underline': sampleStyle = `border-bottom:2px solid ${stroke};padding-bottom:1px`; break
+      case 'box': sampleStyle = `outline:1.5px solid ${stroke};border-radius:2px;padding:0 3px`; break
+      case 'circle': sampleStyle = `outline:2px solid ${stroke};border-radius:50%;padding:0 4px`; break
       case 'strike-through': sampleStyle = `text-decoration:line-through 2px ${stroke}`; break
-      default:               sampleStyle = `background:${fill};padding:0 4px`
+      default: sampleStyle = `background:${fill};padding:0 4px`
     }
 
     return `<div class="tv-legend-item">
