@@ -42,6 +42,7 @@ dependencies:
       - cycler==0.12.1
       - cymem==2.0.13
       - emoji==2.15.0
+      - en-core-web-sm==3.8.0
       - factor-analyzer==0.5.1
       - fastapi==0.135.3
       - filelock==3.29.0
@@ -111,7 +112,8 @@ dependencies:
       - threadpoolctl==3.6.0
       - torch==2.11.0
       - tqdm==4.67.3
-      # ttwtools e ttwtools-app são pacotes locais — instalados no workflow via pip install -e
+      - ttwtools==0.1.0
+      - ttwtools-app==0.1.0
       - typer==0.24.1
       - typing-extensions==4.15.0
       - typing-inspection==0.4.2

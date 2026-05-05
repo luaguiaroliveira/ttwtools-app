@@ -4,6 +4,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+DIST_DIR="$ROOT/dist_macarm64"
+WORK_DIR="$ROOT/build/_work_macarm64"
+DMG_PATH="$DIST_DIR/ttwtools-macos-arm64.dmg"
 
 echo "==> Instalando dependências de build..."
 pip install pyinstaller pyinstaller-hooks-contrib
@@ -35,17 +38,31 @@ if missing:
 print("OK: en_core_web_sm detectado")
 PY
 then
-    echo "==> Falha na pre-validacao do spaCy."
-    exit 1
+    echo "==> Modelo spaCy ausente; baixando en_core_web_sm..."
+    python -m spacy download en_core_web_sm
 fi
 
 echo "==> Executando PyInstaller..."
 pyinstaller "$SCRIPT_DIR/ttwtools-app.spec" \
-    --distpath "$ROOT/dist" \
-    --workpath "$ROOT/build/_work" \
+    --distpath "$DIST_DIR" \
+    --workpath "$WORK_DIR" \
     --noconfirm
+
+echo "==> Gerando DMG (arm64)..."
+TMP_DMG_DIR="$ROOT/build/_dmg_macarm64"
+rm -rf "$TMP_DMG_DIR"
+mkdir -p "$TMP_DMG_DIR"
+cp -R "$DIST_DIR/ttwtools.app" "$TMP_DMG_DIR/"
+rm -f "$DMG_PATH"
+hdiutil create \
+    -volname "ttwtools macOS arm64" \
+    -srcfolder "$TMP_DMG_DIR" \
+    -ov \
+    -format UDZO \
+    "$DMG_PATH"
+rm -rf "$TMP_DMG_DIR"
 
 echo ""
 echo "==> Build concluído!"
-echo "    App: $ROOT/dist/ttwtools.app"
-echo "    Executável direto: $ROOT/dist/ttwtools/ttwtools"
+echo "    App: $DIST_DIR/ttwtools.app"
+echo "    DMG: $DMG_PATH"
