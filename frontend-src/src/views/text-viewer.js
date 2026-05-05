@@ -8,6 +8,7 @@
  */
 
 import { Previewer }  from 'pagedjs'
+import { annotate }   from 'rough-notation'
 import { api }       from '../api.js'
 import { showView }  from '../ui.js'
 import { state }     from '../state.js'
@@ -29,12 +30,13 @@ const ANN_TYPES = [
   ['underline', 'underline'],
   ['box',       'box'],
   ['circle',    'circle'],
+  ['strike-through', 'strike'],
 ]
 
 // ---------------------------------------------------------------------------
 // Module state
 // ---------------------------------------------------------------------------
-let _annotationStyles = {}  // tagName → <style> element in document.head
+let _annotationInstances = {}  // tagName → [RoughAnnotation, …]
 let _tagColorIdx      = {}  // tagName → palette index (0–7)
 let _tagTypes         = {}  // tagName → annotation type (persists across files)
 let _tagCustomColors  = {}  // tagName → { fill: string, stroke: string } (user override)
@@ -114,8 +116,16 @@ export function initTextViewer() {
     const v = e.target.value
     document.getElementById('tv-font-val').textContent = `${v}px`
     if (!_lastLines.length) return
+
+    // Collect active tags before re-render destroys the DOM
+    const activeTags = Object.keys(_annotationInstances)
+    _clearAnnotations()
+
     await _renderText(_lastLines, _lastFilename)
     _updateLegend()
+
+    // Re-apply annotations on the fresh DOM
+    for (const tag of activeTags) _applyTag(tag)
   })
 
   // Print / Save PDF
@@ -740,38 +750,54 @@ function _getType(tagName) {
 }
 
 // ---------------------------------------------------------------------------
-// CSS-based annotations — injected into document.head, apply across all pages
+// Rough Notation annotations — SVG overlays, zero layout impact
 // ---------------------------------------------------------------------------
-function _annCSS(tagName) {
+function _applyTag(tagName) {
+  if (_annotationInstances[tagName]?.length) return
+
   const type   = _getType(tagName)
   const fill   = _getFill(tagName)
   const stroke = _getStroke(tagName)
-  const sel    = `span.tv-token[data-tags~="${tagName.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"]`
-  switch (type) {
-    case 'highlight': return `${sel} { background:${fill}; border-radius:2px; padding:0 2px }`
-    case 'underline': return `${sel} { border-bottom:2px solid ${stroke}; padding-bottom:1px }`
-    case 'box':       return `${sel} { outline:1.5px solid ${stroke}; border-radius:2px; padding:0 2px }`
-    case 'circle':    return `${sel} { outline:2px solid ${stroke}; border-radius:50%; padding:0 4px }`
-    default:          return `${sel} { background:${fill}; border-radius:2px }`
-  }
-}
+  const color  = type === 'highlight' ? fill : stroke
 
-function _applyTag(tagName) {
-  if (_annotationStyles[tagName]) return
-  const styleEl = document.createElement('style')
-  styleEl.textContent = _annCSS(tagName)
-  document.head.appendChild(styleEl)
-  _annotationStyles[tagName] = styleEl
+  const escapedTag = tagName.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  const elements = document.querySelectorAll(
+    `#tv-pages span.tv-token[data-tags~="${escapedTag}"]`
+  )
+  if (!elements.length) return
+
+  const annotations = []
+  for (const el of elements) {
+    const ann = annotate(el, {
+      type,
+      color,
+      animate:     false,
+      padding:     type === 'circle' ? [2, 4] : type === 'highlight' ? [1, 2] : [0, 1],
+      strokeWidth: type === 'underline' ? 2 : 1.5,
+      multiline:   false,
+      iterations:  1,
+      roughness:   0.3,
+    })
+    ann.show()
+    annotations.push(ann)
+  }
+
+  _annotationInstances[tagName] = annotations
 }
 
 function _removeTag(tagName) {
-  _annotationStyles[tagName]?.remove()
-  delete _annotationStyles[tagName]
+  const anns = _annotationInstances[tagName]
+  if (anns) {
+    anns.forEach(a => a.remove())
+    delete _annotationInstances[tagName]
+  }
 }
 
 function _clearAnnotations() {
-  Object.values(_annotationStyles).forEach(el => el.remove())
-  _annotationStyles = {}
+  Object.values(_annotationInstances).forEach(anns => {
+    anns.forEach(a => a.remove())
+  })
+  _annotationInstances = {}
 }
 
 // ---------------------------------------------------------------------------
@@ -801,11 +827,12 @@ function _updateLegend() {
     // Sample span styled to echo the annotation type
     let sampleStyle = ''
     switch (type) {
-      case 'highlight': sampleStyle = `background:${fill};border-radius:2px;padding:0 4px`; break
-      case 'underline': sampleStyle = `border-bottom:2px solid ${stroke};padding-bottom:1px`; break
-      case 'box':       sampleStyle = `outline:1.5px solid ${stroke};border-radius:2px;padding:0 3px`; break
-      case 'circle':    sampleStyle = `outline:2px solid ${stroke};border-radius:50%;padding:0 4px`; break
-      default:          sampleStyle = `background:${fill};padding:0 4px`
+      case 'highlight':      sampleStyle = `background:${fill};border-radius:2px;padding:0 4px`; break
+      case 'underline':      sampleStyle = `border-bottom:2px solid ${stroke};padding-bottom:1px`; break
+      case 'box':            sampleStyle = `outline:1.5px solid ${stroke};border-radius:2px;padding:0 3px`; break
+      case 'circle':         sampleStyle = `outline:2px solid ${stroke};border-radius:50%;padding:0 4px`; break
+      case 'strike-through': sampleStyle = `text-decoration:line-through 2px ${stroke}`; break
+      default:               sampleStyle = `background:${fill};padding:0 4px`
     }
 
     return `<div class="tv-legend-item">

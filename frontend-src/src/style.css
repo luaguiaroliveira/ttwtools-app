@@ -636,6 +636,9 @@
 .tv-line { display: block; white-space: pre-wrap; user-select: text; }
 .tv-sp   { white-space: pre-wrap; }
 #tv-pages, #tv-pages * { user-select: text; cursor: text; }
+#tv-pages rough-notation { display: inline; position: relative; cursor: text; user-select: text; }
+#tv-pages .pagedjs_page_content,
+#tv-pages .pagedjs_area { overflow: visible; }
 
 .tv-tag-row {
   display: flex; align-items: center; gap: .4rem;
