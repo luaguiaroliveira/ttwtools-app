@@ -201,6 +201,123 @@ export function initTextViewer() {
       tooltip.hidden = true
     }
   })
+
+  // ── Selection toolbar ─────────────────────────────────────────────────────
+  const selToolbar = document.createElement('div')
+  selToolbar.className = 'tv-sel-toolbar hidden'
+  selToolbar.innerHTML = `
+    <span class="tv-sel-info"></span>
+    <button id="tv-sel-copy" title="Copiar seleção">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      Copiar
+    </button>`
+  document.body.appendChild(selToolbar)
+
+  let _selToolbarHideTimer = null
+
+  function _showSelToolbar() {
+    const sel = window.getSelection()
+    if (!sel || sel.isCollapsed) { _hideSelToolbar(); return }
+
+    const text = sel.toString()
+    if (!text.trim()) { _hideSelToolbar(); return }
+
+    // Only show if the selection is inside #tv-pages
+    const anchor = sel.anchorNode
+    const focus  = sel.focusNode
+    const pages  = document.getElementById('tv-pages')
+    if (!pages || (!pages.contains(anchor) && !pages.contains(focus))) {
+      _hideSelToolbar()
+      return
+    }
+
+    const range = sel.getRangeAt(0)
+    const rect  = range.getBoundingClientRect()
+    if (!rect.width && !rect.height) { _hideSelToolbar(); return }
+
+    const charCount = text.length
+    selToolbar.querySelector('.tv-sel-info').textContent = `${charCount} caractere${charCount !== 1 ? 's' : ''}`
+
+    // Remove any lingering "copied" feedback
+    const copiedEl = selToolbar.querySelector('.tv-sel-copied')
+    if (copiedEl) copiedEl.remove()
+
+    selToolbar.classList.remove('hidden')
+
+    // Position above the selection
+    const tbW   = selToolbar.offsetWidth  || 180
+    const tbH   = selToolbar.offsetHeight || 32
+    const pad   = 8
+    let   left  = rect.left + rect.width / 2 - tbW / 2
+    let   top   = rect.top - tbH - pad
+
+    // Keep within viewport
+    if (left < pad) left = pad
+    if (left + tbW > window.innerWidth - pad) left = window.innerWidth - tbW - pad
+    if (top < pad) top = rect.bottom + pad   // flip below if no room above
+
+    selToolbar.style.left = `${left}px`
+    selToolbar.style.top  = `${top}px`
+  }
+
+  function _hideSelToolbar() {
+    selToolbar.classList.add('hidden')
+  }
+
+  // Show toolbar after mouse-up if there's a selection inside tv-pages
+  document.addEventListener('mouseup', e => {
+    // Ignore clicks on the toolbar itself
+    if (selToolbar.contains(e.target)) return
+    // Small delay so the selection is finalized
+    clearTimeout(_selToolbarHideTimer)
+    setTimeout(_showSelToolbar, 80)
+  })
+
+  // Also handle keyboard-based selection (Shift+Arrow, Ctrl+A, etc.)
+  document.addEventListener('keyup', e => {
+    if (e.shiftKey || e.key === 'a' && (e.ctrlKey || e.metaKey)) {
+      clearTimeout(_selToolbarHideTimer)
+      setTimeout(_showSelToolbar, 80)
+    }
+  })
+
+  // Hide when clicking outside the selection
+  document.addEventListener('mousedown', e => {
+    if (selToolbar.contains(e.target)) return
+    _selToolbarHideTimer = setTimeout(_hideSelToolbar, 200)
+  })
+
+  // Copy button
+  selToolbar.querySelector('#tv-sel-copy').addEventListener('click', () => {
+    const sel  = window.getSelection()
+    const text = sel ? sel.toString() : ''
+    if (!text) return
+
+    navigator.clipboard.writeText(text).then(() => {
+      // Show brief "Copiado!" feedback
+      const btn     = selToolbar.querySelector('#tv-sel-copy')
+      const origHTML = btn.innerHTML
+      btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Copiado!`
+      btn.style.color = 'hsl(var(--su))'
+      setTimeout(() => {
+        btn.innerHTML = origHTML
+        btn.style.color = ''
+      }, 1500)
+    }).catch(() => {
+      // Fallback for environments without clipboard API
+      try {
+        document.execCommand('copy')
+      } catch (_) { /* ignore */ }
+    })
+  })
 }
 
 function _positionTooltip(tooltip, e) {
@@ -479,11 +596,11 @@ async function _renderText(lines, filename) {
 
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 
-.tv-text      { line-height: 1.85; color: #111; word-break: break-word; }
-.tv-line      { display: block; white-space: pre-wrap; }
+.tv-text      { line-height: 1.85; color: #111; word-break: normal; overflow-wrap: break-word; user-select: text; }
+.tv-line      { display: block; white-space: pre-wrap; user-select: text; }
 .tv-blank-line { height: 0.75em; display: block; }
-.tv-token     { font-family: inherit; }
-.tv-sp        { white-space: pre; }
+.tv-token     { font-family: inherit; user-select: text; }
+.tv-sp        { white-space: pre-wrap; }
 
 .tv-legend {
   margin-top: 2em;

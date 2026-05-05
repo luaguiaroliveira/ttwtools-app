@@ -632,9 +632,10 @@
   background: oklch(var(--p) / 0.35);
 }
 
-.tv-text { font-size: 14px; line-height: 1.85; color: #111; word-break: normal; overflow-wrap: break-word; }
-.tv-line { display: block; white-space: pre-wrap; }
-.tv-sp   { white-space: pre; }
+.tv-text { font-size: 14px; line-height: 1.85; color: #111; word-break: normal; overflow-wrap: break-word; user-select: text; }
+.tv-line { display: block; white-space: pre-wrap; user-select: text; }
+.tv-sp   { white-space: pre-wrap; }
+#tv-pages, #tv-pages * { user-select: text; cursor: text; }
 
 .tv-tag-row {
   display: flex; align-items: center; gap: .4rem;
@@ -669,6 +670,46 @@
   border: 1px solid hsl(var(--b3));
   border-radius: .375rem; padding: .45rem .7rem; font-size: .78rem; line-height: 1.55;
   max-width: 280px; pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,.4);
+}
+
+/* Selection toolbar — floats above selected text */
+.tv-sel-toolbar {
+  position: fixed;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  background: hsl(var(--b2));
+  border: 1px solid hsl(var(--b3));
+  border-radius: .5rem;
+  padding: .3rem .5rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.45);
+  pointer-events: auto;
+  animation: tv-sel-in .12s ease both;
+  user-select: none;
+}
+.tv-sel-toolbar.hidden { display: none; }
+@keyframes tv-sel-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tv-sel-toolbar button {
+  display: inline-flex; align-items: center; gap: .3rem;
+  background: transparent; border: none; border-radius: .3rem;
+  padding: .25rem .5rem; font-size: .75rem; font-weight: 500;
+  color: hsl(var(--bc)); cursor: pointer; white-space: nowrap;
+  transition: background .12s, color .12s;
+}
+.tv-sel-toolbar button:hover {
+  background: color-mix(in oklch, var(--color-primary) 15%, transparent);
+  color: var(--color-primary);
+}
+.tv-sel-toolbar button svg { width: 14px; height: 14px; flex-shrink: 0; }
+.tv-sel-toolbar .tv-sel-info {
+  font-size: .65rem; color: hsl(var(--bc) / .5); padding: 0 .25rem;
+}
+.tv-sel-toolbar .tv-sel-copied {
+  font-size: .7rem; color: hsl(var(--su)); font-weight: 600; padding: 0 .3rem;
 }
 
 /* ===================================================================
