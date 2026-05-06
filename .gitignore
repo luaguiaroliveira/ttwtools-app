@@ -53,7 +53,6 @@ wheels/
 node_modules/
 .nosync/
 
-ttwa_files/
 
 # Build/release artifacts
 *.dmg

@@ -1,0 +1,2 @@
+ttwa_files/*.ttwa filter=lfs diff=lfs merge=lfs -text
+ttwa_files/*.ttwt filter=lfs diff=lfs merge=lfs -text
