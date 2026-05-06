@@ -776,7 +776,8 @@
 
   /* Remove screen decorations and perfectly size the pages */
   #tv-pages .pagedjs_pages {
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
     margin: 0 auto !important;
     padding: 0 !important;
     gap: 0 !important;
