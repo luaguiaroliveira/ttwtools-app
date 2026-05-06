@@ -585,8 +585,9 @@ async function _renderText(lines, filename) {
 
   const pagedCSS = `
 @page {
-  size: A4;
-  margin: 20mm 22mm 28mm;
+  /* Safe dimensions to prevent macOS/WebKit hardware margins from slicing the footer to the next page */
+  size: 190mm 277mm;
+  margin: 15mm 15mm 22mm;
 
   @bottom-center {
     content: counter(page) " / " counter(pages);

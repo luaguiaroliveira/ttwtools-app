@@ -935,8 +935,9 @@ lucide.createIcons({icons});\``);if(r===void 0)throw Error("`createIcons()` only
 `).map(e=>{let t=e.match(/\S+/g)||[];return t.length?t.map(e=>{let t=[],i=``;for(;r<n.length&&i.length<e.length;){let a=n[r],o=i+a.word;if(e.toLowerCase().startsWith(o.toLowerCase()))i=o,t.push(...a.tags),r++;else if(o.toLowerCase().startsWith(e.toLowerCase())){t.push(...a.tags),r++;break}else{r++;break}}return{word:e,tags:[...new Set(t)]}}):[]})}function YG(e){return e.some(e=>Number.isInteger(e.start_char)&&Number.isInteger(e.end_char)&&e.start_char>=0&&e.end_char>e.start_char)}function XG(e,t){let n=t.filter(e=>e.word&&e.word.trim()&&Number.isInteger(e.start_char)&&Number.isInteger(e.end_char)&&e.start_char>=0&&e.end_char>e.start_char).sort((e,t)=>e.start_char-t.start_char),r=[],i=e.split(`
 `),a=0,o=0;for(let e of i){let t=[],i=/\S+/g,s;for(;(s=i.exec(e))!==null;){let e=s[0],r=o+s.index,i=r+e.length,c=[];for(;a<n.length&&n[a].end_char<=r;)a++;let l=a;for(;l<n.length&&n[l].start_char<i;){let e=n[l];e.end_char>r&&Array.isArray(e.tags)&&c.push(...e.tags),l++}t.push({word:e,tags:[...new Set(c)]})}r.push(t),o+=e.length+1}return r}var ZG=new Set([`.`,`,`,`!`,`?`,`;`,`:`,`)`,`]`,`}`,`'`,`’`,`”`,`...`,`…`]);function QG(e){return e.replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`)}async function $G(e,t){let n=document.getElementById(`tv-pages`);if(!n)return;UG.forEach(e=>e.remove()),UG=[];let r=document.getElementById(`tv-font-slider`),i=`<div class="tv-text" style="font-size:${r?`${r.value}px`:`14px`}">`;e.forEach(e=>{if(!e.length){i+=`<div class="tv-blank-line"> </div>`;return}i+=`<div class="tv-line">`,e.forEach((e,t)=>{t>0&&!ZG.has(e.word)&&(i+=`<span class="tv-sp"> </span>`);let n=QG(e.word);if(e.tags.length){let t=e.tags.map(QG).join(` `);i+=`<span class="tv-token tagged" data-tags="${t}">${n}</span>`}else i+=`<span class="tv-token">${n}</span>`}),i+=`</div>`}),i+=`<div id="tv-legend" class="tv-legend"></div>`,i+=`</div>`;let a=`
 @page {
-  size: A4;
-  margin: 20mm 22mm 28mm;
+  /* Safe dimensions to prevent macOS/WebKit hardware margins from slicing the footer to the next page */
+  size: 190mm 277mm;
+  margin: 15mm 15mm 22mm;
 
   @bottom-center {
     content: counter(page) " / " counter(pages);
