@@ -190,7 +190,7 @@ export function initAnalysis({ refreshKfaSelect }) {
         if (checked.length === 0) continue  // user deselected everything — skip
 
         for (const metric of metrics) {
-          await api.analysis.runKfa({
+          const res = await api.analysis.runKfa({
             corpus1_name:     _activeC1,
             corpus2_name:     _activeC2,
             min_effect_size:  0,
@@ -202,6 +202,9 @@ export function initAnalysis({ refreshKfaSelect }) {
             metric,
             include_features: checked,
           })
+          if (res?.skipped) {
+            console.warn(`KFA pulada [${tagger}/${metric}]: ${res.reason}`)
+          }
         }
         ran++
       }

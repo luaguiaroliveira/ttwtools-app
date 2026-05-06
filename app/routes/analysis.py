@@ -67,19 +67,35 @@ def run_kfa(req: KFARequest):
         )
 
     # Executa KFA usando CSVs temporários (interface atual do ttwtools.kfa)
-    with tempfile.TemporaryDirectory() as tmpdir:
-        p1 = Path(tmpdir) / f"{req.corpus1_name}_norm1000.csv"
-        p2 = Path(tmpdir) / f"{req.corpus2_name}_norm1000.csv"
-        df1.to_csv(p1, index=False)
-        df2.to_csv(p2, index=False)
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p1 = Path(tmpdir) / f"{req.corpus1_name}_norm1000.csv"
+            p2 = Path(tmpdir) / f"{req.corpus2_name}_norm1000.csv"
+            df1.to_csv(p1, index=False)
+            df2.to_csv(p2, index=False)
 
-        results_df = ttwtools.kfa(
-            corpus1_path=str(p1),
-            corpus2_path=str(p2),
-            min_effect_size=0.0,   # sempre salva todos os d
-            join=req.join,
-            metric=req.metric,
-        )
+            results_df = ttwtools.kfa(
+                corpus1_path=str(p1),
+                corpus2_path=str(p2),
+                min_effect_size=0.0,   # sempre salva todos os d
+                join=req.join,
+                metric=req.metric,
+            )
+    except ValueError as exc:
+        # Sem features disponíveis (corpus vazio ou tagger não gerou saída) — descarta silenciosamente
+        return {
+            "corpus1": req.corpus1_name,
+            "corpus2": req.corpus2_name,
+            "tagger": req.tagger1,
+            "analysis_name": req.analysis_name,
+            "metric": req.metric,
+            "n_features": 0,
+            "skipped": True,
+            "reason": str(exc),
+            "results": [],
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Erro ao executar KFA: {exc}")
 
     # Filter features if a subset is specified
     if req.include_features:
