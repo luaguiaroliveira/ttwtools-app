@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.4 (CI rodando); 1.1 e 1.2 feitos em paralelo
+- **Passo atual:** 0.4 (CI rodando); 1.1, 1.2 e 1.3 feitos em paralelo
 - **Último passo concluído:** 0.3 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -102,7 +102,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | **Fase 1 — Pacote `ttwtools`** | | | | | |
 | 1.1 | Testes e linha de comando base | 0.1 | [x] | 2026-09-26 | ttwtools `87bf693` |
 | 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [x] | 2026-09-26 | ttwtools `5b7d8e5` |
-| 1.3 | Importação de corpus e metadados | 1.2 | [ ] | | |
+| 1.3 | Importação de corpus e metadados | 1.2 | [x] | 2026-09-26 | ttwtools `3bbe8a4` |
 | 1.4 | Camadas e cache | 1.2 | [ ] | | |
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [ ] | | |
 | 1.6 | Formatos de entrada e saída | 1.2 | [ ] | | |
@@ -348,16 +348,24 @@ Próximo: 1.3 ou 1.4.
 
 ### 1.3 Importação de corpus e metadados
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `3bbe8a4` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §14.1 e §15.2 (itens 2, 7 e 8); em `project.py`, `add_corpus_folder` e `add_corpus_file`.
 - **Fazer:**
-  - [ ] `import_corpus(project, origem, nome, ...)` aceitando pasta de `.txt`, um único texto (colado) e CSV com colunas de metadados.
-  - [ ] Metadados de grupo extraídos do nome do arquivo por delimitador e/ou de um CSV (`document_meta`).
-  - [ ] Tokenização configurável (pontuação, números, minúsculas, contrações) registrada na configuração.
-  - [ ] Filtro de documentos por metadado (função reutilizável para todas as análises).
-  - [ ] Testes com metadados no nome (`grupo_texto01.txt`) e com CSV.
+  - [x] `import_corpus(project, origem, nome, ...)` aceitando pasta de `.txt`, um único texto (colado) e CSV com colunas de metadados.
+  - [x] Metadados de grupo extraídos do nome do arquivo por delimitador e/ou de um CSV (`document_meta`).
+  - [x] Tokenização configurável (pontuação, números, minúsculas, contrações) registrada na configuração.
+  - [x] Filtro de documentos por metadado (função reutilizável para todas as análises).
+  - [x] Testes com metadados no nome (`grupo_texto01.txt`) e com CSV.
 - **Pronto quando:** dá para criar um corpus com grupos e listá-lo filtrado por grupo.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ttwtools/corpus.py com import_corpus (pasta, .txt, CSV com coluna de texto, texto colado; no .ttwl o texto colado/CSV vai para <projeto>_corpus/), metadados do nome do arquivo e de CSV em document_meta, TokenizerConfig/tokenize gravada por corpus, filter_documents/list_groups/metadata_keys. CLI: `ttwtools import` e `ttwtools documents --where chave=valor`.
+Arquivos (submódulo): ttwtools/corpus.py (novo), cli.py (IMPLEMENTED + import/documents), __init__.py, tests/test_corpus.py, CHANGELOG.md.
+Testes: pytest libs/ttwtools/tests -q → 41 passed; CLI manual com CorIFAessaysNE_5 (campos separados por ".") e filtro modo=Ind E lingua=Ne → 5 documentos.
+Pendências: stopwords por idioma (§15.2 item 7) ficam para 1.8 (frequência). Rotas e tela, nos passos 2.2 e 3.4.
+Observações: filtro: chaves diferentes com E, valores da mesma chave com OU. No nome do arquivo o último campo fica com o resto. CSV: delimitador detectado (, ; tab), BOM aceito; metadados casam com ou sem .txt. Tokenizador simples é regex Unicode (palavras com apóstrofo interno, números com . ou ,); "split" separa n't/'s/'re/'ve/'ll/'d/'m (inglês).
+Próximo: 1.4.
+```
 
 ### 1.4 Camadas e cache
 
