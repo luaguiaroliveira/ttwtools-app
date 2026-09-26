@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.4 (CI rodando); 1.1, 1.2 e 1.3 feitos em paralelo
+- **Passo atual:** 0.4 (CI rodando); 1.1 a 1.4 feitos em paralelo
 - **Último passo concluído:** 0.3 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -103,7 +103,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.1 | Testes e linha de comando base | 0.1 | [x] | 2026-09-26 | ttwtools `87bf693` |
 | 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [x] | 2026-09-26 | ttwtools `5b7d8e5` |
 | 1.3 | Importação de corpus e metadados | 1.2 | [x] | 2026-09-26 | ttwtools `3bbe8a4` |
-| 1.4 | Camadas e cache | 1.2 | [ ] | | |
+| 1.4 | Camadas e cache | 1.2 | [x] | 2026-09-26 | ttwtools `82ec09b` |
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [ ] | | |
 | 1.6 | Formatos de entrada e saída | 1.2 | [ ] | | |
 | 1.7 | Estatísticas do corpus | 1.4 | [ ] | | |
@@ -369,17 +369,31 @@ Próximo: 1.4.
 
 ### 1.4 Camadas e cache
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `82ec09b` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §9.4 e §11.4; `tagged_io.py` (161 linhas, inteiro).
 - **Fazer:**
-  - [ ] `config_hash`: canonicalizar as opções **que afetam o resultado**, com os padrões escritos por extenso e a versão do modelo. Opções só de velocidade ficam fora.
-  - [ ] `find_layer(project, doc, request)`: regra de suficiência (mesmo modelo e componentes iguais ou mais). Uma camada com POS e lema atende um pedido só de POS.
-  - [ ] `tag_corpus(project, corpus, tagger, options)` que **pula** documentos com camada suficiente, processa só o que falta, grava a camada em `layers` e os tokens em `tokens`, e informa quantos foram reaproveitados.
-  - [ ] Retomada: se o processamento parar no meio, ao reexecutar continua do documento seguinte.
-  - [ ] Adaptar os taggers atuais para entregarem também `lemma`, `upos` e `feats` quando disponíveis (campos extras já são preservados pelo `tagged_io`).
-  - [ ] Testes: etiquetar duas vezes e conferir que a segunda não reprocessa; mudar o lote (não invalida) e o modelo (invalida).
+  - [x] `config_hash`: canonicalizar as opções **que afetam o resultado**, com os padrões escritos por extenso e a versão do modelo. Opções só de velocidade ficam fora.
+  - [x] `find_layer(project, doc, request)`: regra de suficiência (mesmo modelo e componentes iguais ou mais). Uma camada com POS e lema atende um pedido só de POS.
+  - [x] `tag_corpus(project, corpus, tagger, options)` que **pula** documentos com camada suficiente, processa só o que falta, grava a camada em `layers` e os tokens em `tokens`, e informa quantos foram reaproveitados.
+  - [x] Retomada: se o processamento parar no meio, ao reexecutar continua do documento seguinte.
+  - [x] Adaptar os taggers atuais para entregarem também `lemma`, `upos` e `feats` quando disponíveis (campos extras já são preservados pelo `tagged_io`).
+  - [x] Testes: etiquetar duas vezes e conferir que a segunda não reprocessa; mudar o lote (não invalida) e o modelo (invalida).
 - **Pronto quando:** a segunda execução do mesmo pedido termina sem chamar o tagger (comprovado por contador no teste).
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: tag_corpus etiqueta documento a documento a partir do texto do projeto, pula camadas suficientes, copia camada de outro documento com o mesmo texto, grava a cada documento (retomada) e informa tagged/reused/cloned/missing_text; find_layer com regra de suficiência (componentes iguais ou a mais); adaptadores por documento para spaCy, Stanza, MFTE e BiberPlus; CLI `ttwtools tag`.
+Arquivos (submódulo): ttwtools/{annotate.py, backends.py} (novos), layers.py (layer_satisfies, PERFORMANCE_KEYS), project.py (save_layer, clone_layer; relink atualiza hash), taggers/{spacy_pos,stanza_pos,mfte}.py (lemma/feats/upos), cli.py, tests/test_annotate.py.
+Testes: pytest libs/ttwtools/tests -q → 53 passed (contador do tagger falso: 2ª execução = 0 chamadas; lote não invalida; modelo e opção de resultado invalidam; retomada; cópia por hash; texto alterado reetiqueta). Manual: Stanza, Stanza+lema e MFTE em 5 textos; 2ª execução 0,0 s; offsets conferidos.
+Pendências: tag_corpus não grava tagged_files (a interface antiga continua usando o fluxo por pasta); feature_tables a partir de tokens fica para 1.7. Opções completas e tagsets: 1.5.
+Observações: ver "Detalhes 1.4".
+Próximo: 1.5.
+```
+**Detalhes 1.4:**
+- **Identidade da camada:** `config` = opções que mudam o resultado com os padrões por extenso + `components` (ordenados) + `model_version`; desempenho (`n_processes`, `batch_size`, `processing_size`, `device`, `use_gpu`...) fica fora. Opção desconhecida ou componente inexistente → erro claro.
+- **Componentes:** spaCy `pos,tag,lemma,morph` (padrão: todos; vêm juntos no pipeline); Stanza `pos,morph` (padrão) e `lemma` (outro processador); MFTE `mfte,pos,morph`; BiberPlus `biber`. No spaCy/Stanza as classes ficam em `upos`/`xpos` e `tags` vai vazio (tags é para taggers de traços: BiberPlus, MFTE).
+- **Versão do modelo spaCy** vem dos metadados do pacote do modelo (não carrega o pipeline); por isso um pedido todo reaproveitado não carrega spaCy nem Stanza.
+- **Texto alterado:** a camada guarda o `text_hash` do texto etiquetado; `find_layer` exige o hash atual do documento. `relink_corpus(accept_changed=True)` agora atualiza o hash do documento (antes deixava o antigo).
+
 
 ### 1.5 Opções e tagsets dos taggers
 
