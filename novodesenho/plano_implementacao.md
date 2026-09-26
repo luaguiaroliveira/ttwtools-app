@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.10 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.9 (2026-09-26); 0.1–0.4 e 1.1–1.9 prontos
+- **Passo atual:** 2.1 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.10 (2026-09-26); 0.1–0.4 e Fase 1 inteira prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -109,7 +109,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.7 | Estatísticas do corpus | 1.4 | [x] | 2026-09-26 | ttwtools `64e4a1d` |
 | 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [x] | 2026-09-26 | ttwtools `49c88ee` |
 | 1.9 | Referência e palavras-chave | 1.8 | [x] | 2026-09-26 | ttwtools `55c8bce` |
-| 1.10 | Ajuda e traduções no pacote | 1.1 | [ ] | | |
+| 1.10 | Ajuda e traduções no pacote | 1.1 | [x] | 2026-09-26 | ttwtools `aff3deb` |
 | **Fase 2 — Servidor local** | | | | | |
 | 2.1 | Rotas finas, versão e tarefas | 1.2 | [ ] | | |
 | 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [ ] | | |
@@ -537,16 +537,24 @@ Próximo: 1.10.
 
 ### 1.10 Ajuda e traduções no pacote
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `aff3deb` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §13.2 e §5 (item 6).
 - **Fazer:**
-  - [ ] Pasta `libs/ttwtools/ttwtools/data/help/<idioma>/...md` e `tours/*.json`, com o formato do §13.2.
-  - [ ] `ttwtools.help.get(topico, lang)` com idioma de reserva (inglês) e `ttwtools help <topico>`.
-  - [ ] Carregador de traduções compartilhado (`ttwtools.i18n.t(chave, lang)`) que os descritores de tagger (1.5) usam.
-  - [ ] Escrever os primeiros tópicos: `cohens_d`, `normalizacao_por_mil`, `kwic`, `tagset_biber`, `keyness`, `dispersao` (curtos, com "como ler" e "cuidados").
-  - [ ] Teste: todo tópico existe em `pt` e `en` (ou cai no reserva sem erro).
+  - [x] Pasta `libs/ttwtools/ttwtools/data/help/<idioma>/...md` e `tours/*.json`, com o formato do §13.2.
+  - [x] `ttwtools.help.get(topico, lang)` com idioma de reserva (inglês) e `ttwtools help <topico>`.
+  - [x] Carregador de traduções compartilhado (`ttwtools.i18n.t(chave, lang)`) que os descritores de tagger (1.5) usam.
+  - [x] Escrever os primeiros tópicos: `cohens_d`, `normalizacao_por_mil`, `kwic`, `tagset_biber`, `keyness`, `dispersao` (curtos, com "como ler" e "cuidados").
+  - [x] Teste: todo tópico existe em `pt` e `en` (ou cai no reserva sem erro).
 - **Pronto quando:** `ttwtools help cohens_d --lang pt` mostra o texto.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ttwtools/help.py (get, topics, search, tour, render; reserva em inglês), data/help/{pt,en}/{metricas,telas,conceitos}/*.md com os 6 tópicos pedidos (cada um com "Como ler" e "Cuidados"), tour data/help/tours/primeiro_corpus.json, textos em data/i18n/help.*.json; CLI `ttwtools help [tópico] [--lang] [--search]`. O carregador ttwtools.i18n (feito em 1.5) é o compartilhado.
+Arquivos (submódulo): ttwtools/help.py, data/help/** (novos), data/i18n/help.{pt,en}.json, cli.py, pyproject.toml (md em package-data), tests/test_help.py.
+Testes: pytest libs/ttwtools/tests -q → 97 passed (6 tópicos em pt e en com as seções, relacionados existem, reserva no inglês, tour, busca, CLI). `ttwtools help cohens_d --lang pt` mostra o texto.
+Pendências: glossário e demais tópicos entram com as telas (3.8). Todos os subcomandos do CLI estão implementados (não há mais "ainda não implementado").
+Observações: cabeçalho simples `chave: valor` (sem depender de YAML). Tópicos são achados por id em qualquer subpasta; `texto_ref` do tour aponta para o tópico (o balão usa o `resumo`).
+Próximo: 2.1.
+```
 
 ---
 
