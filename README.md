@@ -2,6 +2,25 @@
 
 Interface gráfica para análise linguística com [ttwtools](https://github.com/luaguiaroliveira/ttwtools) (tagging Biber + KFA).
 
+> **Em reformulação.** O aplicativo está sendo redesenhado para ir além da KFA (exploração de corpus, KWIC, palavras-chave contra corpora de referência, escolha e personalização de taggers, interface em vários idiomas). O desenho está em [`novodesenho/novomodelo.md`](novodesenho/novomodelo.md) e o andamento em [`novodesenho/plano_implementacao.md`](novodesenho/plano_implementacao.md). Este documento descreve o que funciona **hoje**.
+
+## Sistemas suportados
+
+- **macOS 12 (Monterey) ou mais novo**, em Intel e Apple Silicon; **Windows**; **Linux**.
+- O suporte ao macOS 12 é um requisito do projeto e está em verificação (passos 0.1 e 0.3 do plano). No macOS Intel, o `torch` disponível é o 2.2.2, e o Stanza e o MFTE (que dependem dele) podem ficar indisponíveis; spaCy e BiberPlus não dependem disso.
+
+## Obter o código
+
+O repositório usa **submódulo** (`libs/ttwtools`) e **Git LFS** (arquivos grandes em `ttwa_files/`). Instale o [git-lfs](https://git-lfs.com/) antes de clonar (no macOS: `brew install git-lfs`) e rode uma vez `git lfs install`:
+
+```bash
+git clone --recurse-submodules https://github.com/luaguiaroliveira/ttwtools-app.git
+# se já clonou sem o submódulo:
+git submodule update --init --recursive
+```
+
+Sem o `git-lfs`, comandos como `git status` e `git pull` falham com `git-lfs: command not found`.
+
 ---
 
 ## Execução local (modo web)
@@ -30,20 +49,22 @@ node --version
 npm --version
 ```
 
-#### 2. Python 3.12 e Conda
+#### 2. Python e Conda
 
 - Instale o Conda (Miniconda ou Anaconda) de [conda.io](https://conda.io/)
-- Crie e ative o ambiente:
+- O ambiente de desenvolvimento está descrito em `environment.yml` (**Python 3.14**). Crie e ative:
 
 ```bash
-conda create -n ttw313 python=3.12
-conda activate ttw313
+conda env create -f environment.yml -n ttw314
+conda activate ttw314
 ```
+
+- **Mac Intel (macOS 12):** o `torch` novo não existe para Intel, então use um ambiente com **Python 3.11** (`ttw311`) e `torch==2.2.2`. O `environment.yml` acima não serve a esse caso.
 
 #### 3. Dependências Python
 
 ```bash
-conda activate ttw313
+conda activate ttw314
 pip install -e .
 ```
 
@@ -63,7 +84,7 @@ cd ..
 Depois, inicie o servidor:
 
 ```bash
-conda activate ttw313
+conda activate ttw314
 cd /caminho/para/ttwtools-app
 python -m app --mode web --port 8765
 ```
@@ -99,6 +120,9 @@ Usa [pywebview](https://pywebview.flowrl.com/) para abrir a interface em janela 
 
 ## Build — app autônomo (distribuição sem Python)
 
+> **Atenção:** a pasta `build/` (scripts e spec do PyInstaller) foi removida do repositório no commit `5c4b862` e está sendo restaurada e modernizada no passo 0.3 do plano. Enquanto isso, para usar as instruções abaixo, recupere os arquivos do commit anterior: `git restore --source=a28c79a -- build`. O build passará a ser feito por um único `build/build.py`, e as releases (tags `vX.Y.Z`) serão geradas pelo GitHub Actions.
+
+
 Gera um executável autocontido que embarca Python, todas as bibliotecas, os modelos spaCy e o frontend compilado. Não requer instalação de Python nem de dependências no computador do usuário final.
 
 ### Pré-requisitos (em todos os sistemas)
@@ -107,7 +131,7 @@ Gera um executável autocontido que embarca Python, todas as bibliotecas, os mod
 
 2. **Ativar o ambiente Python** com todas as dependências instaladas:
    ```bash
-   conda activate ttw313
+   conda activate ttw314
    ```
 
 3. **Modelos spaCy** devem estar baixados no ambiente:
@@ -133,7 +157,7 @@ Gera um executável autocontido que embarca Python, todas as bibliotecas, os mod
 ### macOS
 
 ```bash
-conda activate ttw313
+conda activate ttw314
 cd /caminho/para/ttwtools-app
 bash build/build_mac.sh
 ```
@@ -184,7 +208,7 @@ bash build/release_github.sh --tag v1.2.3 --dry-run
 Executar no **Prompt de Comando** ou **PowerShell** (não use Git Bash):
 
 ```bat
-conda activate ttw313
+conda activate ttw314
 cd C:\caminho\para\ttwtools-app
 build\build_win.bat
 ```
@@ -201,7 +225,7 @@ Resultado:
 Não há script pronto; executar o PyInstaller diretamente:
 
 ```bash
-conda activate ttw313
+conda activate ttw314
 cd /caminho/para/ttwtools-app
 pyinstaller build/ttwtools-app.spec \
     --distpath dist \
@@ -224,13 +248,17 @@ ttwtools-app/
 │   ├── __main__.py       # Entry point (modos web / desktop)
 │   ├── server.py         # Factory do app FastAPI
 │   └── routes/           # Endpoints da API
-├── frontend-src/         # Frontend (Vite + D3.js) — fonte
+├── frontend-src/         # Frontend atual (Vite + D3.js) — fonte
 ├── frontend/             # Frontend compilado — servido pelo FastAPI
-├── build/                # Scripts e spec do PyInstaller
-│   ├── build_mac.sh
-│   ├── build_win.bat
-│   └── ttwtools-app.spec
+├── build/                # Scripts e spec do PyInstaller (removida; ver passo 0.3 do plano)
 ├── libs/                 # Submódulos git (ttwtools)
+├── novodesenho/          # Desenho do novo TTWtools e plano de implementação
+├── .github/workflows/    # Build e release no GitHub Actions
+├── AGENTS.md             # Regras permanentes para agentes (Claude, Gemini, opencode)
 ├── requirements.txt
 └── pyproject.toml
 ```
+
+## Contribuir
+
+Leia [`AGENTS.md`](AGENTS.md) e o cabeçalho de [`novodesenho/plano_implementacao.md`](novodesenho/plano_implementacao.md): o trabalho é feito em passos numerados, cada um com relato ao ser concluído, para poder ser retomado em outra máquina ou por outro agente.

@@ -122,6 +122,7 @@ Usa [pywebview](https://pywebview.flowrl.com/) para abrir a interface em janela 
 
 > **Atenção:** a pasta `build/` (scripts e spec do PyInstaller) foi removida do repositório no commit `5c4b862` e está sendo restaurada e modernizada no passo 0.3 do plano. Enquanto isso, para usar as instruções abaixo, recupere os arquivos do commit anterior: `git restore --source=a28c79a -- build`. O build passará a ser feito por um único `build/build.py`, e as releases (tags `vX.Y.Z`) serão geradas pelo GitHub Actions.
 
+
 Gera um executável autocontido que embarca Python, todas as bibliotecas, os modelos spaCy e o frontend compilado. Não requer instalação de Python nem de dependências no computador do usuário final.
 
 ### Pré-requisitos (em todos os sistemas)
@@ -162,10 +163,43 @@ bash build/build_mac.sh
 ```
 
 Resultado:
-- `dist/ttwtools.app` — bundle `.app` (arraste para `/Applications` para instalar)
-- `dist/ttwtools/ttwtools` — executável de linha de comando
+- `dist_macarm64/ttwtools.app` — bundle `.app` (arraste para `/Applications` para instalar)
+- `dist_macarm64/ttwtools-macos-arm64.dmg` — instalador DMG
 
 > **Nota:** na primeira execução o macOS pode exibir aviso de segurança para apps não assinados. Clique com o botão direito no `.app` → *Abrir* para contornar.
+
+### Release local no GitHub (macOS arm64 + Intel)
+
+Para publicar uma release sem depender de GitHub Actions, use o script:
+
+```bash
+bash build/release_github.sh --tag v1.2.3
+```
+
+Esse comando:
+- valida os DMGs já gerados localmente
+- cria/atualiza a release no GitHub via `gh`
+- envia os artefatos com `--clobber` (substitui se o nome já existir)
+
+Arquivos esperados pelo script de release:
+- `dist_macarm64/ttwtools-macos-arm64.dmg`
+- `dist_macx86_64/ttwtools-macos-x86_64.dmg`
+
+Pré-requisitos:
+- GitHub CLI autenticado (`gh auth login`)
+- Build já executado para os alvos desejados
+
+Opções úteis:
+
+```bash
+# subir só ARM
+bash build/release_github.sh --tag v1.2.3 --targets mac-arm64
+
+# testar fluxo sem publicar
+bash build/release_github.sh --tag v1.2.3 --dry-run
+```
+
+> A estrutura do script já está preparada para novos alvos (`windows-x64` e `linux-x64`), que podem ser implementados depois para uso local ou em Actions.
 
 ---
 
