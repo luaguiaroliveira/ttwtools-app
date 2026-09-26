@@ -88,7 +88,13 @@ __version__ = _app_version()
 
 def version_info() -> dict:
     """Versões do app e do pacote `ttwtools`, e o commit do build."""
-    ttwtools_version = _from_metadata("ttwtools")
+    if _build_info is not None and getattr(_build_info, "TTWTOOLS_VERSION", None):
+        ttwtools_version = _build_info.TTWTOOLS_VERSION        # gravado no build
+    else:
+        try:  # a versão que o próprio pacote declara (os metadados de instalação editável envelhecem)
+            from ttwtools import __version__ as ttwtools_version
+        except Exception:
+            ttwtools_version = _from_metadata("ttwtools")
     return {
         "app": __version__,
         "app_semver": semver(__version__),

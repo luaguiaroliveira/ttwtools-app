@@ -338,7 +338,9 @@ def main() -> int:
     dist_dir = ROOT / "dist" / target.name
     work_dir = BUILD / "_work" / target.name
     build_info = ROOT / "app" / "_build_info.py"
-    build_info.write_text(f'VERSION = {version!r}\nCOMMIT = {git_commit()!r}\n', encoding="utf-8")
+    ttwtools_version = tomllib.loads((ROOT / "libs" / "ttwtools" / "pyproject.toml").read_text())["project"]["version"]
+    build_info.write_text(f'VERSION = {version!r}\nCOMMIT = {git_commit()!r}\nTTWTOOLS_VERSION = {ttwtools_version!r}\n',
+                          encoding="utf-8")
     try:
         run_pyinstaller(target, frontend_out, dist_dir, work_dir)
     finally:

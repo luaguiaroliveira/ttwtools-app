@@ -97,7 +97,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 0.2 | Versão única e changelog | 0.1 | [x] | 2026-09-26 | ver `git log --grep '\[0.2\]'` |
 | 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [x] | 2026-09-26 | ver `git log --grep '\[0.3\]'` |
 | 0.4 | CI multi-plataforma | 0.3 | [x] | 2026-09-26 | ver `git log --grep '\[0.4\]'` |
-| 0.5 | Processo de release | 0.4 | [ ] | | |
+| 0.5 | Processo de release | 0.4 | [x] | 2026-09-26 | ver `git log --grep '\[0.5\]'` |
 | 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
 | **Fase 1 — Pacote `ttwtools`** | | | | | |
 | 1.1 | Testes e linha de comando base | 0.1 | [x] | 2026-09-26 | ttwtools `87bf693` |
@@ -284,15 +284,23 @@ Próximo: 0.5 (processo de release) ou 1.5.
 
 ### 0.5 Processo de release
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[0.5\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `git show a28c79a:build/release_github.sh` (só a lista de opções), `RELEASING.md` da 0.2.
 - **Fazer:**
-  - [ ] Script `build/release.py` com `--dry-run`: confere árvore limpa e branch `main`, atualiza a versão no `pyproject.toml`, move `[Unreleased]` para a seção da versão com a data, faz o commit `release: vX.Y.Z`, cria a tag `vX.Y.Z` e faz o push (o CI faz o resto).
-  - [ ] Submódulo: antes de liberar, conferir que o ponteiro de `libs/ttwtools` aponta para um commit **já publicado** e (se houver tag) registrar a versão dele nas notas.
-  - [ ] Completar `RELEASING.md`: fluxo em passos (branch → PR → `main` → `release.py` → conferir rascunho → publicar), como fazer pré-lançamento, como corrigir uma release ruim (nova `PATCH`, nunca reescrever tag publicada).
-  - [ ] Manter `build/release_github.sh` (envio manual dos pacotes feitos localmente) como alternativa, atualizado para os novos nomes de arquivo.
+  - [x] Script `build/release.py` com `--dry-run`: confere árvore limpa e branch `main`, atualiza a versão no `pyproject.toml`, move `[Unreleased]` para a seção da versão com a data, faz o commit `release: vX.Y.Z`, cria a tag `vX.Y.Z` e faz o push (o CI faz o resto).
+  - [x] Submódulo: antes de liberar, conferir que o ponteiro de `libs/ttwtools` aponta para um commit **já publicado** e (se houver tag) registrar a versão dele nas notas.
+  - [x] Completar `RELEASING.md`: fluxo em passos (branch → PR → `main` → `release.py` → conferir rascunho → publicar), como fazer pré-lançamento, como corrigir uma release ruim (nova `PATCH`, nunca reescrever tag publicada).
+  - [x] Manter `build/release_github.sh` (envio manual dos pacotes feitos localmente) como alternativa, atualizado para os novos nomes de arquivo.
 - **Pronto quando:** `python build/release.py --dry-run --version 0.4.0-alpha.1` lista tudo que faria, sem alterar nada.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: build/release.py (--dry-run, --allow-branch, --no-push): confere árvore limpa, branch main, tag inexistente e submódulo publicado; grava versão PEP 440; move [Unreleased] para [X.Y.Z] — data com a linha "Pacote ttwtools X (commit…)"; atualiza links; valida com release_notes.py; commit, tag anotada e push. RELEASING.md completo (fluxo, pré-lançamentos, corrigir release ruim, submódulo). build/release_github.sh reescrito (nomes TTWtools-<versão>-<so>-<arq>, refaz SHA256SUMS.txt).
+Arquivos: build/{release.py (novo), release_github.sh (novo)}, RELEASING.md, build/build.py (grava TTWTOOLS_VERSION), app/_version.py, tests/test_release.py; submódulo: pyproject 0.2.0.dev0.
+Testes: pytest tests -q → 27 passed; `python build/release.py --dry-run --version 0.4.0-alpha.1` lista os passos e os problemas (branch ≠ main, árvore suja) sem alterar nada; release_github.sh --dry-run lista os pacotes.
+Pendências: nenhuma.
+Observações: pacote ttwtools passa a 0.2.0.dev0 (a Fase 1 mudou a API); /api/version passa a ler a versão do próprio pacote (a dos metadados da instalação editável envelhecia) e, no binário, a gravada no build.
+Próximo: 0.6.
+```
 
 ### 0.6 Release de teste (alpha)
 

@@ -23,10 +23,29 @@
 - `CHANGELOG.md` no formato Keep a Changelog. Cada passo concluído do plano acrescenta uma linha em `[Unreleased]`.
 - Ao lançar: renomear `[Unreleased]` para `[X.Y.Z] — AAAA-MM-DD`, abrir um `[Unreleased]` vazio e atualizar os links de comparação no fim do arquivo.
 
-## Lançar (resumo; detalhar em 0.5)
+## Fluxo de uma release
 
-1. Ajustar `version` no `pyproject.toml` e fechar a seção no `CHANGELOG.md`.
-2. `pytest tests -q` e commit `release: vX.Y.Z`.
-3. `git tag vX.Y.Z` (grafia SemVer) e `git push origin vX.Y.Z`; o CI gera os pacotes.
-4. Pacote macOS Intel: gerado localmente e enviado à release (ver plano, passos 0.4 e 0.5).
-5. Voltar o `pyproject.toml` para a próxima `.dev0`.
+1. **Trabalho numa branch** (ex.: `new_set26`), com `CHANGELOG.md` → `[Unreleased]` atualizado a cada passo.
+2. **PR para a `main`** e mesclar quando o CI (`ci.yml`) estiver verde.
+3. Na `main`, atualizada e limpa: `python build/release.py --version X.Y.Z --dry-run` (confere tudo e mostra o plano).
+4. `python build/release.py --version X.Y.Z`: grava a versão (PEP 440) no `pyproject.toml`, move `[Unreleased]` para `[X.Y.Z] — data` com a versão do pacote `ttwtools`, faz o commit `release: vX.Y.Z`, cria a tag anotada e envia. O script recusa se a árvore estiver suja, se a branch não for a `main` (salvo `--allow-branch`), se a tag já existir ou se o submódulo apontar para um commit não publicado.
+5. O CI (`release.yml`) valida a tag, gera os pacotes nos 4 sistemas (com `--selftest` e, no macOS, `check_macos_min.py`) e cria a **release em rascunho** com `SHA256SUMS.txt` e as notas tiradas do CHANGELOG. Versões com `-alpha`, `-beta` ou `-rc` saem como *pre-release*.
+6. **Conferir o rascunho:** baixar ao menos um pacote e abrir; no macOS, testar também numa máquina com macOS 12. Se precisar de um pacote feito localmente (ex.: macOS Intel sem runner), gerar com `python build/build.py --arch x86_64` e enviar com `bash build/release_github.sh --tag vX.Y.Z`.
+7. **Publicar** o rascunho no GitHub.
+8. Voltar o `pyproject.toml` para a próxima versão de desenvolvimento (ex.: `0.4.1.dev0`) e abrir um `[Unreleased]` vazio (o `release.py` já deixa o cabeçalho).
+
+## Pré-lançamentos
+
+- `python build/release.py --version 0.4.0-alpha.1` (ou `-beta.N`, `-rc.N`). Para testar o pipeline a partir de uma branch de trabalho: `--allow-branch`.
+- Para só gerar pacotes sem release: `git push origin <branch>:release-test/<nome>` (o `release.yml` roda sem publicar).
+
+## Corrigir uma release ruim
+
+- **Nunca** apagar nem reescrever uma tag já publicada (quem baixou ficaria com um pacote que não corresponde à tag).
+- Rascunho ainda não publicado com defeito: apagar o rascunho e a tag (`gh release delete vX --cleanup-tag`), corrigir, lançar de novo.
+- Release publicada com defeito: corrigir e lançar uma nova versão `PATCH` (ex.: `0.4.1`), explicando no CHANGELOG.
+
+## Submódulo `ttwtools`
+
+- Antes de lançar, o commit do submódulo precisa estar no GitHub (`git -C libs/ttwtools push`); o `release.py` confere.
+- O pacote tem versão própria (`libs/ttwtools/pyproject.toml`); a linha "Pacote `ttwtools` X (commit ...)" entra nas notas de cada release do app.

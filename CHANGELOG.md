@@ -13,6 +13,7 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 - Pacote `ttwtools`: testes, linha de comando `ttwtools` (passo 1.1); esquema de projeto v0.3 com camadas, tokens e projetos leves `.ttwl` (passo 1.2). Importação de corpus com metadados por documento, filtros e tokenização simples (passo 1.3). Etiquetagem com cache de camadas: não reprocessa o que já foi feito (passo 1.4). Opções e tagsets dos taggers descritos em dados, com explicações em pt/en, predefinições e disponibilidade por sistema (passo 1.5). Formatos CoNLL-U, VRT, palavra/TAG e tabelas de tokens (passo 1.6). Estatísticas descritivas do corpus com cache (passo 1.7). Busca, KWIC, frequência, colocados e dispersão, também sem tagger (passo 1.8). Palavras-chave contra referência com avisos de comparabilidade (passo 1.9). Ajuda em pt/en no pacote e `ttwtools help` (passo 1.10).
 - Servidor: registro único de tarefas com cancelamento (`/api/jobs`), `/api/health`, importação por fonte de corpus (`/api/corpora/import`), projetos `.ttwl` nas rotas; corrigido o erro 500 com NaN nas tabelas de traços. (passo 2.1)
 - Rotas dos recursos novos (taggers, visão geral, explorar, palavras-chave, ajuda, traduções) e "copiar como código" (`/api/code`). (passo 2.2)
+- Processo de release: `build/release.py` (com `--dry-run`), `RELEASING.md` completo e `build/release_github.sh` para pacotes feitos localmente. (passo 0.5)
 
 ### Alterado
 - Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)
