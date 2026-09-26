@@ -35,3 +35,12 @@ def wait_job(client, job_id, timeout=120):
             return job
         time.sleep(0.05)
     raise TimeoutError(job_id)
+
+
+@pytest.fixture(scope="session")
+def spacy_model():
+    spacy = pytest.importorskip("spacy")
+    try:
+        return spacy.load("en_core_web_sm")
+    except OSError:
+        pytest.skip("modelo en_core_web_sm não instalado")

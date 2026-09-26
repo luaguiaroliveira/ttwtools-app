@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 2.2 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 2.1 (2026-09-26); 0.1–0.4, Fase 1 e 2.1 prontos
+- **Passo atual:** 3.1 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 2.2 (2026-09-26); 0.1–0.4, Fases 1 e 2 prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -112,7 +112,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.10 | Ajuda e traduções no pacote | 1.1 | [x] | 2026-09-26 | ttwtools `aff3deb` |
 | **Fase 2 — Servidor local** | | | | | |
 | 2.1 | Rotas finas, versão e tarefas | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[2.1\]'` |
-| 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [ ] | | |
+| 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [x] | 2026-09-26 | ver `git log --grep '\[2.2\]'` |
 | **Fase 3 — Interface Vue** | | | | | |
 | 3.1 | Esqueleto Vue | 0.3 | [ ] | | |
 | 3.2 | Casca responsiva, tema e traduções | 3.1 | [ ] | | |
@@ -583,18 +583,26 @@ Próximo: 2.2.
 
 ### 2.2 Rotas dos recursos novos
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[2.2\]'` (ttwtools `0f66554`) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Fazer** (cada rota é só uma chamada à função do pacote):
-  - [ ] `GET /api/taggers`, `GET /api/taggers/{id}/options`, `GET /api/taggers/{id}/tagset`; `POST /api/tagging/run` com campo `options`.
-  - [ ] `GET /api/corpora/{id}/overview` (1.7) e `POST` para calcular.
-  - [ ] `GET /api/explore/kwic` (paginado), `/search`, `/frequency`, `/collocates`, `/dispersion`.
-  - [ ] `POST /api/compare/keywords`; `GET /api/references` (a partir da 4.1, por enquanto lista vazia).
-  - [ ] `GET /api/help/{topico}?lang=` e `GET /api/i18n/{lang}`.
-  - [ ] Endpoint que devolve o **comando de linha de comando equivalente** de cada análise (base do "copiar como código").
-  - [ ] Documentação automática em `/api/docs` conferida.
-  - [ ] Testes de rota.
+  - [x] `GET /api/taggers`, `GET /api/taggers/{id}/options`, `GET /api/taggers/{id}/tagset`; `POST /api/tagging/run` com campo `options`.
+  - [x] `GET /api/corpora/{id}/overview` (1.7) e `POST` para calcular.
+  - [x] `GET /api/explore/kwic` (paginado), `/search`, `/frequency`, `/collocates`, `/dispersion`.
+  - [x] `POST /api/compare/keywords`; `GET /api/references` (a partir da 4.1, por enquanto lista vazia).
+  - [x] `GET /api/help/{topico}?lang=` e `GET /api/i18n/{lang}`.
+  - [x] Endpoint que devolve o **comando de linha de comando equivalente** de cada análise (base do "copiar como código").
+  - [x] Documentação automática em `/api/docs` conferida.
+  - [x] Testes de rota.
 - **Pronto quando:** cada recurso do pacote tem rota testada e nenhuma rota tem lógica própria.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: app/routes/api_new.py com as rotas finas: /api/taggers (+ options, tagset), POST /api/tagging/layers (tarefa), /api/corpora/{c}/overview (GET guardado, POST calcula em tarefa), /api/explore/{search,kwic,frequency,collocates,dispersion}, POST /api/compare/keywords, /api/references (vazio até 4.1), /api/help, /api/help/{tópico}, /api/help/tours/{id}, /api/i18n/{lang}, POST /api/code (comando e código Python equivalentes, via ttwtools.codegen).
+Arquivos: app/routes/api_new.py (novo), app/server.py, tests/{test_routes_new.py, conftest.py}; submódulo: ttwtools/codegen.py (novo), stats.py (cache_only), keywords.py → keyness.py, tests/test_codegen.py.
+Testes: pytest tests -q → 21 passed; pytest libs/ttwtools/tests -q → 108 passed. O comando de /api/code, executado no CLI, devolve o mesmo JSON da rota /api/explore/kwic; o Python gerado roda e dá o mesmo resultado; /api/docs e /openapi.json listam as rotas.
+Pendências: etiquetar com opções ficou em POST /api/tagging/layers (não em /api/tagging/run, que é da interface antiga e continua igual até 3.11).
+Observações: rotas não têm lógica própria: validam, chamam a função do pacote e traduzem ValueError/KeyError em 422. Tarefas longas (etiquetar, visão geral) usam app/jobs.py. O módulo ttwtools.keywords escondia a função ttwtools.keywords depois de importado; virou ttwtools.keyness.
+Próximo: 3.1 (interface Vue) ou 0.5/0.6 (release).
+```
 
 ---
 

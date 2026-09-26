@@ -105,6 +105,8 @@ def build_app(open_file: str | None = None) -> FastAPI:
     app.include_router(viz.router,             prefix="/api/viz",       tags=["viz"])
     app.include_router(jobs_routes.router,     prefix="/api/jobs",      tags=["jobs"])
     app.include_router(sources_routes.router,  prefix="/api/corpora",   tags=["corpora"])
+    from app.routes import api_new
+    app.include_router(api_new.router,         prefix="/api")
 
     # ------------------------------------------------------------------
     # Estado global mínimo: arquivo .ttwa aberto
