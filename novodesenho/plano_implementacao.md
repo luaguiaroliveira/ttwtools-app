@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.6 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.5 (2026-09-26); 0.1–0.4 e 1.1–1.5 prontos
+- **Passo atual:** 1.7 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.6 (2026-09-26); 0.1–0.4 e 1.1–1.6 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -105,7 +105,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.3 | Importação de corpus e metadados | 1.2 | [x] | 2026-09-26 | ttwtools `3bbe8a4` |
 | 1.4 | Camadas e cache | 1.2 | [x] | 2026-09-26 | ttwtools `82ec09b` |
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [x] | 2026-09-26 | ttwtools `3e0dc35` |
-| 1.6 | Formatos de entrada e saída | 1.2 | [ ] | | |
+| 1.6 | Formatos de entrada e saída | 1.2 | [x] | 2026-09-26 | ttwtools `4a0abc3` |
 | 1.7 | Estatísticas do corpus | 1.4 | [ ] | | |
 | 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [ ] | | |
 | 1.9 | Referência e palavras-chave | 1.8 | [ ] | | |
@@ -447,17 +447,25 @@ Próximo: 1.6.
 
 ### 1.6 Formatos de entrada e saída
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `4a0abc3` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §9.2.
 - **Fazer:**
-  - [ ] `formats/conllu.py`: leitura para `tokens` e escrita a partir de uma camada (UD).
-  - [ ] `formats/vrt.py`: escrita (abre no CWB e no Sketch Engine).
-  - [ ] `formats/nltk_tagged.py`: leitura de texto anotado `palavra/TAG` (Brown, LOB).
-  - [ ] Saída CSV/JSONL/Parquet opcional (Parquet só se `pyarrow` já for dependência; senão, deixar como extra).
-  - [ ] Subcomandos `ttwtools import --format ...` e `ttwtools export --format ...`.
-  - [ ] Testes de ida e volta (CoNLL-U → tokens → CoNLL-U).
+  - [x] `formats/conllu.py`: leitura para `tokens` e escrita a partir de uma camada (UD).
+  - [x] `formats/vrt.py`: escrita (abre no CWB e no Sketch Engine).
+  - [x] `formats/nltk_tagged.py`: leitura de texto anotado `palavra/TAG` (Brown, LOB).
+  - [x] Saída CSV/JSONL/Parquet opcional (Parquet só se `pyarrow` já for dependência; senão, deixar como extra).
+  - [x] Subcomandos `ttwtools import --format ...` e `ttwtools export --format ...`.
+  - [x] Testes de ida e volta (CoNLL-U → tokens → CoNLL-U).
 - **Pronto quando:** um arquivo CoNLL-U pequeno vira corpus com camada, e volta a CoNLL-U sem perdas de colunas usadas.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: pacote ttwtools/formats: conllu.py (leitura → documentos + camada `conllu`; escrita de qualquer camada), vrt.py (escrita), nltk_tagged.py (leitura palavra/TAG), tables.py (CSV, JSONL canônico por documento, Parquet se houver pyarrow); CLI `import --format conllu|nltk` e `export --to conllu|vrt|csv|jsonl|parquet`.
+Arquivos (submódulo): ttwtools/formats/{__init__,common,conllu,vrt,nltk_tagged,tables}.py (novos), cli.py, taggers/stanza_pos.py (grava `sent`), pyproject.toml (pacote formats; extra `parquet`), tests/test_formats.py, tests/data/sample.conllu.
+Testes: pytest libs/ttwtools/tests -q → 71 passed; CoNLL-U → projeto → CoNLL-U devolve as 10 colunas iguais (com token de várias palavras, nó vazio, SpaceAfter=No, 2 documentos) e as linhas `# text`.
+Pendências: Parquet só com `pip install pyarrow` (não é dependência); comentários de frase do CoNLL-U original (sent_id, newpar) não voltam (sent_id é gerado); nós vazios (1.1) são descartados na leitura.
+Observações: texto reconstruído com `# text` (ou formas + SpaceAfter); frases separadas por espaço e parágrafos (`# newpar`) por linha em branco. Na escrita, frases vêm do índice `sent` da camada (CoNLL-U, Stanza, palavra/TAG) ou da pontuação final (spaCy, que roda sem parser); SpaceAfter=No calculado pelas posições. VRT: p-attributes word, xpos, upos, lemma, tags; metadados do documento viram atributos de <text> (nomes saneados). palavra/TAG: etiqueta após a última barra; sem espaço antes de pontuação/aspas de fechamento.
+Próximo: 1.7.
+```
 
 ### 1.7 Estatísticas do corpus
 
