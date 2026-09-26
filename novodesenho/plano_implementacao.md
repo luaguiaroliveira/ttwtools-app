@@ -4,10 +4,10 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.2
-- **Último passo concluído:** 0.1 (2026-09-26)
+- **Passo atual:** 0.3
+- **Último passo concluído:** 0.2 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
-- **Versão alvo:** `0.4.0` (a confirmar em 0.2)
+- **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
 
 ## Como usar (leia isto primeiro, é curto)
@@ -94,7 +94,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 |---|---|---|---|---|---|
 | **Fase 0 — Base: versão, build e release** | | | | | |
 | 0.1 | Conferir base e ambiente | — | [x] | 2026-09-26 | ver `git log --grep '\[0.1\]'` |
-| 0.2 | Versão única e changelog | 0.1 | [ ] | | |
+| 0.2 | Versão única e changelog | 0.1 | [x] | 2026-09-26 | ver `git log --grep '\[0.2\]'` |
 | 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [ ] | | |
 | 0.4 | CI multi-plataforma | 0.3 | [ ] | | |
 | 0.5 | Processo de release | 0.4 | [ ] | | |
@@ -159,7 +159,7 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
   - [x] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
   - [x] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
   - [x] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
-  - [~] **macOS 12:** já informado em 2026-09-26: máquina **Intel**, **Safari 17.6**. Anotar no Relato a versão exata do macOS (12.x) e confirmar o Safari com Safari > Sobre o Safari.
+  - [x] **macOS 12:** já informado em 2026-09-26: máquina **Intel**, **Safari 17.6**. Anotar no Relato a versão exata do macOS (12.x) e confirmar o Safari com Safari > Sobre o Safari.
   - [x] **Levantar quais dependências não rodam no macOS 12:** com o pacote atual já compilado (ou os pacotes instalados), listar os arquivos Mach-O cujo mínimo de macOS seja maior que 12.0 (`vtool -show-build <arquivo>`), principalmente os do `torch`. Anotar quais versões de `torch`, `numpy`, `spaCy`, `thinc` e `pywebview` satisfazem o alvo 12.0 em **Intel (prioridade)** e em **arm64**. Confirmar se `torch==2.2.2` com `numpy<2` e `stanza` funcionam juntos no Intel (Stanza e MFTE dependem disso).
   - [x] Propor o **conjunto de versões por plataforma** (Python e torch) e registrar em "Decisões pendentes" (D2 e D10).
 - **Pronto quando:** o app atual abre e os números de base estão no Relato, incluindo a lista de dependências incompatíveis com o macOS 12.
@@ -169,7 +169,7 @@ Feito: app atual abre (--mode web, HTTP 200, 40 rotas); os 4 taggers rodam em te
 Arquivos: só este plano (nenhum código mudou). Ambiente ttw314 corrigido: ttwtools e ttwtools-app estavam instalados
   em modo editável apontando para caminhos antigos (…/repositorios_lu/ttwtools, fora de ttw/); reinstalados de libs/ttwtools e da raiz.
 Testes: não há testes no app nem no submódulo (base = 0). pytest instalado no ttw314 (faltava).
-Pendências: versão exata do macOS 12.x e confirmação do Safari 17.6 na máquina Intel (só o usuário pode ver lá). CHANGELOG: sem linha,
+Pendências: nenhuma. Máquina Intel confirmada pelo usuário: macOS 12.7.6 (Monterey), Safari 17.6. CHANGELOG: sem linha,
   pois 0.1 não mudou código e o CHANGELOG é reorganizado em 0.2.
 Observações: (ver "Levantamento 0.1" abaixo)
 Próximo: 0.2.
@@ -192,19 +192,27 @@ Próximo: 0.2.
 
 ### 0.2 Versão única e changelog
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[0.2\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `pyproject.toml` (linha `version`), `app/server.py` (`version=`), `CHANGELOG.md` (topo), `git tag | tail`, `libs/ttwtools/pyproject.toml`.
 - **Regra de versão (SemVer):** `MAJOR.MINOR.PATCH`, com pré-lançamentos `-alpha.N`, `-beta.N`, `-rc.N`. Tag do app = `v` + versão do `pyproject.toml` do app. O pacote `ttwtools` tem versão e tags próprias no repositório dele.
 - **Fazer:**
-  - [ ] Decidir a versão da linha nova (sugestão: `0.4.0`, pois o esquema do `.ttwa` muda) e registrar em "Decisões pendentes".
-  - [ ] `pyproject.toml` do app é a **fonte única**: corrigir de `0.1.0` para a versão real atual (`0.3.7`) e depois para `0.4.0.dev0` na linha nova.
-  - [ ] Criar `app/_version.py` lido por `app/__init__.py` (`__version__`), com este fallback: `importlib.metadata` → arquivo `_version.py` gerado no build (no binário congelado os metadados podem faltar).
-  - [ ] Trocar o `version="0.1.0"` fixo de `app/server.py` por `__version__`; criar `GET /api/version` devolvendo versão do app, do `ttwtools` e o hash do commit.
-  - [ ] Opção `--version` em `python -m app`.
-  - [ ] Padronizar `CHANGELOG.md` (formato "Keep a Changelog", seção `[Unreleased]` no topo) e alinhar com as tags existentes.
-  - [ ] Documentar a regra em `RELEASING.md` (esqueleto; completar em 0.5).
+  - [x] Decidir a versão da linha nova (sugestão: `0.4.0`, pois o esquema do `.ttwa` muda) e registrar em "Decisões pendentes".
+  - [x] `pyproject.toml` do app é a **fonte única**: corrigir de `0.1.0` para a versão real atual (`0.3.7`) e depois para `0.4.0.dev0` na linha nova.
+  - [x] Criar `app/_version.py` lido por `app/__init__.py` (`__version__`), com este fallback: `importlib.metadata` → arquivo `_version.py` gerado no build (no binário congelado os metadados podem faltar).
+  - [x] Trocar o `version="0.1.0"` fixo de `app/server.py` por `__version__`; criar `GET /api/version` devolvendo versão do app, do `ttwtools` e o hash do commit.
+  - [x] Opção `--version` em `python -m app`.
+  - [x] Padronizar `CHANGELOG.md` (formato "Keep a Changelog", seção `[Unreleased]` no topo) e alinhar com as tags existentes.
+  - [x] Documentar a regra em `RELEASING.md` (esqueleto; completar em 0.5).
 - **Pronto quando:** `python -m app --version`, `GET /api/version` e `pyproject.toml` mostram o mesmo número.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: versão única 0.4.0.dev0 no pyproject; __version__, `python -m app --version` (responde antes de carregar o torch, 0,2 s) e GET /api/version {app, app_semver, ttwtools, commit}.
+Arquivos: app/_version.py (novo), app/__init__.py, app/__main__.py, app/server.py, pyproject.toml (requires-python >=3.11), .gitignore, CHANGELOG.md, RELEASING.md (novo), tests/test_version.py (novo).
+Testes: pytest tests -q → 8 passed; servidor real: /api/version = 0.4.0.dev0, / = 200.
+Pendências: nenhuma. O salto intermediário para 0.3.7 foi omitido (iria direto para 0.4.0.dev0 no mesmo passo).
+Observações: ordem de leitura diferente da prevista: app/_build_info.py (gerado no build, fora do git) → pyproject.toml → importlib.metadata, porque a instalação editável guarda a versão da época da instalação e ficaria desatualizada. Em 0.3 o build.py grava app/_build_info.py (VERSION, COMMIT). pyproject usa PEP 440 (0.4.0a1) e a tag SemVer (v0.4.0-alpha.1); app._version.semver() converte (regra em RELEASING.md). CHANGELOG: "[Unreleased] 2026-05-01" antigo virou [0.3.0]; 0.3.1–0.3.5 (só CI) e 0.3.7 reconstruídos do git. ttwtools não tem __version__ (lido por metadados; no binário, copiar metadados no spec em 0.3).
+Próximo: 0.3.
+```
 
 ### 0.3 Restaurar e modernizar o build (PyInstaller)
 
@@ -212,13 +220,13 @@ Próximo: 0.2.
 - **Ler antes:** `git show a28c79a:build/ttwtools-app.spec` (spec), `git show a28c79a:build/hooks/hook-spacy.py`, `git show a28c79a:build/build_mac.sh`, `git show a28c79a:build/build_win.bat`.
 - **Fazer:**
   - [ ] Restaurar do commit `a28c79a` para `build/`: `ttwtools-app.spec`, `hooks/hook-spacy.py`, `icon.icns` (`git restore --source=a28c79a -- build/<arquivo>`). Não restaurar os `.pyc`; garantir `__pycache__/` no `.gitignore`.
-  - [ ] Criar um **único `build/build.py`** (Python, multiplataforma) que: compila o frontend (`npm ci && npm run build`), escreve `app/_version.py`, roda o PyInstaller com o spec e empacota o resultado (DMG no macOS, `.zip` no Windows, `.tar.gz` no Linux), nomeando `TTWtools-<versão>-<so>-<arq>.<ext>`. Os `build_mac.sh` e `build_win.bat` viram invólucros de uma linha.
+  - [ ] Criar um **único `build/build.py`** (Python, multiplataforma) que: compila o frontend (`npm ci && npm run build`), escreve `app/_build_info.py` (`VERSION`, `COMMIT`; ver Relato 0.2), roda o PyInstaller com o spec e empacota o resultado (DMG no macOS, `.zip` no Windows, `.tar.gz` no Linux), nomeando `TTWtools-<versão>-<so>-<arq>.<ext>`. Os `build_mac.sh` e `build_win.bat` viram invólucros de uma linha.
   - [ ] Ajustar o spec: pasta do frontend por variável (a interface Vue entra na 3.1 sem mexer no resto), incluir os arquivos de dados novos do pacote (tagsets, descritores, ajuda) por **glob**, e **não embutir modelos grandes** (só `en_core_web_sm`; os demais serão baixados depois, passo 4.2).
   - [ ] Ícones para Windows (`.ico`) e Linux (`.png`) a partir do `icon.icns`.
   - [ ] Modo de teste embutido: `TTWtools --selftest` sobe o servidor numa porta livre, chama `GET /api/version`, imprime `OK` e sai com código 0.
   - [ ] **Alvo macOS 12:** `build.py` define `MACOSX_DEPLOYMENT_TARGET=12.0` no macOS e aceita `--arch arm64|x86_64` (o `x86_64` reproduz o que fazia `build_intel_local.sh`: Rosetta, Miniconda x86_64, ambiente com o conjunto de versões da 0.1).
   - [ ] **Ambientes por plataforma:** manter o `environment.yml` de desenvolvimento e criar arquivos de restrição por alvo (por exemplo `build/constraints-macos-x86_64.txt` com `torch==2.2.2` e `numpy<2`, se confirmado). O `build.py` escolhe o arquivo pelo alvo.
-  - [ ] **`build/check_macos_min.py`:** percorre o pacote gerado e falha se algum Mach-O exigir macOS acima de 12.0; imprime os arquivos culpados. Chamado ao fim do `build.py` no macOS.
+  - [ ] **`build/check_macos_min.py`:** percorre o pacote gerado e falha se algum Mach-O exigir macOS acima do mínimo do alvo (**12.1 no arm64**, pelo Python 3.14 do conda; **12.0 no Intel**; decisão de 2026-09-26); imprime os arquivos culpados. Instalar numpy e scipy com rodas de macOS ≤ 12 (Relato 0.1, item 2). Chamado ao fim do `build.py` no macOS.
   - [ ] **Dependência ausente vira aviso, não erro:** se `torch` ou `stanza` não estiver no pacote, o app abre normalmente e Stanza/MFTE aparecem como indisponíveis (ver 1.5).
   - [ ] Rodar o build **local no seu sistema** e o `--selftest` no binário gerado.
 - **Pronto quando:** `python build/build.py` gera o pacote do seu sistema, o `--selftest` passa no binário e `check_macos_min.py` passa (ou lista o que impede o macOS 12, com decisão registrada).
@@ -233,7 +241,7 @@ Próximo: 0.2.
   - [ ] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
   - [ ] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
   - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS; o **pacote Intel será feito localmente** (`python build/build.py --arch x86_64`, sob Rosetta) e enviado à release com `release_github.sh`.
-  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12).
+  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12.1, o mínimo do arm64).
   - [ ] Usar no CI o **mesmo conjunto de versões** decidido em 0.1 (não o `environment.yml` de desenvolvimento, se ele tiver torch que exija macOS mais novo).
   - [ ] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
   - [ ] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
@@ -708,10 +716,10 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 
 | # | Decisão | Onde afeta | Situação |
 |---|---|---|---|
-| D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | aberta (sugestão: `0.4.0`) |
-| D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | **proposta de 0.1 (aguarda confirmação):** manter **dois conjuntos**. (a) macOS arm64, Windows e Linux: Python 3.14, `torch==2.11.0`, numpy 2.4.4/scipy 1.17.1 com rodas de macOS ≤ 12 (rodas cp314 existem nos três sistemas). (b) macOS Intel: Python 3.11, `torch==2.2.2`, `numpy==1.26.4`; o resto igual. Unificar em 3.11 não traria ganho: as demais versões já coincidem e o 3.14 tem suporte mais longo |
+| D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | **resolvida em 2026-09-26:** `0.4.0` |
+| D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | **resolvida em 2026-09-26 (usuário aprovou):** manter **dois conjuntos**. (a) macOS arm64, Windows e Linux: Python 3.14, `torch==2.11.0`, numpy 2.4.4/scipy 1.17.1 com rodas de macOS ≤ 12 (rodas cp314 existem nos três sistemas). (b) macOS Intel: Python 3.11, `torch==2.2.2`, `numpy==1.26.4`; o resto igual. Unificar em 3.11 não traria ganho: as demais versões já coincidem e o 3.14 tem suporte mais longo |
 | D3 | Runner Intel para macOS (o `macos-13` foi descontinuado); enquanto não houver, o pacote Intel é feito localmente | 0.4 | aberta |
-| D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | **resolvida em 0.1:** `numpy<2` é obrigatório (com numpy 2 Stanza/MFTE falham em silêncio); com `numpy==1.26.4` os 4 taggers funcionam e dão o mesmo resultado do arm64. Falta abrir o pacote numa máquina macOS 12 real (0.6) |
+| D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | **resolvida em 0.1:** macOS 12.7.6 Monterey, Safari 17.6 (confirmados). `numpy<2` é obrigatório (com numpy 2 Stanza/MFTE falham em silêncio); com `numpy==1.26.4` os 4 taggers funcionam e dão o mesmo resultado do arm64. Falta abrir o pacote numa máquina macOS 12 real (0.6) |
 | D11 | Tailwind 4 no macOS 12: **manter Tailwind 4**, pois o Safari dessa máquina é o 17.6 (o mínimo é 16.4). Reabrir só se o teste em 3.1 falhar | 3.1 | resolvida em 2026-09-26 (a confirmar no teste) |
 | D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |
 | D5 | Formato do pacote no Windows e no Linux (`.zip`/`.tar.gz` simples agora; instalador e AppImage depois) | 0.3 | aberta (padrão: simples) |
@@ -729,3 +737,4 @@ _(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: d
 - 2026-09-26: registrados os ambientes conda por máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel).
 - 2026-09-26: o usuário informou que o macOS 12 é Intel com Safari 17.6. D11 resolvida (manter Tailwind 4); D10 parcialmente resolvida (Intel confirmado, falta verificar Stanza/MFTE com `torch==2.2.2`).
 - 2026-09-26: 0.1 concluído; D10 resolvida (Intel exige `numpy<2`); proposta para D2 registrada; nova linha em "Como retomar" (reinstalação editável).
+- 2026-09-26: D1 (`0.4.0`) e D2 (dois conjuntos de versões) resolvidas; mínimo real do pacote arm64 passa a macOS 12.1 (Python 3.14 do conda), Intel segue 12.0 (ajustes em 0.3 e 0.4). 0.2 concluído; o build grava `app/_build_info.py` em vez de `app/_version.py`.

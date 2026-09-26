@@ -12,6 +12,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from app._version import __version__, version_info
+
 
 def _ensure_ttwtools_importable() -> None:
     """Adds local development paths so `import ttwtools` works reliably.
@@ -46,7 +48,7 @@ def build_app(open_file: str | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ttwtools-app",
-        version="0.1.0",
+        version=__version__,
         docs_url="/api/docs",
         redoc_url=None,
     )
@@ -62,6 +64,10 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # Rotas da API
     # ------------------------------------------------------------------
     from app.routes import corpus, tagging, analysis, project as project_routes, quickrun, utils, tags, viz
+
+    @app.get("/api/version", tags=["meta"])
+    def get_version() -> dict:
+        return version_info()
 
     app.include_router(corpus.router,          prefix="/api/corpus",    tags=["corpus"])
     app.include_router(tagging.router,         prefix="/api/tagging",   tags=["tagging"])

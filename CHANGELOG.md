@@ -1,5 +1,22 @@
 # Changelog — ttwtools-app
 
+Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: [SemVer](https://semver.org/lang/pt-BR/); a regra está em `RELEASING.md`. O pacote `ttwtools` (submódulo) tem changelog próprio.
+
+## [Unreleased]
+
+Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.md`).
+
+### Adicionado
+- Versão única: `pyproject.toml` é a fonte; `app/_version.py` expõe `__version__`, `python -m app --version` e `GET /api/version` (app, `ttwtools`, commit). `RELEASING.md` com a regra de versão. (passo 0.2)
+
+### Alterado
+- Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)
+
+## [0.3.7] — 2026-05-05
+
+### Alterado
+- Novas visualizações e gráficos (heatmap, visualizador de texto com anotação estilo "rough notation") e correções de impressão. _(Entrada reconstruída a partir do histórico do git.)_
+
 ## [0.3.6] — 2026-05-05
 
 ### Interface — uniformização de diálogos de arquivo
@@ -14,7 +31,13 @@
 - **`pick-file` aceita `default_location`** (backend `utils.py` + `api.js`): o seletor nativo abre na última pasta usada.
 - **`pick-file` aceita `.ttwt`**: adicionado ao filtro de tipos no seletor macOS/tkinter.
 
-## [Unreleased] — 2026-05-01
+## [0.3.5] — 2026-05-05
+
+_Versões 0.3.1 a 0.3.5 só ajustaram o CI (submódulo privado, `en_core_web_sm` no Python 3.14, ícone do DMG, runner Intel desativado). Sem mudança de funcionalidade._
+
+## [0.3.0] — 2026-05-04
+
+_Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 
 ### Frontend (frontend-src/)
 
@@ -63,3 +86,9 @@
 | `frontend-src/src/main.js` | Tema por horário; `refreshCorpusSelects` no `project-changed` |
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
+
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...HEAD
+[0.3.7]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.6...v0.3.7
+[0.3.6]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.5...v0.3.6
+[0.3.5]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.0...v0.3.5
+[0.3.0]: https://github.com/luaguiaroliveira/ttwtools-app/releases/tag/v0.3.0

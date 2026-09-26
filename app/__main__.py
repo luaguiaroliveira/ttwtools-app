@@ -52,6 +52,13 @@ def _prewarm_torch() -> None:
 
 
 def main() -> None:
+    if "--version" in sys.argv[1:]:
+        # Responde antes de carregar torch e o resto do app.
+        from app._version import version_info
+        info = version_info()
+        print(f"TTWtools {info['app']} (ttwtools {info['ttwtools']}, commit {info['commit']})")
+        return
+
     _prewarm_torch()
     # Register macOS 'odoc' handler as early as possible so queued startup
     # events are delivered naturally when webview.start() runs the Cocoa loop.
@@ -64,6 +71,7 @@ def main() -> None:
         default="desktop",
         help="'desktop' abre janela nativa (pywebview); 'web' inicia apenas o servidor.",
     )
+    parser.add_argument("--version", action="store_true", help="Mostra a versão e sai.")
     parser.add_argument("--host", default="127.0.0.1", help="Host do servidor HTTP.")
     parser.add_argument("--port", type=int, default=8765, help="Porta do servidor HTTP.")
     parser.add_argument(

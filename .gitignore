@@ -64,3 +64,6 @@ Miniconda3*.sh
 /*.ttwa
 
 corporainternos/image.png
+
+# Gerado por build/build.py
+app/_build_info.py
