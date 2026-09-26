@@ -51,7 +51,18 @@ def _prewarm_torch() -> None:
         print("[prewarm] WARNING: torch._C._distributed_c10d not in sys.modules after prewarm", flush=True)
 
 
+def _ensure_std_streams() -> None:
+    """No executável de janela do Windows (PyInstaller, console=False) stdout e
+    stderr são None; o uvicorn e o logging quebram ao usá-los, e o PyInstaller
+    mostra a exceção numa caixa de diálogo. Aponta-os para os.devnull."""
+    import os
+    for name in ("stdout", "stderr"):
+        if getattr(sys, name) is None:
+            setattr(sys, name, open(os.devnull, "w", encoding="utf-8"))
+
+
 def main() -> None:
+    _ensure_std_streams()
     if "--version" in sys.argv[1:]:
         # Responde antes de carregar torch e o resto do app.
         from app._version import version_info
@@ -189,16 +200,6 @@ def _selftest() -> int:
     """Sobe o servidor numa porta livre, confere GET /api/version e testa os
     componentes. Falha (1) só no essencial: servidor, versão e spaCy. torch e
     Stanza ausentes ou quebrados viram AVISO (Stanza/MFTE ficam indisponíveis)."""
-    import json
-    import socket
-    import time
-    import urllib.request
-
-    import uvicorn
-
-    from app._version import __version__
-    from app.server import build_app
-
     import os
 
     # Sem console (executável de janela no Windows) o stdout é None; o build lê o arquivo.
@@ -210,6 +211,29 @@ def _selftest() -> int:
         if log_file:
             log_file.write(line + "\n")
             log_file.flush()
+
+    try:
+        return _selftest_checks(emit)
+    except BaseException as exc:  # nunca deixar a exceção virar diálogo no Windows
+        import traceback
+        emit("[selftest] erro inesperado: " + "".join(traceback.format_exception(exc)))
+        emit("FALHOU")
+        return 1
+    finally:
+        if log_file:
+            log_file.close()
+
+
+def _selftest_checks(emit) -> int:
+    import json
+    import socket
+    import time
+    import urllib.request
+
+    import uvicorn
+
+    from app._version import __version__
+    from app.server import build_app
 
     ok = True
 
@@ -264,8 +288,6 @@ def _selftest() -> int:
         thread.join(timeout=10)
 
     emit("OK" if ok else "FALHOU")
-    if log_file:
-        log_file.close()
     return 0 if ok else 1
 
 
