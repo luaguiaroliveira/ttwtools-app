@@ -65,12 +65,7 @@ async def upload_corpus_file(
     content = (await file.read()).decode("utf-8", errors="ignore")
     filename = file.filename or "unnamed.txt"
     with TTWAProject.open(app_state.current_project_path) as proj:
-        proj._con.execute(
-            "INSERT INTO corpus_files (corpus_name, filename, content) VALUES (?, ?, ?)"
-            " ON CONFLICT(corpus_name, filename) DO UPDATE SET content=excluded.content",
-            (corpus_name, filename, content),
-        )
-        proj._con.commit()
+        proj.add_corpus_text(corpus_name, filename, content)
 
     return {"status": "uploaded", "filename": file.filename, "corpus_name": corpus_name}
 

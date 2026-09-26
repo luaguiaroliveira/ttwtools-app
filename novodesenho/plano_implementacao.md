@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.4 (CI rodando; 1.1 feito em paralelo)
+- **Passo atual:** 0.4 (CI rodando); 1.1 e 1.2 feitos em paralelo
 - **Último passo concluído:** 0.3 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -101,7 +101,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
 | **Fase 1 — Pacote `ttwtools`** | | | | | |
 | 1.1 | Testes e linha de comando base | 0.1 | [x] | 2026-09-26 | ttwtools `87bf693` |
-| 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [ ] | | |
+| 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [x] | 2026-09-26 | ttwtools `5b7d8e5` |
 | 1.3 | Importação de corpus e metadados | 1.2 | [ ] | | |
 | 1.4 | Camadas e cache | 1.2 | [ ] | | |
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [ ] | | |
@@ -319,17 +319,32 @@ Próximo: 1.2 (ou fechar 0.4 quando o CI terminar).
 
 ### 1.2 Esquema v3 do projeto (`.ttwa` e `.ttwl`)
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `5b7d8e5` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §9.3 e §9.4; em `project.py` só `_SCHEMA_SQL` (linhas ~80–135), as funções `_migrate_*` e `upgrade_to_v2`.
 - **Fazer:**
-  - [ ] Tabelas novas: `documents` (com hash de conteúdo), `document_meta` (chave e valor), `layers` (`tool`, `tool_version`, `model`, `config` em JSON, `config_hash`, `text_hash`, `created_at`), `tokens` (`doc_id`, `layer_id`, `idx`, `start_char`, `end_char`, `word`, `lemma`, `upos`, `xpos`, `feats`, `tags`) com índices em `word`, `lemma`, `xpos`, e `analyses` genérica (`type`, `params`, `layer_refs`, `result`, `created_at`).
-  - [ ] Marcar a versão do esquema em `project_meta` e migração **v2 → v3** que preenche `tokens` a partir dos blocos JSONL existentes, sem apagar o que já existia.
-  - [ ] Tipo de projeto: `.ttwa` (texto dentro) e `.ttwl` (sem texto: guarda caminho relativo e hash por documento).
-  - [ ] Funções: `open_project` (detecta o tipo), `export_corpus_next_to(project)`, `relink_corpus(project, pasta)` conferindo hashes, `embed_corpus` (`.ttwl` → `.ttwa`) e `detach_corpus` (`.ttwa` → `.ttwl` mais pasta).
-  - [ ] Manter compatível a leitura de projetos v2 (abrir e migrar com aviso).
-  - [ ] Testes: criar, migrar um `.ttwa` v2 pequeno, converter entre os dois tipos, corpus ausente e corpus alterado.
+  - [x] Tabelas novas: `documents` (com hash de conteúdo), `document_meta` (chave e valor), `layers` (`tool`, `tool_version`, `model`, `config` em JSON, `config_hash`, `text_hash`, `created_at`), `tokens` (`doc_id`, `layer_id`, `idx`, `start_char`, `end_char`, `word`, `lemma`, `upos`, `xpos`, `feats`, `tags`) com índices em `word`, `lemma`, `xpos`, e `analyses` genérica (`type`, `params`, `layer_refs`, `result`, `created_at`).
+  - [x] Marcar a versão do esquema em `project_meta` e migração **v2 → v3** que preenche `tokens` a partir dos blocos JSONL existentes, sem apagar o que já existia.
+  - [x] Tipo de projeto: `.ttwa` (texto dentro) e `.ttwl` (sem texto: guarda caminho relativo e hash por documento).
+  - [x] Funções: `open_project` (detecta o tipo), `export_corpus_next_to(project)`, `relink_corpus(project, pasta)` conferindo hashes, `embed_corpus` (`.ttwl` → `.ttwa`) e `detach_corpus` (`.ttwa` → `.ttwl` mais pasta).
+  - [x] Manter compatível a leitura de projetos v2 (abrir e migrar com aviso).
+  - [x] Testes: criar, migrar um `.ttwa` v2 pequeno, converter entre os dois tipos, corpus ausente e corpus alterado.
 - **Pronto quando:** um `.ttwa` v2 real (use um pequeno, não o de 346 MB) abre, migra e devolve os mesmos resultados.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: esquema "0.3" com documents, document_meta, layers, tokens (índices word/lemma/xpos/doc) e analyses; migração ao abrir (só acrescenta; tabelas antigas intactas) com aviso e `migration_report`; .ttwl com export_corpus_next_to, relink_corpus, embed_corpus, detach_corpus e check_corpus.
+Arquivos (submódulo): ttwtools/project.py, ttwtools/layers.py (novo), __init__.py, tests/test_project_v3.py, tests/data/v2_small.ttwa (590 KB, gerado pelo ttwtools 0.1.0 antes da mudança). App: routes/corpus.py (upload usa add_corpus_text).
+Testes: pytest libs/ttwtools/tests -q → 31 passed; pytest tests -q → 8 passed; rotas do app sobre o v2 migrado: abrir, listar, arquivos, KFA, resumo e tokens OK.
+Pendências: GET /api/analysis/features/... dá 500 (NaN no JSON) — erro ANTERIOR (a tabela de traços do BiberPlus tem NaN), tratar em 2.1. kfa_results ainda não é copiado para analyses (fica para 1.9). Migração de projeto grande ao abrir pode demorar (feita dentro da rota); em 2.1 levar para tarefa com progresso.
+Observações: ver "Detalhes 1.2".
+Próximo: 1.3 ou 1.4.
+```
+**Detalhes 1.2:**
+- **Versão do esquema:** segue a série existente: `0.1` (texto puro), `0.2` (comprimido; `SCHEMA_VERSION_COMPRESSED`), `0.3` (`SCHEMA_VERSION_CURRENT`). Projetos 0.1 passam por `upgrade_to_v2` antes. O app antigo continua abrindo um 0.3 (tabelas novas são ignoradas), mas não indexa `tokens` do que etiquetar.
+- **Texto:** continua em `corpus_files` (compatível); `documents` guarda `content_hash` (SHA-256 do texto lido como em `add_corpus_folder`) e, no `.ttwl`, `rel_path` relativo à pasta do projeto. Exportação grava com `newline=""` para o hash não mudar entre sistemas.
+- **Camadas:** `tool` = nome guardado em `tagged_files` (`spacy`/`stanza` unificados); `config` = metadado JSONL menos tagger/versão/arquivo; `config_hash` ignora `device`, `use_gpu`, `n_processes`, `batch_size`, `combined_pass` (§11.4). Chave única `(doc, tool, versão, modelo, config_hash)`; salvar de novo substitui. `find_layer()` já faz a busca de cache por `text_hash` (base para 1.4).
+- **Tokens:** `ptb` do spaCy vira `xpos`; `xpos` vazio vira NULL; `tags` em JSON; campos desconhecidos em `extra` (coluna a mais que o plano, para não perder dados).
+- **Tipo:** `project_meta.project_kind` (`ttwa`/`ttwl`), com a extensão como reserva. Conversões criam arquivo novo (cópia pelo backup do SQLite) e não mexem no original.
+
 
 ### 1.3 Importação de corpus e metadados
 
