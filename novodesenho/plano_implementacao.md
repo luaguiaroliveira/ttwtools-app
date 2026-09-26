@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.7 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.6 (2026-09-26); 0.1–0.4 e 1.1–1.6 prontos
+- **Passo atual:** 1.8 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.7 (2026-09-26); 0.1–0.4 e 1.1–1.7 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -106,7 +106,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.4 | Camadas e cache | 1.2 | [x] | 2026-09-26 | ttwtools `82ec09b` |
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [x] | 2026-09-26 | ttwtools `3e0dc35` |
 | 1.6 | Formatos de entrada e saída | 1.2 | [x] | 2026-09-26 | ttwtools `4a0abc3` |
-| 1.7 | Estatísticas do corpus | 1.4 | [ ] | | |
+| 1.7 | Estatísticas do corpus | 1.4 | [x] | 2026-09-26 | ttwtools `64e4a1d` |
 | 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [ ] | | |
 | 1.9 | Referência e palavras-chave | 1.8 | [ ] | | |
 | 1.10 | Ajuda e traduções no pacote | 1.1 | [ ] | | |
@@ -469,17 +469,25 @@ Próximo: 1.7.
 
 ### 1.7 Estatísticas do corpus
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `64e4a1d` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §12.
 - **Fazer:**
-  - [ ] `describe(project, corpus)` **sem tagger**: arquivos, palavras, types, hapax, TTR, TTR padronizada por blocos, CTTR e MATTR, comprimento médio de palavra, tamanho dos documentos (mín., mediana, máx., desvio), frases aproximadas, palavras mais frequentes e dados para a curva de Zipf. Marcar que são estimativas.
-  - [ ] `describe(..., layer=...)`: distribuição de classes, densidade lexical, comprimento de frase real, lemas por classe, média e desvio por documento.
-  - [ ] Salvar o resultado em `analyses` e reaproveitar se nada mudou (mesmo hash).
-  - [ ] Stopwords por idioma e listas próprias (acrescentar ou substituir).
-  - [ ] `ttwtools describe`.
-  - [ ] Testes com valores calculados à mão num corpus minúsculo.
+  - [x] `describe(project, corpus)` **sem tagger**: arquivos, palavras, types, hapax, TTR, TTR padronizada por blocos, CTTR e MATTR, comprimento médio de palavra, tamanho dos documentos (mín., mediana, máx., desvio), frases aproximadas, palavras mais frequentes e dados para a curva de Zipf. Marcar que são estimativas.
+  - [x] `describe(..., layer=...)`: distribuição de classes, densidade lexical, comprimento de frase real, lemas por classe, média e desvio por documento.
+  - [x] Salvar o resultado em `analyses` e reaproveitar se nada mudou (mesmo hash).
+  - [x] Stopwords por idioma e listas próprias (acrescentar ou substituir).
+  - [x] `ttwtools describe`.
+  - [x] Testes com valores calculados à mão num corpus minúsculo.
 - **Pronto quando:** os números do corpus de teste batem com os esperados e a segunda chamada vem do cache.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ttwtools/stats.py com describe() (§12.1 sem tagger, marcado "estimated"; §12.2 com layer=ferramenta), cache em analyses pelo hash de textos+camadas+parâmetros, stopwords en/pt (data/stopwords, acrescentar/substituir), CLI `ttwtools describe <projeto|pasta>`.
+Arquivos (submódulo): ttwtools/stats.py, data/stopwords/{en,pt}.txt (novos), cli.py, __init__.py, pyproject.toml (txt em package-data), tests/test_stats.py.
+Testes: pytest libs/ttwtools/tests -q → 76 passed (TTR, CTTR, STTR, MATTR, hapax, frases, tamanhos e mais frequentes conferidos à mão num corpus de 2 textos; 2ª chamada do cache; texto/parâmetro/camada refeita invalidam).
+Pendências: faixas de frequência lexical (§15.2 item 6) dependem das listas de referência (4.4). Lista de stopwords é curta (editável).
+Observações: palavras = tokens com letras (números e pontuação fora); types em minúsculas; STTR em blocos de 1000 dentro de cada documento (blocos incompletos fora; None se nenhum); MATTR janela 50 (documento menor usa TTR simples); frases aproximadas = [.!?]+ seguido de espaço/aspas/fim. Com camada: palavras = UPOS fora de PUNCT/SYM/X (sem UPOS: tokens com letras); densidade lexical = NOUN+PROPN+VERB+ADJ+ADV sobre palavras; média/desvio por documento por 1000 palavras para tags e UPOS principais.
+Próximo: 1.8.
+```
 
 ### 1.8 Busca, KWIC, frequência, colocados, dispersão
 
