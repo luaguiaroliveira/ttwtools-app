@@ -228,6 +228,99 @@ Cada seção abaixo traz uma linha "Pacote" e uma "GUI" para manter essa dupla v
 
 Como o tagger define o idioma do corpus, a lista de taggers oferecida depende do idioma escolhido para o corpus (independente do idioma da interface).
 
+### 11.1 Opções de cada tagger: padrão e "Personalizar"
+
+Requisito: ao escolher o tagger, a pessoa tem as **opções que cada ferramenta (spaCy, Stanza e os demais) oferece para o etiquetamento**, com um **valor padrão** e as opções **expostas e explicadas**, num painel **"Personalizar"** (ou "Avançado") dentro da própria escolha do tagger. Não é um modo de usuário: o painel fica recolhido por padrão e qualquer pessoa pode abri-lo (seção 5).
+
+**Situação atual** (lida em `libs/ttwtools/ttwtools/taggers/` e em `app/routes/tagging.py`):
+
+| Tagger | O que já é parâmetro | O que está fixo no código |
+|---|---|---|
+| spaCy | `spacy_model` (padrão `en_core_web_sm`), `batch_size` | Componentes `ner` e `parser` sempre desligados (`_DISABLED`); só inglês |
+| Stanza | `use_gpu`, `model_dir` | Pipeline sempre `tokenize,pos`; idioma `"en"` fixo; MPS (Apple) excluído de propósito por ser mais lento |
+| BiberPlus | `n_processes`, `function_words`, `usenlp` | — |
+| MFTE | `use_gpu`, `extended`, `model_dir` | — |
+
+Além disso, a API do aplicativo (`TagRequest`) só repassa `tagger`, `save_tagged`, `usenlp`, `n_processes` e `function_words`. Ou seja, praticamente nenhuma opção de spaCy ou Stanza chega hoje à interface.
+
+**Proposta: um descritor de opções por tagger,** junto do arquivo de tagset (seção 11), com estes campos por opção:
+
+```json
+{
+  "id": "spacy_model",
+  "grupo": "modelo",
+  "tipo": "escolha",
+  "padrao": "en_core_web_sm",
+  "valores": ["en_core_web_sm", "en_core_web_md", "en_core_web_lg", "en_core_web_trf"],
+  "afeta_resultado": true,
+  "explicacao": "Modelo estatístico usado pelo spaCy. Modelos maiores costumam ser mais precisos e mais lentos.",
+  "impacto": {"velocidade": "menor", "memoria": "maior", "download": "sim"}
+}
+```
+
+- `afeta_resultado` separa o que muda as etiquetas do que só muda a velocidade (importante para o cache, ver 11.4).
+- `explicacao`, os nomes e o `impacto` são traduzíveis (seção 5, item 6) e alimentam os balões da seção 13.
+- Uma opção pode declarar quando está disponível (por exemplo, GPU só se existir; um modelo só se estiver instalado ou puder ser baixado).
+
+**Opções candidatas** (levantadas do que as bibliotecas expõem; os nomes e valores exatos devem ser **confirmados na documentação das versões instaladas**):
+
+| Tagger | Opção | Muda o resultado? | Para que serve |
+|---|---|---|---|
+| spaCy | Modelo (`sm`, `md`, `lg`, `trf`; outros idiomas têm os seus) | Sim | Precisão, velocidade, tamanho e download |
+| spaCy | Componentes ativos (`tok2vec`, `tagger`, `attribute_ruler`, `lemmatizer`, `parser`, `ner`) | Sim | O que é extraído (lema, dependências, entidades); mais componentes, mais tempo |
+| spaCy | Limite de tamanho de texto (`max_length`) | Não | Evita erro em textos muito longos |
+| spaCy | Tamanho do lote (`batch_size`) e número de processos (`n_process`) | Não | Velocidade e uso de memória |
+| spaCy | GPU | Não* | Velocidade, sobretudo com o modelo `trf` |
+| Stanza | Idioma | Sim | Qual modelo carregar |
+| Stanza | Pacote ou treebank (`package`, por exemplo `ewt`, `gum`) | Sim | Muda os modelos e, no caso do XPOS, o próprio conjunto de tags |
+| Stanza | Processadores (`tokenize`, `mwt`, `pos`, `lemma`, `depparse`) | Sim | O que é extraído; mais processadores, mais tempo |
+| Stanza | Texto já tokenizado (`tokenize_pretokenized`) e não dividir frases (`tokenize_no_ssplit`) | Sim | Respeitar uma tokenização ou segmentação prévia |
+| Stanza | Tamanhos de lote (`tokenize_batch_size`, `pos_batch_size`) | Não | Velocidade e memória |
+| Stanza | Dispositivo (CPU ou GPU) | Não* | Velocidade |
+| Stanza | Pasta dos modelos e política de download | Não | Onde ficam os modelos, uso offline |
+| BiberPlus | `n_processes`, `function_words`, usar spaCy (`usenlp`) | Só `function_words` e `usenlp` | Velocidade e conjunto de tags |
+| MFTE | GPU, `extended`, pasta dos modelos | Só `extended` | Velocidade e conjunto de tags |
+
+\* CPU e GPU podem dar diferenças numéricas mínimas; tratar como "não muda o resultado", mas registrar o dispositivo usado.
+
+**Nova saída a considerar:** hoje o resultado guarda posições, palavra, etiqueta (`xpos`) e tags. Para o modelo de tokens da seção 9.4 (`lemma`, `upos`, `feats`), o tagger precisa poder extrair também **lema, morfologia e, opcionalmente, dependências**. Isso vira uma opção ("O que extrair") e um custo a explicar.
+
+### 11.2 Como aparece na interface
+
+1. **Primeiro, só a escolha do tagger.** O padrão de cada tagger já é razoável (ponto de partida: os valores atuais, como `en_core_web_sm` com `parser` e `ner` desligados).
+2. **Botão "Personalizar"** abre o painel, com as opções em grupos: **Modelo e idioma**, **O que extrair**, **Desempenho**, **Avançado** (pastas, download).
+3. **Cada opção mostra:** nome claro, valor atual e padrão, uma marca **"muda o resultado"** ou **"só muda a velocidade"**, uma explicação curta com balão (seção 13) e o impacto esperado em tempo, memória e download.
+4. **Uma linha de resumo** da configuração ("spaCy · `en_core_web_lg` · com lemas") e o botão **"restaurar recomendado"**.
+5. **Predefinições** ("Rápido", "Recomendado", "Mais preciso") que apenas preenchem as opções, e a pessoa pode salvar as suas.
+6. **Combinações inválidas** ficam desativadas, com a razão explicada. Se o modelo escolhido não estiver instalado, o painel oferece baixá-lo, dizendo o tamanho.
+7. A configuração usada fica registrada na camada e aparece na visão geral do corpus (seção 12), para saber como cada camada foi feita.
+
+### 11.3 Pacote e linha de comando
+
+Segue o princípio da seção 10:
+
+- `ttwtools.taggers.options("spacy_upos")` devolve o descritor (as mesmas informações do painel).
+- `ttwtools.taggers.run(tagger, corpus, options={...})`: todos os taggers passam a aceitar **um único dicionário de opções**, validado contra o descritor. Os parâmetros atuais (`spacy_model`, `use_gpu`, ...) continuam funcionando como atalhos, para não quebrar quem já usa.
+- Linha de comando: `ttwtools tagger-options spacy_upos` (tabela com as explicações) e `ttwtools tag meu_corpus --tagger spacy_upos --set spacy_model=en_core_web_lg --preset preciso`.
+- API do aplicativo: `GET /api/taggers/{id}/options` para o painel e `POST /api/tagging/run` com um campo `options`, no lugar dos campos soltos de hoje.
+- O botão "copiar como código" da GUI (seção 15.2, item 10) gera exatamente esse comando.
+
+### 11.4 Ligação com o cache de camadas (seção 9)
+
+As opções entram no `config_hash` de cada camada, e a regra é:
+
+- **Só as opções que mudam o resultado** compõem o `config_hash`, já com os valores padrão escritos por extenso e com a versão do modelo. Opções de desempenho (lote, processos, dispositivo) ficam **fora**: mudar o tamanho do lote não invalida uma camada já feita.
+- **Uma camada existente atende um pedido** se contém tudo o que foi pedido: mesmo modelo ou pacote e os mesmos componentes ou mais. Uma camada com POS e lema atende um pedido só de POS. O contrário não, e nesse caso o app avisa que precisa reprocessar e quanto isso custa.
+- A tabela `layers` guarda a **configuração efetiva completa** (JSON) e as versões (spaCy, modelo, Stanza), para reproduzir depois.
+
+### 11.5 Pontos a confirmar
+
+- A lista exata e os nomes das opções nas versões instaladas de spaCy e de Stanza (a tabela acima vem do que as bibliotecas costumam expor, e não foi testada aqui).
+- Quais opções do Stanza dependem de um pacote ou treebank existir para o idioma.
+- Que modelos existem por idioma (em especial para o português).
+- Onde ficam os modelos baixados e como o aplicativo os baixa e usa offline.
+- Qual é o padrão recomendado de cada tagger, a decidir depois de medir tempo e qualidade em corpora reais.
+
 ## 12. Estatísticas descritivas do corpus
 
 Como etiquetar demora, a descrição do corpus tem dois níveis, e o primeiro não depende de tagger.

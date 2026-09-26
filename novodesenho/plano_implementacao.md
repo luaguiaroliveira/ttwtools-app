@@ -1,0 +1,666 @@
+# Plano de implementação — novo TTWtools (app + pacote `ttwtools`)
+
+Este arquivo é a **fonte única de andamento** da implementação. O desenho está em `novodesenho/novomodelo.md` (consulte só as seções citadas em cada passo).
+
+## Estado atual (atualizar ao fim de cada passo)
+
+- **Passo atual:** 0.1
+- **Último passo concluído:** nenhum
+- **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
+- **Versão alvo:** `0.4.0` (a confirmar em 0.2)
+- **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
+
+## Como usar (leia isto primeiro, é curto)
+
+1. **Leia só:** este cabeçalho, a tabela de andamento e **o passo atual**. Ache o passo com `grep -n '^### ' novodesenho/plano_implementacao.md` e leia só aquele trecho (`Read` com `offset` e `limit`).
+2. **Não leia arquivos inteiros grandes.** Use `grep -n` e `Read` com `offset`/`limit`. Em especial: `frontend-src/index.html` (1.250 linhas), `libs/ttwtools/ttwtools/project.py` (1.141 linhas), `novodesenho/novomodelo.md` (só as seções citadas). **Nunca abra** `repomix-output.xml`, `libs/repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/` nem `test_corpora/full`.
+3. **Um passo por vez.** Cada passo cabe em uma sessão. Não comece o próximo sem fechar o atual.
+4. **Ao concluir um passo:** marque `[x]` nos subpassos e na tabela, preencha o **Relato** (modelo abaixo), atualize "Estado atual", rode os testes do passo e **faça um commit** com a mensagem começando pelo número do passo (ex.: `[1.2] esquema v3 do projeto`).
+5. **Se travar,** marque `[!]`, escreva o motivo no Relato e siga para um passo que não dependa dele (a coluna "Depende de" diz quais).
+
+**Modelo de relato** (no máximo 6 linhas, sem trecho de código longo):
+```
+Feito: o que ficou pronto, em uma frase.
+Arquivos: principais criados/alterados.
+Testes: comando rodado e resultado (ex.: pytest libs/ttwtools/tests -q → 42 passed).
+Pendências: o que ficou de fora e por quê (ou "nenhuma").
+Observações: decisões tomadas, riscos, algo que o próximo agente precisa saber.
+Próximo: passo seguinte recomendado.
+```
+
+**Legenda:** `[ ]` pendente · `[~]` em andamento · `[x]` concluído · `[!]` bloqueado.
+
+## Convenções (valem para todos os passos)
+
+- **Paridade GUI e pacote** (`novomodelo.md` §10): a lógica vive em `libs/ttwtools/ttwtools`; a rota em `app/routes` só chama a função; a tela só apresenta. Todo recurso novo tem função pública + subcomando de linha de comando + (depois) rota + tela.
+- **Interface única, sem perfis,** com opções avançadas em painéis recolhidos (§5).
+- **Todo texto de interface** sai por chave de tradução (`pt` e `en`), nunca escrito direto no componente (§5 item 6).
+- **Escopo:** só o aplicativo local. Não implementar envio de arquivos pelo navegador, privacidade do site, PWA nem ajuste fino para celular (§2, "Escopo da primeira fase").
+- **Commits:** mensagem curta em português, começando por `[passo]`. **Nunca** incluir Claude nem outro agente como autor ou coautor (sem `Co-Authored-By`).
+- **Submódulo `libs/ttwtools` é outro repositório** (`github.com/luaguiaroliveira/ttwtools`). Mudanças nele: commit e `git push` **dentro do submódulo primeiro**; depois, no app, `git add libs/ttwtools` e commit do novo ponteiro. Sem isso, outra máquina não recebe o código.
+- **Testes:** `pytest` para o pacote (`libs/ttwtools/tests`) e para as rotas (`tests/`); corpus de teste pequeno em `test_corpora/5`. Cada passo cita o comando.
+- **Sem retrabalho de etiquetagem:** nenhuma função nova pode reprocessar o que já existe em camada equivalente (§9.4, §11.4).
+- **Changelog:** uma linha por passo concluído em `CHANGELOG.md`, seção `[Unreleased]`.
+
+## Como retomar em outra máquina ou com outro agente
+
+```
+git fetch --all && git switch new_set26 && git pull
+git submodule update --init --recursive          # requer git-lfs instalado (git lfs install)
+conda env create -f environment.yml && conda activate ttw314    # ou conda env update
+cd frontend-vue && npm ci                        # a partir do passo 3.1
+```
+Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato preenchido.
+
+## Mapa do código (para não explorar de novo)
+
+| Onde | O quê |
+|---|---|
+| `app/` | Servidor FastAPI local: `server.py`, `__main__.py` (modos `desktop` com pywebview e `web`), `state.py`, `routes/{analysis,corpus,project,quickrun,tagging,tags,utils,viz}.py` |
+| `frontend-src/` | Interface **atual** (JS puro, Vite, Tailwind/DaisyUI, D3): `index.html`, `src/{api,chart,main,state,ui}.js`, `src/views/*`. O build vai para `frontend/`, que o servidor serve (`_frontend_dir`) |
+| `libs/ttwtools/` | Pacote (submódulo): `ttwtools/{analysis,project,tagged_io,tagging,__init__}.py`, `ttwtools/taggers/{biberplus,mfte,spacy_pos,stanza_pos}.py`, `tags_biber.json` |
+| `build/` | **Removida** no commit `5c4b862`. Recuperar do commit `a28c79a`: `git show a28c79a:build/<arquivo>` (spec, hooks, scripts de build e release, ícone) |
+| `.github/workflows/build.yml` | CI atual: só macOS arm64, dispara em tag `v*.*.*`, cria release |
+| Versões hoje | Tags `v0.3.3 … v0.3.7`; `CHANGELOG.md` até `0.3.6`; `pyproject.toml` e `app/server.py` dizem `0.1.0` (**inconsistente**, corrigir em 0.2) |
+| Dados de teste | `test_corpora/{5,100,full}` (`full` é grande), `ttwa_files/` (LFS, 500 MB, não abrir) |
+| Documentos | `novodesenho/novomodelo.md`, `plano_visualizacoes.md`, `githubaction.md`, `LEIAME.md`, `CHANGELOG.md` |
+
+**Índice de `novomodelo.md`:** §2 objetivo e escopo · §3 três portas · §4 ferramentas · §5 decisões de arquitetura · §9 formatos e projeto `.ttwa`/`.ttwl` (9.4 tabelas) · §10 princípio GUI+pacote · §11 tagger, tagset e opções (11.1 a 11.5) · §12 estatísticas · §13 ajuda · §14 N grupos · §15 OCTOBOX · §16 palavras-chave e referência · §17 interface (17.3 telas, 17.6 arquitetura) · §18 privacidade (adiada).
+
+## Tabela de andamento
+
+| Passo | Título | Depende de | Estado | Data | Commit |
+|---|---|---|---|---|---|
+| **Fase 0 — Base: versão, build e release** | | | | | |
+| 0.1 | Conferir base e ambiente | — | [ ] | | |
+| 0.2 | Versão única e changelog | 0.1 | [ ] | | |
+| 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [ ] | | |
+| 0.4 | CI multi-plataforma | 0.3 | [ ] | | |
+| 0.5 | Processo de release | 0.4 | [ ] | | |
+| 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
+| **Fase 1 — Pacote `ttwtools`** | | | | | |
+| 1.1 | Testes e linha de comando base | 0.1 | [ ] | | |
+| 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [ ] | | |
+| 1.3 | Importação de corpus e metadados | 1.2 | [ ] | | |
+| 1.4 | Camadas e cache | 1.2 | [ ] | | |
+| 1.5 | Opções e tagsets dos taggers | 1.4 | [ ] | | |
+| 1.6 | Formatos de entrada e saída | 1.2 | [ ] | | |
+| 1.7 | Estatísticas do corpus | 1.4 | [ ] | | |
+| 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [ ] | | |
+| 1.9 | Referência e palavras-chave | 1.8 | [ ] | | |
+| 1.10 | Ajuda e traduções no pacote | 1.1 | [ ] | | |
+| **Fase 2 — Servidor local** | | | | | |
+| 2.1 | Rotas finas, versão e tarefas | 1.2 | [ ] | | |
+| 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [ ] | | |
+| **Fase 3 — Interface Vue** | | | | | |
+| 3.1 | Esqueleto Vue | 0.3 | [ ] | | |
+| 3.2 | Casca responsiva, tema e traduções | 3.1 | [ ] | | |
+| 3.3 | Cliente da API e tarefas | 3.1, 2.1 | [ ] | | |
+| 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [ ] | | |
+| 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [ ] | | |
+| 3.6 | Explorar | 3.4 | [ ] | | |
+| 3.7 | Comparar | 3.6 | [ ] | | |
+| 3.8 | Ajuda e Aprender | 3.2 | [ ] | | |
+| 3.9 | Exportar e "copiar como código" | 3.6 | [ ] | | |
+| 3.10 | Acessibilidade e testes de interface | 3.7 | [ ] | | |
+| 3.11 | Remover a interface antiga | 3.10 | [ ] | | |
+| **Fase 4 — Catálogo de corpora** | | | | | |
+| 4.1 | Formato de pacote e catálogo | 1.2 | [ ] | | |
+| 4.2 | Baixar, instalar e atualizar | 4.1 | [ ] | | |
+| 4.3 | Primeiros corpora | 4.2, 1.6 | [ ] | | |
+| 4.4 | Listas de frequência de referência | 4.3, 1.9 | [ ] | | |
+| **Fase 5 — Extras** | | | | | |
+| 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [ ] | | |
+| 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [ ] | | |
+| 5.3 | Português | 1.5, 4.3 | [ ] | | |
+| **Fase 6 — Fechamento** | | | | | |
+| 6.1 | Documentação | 3.11 | [ ] | | |
+| 6.2 | Verificação em cada sistema | 6.1 | [ ] | | |
+| 6.3 | Release 0.4.0 | 6.2 | [ ] | | |
+
+**Ordem sugerida:** Fase 0 inteira primeiro (prova o pipeline de build e release com o código atual). Depois 1.1 a 1.4, 2.1 e 3.1 a 3.3 (base), e então os recursos (1.5–1.10 com 2.2 e 3.4–3.9) em ordem de valor: **Corpora → Explorar → tagger e Personalizar → Comparar → Ajuda**. Fases 4 e 5 podem correr em paralelo depois de 1.6.
+
+**Marcos de release** (tags de teste, ver 0.5): `v0.4.0-alpha.1` ao fim da Fase 0 · `-alpha.2` ao fim da 1.4+2.1 · `-beta.1` quando 3.7 estiver pronto · `-rc.1` ao fim da Fase 5 · `v0.4.0` no 6.3.
+
+---
+
+# Fase 0 — Base: versão, build e release
+
+Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline que gera os pacotes para macOS, Windows e Linux e publica no GitHub. Tudo com o código **atual**, antes de mudar funcionalidade.
+
+### 0.1 Conferir base e ambiente
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `pyproject.toml`, `environment.yml`, `requirements.txt`, `.github/workflows/build.yml` (162 linhas).
+- **Fazer:**
+  - [ ] Confirmar branch `new_set26` e submódulo em dia (`git status`, `git submodule status`).
+  - [ ] Criar/ativar o ambiente conda `ttw314` e rodar o app atual (`python -m app --mode web`) para ver que abre.
+  - [ ] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
+  - [ ] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
+  - [ ] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
+- **Pronto quando:** o app atual abre e os números de base estão no Relato.
+- **Relato:** _(preencher)_
+
+### 0.2 Versão única e changelog
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `pyproject.toml` (linha `version`), `app/server.py` (`version=`), `CHANGELOG.md` (topo), `git tag | tail`, `libs/ttwtools/pyproject.toml`.
+- **Regra de versão (SemVer):** `MAJOR.MINOR.PATCH`, com pré-lançamentos `-alpha.N`, `-beta.N`, `-rc.N`. Tag do app = `v` + versão do `pyproject.toml` do app. O pacote `ttwtools` tem versão e tags próprias no repositório dele.
+- **Fazer:**
+  - [ ] Decidir a versão da linha nova (sugestão: `0.4.0`, pois o esquema do `.ttwa` muda) e registrar em "Decisões pendentes".
+  - [ ] `pyproject.toml` do app é a **fonte única**: corrigir de `0.1.0` para a versão real atual (`0.3.7`) e depois para `0.4.0.dev0` na linha nova.
+  - [ ] Criar `app/_version.py` lido por `app/__init__.py` (`__version__`), com este fallback: `importlib.metadata` → arquivo `_version.py` gerado no build (no binário congelado os metadados podem faltar).
+  - [ ] Trocar o `version="0.1.0"` fixo de `app/server.py` por `__version__`; criar `GET /api/version` devolvendo versão do app, do `ttwtools` e o hash do commit.
+  - [ ] Opção `--version` em `python -m app`.
+  - [ ] Padronizar `CHANGELOG.md` (formato "Keep a Changelog", seção `[Unreleased]` no topo) e alinhar com as tags existentes.
+  - [ ] Documentar a regra em `RELEASING.md` (esqueleto; completar em 0.5).
+- **Pronto quando:** `python -m app --version`, `GET /api/version` e `pyproject.toml` mostram o mesmo número.
+- **Relato:** _(preencher)_
+
+### 0.3 Restaurar e modernizar o build (PyInstaller)
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `git show a28c79a:build/ttwtools-app.spec` (spec), `git show a28c79a:build/hooks/hook-spacy.py`, `git show a28c79a:build/build_mac.sh`, `git show a28c79a:build/build_win.bat`.
+- **Fazer:**
+  - [ ] Restaurar do commit `a28c79a` para `build/`: `ttwtools-app.spec`, `hooks/hook-spacy.py`, `icon.icns` (`git restore --source=a28c79a -- build/<arquivo>`). Não restaurar os `.pyc`; garantir `__pycache__/` no `.gitignore`.
+  - [ ] Criar um **único `build/build.py`** (Python, multiplataforma) que: compila o frontend (`npm ci && npm run build`), escreve `app/_version.py`, roda o PyInstaller com o spec e empacota o resultado (DMG no macOS, `.zip` no Windows, `.tar.gz` no Linux), nomeando `TTWtools-<versão>-<so>-<arq>.<ext>`. Os `build_mac.sh` e `build_win.bat` viram invólucros de uma linha.
+  - [ ] Ajustar o spec: pasta do frontend por variável (a interface Vue entra na 3.1 sem mexer no resto), incluir os arquivos de dados novos do pacote (tagsets, descritores, ajuda) por **glob**, e **não embutir modelos grandes** (só `en_core_web_sm`; os demais serão baixados depois, passo 4.2).
+  - [ ] Ícones para Windows (`.ico`) e Linux (`.png`) a partir do `icon.icns`.
+  - [ ] Modo de teste embutido: `TTWtools --selftest` sobe o servidor numa porta livre, chama `GET /api/version`, imprime `OK` e sai com código 0.
+  - [ ] Rodar o build **local no seu sistema** e o `--selftest` no binário gerado.
+- **Pronto quando:** `python build/build.py` gera o pacote do seu sistema e o `--selftest` passa no binário.
+- **Observações a registrar:** tamanho do pacote; se o `pywebview` abriu a janela; no Linux o modo janela exige bibliotecas do sistema (GTK/WebKit), e o `--mode web` é a alternativa.
+- **Relato:** _(preencher)_
+
+### 0.4 CI multi-plataforma
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `.github/workflows/build.yml`, `githubaction.md` (só a parte da matriz), o `build/build.py` da 0.3.
+- **Fazer:**
+  - [ ] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
+  - [ ] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
+  - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS.
+  - [ ] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
+  - [ ] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
+  - [ ] **Validação da tag:** o job falha se a tag não for igual à versão do `pyproject.toml` ou se o `CHANGELOG.md` não tiver a seção daquela versão.
+  - [ ] Passos de **assinatura e notarização** (macOS) e assinatura (Windows) deixados como blocos comentados, com o que precisa ser criado (ver "Decisões pendentes").
+- **Pronto quando:** `workflow_dispatch` gera os pacotes disponíveis e o `--selftest` passa em cada sistema.
+- **Relato:** _(preencher)_
+
+### 0.5 Processo de release
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `git show a28c79a:build/release_github.sh` (só a lista de opções), `RELEASING.md` da 0.2.
+- **Fazer:**
+  - [ ] Script `build/release.py` com `--dry-run`: confere árvore limpa e branch `main`, atualiza a versão no `pyproject.toml`, move `[Unreleased]` para a seção da versão com a data, faz o commit `release: vX.Y.Z`, cria a tag `vX.Y.Z` e faz o push (o CI faz o resto).
+  - [ ] Submódulo: antes de liberar, conferir que o ponteiro de `libs/ttwtools` aponta para um commit **já publicado** e (se houver tag) registrar a versão dele nas notas.
+  - [ ] Completar `RELEASING.md`: fluxo em passos (branch → PR → `main` → `release.py` → conferir rascunho → publicar), como fazer pré-lançamento, como corrigir uma release ruim (nova `PATCH`, nunca reescrever tag publicada).
+  - [ ] Manter `build/release_github.sh` (envio manual dos pacotes feitos localmente) como alternativa, atualizado para os novos nomes de arquivo.
+- **Pronto quando:** `python build/release.py --dry-run --version 0.4.0-alpha.1` lista tudo que faria, sem alterar nada.
+- **Relato:** _(preencher)_
+
+### 0.6 Release de teste (alpha)
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Mesclar a Fase 0 no `main` (PR da `new_set26`, ou branch própria da Fase 0 se for preferível para não misturar com os documentos).
+  - [ ] Rodar `release.py` para `0.4.0-alpha.1`; conferir no GitHub: rascunho criado, pacotes de cada sistema, `SHA256SUMS.txt`, marcado como *pre-release*.
+  - [ ] Baixar e abrir o pacote em pelo menos **um** sistema diferente do de desenvolvimento.
+  - [ ] Registrar aqui o tempo total do CI e o tamanho de cada pacote.
+- **Pronto quando:** existe uma release em rascunho com pacotes de todos os sistemas possíveis e ao menos um foi aberto de verdade.
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 1 — Pacote `ttwtools` (repositório `libs/ttwtools`)
+
+Trabalhar sempre dentro de `libs/ttwtools`, com testes. Lembrar: commit e push no submódulo primeiro, depois o ponteiro no app.
+
+### 1.1 Testes e linha de comando base
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `libs/ttwtools/pyproject.toml`, `libs/ttwtools/ttwtools/__init__.py`.
+- **Fazer:**
+  - [ ] Pasta `libs/ttwtools/tests/` com `conftest.py` e uma fixture que copia `test_corpora/5` para uma pasta temporária.
+  - [ ] Teste de fumaça do que já existe (criar projeto, salvar e ler arquivo etiquetado JSONL, `kfa`).
+  - [ ] Linha de comando `ttwtools` (entrada em `pyproject.toml`, biblioteca padrão `argparse`, sem dependência nova) com `--version` e a estrutura de subcomandos (`describe`, `tag`, `tagger-options`, `tagset`, `kwic`, `freq`, `keywords`, `compare`, `help`), cada um por enquanto respondendo "ainda não implementado".
+  - [ ] Saída padronizada: tabela legível, `--json` e `--csv`.
+- **Pronto quando:** `pytest -q` passa e `ttwtools --version` funciona.
+- **Relato:** _(preencher)_
+
+### 1.2 Esquema v3 do projeto (`.ttwa` e `.ttwl`)
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §9.3 e §9.4; em `project.py` só `_SCHEMA_SQL` (linhas ~80–135), as funções `_migrate_*` e `upgrade_to_v2`.
+- **Fazer:**
+  - [ ] Tabelas novas: `documents` (com hash de conteúdo), `document_meta` (chave e valor), `layers` (`tool`, `tool_version`, `model`, `config` em JSON, `config_hash`, `text_hash`, `created_at`), `tokens` (`doc_id`, `layer_id`, `idx`, `start_char`, `end_char`, `word`, `lemma`, `upos`, `xpos`, `feats`, `tags`) com índices em `word`, `lemma`, `xpos`, e `analyses` genérica (`type`, `params`, `layer_refs`, `result`, `created_at`).
+  - [ ] Marcar a versão do esquema em `project_meta` e migração **v2 → v3** que preenche `tokens` a partir dos blocos JSONL existentes, sem apagar o que já existia.
+  - [ ] Tipo de projeto: `.ttwa` (texto dentro) e `.ttwl` (sem texto: guarda caminho relativo e hash por documento).
+  - [ ] Funções: `open_project` (detecta o tipo), `export_corpus_next_to(project)`, `relink_corpus(project, pasta)` conferindo hashes, `embed_corpus` (`.ttwl` → `.ttwa`) e `detach_corpus` (`.ttwa` → `.ttwl` mais pasta).
+  - [ ] Manter compatível a leitura de projetos v2 (abrir e migrar com aviso).
+  - [ ] Testes: criar, migrar um `.ttwa` v2 pequeno, converter entre os dois tipos, corpus ausente e corpus alterado.
+- **Pronto quando:** um `.ttwa` v2 real (use um pequeno, não o de 346 MB) abre, migra e devolve os mesmos resultados.
+- **Relato:** _(preencher)_
+
+### 1.3 Importação de corpus e metadados
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §14.1 e §15.2 (itens 2, 7 e 8); em `project.py`, `add_corpus_folder` e `add_corpus_file`.
+- **Fazer:**
+  - [ ] `import_corpus(project, origem, nome, ...)` aceitando pasta de `.txt`, um único texto (colado) e CSV com colunas de metadados.
+  - [ ] Metadados de grupo extraídos do nome do arquivo por delimitador e/ou de um CSV (`document_meta`).
+  - [ ] Tokenização configurável (pontuação, números, minúsculas, contrações) registrada na configuração.
+  - [ ] Filtro de documentos por metadado (função reutilizável para todas as análises).
+  - [ ] Testes com metadados no nome (`grupo_texto01.txt`) e com CSV.
+- **Pronto quando:** dá para criar um corpus com grupos e listá-lo filtrado por grupo.
+- **Relato:** _(preencher)_
+
+### 1.4 Camadas e cache
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §9.4 e §11.4; `tagged_io.py` (161 linhas, inteiro).
+- **Fazer:**
+  - [ ] `config_hash`: canonicalizar as opções **que afetam o resultado**, com os padrões escritos por extenso e a versão do modelo. Opções só de velocidade ficam fora.
+  - [ ] `find_layer(project, doc, request)`: regra de suficiência (mesmo modelo e componentes iguais ou mais). Uma camada com POS e lema atende um pedido só de POS.
+  - [ ] `tag_corpus(project, corpus, tagger, options)` que **pula** documentos com camada suficiente, processa só o que falta, grava a camada em `layers` e os tokens em `tokens`, e informa quantos foram reaproveitados.
+  - [ ] Retomada: se o processamento parar no meio, ao reexecutar continua do documento seguinte.
+  - [ ] Adaptar os taggers atuais para entregarem também `lemma`, `upos` e `feats` quando disponíveis (campos extras já são preservados pelo `tagged_io`).
+  - [ ] Testes: etiquetar duas vezes e conferir que a segunda não reprocessa; mudar o lote (não invalida) e o modelo (invalida).
+- **Pronto quando:** a segunda execução do mesmo pedido termina sem chamar o tagger (comprovado por contador no teste).
+- **Relato:** _(preencher)_
+
+### 1.5 Opções e tagsets dos taggers
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §11 e §11.1 a §11.5; `taggers/__init__.py` (116 linhas); assinaturas em `spacy_pos.py` (linhas 206–232 e 389–418) e `stanza_pos.py` (linhas 75–110, 229–262 e 630–667).
+- **Fazer:**
+  - [ ] Confirmar nas **versões instaladas** os nomes e valores reais das opções de spaCy e Stanza (a tabela do §11.1 é candidata, não verificada) e registrar diferenças no Relato.
+  - [ ] Pasta `libs/ttwtools/ttwtools/data/taggers/` com um `<tagger>.options.json` (descritor: `id`, `grupo`, `tipo`, `padrao`, `valores`, `afeta_resultado`, `explicacao`, `impacto`, disponibilidade) e um `<tagger>.tagset.json` (`tag`, `group`, `definition`, `example`) por tagger. Começar por Biber (converter `tags_biber.json`), UPOS e PTB; depois MFTE e XPOS do Stanza.
+  - [ ] Textos de `explicacao` e `definition` como **chaves de tradução** (`pt`, `en`), não texto solto.
+  - [ ] API: `ttwtools.taggers.available()`, `.options(id)`, `.get_tagset(id)`, `.run(tagger, corpus, options={...})` com validação contra o descritor; parâmetros antigos continuam como atalhos.
+  - [ ] Tirar do código o que está fixo: componentes do spaCy (`_DISABLED`), processadores e idioma do Stanza.
+  - [ ] Predefinições ("Rápido", "Recomendado", "Mais preciso") no descritor.
+  - [ ] Linha de comando: `ttwtools tagger-options <id>`, `ttwtools tagset <id>`, `ttwtools tag ... --set chave=valor --preset nome`.
+  - [ ] Modelo ausente: erro claro com o comando para instalar.
+  - [ ] Testes: validar opções inválidas, `config_hash` estável, listar tagset.
+- **Pronto quando:** `ttwtools tagger-options spacy_upos` mostra a tabela com explicações e `ttwtools tag ... --set` altera de fato o comportamento.
+- **Relato:** _(preencher)_
+
+### 1.6 Formatos de entrada e saída
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §9.2.
+- **Fazer:**
+  - [ ] `formats/conllu.py`: leitura para `tokens` e escrita a partir de uma camada (UD).
+  - [ ] `formats/vrt.py`: escrita (abre no CWB e no Sketch Engine).
+  - [ ] `formats/nltk_tagged.py`: leitura de texto anotado `palavra/TAG` (Brown, LOB).
+  - [ ] Saída CSV/JSONL/Parquet opcional (Parquet só se `pyarrow` já for dependência; senão, deixar como extra).
+  - [ ] Subcomandos `ttwtools import --format ...` e `ttwtools export --format ...`.
+  - [ ] Testes de ida e volta (CoNLL-U → tokens → CoNLL-U).
+- **Pronto quando:** um arquivo CoNLL-U pequeno vira corpus com camada, e volta a CoNLL-U sem perdas de colunas usadas.
+- **Relato:** _(preencher)_
+
+### 1.7 Estatísticas do corpus
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §12.
+- **Fazer:**
+  - [ ] `describe(project, corpus)` **sem tagger**: arquivos, palavras, types, hapax, TTR, TTR padronizada por blocos, CTTR e MATTR, comprimento médio de palavra, tamanho dos documentos (mín., mediana, máx., desvio), frases aproximadas, palavras mais frequentes e dados para a curva de Zipf. Marcar que são estimativas.
+  - [ ] `describe(..., layer=...)`: distribuição de classes, densidade lexical, comprimento de frase real, lemas por classe, média e desvio por documento.
+  - [ ] Salvar o resultado em `analyses` e reaproveitar se nada mudou (mesmo hash).
+  - [ ] Stopwords por idioma e listas próprias (acrescentar ou substituir).
+  - [ ] `ttwtools describe`.
+  - [ ] Testes com valores calculados à mão num corpus minúsculo.
+- **Pronto quando:** os números do corpus de teste batem com os esperados e a segunda chamada vem do cache.
+- **Relato:** _(preencher)_
+
+### 1.8 Busca, KWIC, frequência, colocados, dispersão
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §4 e §15.1 (linhas de frequência, dispersão e KWIC).
+- **Fazer:**
+  - [ ] `search(project, corpus, padrao, ...)`: palavra, frase ou regex, sobre forma, lema, classe ou combinação; contagem total e por documento/grupo.
+  - [ ] `kwic(...)`: palavra + N de cada lado + frase + classe gramatical + arquivo e posição para abrir o contexto; **paginação** no SQL (`limit`/`offset`), ordenação por contexto esquerdo ou direito.
+  - [ ] `frequency(...)`: unidade escolhível (forma, lema, palavra+classe, só classe, n-grama), por documento, grupo ou corpus.
+  - [ ] `collocates(...)`: log-likelihood, informação mútua, T-score e frequência, com janela e posição.
+  - [ ] `dispersion(...)`: DP de Gries e Range, com dados para o gráfico de barras.
+  - [ ] Funciona **sem camada de etiquetas** (só formas) e melhora com camada.
+  - [ ] Subcomandos `search`, `kwic`, `freq`, `collocates`, `dispersion`.
+  - [ ] Teste de desempenho simples: KWIC em corpus de alguns milhões de tokens em poucos segundos (registrar o tempo no Relato).
+- **Pronto quando:** KWIC paginado devolve o mesmo resultado pela linha de comando e pela função, e os índices de `tokens` são usados (conferir com `EXPLAIN QUERY PLAN`).
+- **Relato:** _(preencher)_
+
+### 1.9 Referência e palavras-chave
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §16 (16.1 a 16.7).
+- **Fazer:**
+  - [ ] Formato da **lista de frequências de referência** (arquivo pequeno: item, classe opcional, frequência, número de documentos) e do metadado (ficha do corpus).
+  - [ ] `keywords(target, reference, unit, measure, min_freq, min_range, ...)`: log-likelihood, log ratio, %DIFF e log-odds; correção para comparações múltiplas; referência pode ser corpus indexado, lista de frequências ou "os demais grupos".
+  - [ ] Verificações de comparabilidade: idioma, tagger e versão; devolver avisos estruturados (a interface os mostra).
+  - [ ] `ttwtools keywords --target ... --reference ...`.
+  - [ ] Testes com casos conhecidos (valores de log-likelihood calculados de outra forma).
+- **Pronto quando:** as palavras-chave de um corpus de teste contra outro batem com os valores esperados e os avisos de comparabilidade aparecem quando devem.
+- **Relato:** _(preencher)_
+
+### 1.10 Ajuda e traduções no pacote
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §13.2 e §5 (item 6).
+- **Fazer:**
+  - [ ] Pasta `libs/ttwtools/ttwtools/data/help/<idioma>/...md` e `tours/*.json`, com o formato do §13.2.
+  - [ ] `ttwtools.help.get(topico, lang)` com idioma de reserva (inglês) e `ttwtools help <topico>`.
+  - [ ] Carregador de traduções compartilhado (`ttwtools.i18n.t(chave, lang)`) que os descritores de tagger (1.5) usam.
+  - [ ] Escrever os primeiros tópicos: `cohens_d`, `normalizacao_por_mil`, `kwic`, `tagset_biber`, `keyness`, `dispersao` (curtos, com "como ler" e "cuidados").
+  - [ ] Teste: todo tópico existe em `pt` e `en` (ou cai no reserva sem erro).
+- **Pronto quando:** `ttwtools help cohens_d --lang pt` mostra o texto.
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 2 — Servidor local (`app/`)
+
+### 2.1 Rotas finas, versão e tarefas
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `app/server.py`, `app/state.py`, `app/routes/tagging.py` (só o modelo de tarefa em segundo plano, linhas ~64–130), `app/routes/utils.py`.
+- **Fazer:**
+  - [ ] Módulo único de **tarefas em segundo plano** (`app/jobs.py`): criar, consultar progresso, cancelar. Reaproveitar o padrão de `/run` e `/status/{job_id}` para todas as tarefas demoradas.
+  - [ ] Passar as rotas atuais para o novo estado de projeto (`.ttwa` e `.ttwl`) e remover regra de negócio que estiver nelas (mover para o pacote).
+  - [ ] `GET /api/version`, `GET /api/health` (usados pelo `--selftest`).
+  - [ ] Substituir o diálogo de pasta por servidor (`pick-folder`) por uma camada única `fonte de corpus` que hoje só aceita pasta local, catálogo e texto colado.
+  - [ ] Testes de rota com `TestClient` do FastAPI.
+- **Pronto quando:** as telas antigas continuam funcionando e os testes de rota passam.
+- **Relato:** _(preencher)_
+
+### 2.2 Rotas dos recursos novos
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer** (cada rota é só uma chamada à função do pacote):
+  - [ ] `GET /api/taggers`, `GET /api/taggers/{id}/options`, `GET /api/taggers/{id}/tagset`; `POST /api/tagging/run` com campo `options`.
+  - [ ] `GET /api/corpora/{id}/overview` (1.7) e `POST` para calcular.
+  - [ ] `GET /api/explore/kwic` (paginado), `/search`, `/frequency`, `/collocates`, `/dispersion`.
+  - [ ] `POST /api/compare/keywords`; `GET /api/references` (a partir da 4.1, por enquanto lista vazia).
+  - [ ] `GET /api/help/{topico}?lang=` e `GET /api/i18n/{lang}`.
+  - [ ] Endpoint que devolve o **comando de linha de comando equivalente** de cada análise (base do "copiar como código").
+  - [ ] Documentação automática em `/api/docs` conferida.
+  - [ ] Testes de rota.
+- **Pronto quando:** cada recurso do pacote tem rota testada e nenhuma rota tem lógica própria.
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 3 — Interface Vue
+
+Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface nova nasce em **`frontend-vue/`**; a antiga (`frontend-src/`) continua funcionando até o passo 3.11. O build da nova também vai para `frontend/` (o servidor não muda). Uma variável de ambiente `TTW_UI=legacy|vue` escolhe qual compilar durante a transição.
+
+### 3.1 Esqueleto Vue
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `frontend-src/package.json`, `frontend-src/vite.config.js`, `frontend-src/tailwind.config.js`.
+- **Fazer:**
+  - [ ] Criar `frontend-vue/` com Vue 3, Vite, Vue Router, Pinia e `vue-i18n`; Tailwind 4 e DaisyUI (sem Shoelace).
+  - [ ] Vite com saída em `../frontend` e carregamento **por rota** (importação dinâmica).
+  - [ ] Página mínima que chama `GET /api/version` e mostra o número.
+  - [ ] `build/build.py` (0.3) escolhe a pasta pelo `TTW_UI`.
+  - [ ] Meta de tamanho: registrar o tamanho comprimido da primeira tela no Relato (alvo: abaixo de cerca de 200 KB).
+  - [ ] `npm run build` funciona no CI (`ci.yml`).
+- **Pronto quando:** o app empacotado abre a página mínima Vue mostrando a versão.
+- **Relato:** _(preencher)_
+
+### 3.2 Casca responsiva, tema e traduções
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §17.3 e §17.4.
+- **Fazer:**
+  - [ ] Casca: cabeçalho com faixa do **corpus ativo** (corpus e camada), navegação (Corpora, Explorar, Comparar, Aprender) e menu Projeto/Configurações. Barra inferior no celular, trilho no tablet, barra lateral no computador (Tailwind por faixas de largura).
+  - [ ] Roteamento por URL (`#/corpora`, `#/explorar/kwic`, ...) e "voltar" funcionando.
+  - [ ] Tema claro, escuro e alto contraste, seguindo a preferência do sistema por padrão; guardar a escolha.
+  - [ ] Traduções `pt` e `en` carregadas de `GET /api/i18n/{lang}`, seletor de idioma da interface (independente do idioma do corpus).
+  - [ ] Componentes base acessíveis: botão, menu, janela, gaveta, painel recolhível, tabela, balão.
+  - [ ] Layout testado nas larguras 390, 768 e 1280 px (captura de tela guardada em `docs/telas/`).
+- **Pronto quando:** navegar entre os quatro destinos vazios funciona nas três larguras, com troca de idioma e de tema.
+- **Relato:** _(preencher)_
+
+### 3.3 Cliente da API e tarefas
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Cliente único de API (`src/api/`) tipado, com tratamento de erro padrão.
+  - [ ] Composable de **tarefa em segundo plano** (iniciar, progresso, cancelar, retomar ao reabrir a tela).
+  - [ ] Componente de **tabela paginada/virtual** ligado a rotas paginadas.
+  - [ ] Estado global mínimo (Pinia): projeto aberto, corpus ativo, camada ativa.
+  - [ ] Testes de unidade (Vitest) do cliente e do composable.
+- **Pronto quando:** uma tarefa de exemplo mostra progresso e pode ser cancelada.
+- **Relato:** _(preencher)_
+
+### 3.4 Corpora: biblioteca, importar, visão geral
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §3, §12 e §17.3.
+- **Fazer:**
+  - [ ] Tela **Corpora**: lista dos corpora do projeto e do catálogo (vazio até a Fase 4), abrir/criar/salvar projeto `.ttwa`/`.ttwl`, exportar o corpus ao lado do `.ttwl`.
+  - [ ] Assistente **Adicionar corpus** (origem → metadados e grupos → o que fazer agora).
+  - [ ] **Visão geral do corpus** (§12): números grandes, gráficos, convite discreto a etiquetar; mostra o nível pós-etiquetagem quando houver camada.
+  - [ ] Lista de camadas do corpus, com a configuração usada em cada uma.
+  - [ ] Faixa do corpus ativo ligada a essa escolha.
+- **Pronto quando:** importar uma pasta de `.txt` e ver a visão geral funciona pelo aplicativo.
+- **Relato:** _(preencher)_
+
+### 3.5 Escolha de tagger e "Personalizar"
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §11 e §11.2.
+- **Fazer:**
+  - [ ] Seletor de tagger (lista de `GET /api/taggers`, filtrada pelo idioma do corpus).
+  - [ ] Botão **"ver tags"**: painel com o tagset (busca, grupos, definição, exemplo).
+  - [ ] Botão **"Personalizar"**: painel recolhido, gerado **a partir do descritor** de opções (não escrito à mão), com grupos, marca "muda o resultado / só velocidade", explicação e impacto; linha de resumo; "restaurar recomendado"; predefinições; combinações inválidas desativadas.
+  - [ ] Aviso de reaproveitamento: "X de Y documentos já têm esta camada; serão processados Z".
+  - [ ] Progresso da etiquetagem pela tarefa em segundo plano (3.3), com retomada.
+- **Pronto quando:** etiquetar com spaCy mudando o modelo e um componente pela tela, e reexecutar sem reprocessar.
+- **Relato:** _(preencher)_
+
+### 3.6 Explorar
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §4 e §17.4 (esboço do KWIC); `frontend-src/src/views/text-viewer.js` (962 linhas, só a estrutura com `grep -n "^export\|^function"`).
+- **Fazer:**
+  - [ ] Busca de palavra (quantas vezes ocorre, por documento e grupo).
+  - [ ] **KWIC** paginado: contexto esquerdo, palavra, contexto direito, classe, arquivo; toque/clique abre o contexto completo e o arquivo; versão em cartões no celular.
+  - [ ] Frequência (unidade escolhível), colocados e dispersão (gráfico de barras).
+  - [ ] **Leitor de texto** com etiquetas coloridas (portar `text-viewer.js`; painel de tags como gaveta; definições ao toque e ao teclado, não só ao passar o mouse).
+  - [ ] Gráficos reaproveitando os módulos D3 existentes (`chart.js`, `viz-*.js`) como componentes; cada um com "ver como tabela".
+- **Pronto quando:** dá para buscar uma palavra, ver o KWIC, clicar e ler o texto com as tags.
+- **Relato:** _(preencher)_
+
+### 3.7 Comparar
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §16 e §17.3 ("Aba Resultados atual"); `frontend-src/src/views/{analysis,results}.js` só por `grep -n`.
+- **Fazer:**
+  - [ ] **Palavras-chave** contra referência (seletor de referência com a ficha do corpus, avisos de comparabilidade, tabela que leva ao KWIC).
+  - [ ] **KFA**: portar a tela de análise e os resultados atuais (barras divergentes, dispersão, bolhas, faixas, mapa de calor, radar, violino, redução), trocando as sub-abas por uma galeria com seletor.
+  - [ ] Gráficos 3D e redução dimensional pesados carregados **sob demanda** (Plotly só aqui).
+  - [ ] Detalhe de feature (`feature-detail`) e abertura do texto com a tag marcada.
+- **Pronto quando:** a KFA de dois corpora de teste dá o mesmo resultado que a interface antiga, e as palavras-chave funcionam contra outro corpus do projeto.
+- **Relato:** _(preencher)_
+
+### 3.8 Ajuda e Aprender
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §13.
+- **Fazer:**
+  - [ ] Componente **balão de ajuda** (`?`) ligado a `GET /api/help/{topico}`.
+  - [ ] **Tour guiado** com destaque (escolher e conferir a licença da biblioteca, ou escrever o overlay próprio) lendo os JSON de `tours/`.
+  - [ ] Botão **"Explicar esta tela"** (destaques com `rough-notation`, que já é dependência).
+  - [ ] Destino **Aprender**: glossário pesquisável, lista de tours, exemplos.
+  - [ ] Visual interativo do d de Cohen (duas curvas e controle deslizante) como primeiro exemplo.
+  - [ ] Balões colocados nas telas já feitas (tagger, KWIC, palavras-chave, KFA).
+- **Pronto quando:** o tour do primeiro corpus roda de ponta a ponta e o balão do d de Cohen mostra o visual.
+- **Relato:** _(preencher)_
+
+### 3.9 Exportar e "copiar como código"
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Exportar qualquer tabela em CSV/TXT e qualquer gráfico em PNG/SVG.
+  - [ ] Botão **"copiar como código"** em cada análise (comando `ttwtools ...` e trecho Python), usando o endpoint da 2.2.
+  - [ ] Exportar corpus/camadas em CoNLL-U e VRT (1.6).
+- **Pronto quando:** o comando copiado de uma análise, rodado no terminal, dá o mesmo resultado que a tela.
+- **Relato:** _(preencher)_
+
+### 3.10 Acessibilidade e testes de interface
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Passe de acessibilidade (meta WCAG 2.2 AA): rótulos, foco visível, teclado, contraste, paletas seguras para daltonismo, `prefers-reduced-motion`.
+  - [ ] Testes de ponta a ponta com Playwright nos fluxos: importar → visão geral → etiquetar → KWIC → palavras-chave → KFA, em 390, 768 e 1280 px.
+  - [ ] Conferir tamanho do pacote da interface e tempo de abertura.
+- **Pronto quando:** os fluxos passam nas três larguras e a verificação de acessibilidade não acusa erros graves.
+- **Relato:** _(preencher)_
+
+### 3.11 Remover a interface antiga
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Conferir que nada de `frontend-src/` ficou sem equivalente na nova (lista de telas do plano).
+  - [ ] Remover `frontend-src/`, o `TTW_UI` e o Shoelace; ajustar `build/build.py`, `ci.yml` e `release.yml`.
+  - [ ] `CHANGELOG.md`.
+- **Pronto quando:** o build e o CI passam sem `frontend-src/`.
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 4 — Catálogo de corpora
+
+### 4.1 Formato de pacote e catálogo
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §6, §9.5 e §16.3 a §16.5.
+- **Fazer:**
+  - [ ] Formato de **pacote de corpus**: um `.ttwa` já indexado e etiquetado, ou só a lista de frequências, mais uma **ficha** (`ficha.json`: idioma, variedade, período, gêneros, tamanho, licença e fonte, camadas com tagger e versão, hash).
+  - [ ] **Catálogo** (`catalogo.json`) publicado como arquivo de uma release do GitHub (ou de um repositório de dados), com URL, tamanho e hash de cada pacote.
+  - [ ] **Regra de licença:** nenhum corpus entra no catálogo sem a licença conferida na fonte e registrada na ficha. Corpus de licença restrita fica só como receita de importação, sem redistribuição.
+- **Pronto quando:** existe o esquema do catálogo e um pacote de exemplo valida contra ele.
+- **Relato:** _(preencher)_
+
+### 4.2 Baixar, instalar e atualizar
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Pasta de dados do usuário por sistema (padrão do sistema operacional), com corpora e modelos baixados.
+  - [ ] `ttwtools catalog list|install|remove|update`, com conferência de hash e progresso.
+  - [ ] Tela em Corpora para instalar, ver a ficha e remover.
+  - [ ] Download de **modelos** de spaCy e Stanza sob demanda (informando o tamanho), fora do binário.
+- **Pronto quando:** instalar um pacote pequeno pelo catálogo e abri-lo na interface funciona.
+- **Relato:** _(preencher)_
+
+### 4.3 Primeiros corpora
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Scripts de preparo em `tools/corpora/` (reproduzíveis) para: Brown e LOB (via NLTK), Universal Dependencies (inglês) e um corpus de demonstração pequeno com metadados (obras em domínio público, para os tours).
+  - [ ] Conferir e registrar a licença de cada um na ficha.
+  - [ ] Publicar no catálogo.
+- **Pronto quando:** Brown está instalável pelo catálogo, já etiquetado, e abre na visão geral.
+- **Relato:** _(preencher)_
+
+### 4.4 Listas de frequência de referência
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Gerar a lista de frequências de cada corpus do catálogo (forma, lema, classe, número de documentos).
+  - [ ] Ligar ao seletor de referência de 3.7 e às faixas de frequência lexical.
+  - [ ] Conferir a licença da lista derivada, separada da do texto.
+- **Pronto quando:** palavras-chave de um corpus do usuário contra Brown funcionam sem instalar o Brown completo (só a lista).
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 5 — Extras
+
+### 5.1 Laboratório: comparar N grupos
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Ler antes:** `novomodelo.md` §14.
+- **Fazer:**
+  - [ ] `ttwtools.experimental.compare_groups(...)`: um contra todos, par a par (matriz), meu texto contra referências; depois mapa de perfis e dendrograma.
+  - [ ] Aba **Laboratório** com aviso de experimental, escolha de grupos (pasta, metadado, seleção) e balão para cada método.
+  - [ ] Avisos de cuidado: comparações múltiplas, grupos pequenos ou desiguais.
+- **Pronto quando:** "um contra todos" roda para 3 grupos e aparece na tela.
+- **Relato:** _(preencher)_
+
+### 5.2 Importador TEI e GrAF (OANC/BNC)
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Leitura de TEI XML e do XML standoff (GrAF) do OANC/MASC para `documents` e `tokens`, conferindo as posições contra o texto original.
+  - [ ] Receita de preparo do OANC/MASC em `tools/corpora/` e ficha com a licença conferida.
+- **Pronto quando:** um trecho do OANC importado tem camada e abre no KWIC.
+- **Relato:** _(preencher)_
+
+### 5.3 Português
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Descritores e tagsets para os modelos de português (spaCy e Stanza), com traduções.
+  - [ ] Corpus de referência em português com licença clara (avaliar UD português, Tycho Brahe, Corpus Brasileiro).
+  - [ ] Teste do fluxo completo em português.
+- **Pronto quando:** etiquetar e explorar um corpus em português pela interface.
+- **Relato:** _(preencher)_
+
+---
+
+# Fase 6 — Fechamento
+
+### 6.1 Documentação
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Atualizar `README.md`/`LEIAME.md` (instalação, uso do aplicativo, uso pela linha de comando, formatos, projeto `.ttwa`/`.ttwl`).
+  - [ ] Documentação do pacote (`libs/ttwtools/docs`): guia rápido e referência de cada função pública.
+  - [ ] Guia de contribuição curto e `RELEASING.md` revisado.
+  - [ ] Atualizar o artigo/descrição (ELC) apenas se você pedir.
+- **Pronto quando:** alguém consegue instalar e fazer a primeira análise só com o `LEIAME.md`.
+- **Relato:** _(preencher)_
+
+### 6.2 Verificação em cada sistema
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Roteiro manual (10 a 15 itens) executado em macOS (arm64 e, se possível, Intel), Windows e Linux com o pacote da `-rc.1`.
+  - [ ] Registrar problemas por sistema (janela, caminhos, permissões, assinatura) e corrigir ou listar como conhecidos.
+- **Pronto quando:** o roteiro passou em todos os sistemas suportados, ou as exceções estão documentadas.
+- **Relato:** _(preencher)_
+
+### 6.3 Release 0.4.0
+
+- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- **Fazer:**
+  - [ ] Congelar: versão do submódulo com tag própria, `CHANGELOG.md` completo.
+  - [ ] `python build/release.py --version 0.4.0`; conferir o rascunho; publicar.
+  - [ ] Conferir que os pacotes baixados da release abrem e que `SHA256SUMS.txt` bate.
+- **Pronto quando:** a release `v0.4.0` está pública com pacotes e notas.
+- **Relato:** _(preencher)_
+
+---
+
+## Decisões pendentes
+
+| # | Decisão | Onde afeta | Situação |
+|---|---|---|---|
+| D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | aberta (sugestão: `0.4.0`) |
+| D2 | Versão do Python (3.14 ou 3.13) conforme pacotes de torch/stanza/spaCy em Windows e Linux | 0.1, 0.4 | aberta, depende da verificação em 0.1 |
+| D3 | Runner Intel para macOS (o `macos-13` foi descontinuado) | 0.4 | aberta |
+| D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |
+| D5 | Formato do pacote no Windows e no Linux (`.zip`/`.tar.gz` simples agora; instalador e AppImage depois) | 0.3 | aberta (padrão: simples) |
+| D6 | Onde hospedar o catálogo de corpora (release do GitHub ou repositório de dados) | 4.1 | aberta |
+| D7 | Biblioteca para o tour com destaque, ou overlay próprio (checar licença) | 3.8 | aberta |
+| D8 | Nomes dos destinos e do rótulo do corpus ativo | 3.2 | aberta |
+| D9 | Padrão recomendado de cada tagger (medir tempo e qualidade) | 1.5 | aberta |
+
+## Registro de mudanças neste plano
+
+_(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: data, passo, motivo.)_
+
+- 2026-09-26: plano criado.
