@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.9 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.8 (2026-09-26); 0.1–0.4 e 1.1–1.8 prontos
+- **Passo atual:** 1.10 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.9 (2026-09-26); 0.1–0.4 e 1.1–1.9 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -108,7 +108,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.6 | Formatos de entrada e saída | 1.2 | [x] | 2026-09-26 | ttwtools `4a0abc3` |
 | 1.7 | Estatísticas do corpus | 1.4 | [x] | 2026-09-26 | ttwtools `64e4a1d` |
 | 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [x] | 2026-09-26 | ttwtools `49c88ee` |
-| 1.9 | Referência e palavras-chave | 1.8 | [ ] | | |
+| 1.9 | Referência e palavras-chave | 1.8 | [x] | 2026-09-26 | ttwtools `55c8bce` |
 | 1.10 | Ajuda e traduções no pacote | 1.1 | [ ] | | |
 | **Fase 2 — Servidor local** | | | | | |
 | 2.1 | Rotas finas, versão e tarefas | 1.2 | [ ] | | |
@@ -516,16 +516,24 @@ Próximo: 1.9.
 
 ### 1.9 Referência e palavras-chave
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `55c8bce` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §16 (16.1 a 16.7).
 - **Fazer:**
-  - [ ] Formato da **lista de frequências de referência** (arquivo pequeno: item, classe opcional, frequência, número de documentos) e do metadado (ficha do corpus).
-  - [ ] `keywords(target, reference, unit, measure, min_freq, min_range, ...)`: log-likelihood, log ratio, %DIFF e log-odds; correção para comparações múltiplas; referência pode ser corpus indexado, lista de frequências ou "os demais grupos".
-  - [ ] Verificações de comparabilidade: idioma, tagger e versão; devolver avisos estruturados (a interface os mostra).
-  - [ ] `ttwtools keywords --target ... --reference ...`.
-  - [ ] Testes com casos conhecidos (valores de log-likelihood calculados de outra forma).
+  - [x] Formato da **lista de frequências de referência** (arquivo pequeno: item, classe opcional, frequência, número de documentos) e do metadado (ficha do corpus).
+  - [x] `keywords(target, reference, unit, measure, min_freq, min_range, ...)`: log-likelihood, log ratio, %DIFF e log-odds; correção para comparações múltiplas; referência pode ser corpus indexado, lista de frequências ou "os demais grupos".
+  - [x] Verificações de comparabilidade: idioma, tagger e versão; devolver avisos estruturados (a interface os mostra).
+  - [x] `ttwtools keywords --target ... --reference ...`.
+  - [x] Testes com casos conhecidos (valores de log-likelihood calculados de outra forma).
 - **Pronto quando:** as palavras-chave de um corpus de teste contra outro batem com os valores esperados e os avisos de comparabilidade aparecem quando devem.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ttwtools/keywords.py (keywords, corpus_freqs, FreqTable, make/read/write_reference_list, comparability, medidas), avisos traduzidos (data/i18n/keywords.*.json), CLI keywords e reference-list.
+Arquivos (submódulo): ttwtools/keywords.py (novo), data/i18n/keywords.{pt,en}.json, annotate.py (tag_corpus filenames=), query.py (camada simple só onde falta), cli.py, __init__.py, tests/test_keywords.py.
+Testes: pytest libs/ttwtools/tests -q → 93 passed (LL igual ao cálculo independente com scipy.special.xlogy em 4 casos, incluindo zeros; exemplo clássico 100/50 em 10 mil → 16,99; log ratio, %DIFF, log-odds, qui-quadrado 3,841→0,05; Bonferroni e FDR; avisos de idioma, tagger, dados iguais, referência sem textos por item).
+Pendências: referências do catálogo (4.4); log-odds com prior informativo (Monroe et al.) não implementado — usada razão de chances com +0,5.
+Observações: referência pode ser lista .tsv (1ª linha = ficha JSON), outro corpus do projeto, rest:<metadado> (com where) ou FreqTable. Filtros: min_freq no lado que "ganha", min_range nos textos do alvo. Ordenação por |medida|, positivos antes dos negativos; top por direção. Resultado salvo em analyses com referência e versão. Defeito corrigido: a camada `simple` só era criada quando nenhum documento tinha camada; agora completa só os que faltam.
+Próximo: 1.10.
+```
 
 ### 1.10 Ajuda e traduções no pacote
 
