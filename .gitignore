@@ -24,6 +24,7 @@ build/**
 !build/*.icns
 !build/hooks/
 !build/hooks/**
+build/hooks/__pycache__/
 develop-eggs/
 /dist*/
 downloads/
@@ -60,3 +61,4 @@ dist-release/
 
 # Local installers (nao versionar)
 Miniconda3*.sh
+/*.ttwa
