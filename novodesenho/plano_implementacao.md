@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.1
-- **Último passo concluído:** nenhum
+- **Passo atual:** 0.2
+- **Último passo concluído:** 0.1 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (a confirmar em 0.2)
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -68,6 +68,7 @@ O script antigo `build_intel_local.sh` (no commit `a28c79a`) criava, para o buil
 git fetch --all && git switch new_set26 && git pull
 git submodule update --init --recursive          # requer git-lfs instalado (git lfs install)
 conda env create -f environment.yml -n ttw314 && conda activate ttw314   # Mac Apple Silicon; no Mac Intel use o ambiente ttw311
+pip install --no-deps -e libs/ttwtools -e . && pip install pytest   # instalações editáveis apontam para ESTE clone (ver Relato 0.1)
 cd frontend-vue && npm ci                        # a partir do passo 3.1
 ```
 Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato preenchido.
@@ -92,7 +93,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | Passo | Título | Depende de | Estado | Data | Commit |
 |---|---|---|---|---|---|
 | **Fase 0 — Base: versão, build e release** | | | | | |
-| 0.1 | Conferir base e ambiente | — | [ ] | | |
+| 0.1 | Conferir base e ambiente | — | [x] | 2026-09-26 | ver `git log --grep '\[0.1\]'` |
 | 0.2 | Versão única e changelog | 0.1 | [ ] | | |
 | 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [ ] | | |
 | 0.4 | CI multi-plataforma | 0.3 | [ ] | | |
@@ -150,19 +151,44 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
 
 ### 0.1 Conferir base e ambiente
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[0.1\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, macOS 15.6.1, `ttw314`; Intel testado sob Rosetta com `ttw311-x86`
 - **Ler antes:** `pyproject.toml`, `environment.yml`, `requirements.txt`, `.github/workflows/build.yml` (162 linhas).
 - **Fazer:**
-  - [ ] Confirmar branch `new_set26` e submódulo em dia (`git status`, `git submodule status`).
-  - [ ] Ativar o ambiente conda da máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel; ver "Máquinas e ambientes conda") e rodar o app atual (`python -m app --mode web`) para ver que abre.
-  - [ ] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
-  - [ ] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
-  - [ ] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
-  - [ ] **macOS 12:** já informado em 2026-09-26: máquina **Intel**, **Safari 17.6**. Anotar no Relato a versão exata do macOS (12.x) e confirmar o Safari com Safari > Sobre o Safari.
-  - [ ] **Levantar quais dependências não rodam no macOS 12:** com o pacote atual já compilado (ou os pacotes instalados), listar os arquivos Mach-O cujo mínimo de macOS seja maior que 12.0 (`vtool -show-build <arquivo>`), principalmente os do `torch`. Anotar quais versões de `torch`, `numpy`, `spaCy`, `thinc` e `pywebview` satisfazem o alvo 12.0 em **Intel (prioridade)** e em **arm64**. Confirmar se `torch==2.2.2` com `numpy<2` e `stanza` funcionam juntos no Intel (Stanza e MFTE dependem disso).
-  - [ ] Propor o **conjunto de versões por plataforma** (Python e torch) e registrar em "Decisões pendentes" (D2 e D10).
+  - [x] Confirmar branch `new_set26` e submódulo em dia (`git status`, `git submodule status`).
+  - [x] Ativar o ambiente conda da máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel; ver "Máquinas e ambientes conda") e rodar o app atual (`python -m app --mode web`) para ver que abre.
+  - [x] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
+  - [x] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
+  - [x] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
+  - [~] **macOS 12:** já informado em 2026-09-26: máquina **Intel**, **Safari 17.6**. Anotar no Relato a versão exata do macOS (12.x) e confirmar o Safari com Safari > Sobre o Safari.
+  - [x] **Levantar quais dependências não rodam no macOS 12:** com o pacote atual já compilado (ou os pacotes instalados), listar os arquivos Mach-O cujo mínimo de macOS seja maior que 12.0 (`vtool -show-build <arquivo>`), principalmente os do `torch`. Anotar quais versões de `torch`, `numpy`, `spaCy`, `thinc` e `pywebview` satisfazem o alvo 12.0 em **Intel (prioridade)** e em **arm64**. Confirmar se `torch==2.2.2` com `numpy<2` e `stanza` funcionam juntos no Intel (Stanza e MFTE dependem disso).
+  - [x] Propor o **conjunto de versões por plataforma** (Python e torch) e registrar em "Decisões pendentes" (D2 e D10).
 - **Pronto quando:** o app atual abre e os números de base estão no Relato, incluindo a lista de dependências incompatíveis com o macOS 12.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: app atual abre (--mode web, HTTP 200, 40 rotas); os 4 taggers rodam em test_corpora/5 no arm64 e no Intel (Rosetta).
+Arquivos: só este plano (nenhum código mudou). Ambiente ttw314 corrigido: ttwtools e ttwtools-app estavam instalados
+  em modo editável apontando para caminhos antigos (…/repositorios_lu/ttwtools, fora de ttw/); reinstalados de libs/ttwtools e da raiz.
+Testes: não há testes no app nem no submódulo (base = 0). pytest instalado no ttw314 (faltava).
+Pendências: versão exata do macOS 12.x e confirmação do Safari 17.6 na máquina Intel (só o usuário pode ver lá). CHANGELOG: sem linha,
+  pois 0.1 não mudou código e o CHANGELOG é reorganizado em 0.2.
+Observações: (ver "Levantamento 0.1" abaixo)
+Próximo: 0.2.
+```
+**Levantamento 0.1 (versões e macOS 12):**
+
+| | arm64 (`ttw314`) | Intel (`ttw311-x86`, Rosetta) |
+|---|---|---|
+| Python | 3.14.3 (conda defaults) | 3.11.13 |
+| spaCy / thinc / en_core_web_sm | 3.8.13 / 8.3.13 / 3.8.0 | iguais |
+| Stanza / MFTE / BiberPlus | 1.11.1 / 1.0.0.7 / 0.4.0 | iguais |
+| torch | 2.11.0 | 2.2.2 |
+| numpy / scipy | 2.4.4 / 1.17.1 | 2.4.4 / 1.17.1 (**numpy precisa ser <2**, ver abaixo) |
+| pywebview / PyInstaller | 6.1 / 6.19.0 | 6.1 / 6.20.0 |
+
+1. **Intel, torch 2.2.2 + numpy 2 = falha silenciosa:** `torch.from_numpy` dá `RuntimeError: Numpy is not available`; Stanza e MFTE **não acusam erro**, mas gravam 0 palavras em todos os documentos (a exceção por documento é engolida). Com `numpy==1.26.4` (venv descartável, `pip check` limpo, pandas 3.0.2/scipy 1.17.1/sklearn 1.8.0 aceitam numpy 1.26) os 4 taggers dão CSVs **idênticos** aos do arm64. → **Intel exige `numpy<2`** (D10 resolvida). **Para 1.5:** `taggers.available()` deve testar a ponte torch↔numpy, e os taggers não podem engolir erro por documento sem avisar.
+2. **Binários acima do macOS 12.0** (varredura `otool -l` do pacote `dist/dist-macsilicon` de 2026-05-05 e do `ttw311-x86`): só **numpy 2.4.4** e **scipy 1.17.1**, porque o pip num macOS 15 escolhe as rodas `macosx_14_0` (Accelerate). Existem rodas compatíveis: numpy `macosx_11_0_arm64`/`macosx_10_9_x86_64` (1.26: 10.9), scipy `macosx_12_0_arm64`/`macosx_10_14_x86_64`. O pip ignora `MACOSX_DEPLOYMENT_TARGET` na escolha de rodas; em 0.3, instalar essas duas com `--platform macosx_12_0_<arch> --only-binary=:all:` (ou fixar o arquivo da roda) e deixar `check_macos_min.py` pegar regressões. torch 2.11 (arm64) pede 11.0; torch 2.2.2 (Intel) pede 10.13; sklearn 12.0; demais ≤ 12.0.
+3. **Python do conda defaults 3.14 (arm64) pede macOS 12.1** (`libpython3.14.dylib`, `python3.14`, openssl, sqlite, expat, zstd). Na prática roda em qualquer 12.x atualizado, mas falharia na checagem estrita de 12.0. Opções para 0.3: aceitar 12.1 como mínimo real do arm64, ou compilar com o Python do python.org (mínimo 10.13). O Python 3.11 do `ttw311-x86` pede 10.15.
+4. **Windows e Linux com Python 3.14:** há rodas `cp314` de torch 2.11.0 (`win_amd64`, `manylinux_2_28` x86_64/aarch64), spaCy, thinc, blis, numpy e scipy; Stanza, MFTE e BiberPlus são puro Python. Não é preciso fixar 3.13.
 
 ### 0.2 Versão única e changelog
 
@@ -683,9 +709,9 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 | # | Decisão | Onde afeta | Situação |
 |---|---|---|---|
 | D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | aberta (sugestão: `0.4.0`) |
-| D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | aberta, depende do levantamento de 0.1 |
+| D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | **proposta de 0.1 (aguarda confirmação):** manter **dois conjuntos**. (a) macOS arm64, Windows e Linux: Python 3.14, `torch==2.11.0`, numpy 2.4.4/scipy 1.17.1 com rodas de macOS ≤ 12 (rodas cp314 existem nos três sistemas). (b) macOS Intel: Python 3.11, `torch==2.2.2`, `numpy==1.26.4`; o resto igual. Unificar em 3.11 não traria ganho: as demais versões já coincidem e o 3.14 tem suporte mais longo |
 | D3 | Runner Intel para macOS (o `macos-13` foi descontinuado); enquanto não houver, o pacote Intel é feito localmente | 0.4 | aberta |
-| D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | parcialmente resolvida: falta verificar em 0.1 |
+| D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | **resolvida em 0.1:** `numpy<2` é obrigatório (com numpy 2 Stanza/MFTE falham em silêncio); com `numpy==1.26.4` os 4 taggers funcionam e dão o mesmo resultado do arm64. Falta abrir o pacote numa máquina macOS 12 real (0.6) |
 | D11 | Tailwind 4 no macOS 12: **manter Tailwind 4**, pois o Safari dessa máquina é o 17.6 (o mínimo é 16.4). Reabrir só se o teste em 3.1 falhar | 3.1 | resolvida em 2026-09-26 (a confirmar no teste) |
 | D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |
 | D5 | Formato do pacote no Windows e no Linux (`.zip`/`.tar.gz` simples agora; instalador e AppImage depois) | 0.3 | aberta (padrão: simples) |
@@ -702,3 +728,4 @@ _(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: d
 - 2026-09-26: requisito de compatibilidade com macOS 12 (Intel e arm64) acrescentado: nova seção "Compatibilidade mínima" e ajustes nos passos 0.1, 0.3, 0.4, 0.6, 1.5, 3.1 e 6.2, mais as decisões D2, D3, D10 e D11.
 - 2026-09-26: registrados os ambientes conda por máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel).
 - 2026-09-26: o usuário informou que o macOS 12 é Intel com Safari 17.6. D11 resolvida (manter Tailwind 4); D10 parcialmente resolvida (Intel confirmado, falta verificar Stanza/MFTE com `torch==2.2.2`).
+- 2026-09-26: 0.1 concluído; D10 resolvida (Intel exige `numpy<2`); proposta para D2 registrada; nova linha em "Como retomar" (reinstalação editável).
