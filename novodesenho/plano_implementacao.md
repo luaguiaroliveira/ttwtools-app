@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.4
+- **Passo atual:** 0.4 (CI rodando; 1.1 feito em paralelo)
 - **Último passo concluído:** 0.3 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -96,11 +96,11 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 0.1 | Conferir base e ambiente | — | [x] | 2026-09-26 | ver `git log --grep '\[0.1\]'` |
 | 0.2 | Versão única e changelog | 0.1 | [x] | 2026-09-26 | ver `git log --grep '\[0.2\]'` |
 | 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [x] | 2026-09-26 | ver `git log --grep '\[0.3\]'` |
-| 0.4 | CI multi-plataforma | 0.3 | [ ] | | |
+| 0.4 | CI multi-plataforma | 0.3 | [~] | | |
 | 0.5 | Processo de release | 0.4 | [ ] | | |
 | 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
 | **Fase 1 — Pacote `ttwtools`** | | | | | |
-| 1.1 | Testes e linha de comando base | 0.1 | [ ] | | |
+| 1.1 | Testes e linha de comando base | 0.1 | [x] | 2026-09-26 | ttwtools `87bf693` |
 | 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [ ] | | |
 | 1.3 | Importação de corpus e metadados | 1.2 | [ ] | | |
 | 1.4 | Camadas e cache | 1.2 | [ ] | | |
@@ -299,15 +299,23 @@ Trabalhar sempre dentro de `libs/ttwtools`, com testes. Lembrar: commit e push n
 
 ### 1.1 Testes e linha de comando base
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `87bf693` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `libs/ttwtools/pyproject.toml`, `libs/ttwtools/ttwtools/__init__.py`.
 - **Fazer:**
-  - [ ] Pasta `libs/ttwtools/tests/` com `conftest.py` e uma fixture que copia `test_corpora/5` para uma pasta temporária.
-  - [ ] Teste de fumaça do que já existe (criar projeto, salvar e ler arquivo etiquetado JSONL, `kfa`).
-  - [ ] Linha de comando `ttwtools` (entrada em `pyproject.toml`, biblioteca padrão `argparse`, sem dependência nova) com `--version` e a estrutura de subcomandos (`describe`, `tag`, `tagger-options`, `tagset`, `kwic`, `freq`, `keywords`, `compare`, `help`), cada um por enquanto respondendo "ainda não implementado".
-  - [ ] Saída padronizada: tabela legível, `--json` e `--csv`.
+  - [x] Pasta `libs/ttwtools/tests/` com `conftest.py` e uma fixture que copia `test_corpora/5` para uma pasta temporária.
+  - [x] Teste de fumaça do que já existe (criar projeto, salvar e ler arquivo etiquetado JSONL, `kfa`).
+  - [x] Linha de comando `ttwtools` (entrada em `pyproject.toml`, biblioteca padrão `argparse`, sem dependência nova) com `--version` e a estrutura de subcomandos (`describe`, `tag`, `tagger-options`, `tagset`, `kwic`, `freq`, `keywords`, `compare`, `help`), cada um por enquanto respondendo "ainda não implementado".
+  - [x] Saída padronizada: tabela legível, `--json` e `--csv`.
 - **Pronto quando:** `pytest -q` passa e `ttwtools --version` funciona.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: tests/ com 21 testes (fumaça: projeto .ttwa, JSONL, BiberPlus+KFA; CLI); `ttwtools` (entrada no pyproject e `python -m ttwtools`) com --version e os 9 subcomandos respondendo "ainda não implementado" (código 3); saída tabela/--json/--csv por `ttwtools.cli.emit`.
+Arquivos (submódulo): ttwtools/{cli.py, _version.py, __main__.py, __init__.py}, tests/{conftest.py, test_smoke.py, test_cli.py}, pyproject.toml, CHANGELOG.md. App: ci.yml roda também pytest libs/ttwtools/tests.
+Testes: pytest libs/ttwtools/tests -q → 21 passed; pytest tests -q (app) → 8 passed; app --selftest OK.
+Pendências: nenhuma. Versão do pacote segue 0.1.0 (sobe quando houver API nova de fato).
+Observações: `import ttwtools` levava 4,2 s (importava spaCy/biberplus); agora é preguiçoso (PEP 562, mesmos nomes públicos; conferido que todos os `ttwtools.X` usados pelo app resolvem) e `ttwtools --version` leva 0,04 s. Fixture `corpus5` usa examples/test_corpora do próprio pacote (mesmos textos de test_corpora/5; TTWTOOLS_TEST_CORPORA muda a pasta). Cada subcomando novo deve trocar o handler `_not_implemented` e usar `emit`.
+Próximo: 1.2 (ou fechar 0.4 quando o CI terminar).
+```
 
 ### 1.2 Esquema v3 do projeto (`.ttwa` e `.ttwl`)
 

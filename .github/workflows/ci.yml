@@ -45,7 +45,9 @@ jobs:
           pip install pytest
 
       - name: Testes
-        run: pytest tests -q
+        run: |
+          pytest tests -q
+          pytest libs/ttwtools/tests -q
 
       - name: Frontend
         working-directory: frontend-src
