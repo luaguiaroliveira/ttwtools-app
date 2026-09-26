@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.4.0-alpha.1] — 2026-09-26
+
 Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.md`).
 
 ### Adicionado
@@ -17,6 +19,8 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 
 ### Alterado
 - Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)
+
+- Pacote `ttwtools` 0.2.0.dev0 (commit `3e29ac8`).
 
 ## [0.3.7] — 2026-05-05
 
@@ -93,7 +97,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...HEAD
+[0.4.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...v0.4.0-alpha.1
 [0.3.7]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.0...v0.3.5
