@@ -42,6 +42,17 @@ Próximo: passo seguinte recomendado.
 - **Sem retrabalho de etiquetagem:** nenhuma função nova pode reprocessar o que já existe em camada equivalente (§9.4, §11.4).
 - **Changelog:** uma linha por passo concluído em `CHANGELOG.md`, seção `[Unreleased]`.
 
+## Compatibilidade mínima (requisito fixo)
+
+**O aplicativo empacotado precisa continuar rodando no macOS 12 (Monterey)**, em Intel (x86_64) e em Apple Silicon (arm64), além de Windows e Linux. Consequências que os passos abaixo já incluem:
+
+1. **Alvo de implantação:** todo build de macOS define `MACOSX_DEPLOYMENT_TARGET=12.0` (hoje nenhum script define isso). Depois do build, `build/check_macos_min.py` percorre todos os arquivos Mach-O do pacote (`.dylib`, `.so` e executáveis; `vtool -show-build` ou `otool -l`) e **falha se algum exigir um macOS mais novo que 12.0**. Roda em local e no CI (passos 0.3 e 0.4).
+2. **Intel (confirmado: a máquina com macOS 12 do usuário é Intel, com Safari 17.6):** o build atual sob Rosetta (`build/build_intel_local.sh`, no commit `a28c79a`) usa **Python 3.11** e **`torch==2.2.2`**, porque as versões novas do torch não têm pacote para Intel Mac. Como o `environment.yml` do desenvolvimento (Python 3.14, `torch==2.11.0`) não serve ao Intel, o plano prevê **um conjunto de versões compatível** (ver 0.1 e 0.3). O torch 2.2.x foi compilado para NumPy 1.x, então no Intel provavelmente é preciso `numpy<2` (**a verificar**).
+3. **Stanza e MFTE dependem do torch:** onde o torch não puder ser empacotado (Intel, ou versão que exija macOS mais novo que 12), esses taggers ficam **indisponíveis com aviso claro**, e spaCy e BiberPlus continuam funcionando. A função `taggers.available()` (passo 1.5) já deve devolver "instalado, indisponível neste sistema" com o motivo.
+4. **Janela do aplicativo:** no macOS o pywebview usa o WebKit do sistema, que acompanha o Safari instalado. Tailwind 4 exige Safari 16.4 ou mais novo, e a máquina com macOS 12 tem **Safari 17.6**, então o Tailwind 4 deve funcionar (decisão D11 resolvida). Ainda assim, testar a interface lá (3.1 e 6.2), porque nada disso foi verificado na prática.
+5. **Fora do alcance do CI gratuito:** o CI só cobre o macOS arm64. O pacote Intel continua sendo feito **localmente** e enviado à release por `build/release_github.sh` (ver 0.4 e 0.5), até haver runner Intel.
+6. **Testar de verdade:** cada release de teste é aberta em uma máquina com macOS 12 (0.6) e o roteiro final inclui macOS 12 (6.2).
+
 ## Como retomar em outra máquina ou com outro agente
 
 ```
@@ -138,7 +149,10 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
   - [ ] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
   - [ ] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
   - [ ] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
-- **Pronto quando:** o app atual abre e os números de base estão no Relato.
+  - [ ] **macOS 12:** já informado em 2026-09-26: máquina **Intel**, **Safari 17.6**. Anotar no Relato a versão exata do macOS (12.x) e confirmar o Safari com Safari > Sobre o Safari.
+  - [ ] **Levantar quais dependências não rodam no macOS 12:** com o pacote atual já compilado (ou os pacotes instalados), listar os arquivos Mach-O cujo mínimo de macOS seja maior que 12.0 (`vtool -show-build <arquivo>`), principalmente os do `torch`. Anotar quais versões de `torch`, `numpy`, `spaCy`, `thinc` e `pywebview` satisfazem o alvo 12.0 em **Intel (prioridade)** e em **arm64**. Confirmar se `torch==2.2.2` com `numpy<2` e `stanza` funcionam juntos no Intel (Stanza e MFTE dependem disso).
+  - [ ] Propor o **conjunto de versões por plataforma** (Python e torch) e registrar em "Decisões pendentes" (D2 e D10).
+- **Pronto quando:** o app atual abre e os números de base estão no Relato, incluindo a lista de dependências incompatíveis com o macOS 12.
 - **Relato:** _(preencher)_
 
 ### 0.2 Versão única e changelog
@@ -167,8 +181,12 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
   - [ ] Ajustar o spec: pasta do frontend por variável (a interface Vue entra na 3.1 sem mexer no resto), incluir os arquivos de dados novos do pacote (tagsets, descritores, ajuda) por **glob**, e **não embutir modelos grandes** (só `en_core_web_sm`; os demais serão baixados depois, passo 4.2).
   - [ ] Ícones para Windows (`.ico`) e Linux (`.png`) a partir do `icon.icns`.
   - [ ] Modo de teste embutido: `TTWtools --selftest` sobe o servidor numa porta livre, chama `GET /api/version`, imprime `OK` e sai com código 0.
+  - [ ] **Alvo macOS 12:** `build.py` define `MACOSX_DEPLOYMENT_TARGET=12.0` no macOS e aceita `--arch arm64|x86_64` (o `x86_64` reproduz o que fazia `build_intel_local.sh`: Rosetta, Miniconda x86_64, ambiente com o conjunto de versões da 0.1).
+  - [ ] **Ambientes por plataforma:** manter o `environment.yml` de desenvolvimento e criar arquivos de restrição por alvo (por exemplo `build/constraints-macos-x86_64.txt` com `torch==2.2.2` e `numpy<2`, se confirmado). O `build.py` escolhe o arquivo pelo alvo.
+  - [ ] **`build/check_macos_min.py`:** percorre o pacote gerado e falha se algum Mach-O exigir macOS acima de 12.0; imprime os arquivos culpados. Chamado ao fim do `build.py` no macOS.
+  - [ ] **Dependência ausente vira aviso, não erro:** se `torch` ou `stanza` não estiver no pacote, o app abre normalmente e Stanza/MFTE aparecem como indisponíveis (ver 1.5).
   - [ ] Rodar o build **local no seu sistema** e o `--selftest` no binário gerado.
-- **Pronto quando:** `python build/build.py` gera o pacote do seu sistema e o `--selftest` passa no binário.
+- **Pronto quando:** `python build/build.py` gera o pacote do seu sistema, o `--selftest` passa no binário e `check_macos_min.py` passa (ou lista o que impede o macOS 12, com decisão registrada).
 - **Observações a registrar:** tamanho do pacote; se o `pywebview` abriu a janela; no Linux o modo janela exige bibliotecas do sistema (GTK/WebKit), e o `--mode web` é a alternativa.
 - **Relato:** _(preencher)_
 
@@ -179,7 +197,9 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
 - **Fazer:**
   - [ ] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
   - [ ] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
-  - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS.
+  - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS; o **pacote Intel será feito localmente** (`python build/build.py --arch x86_64`, sob Rosetta) e enviado à release com `release_github.sh`.
+  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12).
+  - [ ] Usar no CI o **mesmo conjunto de versões** decidido em 0.1 (não o `environment.yml` de desenvolvimento, se ele tiver torch que exija macOS mais novo).
   - [ ] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
   - [ ] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
   - [ ] **Validação da tag:** o job falha se a tag não for igual à versão do `pyproject.toml` ou se o `CHANGELOG.md` não tiver a seção daquela versão.
@@ -206,8 +226,10 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
   - [ ] Mesclar a Fase 0 no `main` (PR da `new_set26`, ou branch própria da Fase 0 se for preferível para não misturar com os documentos).
   - [ ] Rodar `release.py` para `0.4.0-alpha.1`; conferir no GitHub: rascunho criado, pacotes de cada sistema, `SHA256SUMS.txt`, marcado como *pre-release*.
   - [ ] Baixar e abrir o pacote em pelo menos **um** sistema diferente do de desenvolvimento.
+  - [ ] **Abrir o pacote macOS na máquina com macOS 12** (Intel ou arm64, conforme a que existir): a janela abre, a interface carrega e o `--selftest` passa. Registrar o que falhar (biblioteca ausente, versão do Safari, torch).
+  - [ ] Se houver pacote Intel feito localmente, enviá-lo ao rascunho com `release_github.sh`.
   - [ ] Registrar aqui o tempo total do CI e o tamanho de cada pacote.
-- **Pronto quando:** existe uma release em rascunho com pacotes de todos os sistemas possíveis e ao menos um foi aberto de verdade.
+- **Pronto quando:** existe uma release em rascunho com pacotes de todos os sistemas possíveis, ao menos um foi aberto de verdade e o macOS 12 foi testado.
 - **Relato:** _(preencher)_
 
 ---
@@ -282,7 +304,8 @@ Trabalhar sempre dentro de `libs/ttwtools`, com testes. Lembrar: commit e push n
   - [ ] Predefinições ("Rápido", "Recomendado", "Mais preciso") no descritor.
   - [ ] Linha de comando: `ttwtools tagger-options <id>`, `ttwtools tagset <id>`, `ttwtools tag ... --set chave=valor --preset nome`.
   - [ ] Modelo ausente: erro claro com o comando para instalar.
-  - [ ] Testes: validar opções inválidas, `config_hash` estável, listar tagset.
+  - [ ] **Disponibilidade por sistema:** `available()` devolve para cada tagger `disponivel` (sim ou não) e o **motivo** (por exemplo "torch não incluído neste pacote do macOS Intel"). Importar `torch`/`stanza` só quando o tagger for usado (já é assim) e tratar `ImportError` como "indisponível", nunca como falha do aplicativo.
+  - [ ] Testes: validar opções inválidas, `config_hash` estável, listar tagset, tagger indisponível.
 - **Pronto quando:** `ttwtools tagger-options spacy_upos` mostra a tabela com explicações e `ttwtools tag ... --set` altera de fato o comportamento.
 - **Relato:** _(preencher)_
 
@@ -404,6 +427,7 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
   - [ ] Página mínima que chama `GET /api/version` e mostra o número.
   - [ ] `build/build.py` (0.3) escolhe a pasta pelo `TTW_UI`.
   - [ ] Meta de tamanho: registrar o tamanho comprimido da primeira tela no Relato (alvo: abaixo de cerca de 200 KB).
+  - [ ] **Compatibilidade com o WebKit do macOS 12 (Safari 17.6):** definir `build.target` do Vite como `safari16` e abrir a página mínima **na máquina Intel com macOS 12**, dentro do app empacotado. Se o Tailwind 4 falhar lá mesmo assim, reabrir a decisão D11 (Tailwind 3 com DaisyUI 4) antes de seguir para 3.2.
   - [ ] `npm run build` funciona no CI (`ci.yml`).
 - **Pronto quando:** o app empacotado abre a página mínima Vue mostrando a versão.
 - **Relato:** _(preencher)_
@@ -628,7 +652,7 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 
 - Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
 - **Fazer:**
-  - [ ] Roteiro manual (10 a 15 itens) executado em macOS (arm64 e, se possível, Intel), Windows e Linux com o pacote da `-rc.1`.
+  - [ ] Roteiro manual (10 a 15 itens) executado em macOS (arm64 e, se possível, Intel), **incluindo a máquina com macOS 12**, Windows e Linux com o pacote da `-rc.1`. No macOS 12, conferir também que os taggers indisponíveis (se houver) aparecem com o motivo.
   - [ ] Registrar problemas por sistema (janela, caminhos, permissões, assinatura) e corrigir ou listar como conhecidos.
 - **Pronto quando:** o roteiro passou em todos os sistemas suportados, ou as exceções estão documentadas.
 - **Relato:** _(preencher)_
@@ -650,8 +674,10 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 | # | Decisão | Onde afeta | Situação |
 |---|---|---|---|
 | D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | aberta (sugestão: `0.4.0`) |
-| D2 | Versão do Python (3.14 ou 3.13) conforme pacotes de torch/stanza/spaCy em Windows e Linux | 0.1, 0.4 | aberta, depende da verificação em 0.1 |
-| D3 | Runner Intel para macOS (o `macos-13` foi descontinuado) | 0.4 | aberta |
+| D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | aberta, depende do levantamento de 0.1 |
+| D3 | Runner Intel para macOS (o `macos-13` foi descontinuado); enquanto não houver, o pacote Intel é feito localmente | 0.4 | aberta |
+| D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | parcialmente resolvida: falta verificar em 0.1 |
+| D11 | Tailwind 4 no macOS 12: **manter Tailwind 4**, pois o Safari dessa máquina é o 17.6 (o mínimo é 16.4). Reabrir só se o teste em 3.1 falhar | 3.1 | resolvida em 2026-09-26 (a confirmar no teste) |
 | D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |
 | D5 | Formato do pacote no Windows e no Linux (`.zip`/`.tar.gz` simples agora; instalador e AppImage depois) | 0.3 | aberta (padrão: simples) |
 | D6 | Onde hospedar o catálogo de corpora (release do GitHub ou repositório de dados) | 4.1 | aberta |
@@ -664,3 +690,5 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 _(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: data, passo, motivo.)_
 
 - 2026-09-26: plano criado.
+- 2026-09-26: requisito de compatibilidade com macOS 12 (Intel e arm64) acrescentado: nova seção "Compatibilidade mínima" e ajustes nos passos 0.1, 0.3, 0.4, 0.6, 1.5, 3.1 e 6.2, mais as decisões D2, D3, D10 e D11.
+- 2026-09-26: o usuário informou que o macOS 12 é Intel com Safari 17.6. D11 resolvida (manter Tailwind 4); D10 parcialmente resolvida (Intel confirmado, falta verificar Stanza/MFTE com `torch==2.2.2`).
