@@ -58,6 +58,8 @@ def main() -> None:
         info = version_info()
         print(f"TTWtools {info['app']} (ttwtools {info['ttwtools']}, commit {info['commit']})")
         return
+    if "--selftest" in sys.argv[1:]:
+        sys.exit(_selftest())
 
     _prewarm_torch()
     # Register macOS 'odoc' handler as early as possible so queued startup
@@ -72,6 +74,8 @@ def main() -> None:
         help="'desktop' abre janela nativa (pywebview); 'web' inicia apenas o servidor.",
     )
     parser.add_argument("--version", action="store_true", help="Mostra a versão e sai.")
+    parser.add_argument("--selftest", action="store_true",
+                        help="Sobe o servidor numa porta livre, confere /api/version e sai (0 = OK).")
     parser.add_argument("--host", default="127.0.0.1", help="Host do servidor HTTP.")
     parser.add_argument("--port", type=int, default=8765, help="Porta do servidor HTTP.")
     parser.add_argument(
@@ -175,6 +179,80 @@ def _register_macos_open_handler() -> None:
         print('[ttwtools] Apple Event odoc handler registered.', flush=True)
     except Exception as exc:
         print(f'[ttwtools] Apple Event handler unavailable: {exc}', flush=True)
+
+
+# ---------------------------------------------------------------------------
+# Autoteste do pacote (usado pelo build e pelo CI)
+# ---------------------------------------------------------------------------
+
+def _selftest() -> int:
+    """Sobe o servidor numa porta livre, confere GET /api/version e testa os
+    componentes. Falha (1) só no essencial: servidor, versão e spaCy. torch e
+    Stanza ausentes ou quebrados viram AVISO (Stanza/MFTE ficam indisponíveis)."""
+    import json
+    import socket
+    import time
+    import urllib.request
+
+    import uvicorn
+
+    from app._version import __version__
+    from app.server import build_app
+
+    ok = True
+
+    def report(name: str, passed: bool, detail: str = "", essential: bool = True) -> None:
+        nonlocal ok
+        label = "ok" if passed else ("FALHOU" if essential else "AVISO")
+        print(f"[selftest] {name}: {label}{' — ' + detail if detail else ''}", flush=True)
+        if not passed and essential:
+            ok = False
+
+    try:
+        import torch
+        import numpy as np
+        _prewarm_torch()
+        torch.from_numpy(np.arange(3.0))  # falha com numpy 2 no torch 2.2 (Intel)
+        report("torch", True, f"{torch.__version__}, numpy {np.__version__}", essential=False)
+    except Exception as exc:
+        report("torch", False, f"{type(exc).__name__}: {exc}", essential=False)
+
+    try:
+        import stanza
+        report("stanza", True, stanza.__version__, essential=False)
+    except Exception as exc:
+        report("stanza", False, f"{type(exc).__name__}: {exc}", essential=False)
+
+    try:
+        import spacy
+        nlp = spacy.load("en_core_web_sm")
+        report("spacy", True, f"{spacy.__version__}, {len(nlp('A small test.'))} tokens")
+    except Exception as exc:
+        report("spacy", False, f"{type(exc).__name__}: {exc}")
+
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    server = uvicorn.Server(uvicorn.Config(build_app(), host="127.0.0.1", port=port, log_level="warning"))
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    try:
+        deadline = time.time() + 30
+        while not server.started and time.time() < deadline:
+            time.sleep(0.1)
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/version", timeout=10) as resp:
+            data = json.load(resp)
+        report("/api/version", data.get("app") == __version__, json.dumps(data))
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=10) as resp:
+            report("frontend", resp.status == 200 and b"<html" in resp.read(4096).lower())
+    except Exception as exc:
+        report("servidor", False, f"{type(exc).__name__}: {exc}")
+    finally:
+        server.should_exit = True
+        thread.join(timeout=10)
+
+    print("OK" if ok else "FALHOU", flush=True)
+    return 0 if ok else 1
 
 
 # ---------------------------------------------------------------------------

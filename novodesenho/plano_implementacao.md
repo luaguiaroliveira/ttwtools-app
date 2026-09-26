@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.3
-- **Último passo concluído:** 0.2 (2026-09-26)
+- **Passo atual:** 0.4
+- **Último passo concluído:** 0.3 (2026-09-26)
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -46,7 +46,7 @@ Próximo: passo seguinte recomendado.
 
 **O aplicativo empacotado precisa continuar rodando no macOS 12 (Monterey)**, em Intel (x86_64) e em Apple Silicon (arm64), além de Windows e Linux. Consequências que os passos abaixo já incluem:
 
-1. **Alvo de implantação:** todo build de macOS define `MACOSX_DEPLOYMENT_TARGET=12.0` (hoje nenhum script define isso). Depois do build, `build/check_macos_min.py` percorre todos os arquivos Mach-O do pacote (`.dylib`, `.so` e executáveis; `vtool -show-build` ou `otool -l`) e **falha se algum exigir um macOS mais novo que 12.0**. Roda em local e no CI (passos 0.3 e 0.4).
+1. **Alvo de implantação:** todo build de macOS define `MACOSX_DEPLOYMENT_TARGET` (**12.0 no Intel, 12.3 no arm64**, decidido em 0.3: as rodas arm64 do scipy exigem 12.3) (hoje nenhum script define isso). Depois do build, `build/check_macos_min.py` percorre todos os arquivos Mach-O do pacote (`.dylib`, `.so` e executáveis; `vtool -show-build` ou `otool -l`) e **falha se algum exigir um macOS mais novo que 12.0**. Roda em local e no CI (passos 0.3 e 0.4).
 2. **Intel (confirmado: a máquina com macOS 12 do usuário é Intel, com Safari 17.6):** o build atual sob Rosetta (`build/build_intel_local.sh`, no commit `a28c79a`) usa **Python 3.11** e **`torch==2.2.2`**, porque as versões novas do torch não têm pacote para Intel Mac. Como o `environment.yml` do desenvolvimento (Python 3.14, `torch==2.11.0`) não serve ao Intel, o plano prevê **um conjunto de versões compatível** (ver 0.1 e 0.3). O torch 2.2.x foi compilado para NumPy 1.x, então no Intel provavelmente é preciso `numpy<2` (**a verificar**).
 3. **Stanza e MFTE dependem do torch:** onde o torch não puder ser empacotado (Intel, ou versão que exija macOS mais novo que 12), esses taggers ficam **indisponíveis com aviso claro**, e spaCy e BiberPlus continuam funcionando. A função `taggers.available()` (passo 1.5) já deve devolver "instalado, indisponível neste sistema" com o motivo.
 4. **Janela do aplicativo:** no macOS o pywebview usa o WebKit do sistema, que acompanha o Safari instalado. Tailwind 4 exige Safari 16.4 ou mais novo, e a máquina com macOS 12 tem **Safari 17.6**, então o Tailwind 4 deve funcionar (decisão D11 resolvida). Ainda assim, testar a interface lá (3.1 e 6.2), porque nada disso foi verificado na prática.
@@ -95,7 +95,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | **Fase 0 — Base: versão, build e release** | | | | | |
 | 0.1 | Conferir base e ambiente | — | [x] | 2026-09-26 | ver `git log --grep '\[0.1\]'` |
 | 0.2 | Versão única e changelog | 0.1 | [x] | 2026-09-26 | ver `git log --grep '\[0.2\]'` |
-| 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [ ] | | |
+| 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [x] | 2026-09-26 | ver `git log --grep '\[0.3\]'` |
 | 0.4 | CI multi-plataforma | 0.3 | [ ] | | |
 | 0.5 | Processo de release | 0.4 | [ ] | | |
 | 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
@@ -216,22 +216,38 @@ Próximo: 0.3.
 
 ### 0.3 Restaurar e modernizar o build (PyInstaller)
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[0.3\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon (`ttw314`) e Intel sob Rosetta (`ttw311-x86`)
 - **Ler antes:** `git show a28c79a:build/ttwtools-app.spec` (spec), `git show a28c79a:build/hooks/hook-spacy.py`, `git show a28c79a:build/build_mac.sh`, `git show a28c79a:build/build_win.bat`.
 - **Fazer:**
-  - [ ] Restaurar do commit `a28c79a` para `build/`: `ttwtools-app.spec`, `hooks/hook-spacy.py`, `icon.icns` (`git restore --source=a28c79a -- build/<arquivo>`). Não restaurar os `.pyc`; garantir `__pycache__/` no `.gitignore`.
-  - [ ] Criar um **único `build/build.py`** (Python, multiplataforma) que: compila o frontend (`npm ci && npm run build`), escreve `app/_build_info.py` (`VERSION`, `COMMIT`; ver Relato 0.2), roda o PyInstaller com o spec e empacota o resultado (DMG no macOS, `.zip` no Windows, `.tar.gz` no Linux), nomeando `TTWtools-<versão>-<so>-<arq>.<ext>`. Os `build_mac.sh` e `build_win.bat` viram invólucros de uma linha.
-  - [ ] Ajustar o spec: pasta do frontend por variável (a interface Vue entra na 3.1 sem mexer no resto), incluir os arquivos de dados novos do pacote (tagsets, descritores, ajuda) por **glob**, e **não embutir modelos grandes** (só `en_core_web_sm`; os demais serão baixados depois, passo 4.2).
-  - [ ] Ícones para Windows (`.ico`) e Linux (`.png`) a partir do `icon.icns`.
-  - [ ] Modo de teste embutido: `TTWtools --selftest` sobe o servidor numa porta livre, chama `GET /api/version`, imprime `OK` e sai com código 0.
-  - [ ] **Alvo macOS 12:** `build.py` define `MACOSX_DEPLOYMENT_TARGET=12.0` no macOS e aceita `--arch arm64|x86_64` (o `x86_64` reproduz o que fazia `build_intel_local.sh`: Rosetta, Miniconda x86_64, ambiente com o conjunto de versões da 0.1).
-  - [ ] **Ambientes por plataforma:** manter o `environment.yml` de desenvolvimento e criar arquivos de restrição por alvo (por exemplo `build/constraints-macos-x86_64.txt` com `torch==2.2.2` e `numpy<2`, se confirmado). O `build.py` escolhe o arquivo pelo alvo.
-  - [ ] **`build/check_macos_min.py`:** percorre o pacote gerado e falha se algum Mach-O exigir macOS acima do mínimo do alvo (**12.1 no arm64**, pelo Python 3.14 do conda; **12.0 no Intel**; decisão de 2026-09-26); imprime os arquivos culpados. Instalar numpy e scipy com rodas de macOS ≤ 12 (Relato 0.1, item 2). Chamado ao fim do `build.py` no macOS.
-  - [ ] **Dependência ausente vira aviso, não erro:** se `torch` ou `stanza` não estiver no pacote, o app abre normalmente e Stanza/MFTE aparecem como indisponíveis (ver 1.5).
-  - [ ] Rodar o build **local no seu sistema** e o `--selftest` no binário gerado.
+  - [x] Restaurar do commit `a28c79a` para `build/`: `ttwtools-app.spec`, `hooks/hook-spacy.py`, `icon.icns` (`git restore --source=a28c79a -- build/<arquivo>`). Não restaurar os `.pyc`; garantir `__pycache__/` no `.gitignore`.
+  - [x] Criar um **único `build/build.py`** (Python, multiplataforma) que: compila o frontend (`npm ci && npm run build`), escreve `app/_build_info.py` (`VERSION`, `COMMIT`; ver Relato 0.2), roda o PyInstaller com o spec e empacota o resultado (DMG no macOS, `.zip` no Windows, `.tar.gz` no Linux), nomeando `TTWtools-<versão>-<so>-<arq>.<ext>`. Os `build_mac.sh` e `build_win.bat` viram invólucros de uma linha.
+  - [x] Ajustar o spec: pasta do frontend por variável (a interface Vue entra na 3.1 sem mexer no resto), incluir os arquivos de dados novos do pacote (tagsets, descritores, ajuda) por **glob**, e **não embutir modelos grandes** (só `en_core_web_sm`; os demais serão baixados depois, passo 4.2).
+  - [x] Ícones para Windows (`.ico`) e Linux (`.png`) a partir do `icon.icns`.
+  - [x] Modo de teste embutido: `TTWtools --selftest` sobe o servidor numa porta livre, chama `GET /api/version`, imprime `OK` e sai com código 0.
+  - [x] **Alvo macOS 12:** `build.py` define `MACOSX_DEPLOYMENT_TARGET=12.0` no macOS e aceita `--arch arm64|x86_64` (o `x86_64` reproduz o que fazia `build_intel_local.sh`: Rosetta, Miniconda x86_64, ambiente com o conjunto de versões da 0.1).
+  - [x] **Ambientes por plataforma:** manter o `environment.yml` de desenvolvimento e criar arquivos de restrição por alvo (por exemplo `build/constraints-macos-x86_64.txt` com `torch==2.2.2` e `numpy<2`, se confirmado). O `build.py` escolhe o arquivo pelo alvo.
+  - [x] **`build/check_macos_min.py`:** percorre o pacote gerado e falha se algum Mach-O exigir macOS acima do mínimo do alvo (**12.3 no arm64**, pelas rodas do scipy; **12.0 no Intel**; decisão de 2026-09-26); imprime os arquivos culpados. Instalar numpy e scipy com rodas de macOS ≤ 12 (Relato 0.1, item 2). Chamado ao fim do `build.py` no macOS.
+  - [x] **Dependência ausente vira aviso, não erro:** se `torch` ou `stanza` não estiver no pacote, o app abre normalmente e Stanza/MFTE aparecem como indisponíveis (ver 1.5).
+  - [x] Rodar o build **local no seu sistema** e o `--selftest` no binário gerado.
 - **Pronto quando:** `python build/build.py` gera o pacote do seu sistema, o `--selftest` passa no binário e `check_macos_min.py` passa (ou lista o que impede o macOS 12, com decisão registrada).
 - **Observações a registrar:** tamanho do pacote; se o `pywebview` abriu a janela; no Linux o modo janela exige bibliotecas do sistema (GTK/WebKit), e o `--mode web` é a alternativa.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: `python build/build.py [--arch x86_64] [--create-env]` gera, testa e empacota; builds arm64 e Intel (Rosetta) feitos, --selftest OK nos dois, check_macos_min OK.
+Arquivos: build/{build.py, check_macos_min.py, ttwtools-app.spec, hooks/hook-spacy.py, icon.icns|ico|png, constraints-macos-x86_64.txt, build_mac.sh, build_win.bat}; app/__main__.py (--selftest); .gitignore.
+Testes: pytest tests -q → 8 passed; binário arm64 e x86_64 `--selftest` → OK; check_macos_min: arm64 máx. 12.3, Intel máx. 12.0; janela pywebview abriu (1280×800) no .app arm64.
+Pendências: Windows e Linux não testados aqui (primeira prova no CI, 0.4). umap-learn (viz UMAP, opcional) está no ttw314 mas fora do environment.yml: entra no pacote local, não no do CI nem no Intel.
+Observações: ver "Detalhes 0.3" abaixo.
+Próximo: 0.4.
+```
+**Detalhes 0.3:**
+- **Mínimo real do arm64 é macOS 12.3**, não 12.1: todas as rodas `macosx_12_0_arm64` do scipy (1.16.2 a 1.17.1) trazem binários e `libgfortran` com mínimo 12.3. Irrelevante na prática (Monterey atualizado); `LSMinimumSystemVersion` do `.app` segue o alvo.
+- **Tamanhos:** arm64 `.app` 703 MB, DMG 288 MB (maio: 532/235 MB; a diferença é sobretudo `llvmlite`/`numba` do umap-learn). Intel DMG 330 MB. Saída: `dist/<so>-<arq>/` e `dist/release/TTWtools-<semver>-<so>-<arq>.<ext>`.
+- **O build ajusta o ambiente:** aplica `build/constraints-<so>-<arq>.txt` e, no macOS, troca numpy/scipy por rodas `macosx_12_0` (o pip ignora `MACOSX_DEPLOYMENT_TARGET`). Já feito: `ttw314` com numpy/scipy de rodas 11/12; `ttw311-x86` com `numpy==1.26.4` e scipy 10.14. `--skip-env-fixes` desliga isso.
+- **`--selftest`** (fora do app de janela): torch (inclui a ponte torch↔numpy), Stanza, spaCy+`en_core_web_sm`, servidor em porta livre, `/api/version`, frontend. torch/Stanza quebrados → AVISO (não falha); o resto → FALHOU, código 1.
+- **Spec:** frontend por `TTW_FRONTEND_DIR`; dados do `ttwtools` por glob (fora `.py`); submódulos do `ttwtools` listados dos fontes; metadados do `ttwtools` copiados; só `en_core_web_sm` (o `en_core_web_trf` saiu); UPX desligado; versão e mínimo no `Info.plist`. Modelos do Stanza ficam fora do pacote (cache do usuário, `~/Library/Caches/stanza`, 184 MB).
+- `build_intel_local.sh` não foi restaurado: virou `build.py --arch x86_64 [--create-env]`. `release_github.sh` fica para 0.5.
+
 
 ### 0.4 CI multi-plataforma
 
@@ -241,7 +257,7 @@ Próximo: 0.3.
   - [ ] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
   - [ ] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
   - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS; o **pacote Intel será feito localmente** (`python build/build.py --arch x86_64`, sob Rosetta) e enviado à release com `release_github.sh`.
-  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12.1, o mínimo do arm64).
+  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12.3, o mínimo do arm64).
   - [ ] Usar no CI o **mesmo conjunto de versões** decidido em 0.1 (não o `environment.yml` de desenvolvimento, se ele tiver torch que exija macOS mais novo).
   - [ ] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
   - [ ] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
@@ -738,3 +754,4 @@ _(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: d
 - 2026-09-26: o usuário informou que o macOS 12 é Intel com Safari 17.6. D11 resolvida (manter Tailwind 4); D10 parcialmente resolvida (Intel confirmado, falta verificar Stanza/MFTE com `torch==2.2.2`).
 - 2026-09-26: 0.1 concluído; D10 resolvida (Intel exige `numpy<2`); proposta para D2 registrada; nova linha em "Como retomar" (reinstalação editável).
 - 2026-09-26: D1 (`0.4.0`) e D2 (dois conjuntos de versões) resolvidas; mínimo real do pacote arm64 passa a macOS 12.1 (Python 3.14 do conda), Intel segue 12.0 (ajustes em 0.3 e 0.4). 0.2 concluído; o build grava `app/_build_info.py` em vez de `app/_version.py`.
+- 2026-09-26: 0.3 concluído; mínimo do arm64 revisto de 12.1 para **12.3** (rodas do scipy), Intel segue 12.0.

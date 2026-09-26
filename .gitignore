@@ -22,6 +22,10 @@ build/**
 !build/*.bat
 !build/*.spec
 !build/*.icns
+!build/*.ico
+!build/*.png
+!build/*.py
+!build/*.txt
 !build/hooks/
 !build/hooks/**
 build/hooks/__pycache__/
