@@ -32,6 +32,13 @@ Um aplicativo **acessível e fácil de usar**, menos restrito e menos direcionad
 
 A KFA continua, mas como um módulo a mais.
 
+### Escopo da primeira fase (decidido em 2026-09-26)
+
+- **Primeiro o aplicativo local:** interface em HTML/JavaScript (Vue 3), rodando **tudo na própria máquina**, na janela nativa (pywebview) com o servidor FastAPI local. Nada é enviado para fora.
+- **A versão web fica para depois,** se for necessária. Quando vier, **o site não guardará nada** dos textos das pessoas (ver seção 18).
+- **Continuam valendo** o princípio de paridade com o pacote Python (seção 10), a interface única, a tradução da interface, o desenho de projeto `.ttwa`/`.ttwl`, os corpora embutidos e as ferramentas de exploração e comparação.
+- **Ficam adiados:** envio de arquivos pelo navegador, política de privacidade e registro de anuência do site, PWA, teste e ajuste fino para celular e hospedagem do servidor. A estrutura da interface continua pensada para telas de larguras diferentes, porque isso custa pouco quando feito desde o começo.
+
 ## 3. Três portas de entrada
 
 1. **Explorar:** o usuário escolhe um corpus embutido, sem instalar nada. É o caminho mais curto para começar, inclusive para o DDL.
@@ -443,6 +450,360 @@ Isso reduz o tamanho do download e dispensa processamento pesado. A licença das
 
 A KFA compara **features gramaticais por texto** (d de Cohen). A análise de palavras-chave compara **itens lexicais** entre corpora. São complementares, e as duas podem usar o mesmo seletor de alvo e de referência. A seção 14 (N grupos) generaliza a escolha da referência para vários grupos.
 
-## 17. A incluir
+## 17. Projeto da interface gráfica
+
+A interface precisa funcionar bem em computador (aplicativo ou site) e em celular, quando acessada pela web, e ser compreensível sem perfis de usuário (seção 5). Esta seção parte de uma revisão da interface atual e propõe uma organização nova.
+
+### 17.1 Diagnóstico da interface atual
+
+Levantado a partir de `frontend-src/` e de `app/`:
+
+**Estrutura**
+- Um único `index.html` de cerca de 1.250 linhas com todas as telas como `<section class="view">`, ligadas por JavaScript puro (12 módulos em `src/views/`; com o HTML e o CSS, o frontend soma cerca de 8.000 linhas).
+- Bibliotecas: Vite, Tailwind 4 com DaisyUI 5, Shoelace, D3, Plotly, Lucide, paged.js e rough-notation.
+- Estado global em `state.js`, quase todo voltado à KFA (`kfaC1`, `kfaC2`, `kfaData`, escolhas dos gráficos).
+
+**Navegação**
+- Barra de menu no estilo de programa de computador, com um único menu "Arquivo", mais uma barra lateral fixa com três botões: Tagging, KFA e Resultados.
+- Organização por **etapas de um pipeline** (etiquetar, calcular a KFA, ver resultados), e não por tarefas do usuário.
+- A tela inicial tem dois cartões ("Nova análise" e "Abrir projeto") e o subtítulo "Análise de features linguísticas Biber", coerente com o desenho antigo, centrado na KFA.
+- "Nova análise" é um fluxo de 4 etapas que sempre pede **duas** pastas de corpus.
+- A tela de Resultados tem abas e sub-abas (comparação, corpus individual, redução; gráficos de barras, dispersão, bolhas, faixas, mapa de calor, radar, violino, PCA, t-SNE...). Isso funciona para quem já domina a KFA, mas é denso para quem chega agora.
+
+**Uso em telas pequenas**
+- Só há uma regra `@media print` no CSS, e o único ponto realmente responsivo é a grade da tela inicial. Não há pontos de quebra para celular.
+- A barra lateral é fixa e o corpo usa `h-screen overflow-hidden`, com painéis laterais e uma alça de arrastar (`#tv-resize-handle`) que depende de mouse.
+- O visualizador de texto mostra definições de tags ao passar o mouse, o que não existe em tela de toque.
+
+**Entrada de arquivos**
+- As pastas são escolhidas por um diálogo **do sistema operacional, aberto pelo servidor** (`/api/.../pick-folder` usa `osascript` no macOS e `tkinter` nos demais). Isso só funciona quando o servidor e a pessoa estão na mesma máquina, isto é, no aplicativo. **No modo web (e, portanto, no celular), a escolha de pasta não funciona**: a pessoa precisa enviar arquivos pelo navegador.
+
+**Pontos que já ajudam**
+- O etiquetamento já roda como tarefa em segundo plano, com consulta de progresso (`POST /run` e `GET /status/{job_id}`). Esse padrão serve a todas as tarefas demoradas.
+- O servidor já é uma API separada (FastAPI, com documentação em `/api/docs`) e a interface web já existe, então o mesmo código serve ao aplicativo e ao site.
+- Os módulos de gráficos em D3 (`chart.js`, `viz-*.js`) podem ser reaproveitados.
+- Os temas claro e escuro já existem.
+
+**Lacunas**
+- Sem tradução: todos os textos estão escritos no HTML, em português.
+- Acessibilidade: praticamente sem atributos ARIA (uma única linha com `role` em todo o `index.html`).
+- O tema muda automaticamente por horário (claro entre 8h e 18h), em vez de seguir a preferência do sistema.
+- Nada de ajuda integrada além de alguns `title`.
+
+### 17.2 Princípios
+
+1. **Organizar por tarefa, não por etapa.** A pessoa pensa "quero ver como esta palavra é usada", não "vou rodar a etapa 3".
+2. **Sempre um corpus ativo.** Um contexto visível (corpus e camada de etiquetas ativos) que todas as ferramentas usam, para não escolher tudo de novo a cada tela.
+3. **Interface única, com detalhe sob demanda** (seção 5): o essencial à vista e as opções avançadas em painéis recolhíveis dentro da própria tela, e nunca em modos ou perfis.
+4. **Funciona antes de etiquetar.** O que não depende de tagger (visão geral, frequência simples, KWIC de formas) fica disponível logo após importar.
+5. **Mesmo desenho em qualquer tela.** O que muda é o arranjo, não o que a ferramenta faz. Se algo não cabe no celular, a tela diz isso, e não some em silêncio.
+6. **Explicar onde a dúvida aparece** (seção 13): balões, tour e "explicar esta tela" fazem parte da interface, não são um manual à parte.
+7. **Paridade com o pacote** (seção 10): cada tela mostra "copiar como código" para reproduzir o que foi feito.
+
+### 17.3 Nova organização das telas
+
+Cinco destinos principais, mais o projeto e as configurações.
+
+| Destino | Para quê | Absorve da interface atual |
+|---|---|---|
+| **Início** | Continuar de onde parou, escolher um corpus embutido, abrir um projeto | Tela inicial |
+| **Corpora** | Biblioteca com corpora embutidos e os da pessoa; importar; visão geral (seção 12); etiquetar e ver camadas | "Nova análise" (etapas de importação e etiquetamento) e "Tagging" |
+| **Explorar** | Busca de palavra, KWIC, frequência, colocados, dispersão e leitor de texto com etiquetas | Visualizador de texto; aba "Corpus individual" |
+| **Comparar** | Palavras-chave contra referência (seção 16), KFA, N grupos (seção 14, marcado como experimental) | "KFA" e "Resultados" |
+| **Aprender** | Glossário, tours, exemplos, descrição das métricas (seção 13) | Novo |
+| **Projeto e configurações** (menu) | Abrir, salvar, exportar; idioma da interface; tema; sobre | Menu "Arquivo" |
+
+**Corpus ativo:** uma faixa fixa no topo mostra "Corpus: Brown · Camada: spaCy (PTB) ▾", e trocar corpus ou camada é um toque. As telas de Explorar e Comparar usam esse contexto, e ao comparar o corpus ativo vira o alvo.
+
+**Fluxo de entrada:** o assistente de "Nova análise" vira "Corpora › Adicionar corpus", em poucas etapas e sem exigir dois corpora: 1) de onde vem (pasta, envio de arquivos, catálogo, texto colado); 2) metadados e grupos (seção 15.2, item 2); 3) o que fazer agora (só ver a visão geral, ou etiquetar escolhendo o tagger, com o painel de tags da seção 11).
+
+**Aba "Resultados" atual:** as abas e sub-abas viram uma galeria de visualizações dentro de cada análise, com um seletor visível (nome e miniatura) em vez de sub-abas empilhadas. O que serve a um corpus só migra para Explorar ou para a visão geral; o que compara migra para Comparar.
+
+### 17.4 Layout responsivo
+
+Três faixas de largura. A navegação e os painéis mudam de forma, e o conteúdo é o mesmo.
+
+| Largura | Navegação | Painéis laterais | Tabelas |
+|---|---|---|---|
+| **Celular** (até cerca de 640 px) | Barra inferior com 4 ícones (Corpora, Explorar, Comparar, Aprender); Início e Projeto no topo | Viram gavetas que sobem de baixo (bottom sheet) | Viram lista de cartões, ou tabela com rolagem lateral e colunas prioritárias fixas |
+| **Tablet** (cerca de 640 a 1024 px) | Trilho lateral só com ícones | Gaveta lateral | Tabela completa, com menos colunas |
+| **Computador** (acima disso) | Barra lateral com ícones e rótulos | Ao lado do conteúdo, com alça de largura | Tabela completa |
+
+Regras gerais:
+- Alvos de toque de pelo menos 44 px e nenhuma função que dependa de passar o mouse: tooltips e definições de tags também abrem ao tocar ou pelo teclado.
+- A alça de redimensionamento do visualizador de texto some em telas pequenas, e o painel de tags vira gaveta.
+- Gráficos: no celular, versões simplificadas (barras horizontais dos N principais, legenda abaixo, sem 3D). Os gráficos 3D e o t-SNE/UMAP interativo ficam para telas maiores, com aviso, ou uma imagem estática.
+- Toda visualização tem o botão "ver como tabela", que serve também à acessibilidade.
+- Tema: claro, escuro e alto contraste, seguindo a preferência do sistema por padrão.
+- Prever **PWA** (o site "instalável" no celular), o que dá ícone na tela inicial e uso offline básico, se fizer sentido (seção 17.9).
+
+Esboço da navegação:
+
+```
+Computador                                   Celular
+┌──────┬───────────────────────────┐         ┌───────────────────────┐
+│ ≡ TTW│ Brown · spaCy(PTB) ▾   ⚙  │         │ Brown · spaCy(PTB) ▾ ⚙│
+├──────┼───────────────────────────┤         ├───────────────────────┤
+│Corpor│                           │         │                       │
+│Explor│   conteúdo da tela        │         │   conteúdo da tela    │
+│Compar│                           │         │   (uma coluna)        │
+│Aprend│   [painel opções ▸]       │         │   [opções ▲ gaveta]   │
+└──────┴───────────────────────────┘         ├───────────────────────┤
+                                             │ Corp │ Expl │ Comp │ ? │
+                                             └───────────────────────┘
+```
+
+Esboço de uma linha de KWIC:
+
+```
+Computador: … the  [ RUN ]  of the…  | VERB | arquivo.txt · frase completa ▸
+Celular:    ┌─────────────────────────┐
+            │ …the [RUN] of the…      │
+            │ VERB · arquivo.txt   ▸  │  ← toque abre contexto (gaveta)
+            └─────────────────────────┘
+```
+
+### 17.5 Onde o app roda e o que isso muda
+
+**Fase atual: só o aplicativo local** (primeira linha da tabela abaixo). As outras duas linhas e as consequências 2 a 6 valem para a fase web, que fica adiada. A ideia da fonte de corpus abstrata (consequência 1) já vale agora, com as origens pasta local, catálogo embutido e texto colado; o envio de arquivos pelo navegador entra na fase web.
+
+Três modos de uso com o mesmo código:
+
+| Modo | Arquivos | Etiquetamento |
+|---|---|---|
+| **Aplicativo** (janela nativa) | Diálogo do sistema, pastas locais | Na própria máquina |
+| **Site local** (servidor na própria máquina, aberto no navegador) | Igual ao aplicativo | Na própria máquina |
+| **Site remoto** (servidor hospedado; inclui celular) | **Envio de arquivos pelo navegador** | No servidor, com fila e progresso |
+
+Consequências:
+
+1. **Abstrair a fonte do corpus.** Em vez de "caminho de pasta no servidor", uma fonte de corpus com quatro origens: pasta local, arquivos enviados (`.txt`, `.zip`, CSV com metadados), catálogo embutido e texto colado. A função do pacote continua recebendo caminhos, e a camada de importação da API converte envios em pasta temporária.
+2. **No celular** não existe escolher pasta: o envio é de arquivos ou de um `.zip`. O uso mais natural ali é **explorar corpora embutidos e resultados prontos** (visão geral, KWIC, palavras-chave, ajuda). Etiquetar corpora grandes é desencorajado por aviso.
+3. **Privacidade:** no site remoto, os textos enviados passam pelo servidor. É preciso definir e dizer claramente se ficam guardados, por quanto tempo e como apagar (seção 17.9).
+4. **Tarefas longas:** usar o mesmo padrão de tarefa em segundo plano com progresso que o etiquetamento já usa, para importação, etiquetamento, referências e comparações, sempre retomáveis (as camadas já feitas não se perdem, seção 9).
+5. **Tamanho:** tabelas grandes (KWIC com milhares de linhas) precisam de **paginação ou rolagem virtual feita no servidor**, e não de envio do resultado inteiro ao celular.
+6. Uma versão que rode **inteira no navegador** (sem servidor) é possível só para o núcleo leve (frequência e KWIC sobre corpora pequenos); spaCy e Stanza não rodam assim. Fica como possibilidade futura.
+
+### 17.6 Arquitetura do frontend
+
+Problemas a resolver, à luz de 17.1: HTML único e enorme, estado global, textos fixos no código, sem roteamento e pouca acessibilidade.
+
+Peças propostas, independentes da escolha de biblioteca:
+
+1. **Casca (shell) única:** cabeçalho com corpus ativo, navegação responsiva e área de conteúdo. As telas entram nela como módulos.
+2. **Roteamento por URL** (por exemplo `#/explorar/kwic`): o botão "voltar" do celular e do navegador funciona, e dá para compartilhar o link de uma tela e restaurar a última.
+3. **Telas em componentes,** cada uma com seu HTML, estilo e lógica juntos, em vez de um `index.html` gigante.
+4. **Estado por área,** e não um objeto global centrado na KFA: corpus ativo, camada ativa, resultados de cada análise. Tudo o que for reproduzível fica no projeto (`analyses`), e o que é só de tela (aba aberta, filtro) fica local.
+5. **Tradução (i18n):** todos os textos por chave, em `locales/pt.json`, `en.json`, etc. (seção 5, item 6), e a ajuda em `help/` (seção 13).
+6. **Camada de API única:** um cliente que fala com as rotas finas do pacote, com tarefas em segundo plano e paginação já resolvidas.
+7. **Acessibilidade desde o início:** meta WCAG 2.2 nível AA, com rótulos ARIA, foco visível, navegação por teclado, contraste, paletas seguras para daltonismo nos gráficos, alternativa em tabela para cada gráfico e respeito a `prefers-reduced-motion`.
+8. **Desempenho:** tabelas virtualizadas, carregamento sob demanda dos gráficos (o Plotly, usado para 3D e PCA, é pesado e só deve carregar quando necessário) e cache.
+9. **Testes de interface** nos fluxos principais, em três larguras (por exemplo 390, 768 e 1280 px), com Playwright.
+
+**Escolha da tecnologia** (decisão em aberto, ver 17.9). Três caminhos:
+
+| Caminho | Prós | Contras |
+|---|---|---|
+| A. Manter JavaScript puro e componentizar com Web Components (Shoelace já está instalado) | Menor mudança; reaproveita quase tudo | Roteamento, estado e traduções ficam por conta própria; mais repetitivo |
+| B. Adotar um framework leve de componentes (Svelte ou Vue) sobre o Vite atual | Componentes, estado reativo e roteamento prontos; mantém Vite, Tailwind, DaisyUI e D3 | Reescrever as telas, mas com o código de gráficos reaproveitado |
+| C. Reescrita completa | Liberdade total | Maior custo e risco |
+
+**Decidido: caminho B, com Vue 3** (sobre o Vite atual). Vue traz componentes, estado reativo e roteamento prontos, e o código de gráficos em D3 continua aproveitável.
+
+**Vue mais leve** (o site remoto e o celular pedem isso):
+
+- Vue 3 com a Composition API e `<script setup>`; Vue Router para as URLs; estado em Pinia ou em funções reutilizáveis (composables); `vue-i18n` para as traduções.
+- **Carregar cada tela sob demanda:** só o código da tela aberta é baixado, e a primeira tela fica pequena. Sugestão de meta: primeira tela abaixo de cerca de 200 KB comprimidos, a ser verificada com o resultado real do `vite build`.
+- **Enxugar as bibliotecas atuais:**
+  - Manter Tailwind com DaisyUI (é praticamente só CSS) e **tirar o Shoelace**, para não ter dois conjuntos de componentes.
+  - **Plotly só sob demanda** (é grande, e serve principalmente ao 3D e à redução dimensional), ou substituí-lo por D3 nos gráficos simples.
+  - Importar do Lucide só os ícones usados; carregar o paged.js só no leitor paginado; fontes servidas pelo próprio site.
+- Para menus, janelas e gavetas acessíveis, usar uma biblioteca de componentes sem estilo (por exemplo Headless UI ou Reka UI; confirmar disponibilidade e licença atuais), em vez de reescrever o comportamento de teclado e foco.
+- A interface é só uma camada: tudo o que for pesado fica no servidor (seção 17.5), então o navegador do celular só apresenta.
+
+### 17.7 Como a ajuda e as explicações entram na interface
+
+Reaproveita a seção 13:
+- o **corpus ativo** e a **navegação** ganham balões na primeira vez;
+- em cada tela, o botão "explicar esta tela" e o ícone "?" ao lado das métricas;
+- no celular, balões e tours aparecem como gavetas ou cartões fixos, sem depender de passar o mouse;
+- o destino **Aprender** reúne glossário, tours e exemplos com os corpora de demonstração.
+
+O rough-notation, já instalado, serve para os destaques manuscritos do "explicar esta tela".
+
+### 17.8 Ordem de trabalho da interface
+
+Na fase atual (aplicativo local), sem envio de arquivos, PWA nem ajuste fino para celular:
+
+1. **Decisões** (17.9), e **protótipos de baixa fidelidade** das telas principais, para revisar antes de programar. Os protótipos ainda consideram as três larguras, para a estrutura já nascer adaptável.
+2. **Casca responsiva:** navegação, roteamento, tema, tradução e faixa do corpus ativo, com as telas atuais encaixadas para nada quebrar.
+3. **Corpora:** biblioteca, importação por envio de arquivos e pelo catálogo, visão geral (seção 12).
+4. **Explorar:** busca de palavra, KWIC, frequência, colocados, dispersão, leitor de texto.
+5. **Comparar:** migrar a KFA e os Resultados atuais, depois palavras-chave contra referência (seção 16).
+6. **Ajuda:** balões, tours e "explicar esta tela", depois glossário.
+7. **Laboratório** (N grupos, seção 14).
+
+Cada etapa segue o princípio da seção 10: função no pacote, rota fina, tela por último.
+
+### 17.9 Decisões em aberto
+
+Decididos:
+
+- **Tecnologia do frontend:** Vue 3, o mais leve possível (17.6).
+- **Fase atual:** aplicativo local, tudo rodando na máquina da pessoa (seção 2).
+- **Fase web (adiada):** se vier, o site poderá rodar remotamente, com o máximo de recursos possível no celular e no computador, o peso do processamento no servidor (17.5) e **sem guardar nada** dos textos (seção 18).
+
+Adiados até a fase web:
+
+- **PWA:** explicação e recomendação em 17.10.
+- **Hospedagem do servidor:** onde e a que custo. Etiquetar com spaCy e Stanza pesa em processador e memória, então seria preciso definir limites (tamanho de envio, fila, cota por pessoa).
+
+Em aberto para a fase atual:
+- **Nomes dos destinos** (Corpora, Explorar, Comparar, Aprender) e do rótulo da faixa do corpus ativo, que precisam ser claros para quem não conhece linguística de corpus.
+- **Quem faz os protótipos e as traduções** da interface.
+
+### 17.10 PWA em poucas palavras
+
+Um **PWA** (*Progressive Web App*) é um site que pode ser **instalado** como se fosse um aplicativo, sem passar por loja de aplicativos. Na prática:
+
+- aparece um ícone na tela inicial do celular (ou no menu de aplicativos do computador);
+- abre em tela cheia, sem a barra de endereço do navegador;
+- guarda a própria interface no aparelho, então abre rápido e mostra as telas mesmo sem internet;
+- se atualiza sozinho quando você publica uma versão nova.
+
+Para isso o site precisa de HTTPS, de um arquivo de descrição (manifesto, com nome e ícones) e de um *service worker*, um pequeno script que controla o que fica guardado. Com Vue e Vite existe um plugin pronto (`vite-plugin-pwa`), então o custo é baixo.
+
+O que um PWA **não** faz: rodar o Python offline. Para importar, etiquetar ou analisar continua precisando do servidor. Offline, só a interface e o que já estiver guardado.
+
+Ponto de atenção com a privacidade: o que fica guardado no aparelho (interface, resultados abertos) precisa ser apagado quando a pessoa clicar em "sair" ou "apagar meus dados" (seção 18).
+
+**Recomendação:** incluir o PWA básico, isto é, instalável e com a interface guardada, e **não** guardar dados de corpus offline por padrão. Custa pouco, ajuda no celular e não cria novos riscos de privacidade.
+
+## 18. Privacidade, cache e registro de anuência (site remoto)
+
+**Adiada até a fase web.** Vale só para a versão hospedada. O aplicativo de janela e o site local **não enviam nada para fora da máquina**, e isso deve constar claramente no texto de privacidade.
+
+**Decisão de 2026-09-26: o site não guardará nada.** Isso simplifica o desenho abaixo:
+
+- Ficam só as formas **1 (sessão temporária)** e **2 (baixar e apagar)** da seção 18.3. A forma 3 (guardar por um tempo, com conta ou chave de recuperação) fica **descartada**, e com ela a autenticação e a retenção estendida.
+- O cache de camadas (18.4) vive só na sessão e some junto com ela.
+- O registro de anuência (18.5) se reduz ao aviso de privacidade e à declaração de direito de uso no envio de cada corpus, sem o aceite específico de retenção.
+- A tela "Meus dados" (18.6) se resume a "baixar meu projeto" e "apagar tudo agora".
+
+O restante da seção fica como referência para quando a fase web começar, e deve ser revisado com o encarregado de dados antes de qualquer publicação.
+
+> **Aviso:** este é um desenho técnico e de produto, e não um parecer jurídico. A base legal, o texto dos termos e as obrigações (LGPD, Lei 13.709/2018) devem ser revisados por quem tem essa competência na instituição (encarregado de dados ou assessoria jurídica da UFMG, se o serviço for hospedado por ela).
+
+### 18.1 Que dados existem
+
+| Tipo | Exemplos | Risco |
+|---|---|---|
+| **Textos enviados** | `.txt`, `.zip`, CSV com metadados | Podem conter dados pessoais de terceiros (redações de alunos, transcrições, mensagens) |
+| **Dados derivados** | Tokens, etiquetas, tabelas de contagem, análises | Reconstituem em grande parte o texto, então valem como dados pessoais quando o texto vale |
+| **Metadados** | Nomes de arquivo, autor, turma, idade, L1 | Frequentemente identificam pessoas |
+| **Conta ou sessão** | Identificador, e-mail (se houver conta) | Dados pessoais de quem usa |
+| **Registros técnicos** | Logs de acesso, erros | Endereço IP e horários |
+| **Registro de anuência** | Aceite dos termos e escolhas | Precisa existir para provar o consentimento |
+| **Guardados no navegador** | Preferências, cache da interface | Ficam no aparelho da pessoa |
+
+### 18.2 Princípios
+
+1. **Minimização:** guardar o mínimo, pelo menor tempo.
+2. **Padrão que protege:** o que não foi escolhido de forma ativa não é guardado por muito tempo.
+3. **Transparência:** dizer em linguagem simples o que acontece com os textos, sem esconder no fim de um termo longo.
+4. **Controle da pessoa:** ver, baixar e apagar tudo, sem precisar pedir.
+5. **Responsabilidade compartilhada:** quem envia o corpus declara que tem direito de usar aqueles textos (autoria, licença, consentimento de quem escreveu) e a ferramenta registra essa declaração.
+6. **Segredo por padrão:** os dados de uma pessoa nunca aparecem para outra.
+
+### 18.3 Três formas de guardar o trabalho
+
+A pessoa escolhe ao começar, e a escolha padrão é a mais protetora:
+
+| Forma | O que acontece | Quando os dados somem do servidor |
+|---|---|---|
+| **1. Sessão temporária** (padrão) | O corpus e as análises existem só enquanto a pessoa trabalha | Ao terminar a sessão ou depois de um período sem uso (por exemplo 24 horas; valor a definir) |
+| **2. Baixar e apagar** | O servidor processa, a pessoa baixa o projeto (`.ttwa` ou `.ttwl`) e o servidor apaga tudo | Assim que ela confirma o download |
+| **3. Guardar por um tempo** (opcional, exige aceite) | O projeto fica no servidor, ligado a uma conta ou chave de recuperação, para continuar depois | Depois de um prazo definido (por exemplo 30 ou 90 dias, renovável) ou quando a pessoa apagar |
+
+O arquivo de projeto da seção 9 ajuda muito aqui: como o `.ttwa` guarda camadas e análises, a pessoa pode **levar o trabalho consigo** e reabri-lo depois sem que o servidor precise guardar nada. Ao reabrir, o servidor confere os hashes e pula o que já foi feito (seção 9.4).
+
+Os corpora do **catálogo embutido** são públicos e não entram nessa política de dados enviados.
+
+### 18.4 Cache
+
+O cache de camadas (seção 9.4) reaproveita etiquetagens já feitas, mas num serviço com várias pessoas ele pede cuidado:
+
+- **Cache individual, nunca compartilhado.** Se duas pessoas enviarem o mesmo texto e o servidor reaproveitar a etiqueta da primeira, a segunda pode descobrir que aquele texto já foi enviado. Por isso o cache das camadas de textos enviados vale só **dentro da sessão ou conta** de quem enviou.
+- **Cache compartilhado só para os corpora do catálogo,** que são públicos e já vêm pré-etiquetados.
+- **O cache vive tanto quanto os dados.** Cache e dados derivados seguem o mesmo prazo de retenção da seção 18.3 e são apagados juntos.
+- **Cache no navegador:** só a interface (por causa do PWA) e preferências. Textos e resultados de corpora enviados **não** vão para o armazenamento do navegador, ou, se forem, apenas na forma 3 e apagáveis pela pessoa.
+- **Cópias de segurança:** se houver, têm prazo curto e o apagamento vale nelas também. Melhor não fazer cópia dos dados enviados.
+
+### 18.5 Registro de anuência
+
+**O que registrar** (uma linha por aceite, sem apagar as anteriores):
+
+| Campo | Para quê |
+|---|---|
+| Identificador da pessoa ou da sessão (pseudônimo, sem nome nem e-mail no registro) | Ligar o aceite a quem o fez |
+| Versão do texto aceito (identificador e hash do documento) | Provar exatamente o que foi aceito |
+| Data e hora (UTC) | Provar quando |
+| Finalidade e escolha | Por exemplo: guardar por tempo estendido, sim ou não |
+| Idioma em que o texto foi mostrado | Provar que foi compreensível |
+| Forma do aceite (clique em "aceito", caixa marcada) | Provar que foi um ato ativo |
+| Revogação (data, se houver) | A pessoa pode voltar atrás |
+
+Não guardar o IP completo no registro. Se for indispensável, guardar de forma truncada ou com hash, e definir por quanto tempo.
+
+**Quando pedir:**
+
+1. **Primeiro acesso:** aviso curto de privacidade (o que é guardado, por quanto tempo, como apagar), com link para o texto completo. O uso essencial (rodar a análise que a pessoa pediu) precisa de transparência, e a base legal exata deve ser definida com o encarregado de dados.
+2. **Ao enviar um corpus:** a declaração de direito de uso ("declaro que tenho autorização para processar estes textos e que, se contêm dados pessoais de terceiros, há base para isso"), registrada **por corpus**, com o identificador do corpus e a versão do termo.
+3. **Ao escolher a forma 3 (guardar):** aceite **específico** para a retenção.
+4. **Recursos opcionais** (por exemplo estatísticas de uso, se algum dia existirem): aceite separado, desligado por padrão. A recomendação é não ter telemetria.
+
+**Regras:**
+- Cada escolha é separada, sem caixa única que aceita tudo.
+- A pessoa pode **revogar** a qualquer momento, e isso apaga ou desativa o que dependia daquele aceite.
+- Se o texto dos termos mudar, o aceite é pedido de novo. O registro antigo permanece.
+- O registro de anuência fica em tabela **separada** dos corpora e é a única coisa que sobrevive à exclusão dos dados (ele registra o aceite, e não o conteúdo).
+- No navegador, guarda-se só uma marca de "já aceitei a versão X" para não perguntar de novo no mesmo aparelho. A prova fica no servidor.
+
+### 18.6 Direitos da pessoa (tela "Meus dados")
+
+Uma tela sempre acessível com:
+
+- **ver** o que está guardado e por quanto tempo (corpora, projetos, data de expiração);
+- **baixar** tudo (projeto `.ttwa` e exportações);
+- **apagar tudo agora,** com confirmação, incluindo cache e dados derivados;
+- **rever e revogar** cada aceite;
+- **contato** do responsável pelo serviço.
+
+### 18.7 Segurança do servidor
+
+- HTTPS obrigatório e criptografia dos dados guardados.
+- **Isolamento por pessoa:** cada sessão ou conta usa seu próprio espaço, e nenhuma rota devolve dados de outro dono.
+- Envio de arquivos com limite de tamanho, validação do tipo e cuidado com arquivos `.zip` malformados (bombas de descompressão e caminhos com `..`).
+- Limite de requisições por pessoa e fila de tarefas com cota.
+- **Logs sem conteúdo dos textos:** registrar erros e tempos, nunca o texto.
+- Faxina automática: uma tarefa periódica que apaga o que passou do prazo.
+- Autenticação só para a forma 3, de preferência simples (por exemplo link enviado por e-mail, ou chave de recuperação), para coletar o mínimo de dados.
+
+### 18.8 Como fica no pacote e na interface
+
+- **Pacote e linha de comando:** nada disso se aplica. A execução é local e o pacote não envia dados a lugar nenhum. Vale declarar isso na documentação. O que se aplica ao pacote é só o `.ttwa`/`.ttwl` como forma de levar o trabalho.
+- **Servidor:** configuração de prazos (`retencao_sessao`, `retencao_conta`), tabela `consents` e a tarefa de faxina.
+- **Interface:** janela de aceite com texto por idioma (os textos legais ficam em `help/`, com versão e hash), a declaração no envio, a tela "Meus dados" e o botão "apagar tudo" sempre visível.
+
+### 18.9 Pontos que dependem de decisão ou de revisão especializada
+
+- **Base legal e texto dos termos:** revisão com o encarregado de dados ou a assessoria jurídica.
+- **Onde o servidor fica.** Se estiver fora do Brasil, há regras próprias de transferência internacional de dados.
+- **Prazos:** duração da sessão temporária e da retenção estendida.
+- **Menores de idade:** se estudantes menores puderem usar o serviço, os cuidados aumentam.
+- **Corpora de terceiros com licença restrita** (por exemplo o BAWE): o serviço deve impedir que um corpus enviado por uma pessoa seja acessível a outras.
+- **Quem responde pelo serviço** (controlador e contato) e como o titular pede algo.
+
+## 19. A incluir
 
 (espaço para os próximos acréscimos)
