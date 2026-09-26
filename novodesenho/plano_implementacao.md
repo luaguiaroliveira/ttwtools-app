@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.8 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.7 (2026-09-26); 0.1–0.4 e 1.1–1.7 prontos
+- **Passo atual:** 1.9 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.8 (2026-09-26); 0.1–0.4 e 1.1–1.8 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -107,7 +107,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.5 | Opções e tagsets dos taggers | 1.4 | [x] | 2026-09-26 | ttwtools `3e0dc35` |
 | 1.6 | Formatos de entrada e saída | 1.2 | [x] | 2026-09-26 | ttwtools `4a0abc3` |
 | 1.7 | Estatísticas do corpus | 1.4 | [x] | 2026-09-26 | ttwtools `64e4a1d` |
-| 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [ ] | | |
+| 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [x] | 2026-09-26 | ttwtools `49c88ee` |
 | 1.9 | Referência e palavras-chave | 1.8 | [ ] | | |
 | 1.10 | Ajuda e traduções no pacote | 1.1 | [ ] | | |
 | **Fase 2 — Servidor local** | | | | | |
@@ -491,19 +491,28 @@ Próximo: 1.8.
 
 ### 1.8 Busca, KWIC, frequência, colocados, dispersão
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `49c88ee` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §4 e §15.1 (linhas de frequência, dispersão e KWIC).
 - **Fazer:**
-  - [ ] `search(project, corpus, padrao, ...)`: palavra, frase ou regex, sobre forma, lema, classe ou combinação; contagem total e por documento/grupo.
-  - [ ] `kwic(...)`: palavra + N de cada lado + frase + classe gramatical + arquivo e posição para abrir o contexto; **paginação** no SQL (`limit`/`offset`), ordenação por contexto esquerdo ou direito.
-  - [ ] `frequency(...)`: unidade escolhível (forma, lema, palavra+classe, só classe, n-grama), por documento, grupo ou corpus.
-  - [ ] `collocates(...)`: log-likelihood, informação mútua, T-score e frequência, com janela e posição.
-  - [ ] `dispersion(...)`: DP de Gries e Range, com dados para o gráfico de barras.
-  - [ ] Funciona **sem camada de etiquetas** (só formas) e melhora com camada.
-  - [ ] Subcomandos `search`, `kwic`, `freq`, `collocates`, `dispersion`.
-  - [ ] Teste de desempenho simples: KWIC em corpus de alguns milhões de tokens em poucos segundos (registrar o tempo no Relato).
+  - [x] `search(project, corpus, padrao, ...)`: palavra, frase ou regex, sobre forma, lema, classe ou combinação; contagem total e por documento/grupo.
+  - [x] `kwic(...)`: palavra + N de cada lado + frase + classe gramatical + arquivo e posição para abrir o contexto; **paginação** no SQL (`limit`/`offset`), ordenação por contexto esquerdo ou direito.
+  - [x] `frequency(...)`: unidade escolhível (forma, lema, palavra+classe, só classe, n-grama), por documento, grupo ou corpus.
+  - [x] `collocates(...)`: log-likelihood, informação mútua, T-score e frequência, com janela e posição.
+  - [x] `dispersion(...)`: DP de Gries e Range, com dados para o gráfico de barras.
+  - [x] Funciona **sem camada de etiquetas** (só formas) e melhora com camada.
+  - [x] Subcomandos `search`, `kwic`, `freq`, `collocates`, `dispersion`.
+  - [x] Teste de desempenho simples: KWIC em corpus de alguns milhões de tokens em poucos segundos (registrar o tempo no Relato).
 - **Pronto quando:** KWIC paginado devolve o mesmo resultado pela linha de comando e pela função, e os índices de `tokens` são usados (conferir com `EXPLAIN QUERY PLAN`).
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ttwtools/query.py (search, kwic, frequency, collocates, dispersion, explain) sobre `tokens`, com sintaxe de consulta (palavra, frase, * ?, /regex/, lemma=, pos=, upos=, xpos=, tag=, &); sem camada, cria a camada `simple` (tokenizador do pacote, sem dependências); índices de expressão lower(word)/lower(lemma) e upos; CLI search, kwic, freq, collocates, dispersion.
+Arquivos (submódulo): ttwtools/query.py (novo), backends.py (SimpleBackend), project.py (índices), cli.py, __init__.py, tests/test_query.py.
+Testes: pytest libs/ttwtools/tests -q → 83 passed (contagens, KWIC paginado e ordenado, CLI --json igual à função, MI/T/esperado e DP/DP_norm conferidos à mão, EXPLAIN QUERY PLAN usa idx_tokens_lword também no prefixo `ca*`).
+Desempenho (Mac M-series, 2.000 docs, 2,61 M tokens, 405 MB): KWIC palavra 0,05 s; frase "the government" 0,94 s; prefixo 0,02 s; regex 0,88 s; página 2001 de "the" (155 mil ocorrências) 0,13 s; frequência de formas 2,2 s. Gravar a camada `simple` levou 70 s (inserção com 7 índices).
+Pendências: consulta de frase é feita a partir do 1º token (frases começando com palavra muito frequente são as mais lentas); regex e curingas no meio não usam índice.
+Observações: busca não distingue maiúsculas (também a regex); `pos=` casa UPOS ou XPOS; "palavras" = UPOS fora de PUNCT/SYM/X (sem UPOS: tokens com letras). Colocados: E = f(nó)·f(col)·janela/N; MI = log2(O/E); T = (O−E)/√O; LL por tabela 2×2 (padrão #LancsBox). DP de Gries com tamanhos em tokens da camada.
+Próximo: 1.9.
+```
 
 ### 1.9 Referência e palavras-chave
 
