@@ -2,11 +2,14 @@ name: Release
 
 # Em tag v*.*.* (ex.: v0.4.0, v0.4.0-alpha.1): valida a tag, gera os pacotes em
 # cada sistema (com --selftest do binário) e cria a release em RASCUNHO.
-# workflow_dispatch: só gera os pacotes como artefatos (teste do pipeline).
+# Push em branch release-test/** ou workflow_dispatch: só gera os pacotes como
+# artefatos, sem publicar (teste do pipeline; o dispatch exige o arquivo na main).
 on:
   push:
     tags:
       - "v[0-9]*.[0-9]*.[0-9]*"
+    branches:
+      - "release-test/**"
   workflow_dispatch:
 
 env:
