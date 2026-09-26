@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 0.4 (CI rodando); 1.1 a 1.4 feitos em paralelo
-- **Último passo concluído:** 0.3 (2026-09-26)
+- **Passo atual:** 1.5 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.4 (2026-09-26); 0.1–0.4 e 1.1–1.4 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -96,7 +96,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 0.1 | Conferir base e ambiente | — | [x] | 2026-09-26 | ver `git log --grep '\[0.1\]'` |
 | 0.2 | Versão única e changelog | 0.1 | [x] | 2026-09-26 | ver `git log --grep '\[0.2\]'` |
 | 0.3 | Restaurar e modernizar o build (PyInstaller) | 0.2 | [x] | 2026-09-26 | ver `git log --grep '\[0.3\]'` |
-| 0.4 | CI multi-plataforma | 0.3 | [~] | | |
+| 0.4 | CI multi-plataforma | 0.3 | [x] | 2026-09-26 | ver `git log --grep '\[0.4\]'` |
 | 0.5 | Processo de release | 0.4 | [ ] | | |
 | 0.6 | Release de teste (alpha) | 0.5 | [ ] | | |
 | **Fase 1 — Pacote `ttwtools`** | | | | | |
@@ -251,20 +251,36 @@ Próximo: 0.4.
 
 ### 0.4 CI multi-plataforma
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[0.4\]'` · Agente/máquina: Claude (Opus 5.5) / GitHub Actions
 - **Ler antes:** `.github/workflows/build.yml`, `githubaction.md` (só a parte da matriz), o `build/build.py` da 0.3.
 - **Fazer:**
-  - [ ] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
-  - [ ] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
-  - [ ] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS; o **pacote Intel será feito localmente** (`python build/build.py --arch x86_64`, sob Rosetta) e enviado à release com `release_github.sh`.
-  - [ ] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12.3, o mínimo do arm64).
-  - [ ] Usar no CI o **mesmo conjunto de versões** decidido em 0.1 (não o `environment.yml` de desenvolvimento, se ele tiver torch que exija macOS mais novo).
-  - [ ] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
-  - [ ] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
-  - [ ] **Validação da tag:** o job falha se a tag não for igual à versão do `pyproject.toml` ou se o `CHANGELOG.md` não tiver a seção daquela versão.
-  - [ ] Passos de **assinatura e notarização** (macOS) e assinatura (Windows) deixados como blocos comentados, com o que precisa ser criado (ver "Decisões pendentes").
+  - [x] **`ci.yml`** (a cada push e PR): instala o ambiente, roda `pytest`, faz o build do frontend e valida `--version`. Rápido, sem PyInstaller.
+  - [x] **`release.yml`** (em tag `v*.*.*` e `workflow_dispatch` para testes): matriz com macOS arm64 (`macos-14`), macOS Intel, Windows (`windows-latest`) e Linux (`ubuntu-latest`). Cada job: checkout com submódulos e LFS, ambiente, `python build/build.py`, **`--selftest` do binário**, e envio do arquivo como artefato.
+  - [x] Conferir o **rótulo atual do runner Intel** (o `macos-13` foi descontinuado; o workflow atual já o tem comentado). Se não houver runner Intel gratuito, registrar como pendência e manter só arm64 no macOS; o **pacote Intel será feito localmente** (`python build/build.py --arch x86_64`, sob Rosetta) e enviado à release com `release_github.sh`.
+  - [x] No job do macOS arm64, exportar `MACOSX_DEPLOYMENT_TARGET=12.0` e rodar `check_macos_min.py` (o job **falha** se algo exigir macOS acima de 12.3, o mínimo do arm64).
+  - [x] Usar no CI o **mesmo conjunto de versões** decidido em 0.1 (não o `environment.yml` de desenvolvimento, se ele tiver torch que exija macOS mais novo).
+  - [x] Cache de pip, do npm e do trabalho do PyInstaller para reduzir tempo.
+  - [x] Job final `publish`: baixa os artefatos, gera `SHA256SUMS.txt`, cria a release **em rascunho** (`draft`) com as notas tiradas da seção da versão no `CHANGELOG.md`; versões com `-alpha`, `-beta` ou `-rc` saem marcadas como *pre-release*.
+  - [x] **Validação da tag:** o job falha se a tag não for igual à versão do `pyproject.toml` ou se o `CHANGELOG.md` não tiver a seção daquela versão.
+  - [x] Passos de **assinatura e notarização** (macOS) e assinatura (Windows) deixados como blocos comentados, com o que precisa ser criado (ver "Decisões pendentes").
 - **Pronto quando:** `workflow_dispatch` gera os pacotes disponíveis e o `--selftest` passa em cada sistema.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: ci.yml (push/PR: dependências, pytest do app e do pacote, frontend, --version; ~2 min) e release.yml (tag v*.*.*, workflow_dispatch ou push em release-test/**: validate → build em 4 sistemas com --selftest → publish em rascunho com SHA256SUMS e notas do CHANGELOG).
+Arquivos: .github/workflows/{ci.yml, release.yml (era build.yml)}, build/build.py (--install-deps, --deps-only, log do selftest no Windows), build/release_notes.py (novo), app/__main__.py (stdout/stderr None no Windows).
+Testes: run 36271945470 (release-test/0.4): macOS arm64 246 MB (máx. 12.3 OK), macOS Intel macos-15-intel 332 MB (torch 2.2.2 + numpy 1.26.4, máx. 12.0 OK), Windows zip 258 MB, Linux tar.gz 382 MB; --selftest OK nos 4. CI verde.
+Pendências: publish só roda com tag (validação testada localmente com release_notes.py); primeira tag em 0.6. Assinatura/notarização comentadas (D4).
+Observações: ver "Detalhes 0.4".
+Próximo: 0.5 (processo de release) ou 1.5.
+```
+**Detalhes 0.4:**
+- **Runner Intel existe:** `macos-15-intel` roda o build x86_64 com Python 3.11 e `build/constraints-macos-x86_64.txt` → D3 resolvida (o pacote Intel não precisa mais ser feito localmente).
+- **Sem LFS no checkout** (desvio do plano): só `ttwa_files/` (exemplos, 500 MB) está no LFS e nada no CI usa; evita gastar a cota de 1 GB/mês.
+- **Dependências no CI:** `setup-python` + `python build/build.py --install-deps` (lê o `environment.yml`, marca pyobjc como só macOS e uvloop fora do Windows, aplica as versões fixas do alvo). No Linux o torch vem do índice CPU (sem CUDA). O Python do setup-python no macOS arm64 exige 11.0 (o do conda pedia 12.1).
+- **`workflow_dispatch` só funciona com o arquivo na `main`**; para testar da branch, `git push origin <branch>:release-test/<nome>`.
+- **Windows:** o executável de janela tem stdout/stderr None; o uvicorn falhava ao configurar o log e o PyInstaller abria uma caixa de erro que travava o CI. Corrigido em `app/__main__.py` (aponta para os.devnull) e o `--selftest` nunca deixa exceção escapar. O autoteste grava em `TTW_SELFTEST_LOG`, que o build imprime.
+- Tempos: Linux ~8 min, macOS arm64 ~6 min, macOS Intel ~12 min, Windows ~20 min.
+
 
 ### 0.5 Processo de release
 
@@ -779,7 +795,7 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 |---|---|---|---|
 | D1 | Número da versão da linha nova (`0.4.0` ou outra) | 0.2 | **resolvida em 2026-09-26:** `0.4.0` |
 | D2 | Versão do Python e do torch **por plataforma** (hoje: dev em 3.14 com `torch==2.11.0`; Intel em 3.11 com `torch==2.2.2`). Considerar unificar em uma versão só (3.11 ou 3.12) para reduzir divergência. Como o Intel exige 3.11, a unificação em 3.11 é a candidata natural | 0.1, 0.3, 0.4 | **resolvida em 2026-09-26 (usuário aprovou):** manter **dois conjuntos**. (a) macOS arm64, Windows e Linux: Python 3.14, `torch==2.11.0`, numpy 2.4.4/scipy 1.17.1 com rodas de macOS ≤ 12 (rodas cp314 existem nos três sistemas). (b) macOS Intel: Python 3.11, `torch==2.2.2`, `numpy==1.26.4`; o resto igual. Unificar em 3.11 não traria ganho: as demais versões já coincidem e o 3.14 tem suporte mais longo |
-| D3 | Runner Intel para macOS (o `macos-13` foi descontinuado); enquanto não houver, o pacote Intel é feito localmente | 0.4 | aberta |
+| D3 | Runner Intel para macOS (o `macos-13` foi descontinuado); enquanto não houver, o pacote Intel é feito localmente | 0.4 | **resolvida em 0.4:** runner `macos-15-intel` funciona; o build local (`--arch x86_64`) fica como reserva |
 | D10 | **macOS 12 (Intel, confirmado):** o pacote Intel usa Python 3.11 e `torch==2.2.2` (com `numpy<2`, a verificar). Se Stanza/MFTE não funcionarem nessa combinação, o pacote Intel fica sem eles (spaCy e BiberPlus continuam) | 0.1, 0.3 | **resolvida em 0.1:** macOS 12.7.6 Monterey, Safari 17.6 (confirmados). `numpy<2` é obrigatório (com numpy 2 Stanza/MFTE falham em silêncio); com `numpy==1.26.4` os 4 taggers funcionam e dão o mesmo resultado do arm64. Falta abrir o pacote numa máquina macOS 12 real (0.6) |
 | D11 | Tailwind 4 no macOS 12: **manter Tailwind 4**, pois o Safari dessa máquina é o 17.6 (o mínimo é 16.4). Reabrir só se o teste em 3.1 falhar | 3.1 | resolvida em 2026-09-26 (a confirmar no teste) |
 | D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |

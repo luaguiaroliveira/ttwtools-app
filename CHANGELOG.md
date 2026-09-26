@@ -9,6 +9,7 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 ### Adicionado
 - Versão única: `pyproject.toml` é a fonte; `app/_version.py` expõe `__version__`, `python -m app --version` e `GET /api/version` (app, `ttwtools`, commit). `RELEASING.md` com a regra de versão. (passo 0.2)
 - Build único `build/build.py` (macOS arm64/Intel, Windows, Linux) com `--selftest` no binário, `build/check_macos_min.py` e pacotes `TTWtools-<versão>-<so>-<arq>`. Mínimo: macOS 12.0 (Intel) e 12.3 (Apple Silicon). (passo 0.3)
+- CI a cada push (testes, frontend) e pipeline de release em 4 sistemas (macOS arm64 e Intel, Windows, Linux) com autoteste do binário e release em rascunho. (passo 0.4)
 - Pacote `ttwtools`: testes, linha de comando `ttwtools` (passo 1.1); esquema de projeto v0.3 com camadas, tokens e projetos leves `.ttwl` (passo 1.2). Importação de corpus com metadados por documento, filtros e tokenização simples (passo 1.3). Etiquetagem com cache de camadas: não reprocessa o que já foi feito (passo 1.4).
 
 ### Alterado
