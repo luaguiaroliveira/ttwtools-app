@@ -17,9 +17,12 @@ from app import state as app_state
 router = APIRouter()
 
 # Job registries
-_upgrade_jobs: dict[str, dict] = {}
-_open_jobs:    dict[str, dict] = {}
-_saveas_jobs:  dict[str, dict] = {}
+from app import jobs as _jobs_registry
+
+# Registro único de tarefas (app/jobs.py); as rotas de status abaixo leem o mesmo dicionário
+_upgrade_jobs: dict[str, dict] = _jobs_registry.JOBS
+_open_jobs:    dict[str, dict] = _jobs_registry.JOBS
+_saveas_jobs:  dict[str, dict] = _jobs_registry.JOBS
 
 
 # ---------------------------------------------------------------------------
@@ -91,15 +94,15 @@ def open_project(req: OpenProjectRequest):
 
     if p.suffix.lower() == ".ttwt":
         # Decompression is slow — run in background and return a job_id
-        job_id = str(uuid.uuid4())
-        _open_jobs[job_id] = {
+        job_id = _jobs_registry.new("open_ttwt")
+        _open_jobs[job_id].update({
             "status": "running",
             "done": 0,
             "total": 0,
             "message": "Iniciando descompressão…",
             "result": None,
             "error": None,
-        }
+        })
         threading.Thread(
             target=_run_open_ttwt,
             args=(job_id, str(p)),
@@ -252,11 +255,11 @@ def export_project(req: ExportRequest):
         corpus_names = proj.list_corpus_names()
 
         for cname in corpus_names:
-            rows = proj._con.execute(
-                "SELECT filename, content FROM corpus_files WHERE corpus_name = ?",
-                (cname,),
-            ).fetchall()
+            rows = [{"filename": f, "content": proj.get_corpus_file(cname, f)}
+                    for f in proj.list_corpus_files(cname)]           # funciona também no .ttwl
             for row in rows:
+                if row["content"] is None:
+                    continue
                 path_key = f"corpora/{cname}/{row['filename']}"
                 if selected is not None and path_key not in selected:
                     continue
@@ -331,15 +334,15 @@ def saveas_project(req: SaveAsRequest):
     _require_project()
     if req.format not in ("ttwt", "ttwa"):
         raise HTTPException(status_code=400, detail="Formato inválido. Use 'ttwt' ou 'ttwa'.")
-    job_id = str(uuid.uuid4())
-    _saveas_jobs[job_id] = {
+    job_id = _jobs_registry.new("saveas")
+    _saveas_jobs[job_id].update({
         "status": "running",
         "done": 0,
         "total": 0,
         "message": "Iniciando…",
         "result": None,
         "error": None,
-    }
+    })
     threading.Thread(
         target=_run_saveas,
         args=(job_id, app_state.current_project_path, req.path, req.format),
@@ -384,15 +387,15 @@ def _cleanup_temp_ttwt() -> None:
 def upgrade_project(req: UpgradeRequest):
     """Inicia a migração do projeto aberto para o formato v0.2 em background."""
     _require_project()
-    job_id = str(uuid.uuid4())
-    _upgrade_jobs[job_id] = {
+    job_id = _jobs_registry.new("upgrade")
+    _upgrade_jobs[job_id].update({
         "status": "running",
         "done": 0,
         "total": 0,
         "message": "Iniciando migração…",
         "result": None,
         "error": None,
-    }
+    })
     threading.Thread(
         target=_run_upgrade,
         args=(job_id, app_state.current_project_path, req.compress),

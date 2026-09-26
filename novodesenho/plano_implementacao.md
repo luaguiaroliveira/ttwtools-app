@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 2.1 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.10 (2026-09-26); 0.1–0.4 e Fase 1 inteira prontas
+- **Passo atual:** 2.2 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 2.1 (2026-09-26); 0.1–0.4, Fase 1 e 2.1 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -111,7 +111,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.9 | Referência e palavras-chave | 1.8 | [x] | 2026-09-26 | ttwtools `55c8bce` |
 | 1.10 | Ajuda e traduções no pacote | 1.1 | [x] | 2026-09-26 | ttwtools `aff3deb` |
 | **Fase 2 — Servidor local** | | | | | |
-| 2.1 | Rotas finas, versão e tarefas | 1.2 | [ ] | | |
+| 2.1 | Rotas finas, versão e tarefas | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[2.1\]'` |
 | 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [ ] | | |
 | **Fase 3 — Interface Vue** | | | | | |
 | 3.1 | Esqueleto Vue | 0.3 | [ ] | | |
@@ -562,16 +562,24 @@ Próximo: 2.1.
 
 ### 2.1 Rotas finas, versão e tarefas
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[2.1\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `app/server.py`, `app/state.py`, `app/routes/tagging.py` (só o modelo de tarefa em segundo plano, linhas ~64–130), `app/routes/utils.py`.
 - **Fazer:**
-  - [ ] Módulo único de **tarefas em segundo plano** (`app/jobs.py`): criar, consultar progresso, cancelar. Reaproveitar o padrão de `/run` e `/status/{job_id}` para todas as tarefas demoradas.
-  - [ ] Passar as rotas atuais para o novo estado de projeto (`.ttwa` e `.ttwl`) e remover regra de negócio que estiver nelas (mover para o pacote).
-  - [ ] `GET /api/version`, `GET /api/health` (usados pelo `--selftest`).
-  - [ ] Substituir o diálogo de pasta por servidor (`pick-folder`) por uma camada única `fonte de corpus` que hoje só aceita pasta local, catálogo e texto colado.
-  - [ ] Testes de rota com `TestClient` do FastAPI.
+  - [x] Módulo único de **tarefas em segundo plano** (`app/jobs.py`): criar, consultar progresso, cancelar. Reaproveitar o padrão de `/run` e `/status/{job_id}` para todas as tarefas demoradas.
+  - [x] Passar as rotas atuais para o novo estado de projeto (`.ttwa` e `.ttwl`) e remover regra de negócio que estiver nelas (mover para o pacote).
+  - [x] `GET /api/version`, `GET /api/health` (usados pelo `--selftest`).
+  - [x] Substituir o diálogo de pasta por servidor (`pick-folder`) por uma camada única `fonte de corpus` que hoje só aceita pasta local, catálogo e texto colado.
+  - [x] Testes de rota com `TestClient` do FastAPI.
 - **Pronto quando:** as telas antigas continuam funcionando e os testes de rota passam.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: app/jobs.py (registro único: new/start/progress/cancel, JobCancelled) e rotas /api/jobs (listar, consultar, cancelar); os dicionários de tarefa de tagging, quickrun e project apontam para o mesmo registro (rotas de status antigas iguais); GET /api/health (usado no --selftest); resposta JSON padrão troca NaN/inf por null; POST /api/corpora/import com fonte única {kind: folder|text|catalog}; .ttwl nos seletores de arquivo, na abertura e no Info.plist.
+Arquivos: app/{jobs.py, routes/jobs.py, routes/sources.py} (novos), app/server.py, app/__main__.py, app/routes/{tagging,quickrun,project,utils,corpus}.py, build/ttwtools-app.spec, tests/{conftest.py, test_routes_base.py}.
+Testes: pytest tests -q → 14 passed (tarefa ok/cancelada/erro, projeto v2 migrado pelas rotas antigas, rota de traços sem o erro 500, .ttwl nas rotas antigas, importação por pasta/texto/catálogo); /api/tagging/run antigo roda e o resultado entra como camada; --selftest OK.
+Pendências: a regra de negócio ainda dentro das rotas antigas (quickrun, analysis, viz) não foi movida: essas rotas saem com a interface antiga (3.11), e as telas novas usam só as rotas finas do 2.2. pick-folder continua para a interface antiga.
+Observações: o erro 500 de /api/analysis/features vinha de NaN no JSON; resolvido de forma geral (SafeJSONResponse). quickrun verifica "ocupado" só entre tarefas do mesmo tipo.
+Próximo: 2.2.
+```
 
 ### 2.2 Rotas dos recursos novos
 

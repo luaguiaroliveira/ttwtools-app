@@ -9,7 +9,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app._version import __version__, version_info
@@ -37,6 +37,25 @@ def _ensure_ttwtools_importable() -> None:
             return
 
 
+class SafeJSONResponse(JSONResponse):
+    """JSON que troca NaN e infinito por null (tabelas de traços têm células vazias)."""
+
+    def render(self, content) -> bytes:
+        import json
+        import math
+
+        def clean(obj):
+            if isinstance(obj, float):
+                return None if math.isnan(obj) or math.isinf(obj) else obj
+            if isinstance(obj, dict):
+                return {k: clean(v) for k, v in obj.items()}
+            if isinstance(obj, (list, tuple)):
+                return [clean(v) for v in obj]
+            return obj
+
+        return json.dumps(clean(content), ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode("utf-8")
+
+
 def _frontend_dir() -> Path:
     """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller."""
     base = Path(getattr(sys, "_MEIPASS", Path(__file__).parent.parent))
@@ -51,6 +70,7 @@ def build_app(open_file: str | None = None) -> FastAPI:
         version=__version__,
         docs_url="/api/docs",
         redoc_url=None,
+        default_response_class=SafeJSONResponse,
     )
 
     app.add_middleware(
@@ -64,10 +84,16 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # Rotas da API
     # ------------------------------------------------------------------
     from app.routes import corpus, tagging, analysis, project as project_routes, quickrun, utils, tags, viz
+    from app.routes import jobs as jobs_routes, sources as sources_routes
 
     @app.get("/api/version", tags=["meta"])
     def get_version() -> dict:
         return version_info()
+
+    @app.get("/api/health", tags=["meta"])
+    def get_health() -> dict:
+        from app import state as _state
+        return {"status": "ok", "version": __version__, "project": _state.current_project_path}
 
     app.include_router(corpus.router,          prefix="/api/corpus",    tags=["corpus"])
     app.include_router(tagging.router,         prefix="/api/tagging",   tags=["tagging"])
@@ -77,6 +103,8 @@ def build_app(open_file: str | None = None) -> FastAPI:
     app.include_router(utils.router,           prefix="/api/utils",     tags=["utils"])
     app.include_router(tags.router,            prefix="/api/tags",      tags=["tags"])
     app.include_router(viz.router,             prefix="/api/viz",       tags=["viz"])
+    app.include_router(jobs_routes.router,     prefix="/api/jobs",      tags=["jobs"])
+    app.include_router(sources_routes.router,  prefix="/api/corpora",   tags=["corpora"])
 
     # ------------------------------------------------------------------
     # Estado global mínimo: arquivo .ttwa aberto

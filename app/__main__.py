@@ -93,7 +93,7 @@ def main() -> None:
         "--open",
         metavar="FILE",
         default=None,
-        help="Abre um arquivo .ttwa ou .ttwt ao iniciar.",
+        help="Abre um arquivo .ttwa, .ttwl ou .ttwt ao iniciar.",
     )
     args = parser.parse_args()
 
@@ -101,7 +101,7 @@ def main() -> None:
     open_file = args.open
     if not open_file:
         for arg in sys.argv[1:]:
-            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwt'):
+            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwl', '.ttwt'):
                 open_file = arg
                 break
 
@@ -279,6 +279,8 @@ def _selftest_checks(emit) -> int:
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/version", timeout=10) as resp:
             data = json.load(resp)
         report("/api/version", data.get("app") == __version__, json.dumps(data))
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=10) as resp:
+            report("/api/health", json.load(resp).get("status") == "ok")
         with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=10) as resp:
             report("frontend", resp.status == 200 and b"<html" in resp.read(4096).lower())
     except Exception as exc:

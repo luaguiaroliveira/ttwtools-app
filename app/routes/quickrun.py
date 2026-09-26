@@ -59,7 +59,10 @@ class TqdmCatcher:
 router = APIRouter()
 
 # job_id → {status, step, message, error, ttwa_path}
-_jobs: dict[str, dict] = {}
+from app import jobs as _jobs_registry
+
+# Registro único de tarefas (app/jobs.py); status em /api/quickrun/status e /api/jobs
+_jobs: dict[str, dict] = _jobs_registry.JOBS
 
 
 # ---------------------------------------------------------------------------
@@ -92,15 +95,14 @@ class QuickRunRequest(BaseModel):
 def quickrun_start(req: QuickRunRequest, background_tasks: BackgroundTasks):
     """Inicia o pipeline completo em background. Retorna job_id para polling."""
     # Avoid accidental double-start from UI (double click / stale retries).
-    if any(j.get("status") in {"queued", "running"} for j in _jobs.values()):
+    if _jobs_registry.is_busy("quickrun"):
         raise HTTPException(status_code=409, detail="Ja existe um pipeline em execucao.")
 
-    job_id = str(uuid.uuid4())
-    _jobs[job_id] = {
-        "status": "queued", "step": "queued", "message": "Na fila...",
-        "error": None, "ttwa_path": None,
-        "taggers_progress": {},  # tagger_name → {status, msg}
-    }
+    job_id = _jobs_registry.new(
+        "quickrun", step="queued", message="Na fila...",
+        error=None, ttwa_path=None,
+        taggers_progress={},  # tagger_name → {status, msg}
+    )
     # Use an explicit daemon thread to avoid BackgroundTasks stalls in frozen app builds.
     threading.Thread(target=_run_pipeline, args=(job_id, req), daemon=True).start()
     return {"job_id": job_id}

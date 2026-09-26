@@ -172,6 +172,15 @@ if sys.platform == 'darwin':
                     'CFBundleTypeIconFile':   'icon',
                 },
                 {
+                    'CFBundleTypeName':       'TTW Light Project',
+                    'CFBundleTypeExtensions': ['ttwl'],
+                    'CFBundleTypeMIMETypes':  ['application/x-ttwl+sqlite3'],
+                    'CFBundleTypeRole':       'Editor',
+                    'LSHandlerRank':          'Owner',
+                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwl'],
+                    'CFBundleTypeIconFile':   'icon',
+                },
+                {
                     'CFBundleTypeName':       'TTW Compressed Archive',
                     'CFBundleTypeExtensions': ['ttwt'],
                     'CFBundleTypeMIMETypes':  ['application/x-ttwt'],
@@ -190,6 +199,15 @@ if sys.platform == 'darwin':
                     'UTTypeTagSpecification': {
                         'public.filename-extension': ['ttwa'],
                         'public.mime-type':          'application/x-ttwa+sqlite3',
+                    },
+                },
+                {
+                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwl',
+                    'UTTypeDescription':      'TTW Light Project',
+                    'UTTypeConformsTo':       ['public.data', 'public.item'],
+                    'UTTypeTagSpecification': {
+                        'public.filename-extension': ['ttwl'],
+                        'public.mime-type':          'application/x-ttwl+sqlite3',
                     },
                 },
                 {

@@ -38,7 +38,10 @@ class TqdmCatcher:
 router = APIRouter()
 
 # Registro simples de jobs em background {job_id: status_dict}
-_jobs: dict[str, dict] = {}
+from app import jobs as _jobs_registry
+
+# Registro único de tarefas (app/jobs.py); status em /api/tagging/status e /api/jobs
+_jobs: dict[str, dict] = _jobs_registry.JOBS
 
 
 # ---------------------------------------------------------------------------
@@ -73,8 +76,7 @@ def run_tagging(req: TagRequest, background_tasks: BackgroundTasks):
 
     import uuid
 
-    job_id = str(uuid.uuid4())
-    _jobs[job_id] = {"status": "queued", "corpus_name": req.corpus_name}
+    job_id = _jobs_registry.new("tagging", corpus_name=req.corpus_name)
 
     # Use an explicit daemon thread to avoid BackgroundTasks stalls in frozen app builds.
     threading.Thread(
