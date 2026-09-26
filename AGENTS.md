@@ -28,8 +28,10 @@ Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek..
 ## Comandos essenciais
 
 ```
-# ambiente (confirmar o nome em 0.1: o LEIAME cita ttw313, o plano usa ttw314)
-conda env create -f environment.yml
+# ambiente conda, por máquina:
+#   Mac Apple Silicon (macOS 15, desenvolvimento): ttw314 (Python 3.14, environment.yml)
+#   Mac Intel (macOS 12): ttw311 (Python 3.11, torch 2.2.2)
+conda env create -f environment.yml -n ttw314   # só na máquina Apple Silicon
 git submodule update --init --recursive     # requer git-lfs instalado (git lfs install)
 
 python -m app --mode web                    # servidor local; --mode desktop abre a janela

@@ -53,12 +53,21 @@ Próximo: passo seguinte recomendado.
 5. **Fora do alcance do CI gratuito:** o CI só cobre o macOS arm64. O pacote Intel continua sendo feito **localmente** e enviado à release por `build/release_github.sh` (ver 0.4 e 0.5), até haver runner Intel.
 6. **Testar de verdade:** cada release de teste é aberta em uma máquina com macOS 12 (0.6) e o roteiro final inclui macOS 12 (6.2).
 
+## Máquinas e ambientes conda do usuário
+
+| Máquina | Sistema | Ambiente conda | Python | Observação |
+|---|---|---|---|---|
+| Mac de desenvolvimento | macOS 15, Apple Silicon (arm64) | `ttw314` | 3.14 (`environment.yml`) | Roda o CI local, o servidor e o build arm64 |
+| Mac Intel | macOS 12, Intel (x86_64), Safari 17.6 | `ttw311` | 3.11 | Alvo de compatibilidade; `torch==2.2.2` |
+
+O script antigo `build_intel_local.sh` (no commit `a28c79a`) criava, para o build Intel sob Rosetta no Mac de desenvolvimento, um ambiente separado chamado `ttw311-x86` em `~/miniconda3-x86`. Não confundir com o `ttw311` do Mac Intel de verdade. O `LEIAME.md` foi atualizado em 2026-09-26 (antes citava `ttw313`, Python 3.12) e será revisado de novo no passo 6.1.
+
 ## Como retomar em outra máquina ou com outro agente
 
 ```
 git fetch --all && git switch new_set26 && git pull
 git submodule update --init --recursive          # requer git-lfs instalado (git lfs install)
-conda env create -f environment.yml && conda activate ttw314    # ou conda env update
+conda env create -f environment.yml -n ttw314 && conda activate ttw314   # Mac Apple Silicon; no Mac Intel use o ambiente ttw311
 cd frontend-vue && npm ci                        # a partir do passo 3.1
 ```
 Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato preenchido.
@@ -145,7 +154,7 @@ Objetivo: desde o começo ter **um único lugar** para a versão e um pipeline q
 - **Ler antes:** `pyproject.toml`, `environment.yml`, `requirements.txt`, `.github/workflows/build.yml` (162 linhas).
 - **Fazer:**
   - [ ] Confirmar branch `new_set26` e submódulo em dia (`git status`, `git submodule status`).
-  - [ ] Criar/ativar o ambiente conda `ttw314` e rodar o app atual (`python -m app --mode web`) para ver que abre.
+  - [ ] Ativar o ambiente conda da máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel; ver "Máquinas e ambientes conda") e rodar o app atual (`python -m app --mode web`) para ver que abre.
   - [ ] Rodar os testes que existirem no submódulo (`libs/ttwtools`), anotar o resultado base (ou "não há testes").
   - [ ] Anotar no Relato: versões de Python, spaCy, Stanza, torch e PyInstaller instaladas.
   - [ ] Verificar se `torch`, `stanza` e `spacy` têm pacotes para a versão do Python usada em **Windows e Linux** (se faltar, decidir fixar 3.13).
@@ -691,4 +700,5 @@ _(Se um passo for dividido, reordenado ou descartado, anote aqui em uma linha: d
 
 - 2026-09-26: plano criado.
 - 2026-09-26: requisito de compatibilidade com macOS 12 (Intel e arm64) acrescentado: nova seção "Compatibilidade mínima" e ajustes nos passos 0.1, 0.3, 0.4, 0.6, 1.5, 3.1 e 6.2, mais as decisões D2, D3, D10 e D11.
+- 2026-09-26: registrados os ambientes conda por máquina (`ttw314` no Mac Apple Silicon, `ttw311` no Mac Intel).
 - 2026-09-26: o usuário informou que o macOS 12 é Intel com Safari 17.6. D11 resolvida (manter Tailwind 4); D10 parcialmente resolvida (Intel confirmado, falta verificar Stanza/MFTE com `torch==2.2.2`).
