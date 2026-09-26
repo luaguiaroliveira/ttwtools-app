@@ -7,6 +7,7 @@ Uso:
     python build/build.py --arch x86_64        # macOS Intel sob Rosetta (em Mac Apple Silicon)
     python build/build.py --arch x86_64 --create-env   # cria o ambiente Intel antes
     python build/build.py --skip-frontend --no-package # só o PyInstaller + testes
+    python build/build.py --install-deps --deps-only   # só instala as dependências (CI)
 
 Etapas:
  1. escolhe o Python do alvo (o atual, ou o ambiente Intel sob Rosetta);
@@ -122,6 +123,37 @@ def environment_yml_pins() -> list[str]:
     return [r for r in reqs if r.split("==")[0].lower() not in ("ttwtools", "ttwtools-app", "en-core-web-sm")]
 
 
+# Pacotes do environment.yml que só existem (ou só servem) em alguns sistemas
+_MARKERS = {"pyobjc": '; sys_platform == "darwin"', "uvloop": '; sys_platform != "win32"'}
+TORCH_CPU_INDEX = "https://download.pytorch.org/whl/cpu"
+
+
+def requirements(target: Target) -> list[str]:
+    """environment.yml (pip) com marcadores por sistema e as versões fixas do alvo."""
+    pins = read_constraints(target)
+    reqs = []
+    for req in environment_yml_pins():
+        name = req.split("==")[0].lower()
+        if name in pins:
+            continue
+        marker = next((m for prefix, m in _MARKERS.items() if name.startswith(prefix)), "")
+        reqs.append(req + marker)
+    return reqs + [f"{n}=={v}" for n, v in pins.items()]
+
+
+def install_deps(target: Target) -> None:
+    reqs = requirements(target)
+    log(f"Instalando dependências de {target.name} ({len(reqs)} pacotes)")
+    run(target.pip("install", "--upgrade", "pip"))
+    if target.os == "linux":
+        # O torch do PyPI para Linux traz CUDA (vários GB); o pacote usa só CPU.
+        torch = next(r for r in reqs if r.startswith("torch=="))
+        run(target.pip("install", torch, "--index-url", TORCH_CPU_INDEX))
+    run(target.pip("install", *reqs))
+    run(target.pip("install", "--no-deps", "-e", ROOT / "libs" / "ttwtools", "-e", ROOT))
+    run(target.py("-m", "spacy", "download", "en_core_web_sm"))
+
+
 def create_intel_env(target: Target) -> None:
     conda = CONDA_X86 / "bin" / "conda"
     if not conda.is_file():
@@ -133,14 +165,7 @@ def create_intel_env(target: Target) -> None:
     if not target.python.is_file():
         log(f"Criando ambiente {INTEL_ENV} (Python {INTEL_PYTHON_VERSION}, x86_64)")
         run(["arch", "-x86_64", conda, "create", "-y", "-n", INTEL_ENV, f"python={INTEL_PYTHON_VERSION}"])
-    pins = read_constraints(target)
-    reqs = [r for r in environment_yml_pins() if r.split("==")[0].lower() not in pins]
-    reqs += [f"{n}=={v}" for n, v in pins.items()]
-    log("Instalando dependências do ambiente Intel")
-    run(target.pip("install", "--upgrade", "pip"))
-    run(target.pip("install", *reqs))
-    run(target.pip("install", "--no-deps", "-e", ROOT / "libs" / "ttwtools", "-e", ROOT))
-    run(target.py("-m", "spacy", "download", "en_core_web_sm"))
+    install_deps(target)
 
 
 def installed_version(target: Target, dist: str) -> str | None:
@@ -274,6 +299,9 @@ def main() -> int:
     parser.add_argument("--arch", choices=["arm64", "x86_64"], help="só macOS; padrão: a da máquina")
     parser.add_argument("--python", help="Python do ambiente de build (padrão: o atual, ou o Intel sob Rosetta)")
     parser.add_argument("--create-env", action="store_true", help="cria/atualiza o ambiente Intel (macOS x86_64)")
+    parser.add_argument("--install-deps", action="store_true",
+                        help="instala as dependências do alvo (environment.yml + build/constraints-*.txt)")
+    parser.add_argument("--deps-only", action="store_true", help="para depois de instalar/ajustar dependências")
     parser.add_argument("--frontend-src", default="frontend-src", help="pasta do código da interface")
     parser.add_argument("--frontend-out", default="frontend", help="pasta da interface compilada")
     parser.add_argument("--skip-frontend", action="store_true")
@@ -294,10 +322,15 @@ def main() -> int:
     version = project_version()
     log(f"TTWtools {version} → {target.name} (Python {target.python})")
 
+    if args.install_deps:
+        install_deps(target)
     if not args.skip_env_fixes:
         apply_constraints(target)
         if target.os == "macos":
             fix_macos_wheels(target)
+    if args.deps_only:
+        log("Dependências prontas")
+        return 0
     if not args.skip_frontend:
         build_frontend(ROOT / args.frontend_src)
 
@@ -313,7 +346,15 @@ def main() -> int:
 
     exe = executable(target, dist_dir)
     log(f"Autoteste: {exe.relative_to(ROOT)} --selftest")
-    run([*target.prefix, exe, "--selftest"], timeout=600)
+    # O executável de janela no Windows não tem stdout: o autoteste grava também em arquivo.
+    selftest_log = BUILD / "_work" / f"selftest-{target.name}.log"
+    selftest_log.unlink(missing_ok=True)
+    try:
+        run([*target.prefix, exe, "--selftest"], timeout=600,
+            env=dict(os.environ, TTW_SELFTEST_LOG=str(selftest_log)))
+    finally:
+        if target.os == "windows" and selftest_log.is_file():
+            print(selftest_log.read_text(encoding="utf-8"), flush=True)
 
     if target.os == "macos":
         log(f"Conferindo o mínimo de macOS ({target.macos_min})")

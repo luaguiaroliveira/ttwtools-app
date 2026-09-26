@@ -199,12 +199,24 @@ def _selftest() -> int:
     from app._version import __version__
     from app.server import build_app
 
+    import os
+
+    # Sem console (executável de janela no Windows) o stdout é None; o build lê o arquivo.
+    log_path = os.environ.get("TTW_SELFTEST_LOG")
+    log_file = open(log_path, "w", encoding="utf-8") if log_path else None
+
+    def emit(line: str) -> None:
+        print(line, flush=True)
+        if log_file:
+            log_file.write(line + "\n")
+            log_file.flush()
+
     ok = True
 
     def report(name: str, passed: bool, detail: str = "", essential: bool = True) -> None:
         nonlocal ok
         label = "ok" if passed else ("FALHOU" if essential else "AVISO")
-        print(f"[selftest] {name}: {label}{' — ' + detail if detail else ''}", flush=True)
+        emit(f"[selftest] {name}: {label}{' — ' + detail if detail else ''}")
         if not passed and essential:
             ok = False
 
@@ -251,7 +263,9 @@ def _selftest() -> int:
         server.should_exit = True
         thread.join(timeout=10)
 
-    print("OK" if ok else "FALHOU", flush=True)
+    emit("OK" if ok else "FALHOU")
+    if log_file:
+        log_file.close()
     return 0 if ok else 1
 
 
