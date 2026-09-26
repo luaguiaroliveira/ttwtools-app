@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 1.5 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 1.4 (2026-09-26); 0.1–0.4 e 1.1–1.4 prontos
+- **Passo atual:** 1.6 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 1.5 (2026-09-26); 0.1–0.4 e 1.1–1.5 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -104,7 +104,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 1.2 | Esquema v3 do projeto (`.ttwa` e `.ttwl`) | 1.1 | [x] | 2026-09-26 | ttwtools `5b7d8e5` |
 | 1.3 | Importação de corpus e metadados | 1.2 | [x] | 2026-09-26 | ttwtools `3bbe8a4` |
 | 1.4 | Camadas e cache | 1.2 | [x] | 2026-09-26 | ttwtools `82ec09b` |
-| 1.5 | Opções e tagsets dos taggers | 1.4 | [ ] | | |
+| 1.5 | Opções e tagsets dos taggers | 1.4 | [x] | 2026-09-26 | ttwtools `3e0dc35` |
 | 1.6 | Formatos de entrada e saída | 1.2 | [ ] | | |
 | 1.7 | Estatísticas do corpus | 1.4 | [ ] | | |
 | 1.8 | Busca, KWIC, frequência, colocados, dispersão | 1.4 | [ ] | | |
@@ -413,21 +413,37 @@ Próximo: 1.5.
 
 ### 1.5 Opções e tagsets dos taggers
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ttwtools `3e0dc35` (+ ponteiro no app) · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon, `ttw314`
 - **Ler antes:** `novomodelo.md` §11 e §11.1 a §11.5; `taggers/__init__.py` (116 linhas); assinaturas em `spacy_pos.py` (linhas 206–232 e 389–418) e `stanza_pos.py` (linhas 75–110, 229–262 e 630–667).
 - **Fazer:**
-  - [ ] Confirmar nas **versões instaladas** os nomes e valores reais das opções de spaCy e Stanza (a tabela do §11.1 é candidata, não verificada) e registrar diferenças no Relato.
-  - [ ] Pasta `libs/ttwtools/ttwtools/data/taggers/` com um `<tagger>.options.json` (descritor: `id`, `grupo`, `tipo`, `padrao`, `valores`, `afeta_resultado`, `explicacao`, `impacto`, disponibilidade) e um `<tagger>.tagset.json` (`tag`, `group`, `definition`, `example`) por tagger. Começar por Biber (converter `tags_biber.json`), UPOS e PTB; depois MFTE e XPOS do Stanza.
-  - [ ] Textos de `explicacao` e `definition` como **chaves de tradução** (`pt`, `en`), não texto solto.
-  - [ ] API: `ttwtools.taggers.available()`, `.options(id)`, `.get_tagset(id)`, `.run(tagger, corpus, options={...})` com validação contra o descritor; parâmetros antigos continuam como atalhos.
-  - [ ] Tirar do código o que está fixo: componentes do spaCy (`_DISABLED`), processadores e idioma do Stanza.
-  - [ ] Predefinições ("Rápido", "Recomendado", "Mais preciso") no descritor.
-  - [ ] Linha de comando: `ttwtools tagger-options <id>`, `ttwtools tagset <id>`, `ttwtools tag ... --set chave=valor --preset nome`.
-  - [ ] Modelo ausente: erro claro com o comando para instalar.
-  - [ ] **Disponibilidade por sistema:** `available()` devolve para cada tagger `disponivel` (sim ou não) e o **motivo** (por exemplo "torch não incluído neste pacote do macOS Intel"). Importar `torch`/`stanza` só quando o tagger for usado (já é assim) e tratar `ImportError` como "indisponível", nunca como falha do aplicativo.
-  - [ ] Testes: validar opções inválidas, `config_hash` estável, listar tagset, tagger indisponível.
+  - [x] Confirmar nas **versões instaladas** os nomes e valores reais das opções de spaCy e Stanza (a tabela do §11.1 é candidata, não verificada) e registrar diferenças no Relato.
+  - [x] Pasta `libs/ttwtools/ttwtools/data/taggers/` com um `<tagger>.options.json` (descritor: `id`, `grupo`, `tipo`, `padrao`, `valores`, `afeta_resultado`, `explicacao`, `impacto`, disponibilidade) e um `<tagger>.tagset.json` (`tag`, `group`, `definition`, `example`) por tagger. Começar por Biber (converter `tags_biber.json`), UPOS e PTB; depois MFTE e XPOS do Stanza.
+  - [x] Textos de `explicacao` e `definition` como **chaves de tradução** (`pt`, `en`), não texto solto.
+  - [x] API: `ttwtools.taggers.available()`, `.options(id)`, `.get_tagset(id)`, `.run(tagger, corpus, options={...})` com validação contra o descritor; parâmetros antigos continuam como atalhos.
+  - [x] Tirar do código o que está fixo: componentes do spaCy (`_DISABLED`), processadores e idioma do Stanza.
+  - [x] Predefinições ("Rápido", "Recomendado", "Mais preciso") no descritor.
+  - [x] Linha de comando: `ttwtools tagger-options <id>`, `ttwtools tagset <id>`, `ttwtools tag ... --set chave=valor --preset nome`.
+  - [x] Modelo ausente: erro claro com o comando para instalar.
+  - [x] **Disponibilidade por sistema:** `available()` devolve para cada tagger `disponivel` (sim ou não) e o **motivo** (por exemplo "torch não incluído neste pacote do macOS Intel"). Importar `torch`/`stanza` só quando o tagger for usado (já é assim) e tratar `ImportError` como "indisponível", nunca como falha do aplicativo.
+  - [x] Testes: validar opções inválidas, `config_hash` estável, listar tagset, tagger indisponível.
 - **Pronto quando:** `ttwtools tagger-options spacy_upos` mostra a tabela com explicações e `ttwtools tag ... --set` altera de fato o comportamento.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: descritores data/taggers/{spacy,stanza,mfte,biberplus}.options.json (opções, atalhos, tagsets, requisitos, predefinições rapido/recomendado/preciso) e tagsets data/tagsets/{upos 17, ptb 50, biber 95, mfte 172}.tagset.json; 272 textos pt/en em data/i18n (ttwtools.i18n). API ttwtools.taggers.available/options/get_tagset/run/validate_options/preset; build_request/tag_corpus validam e aceitam preset; CLI tagger-options, tagset, tag --set/--preset.
+Arquivos (submódulo): ttwtools/{i18n.py, taggers/catalog.py} (novos), data/ (novo), backends.py, annotate.py, cli.py, taggers/{__init__,spacy_pos,stanza_pos,mfte}.py, layers.py, __init__.py, pyproject.toml, tests/test_taggers_catalog.py.
+Testes: pytest libs/ttwtools/tests -q → 64 passed (todas as chaves com pt e en; opções inválidas; config_hash estável; tagsets; torch quebrado e módulo ausente → indisponível com motivo; spaCy sem lema com preset rapido; modelo ausente → comando; Stanza não baixa em silêncio). App: 8 passed, --selftest OK.
+Pendências: definições do MFTE redigidas a partir do código (marcadas "review": true) — revisar com a documentação do autor; exemplos do Biber vazios; rotas e tela (2.2, 3.5); D9 (padrão recomendado medido) segue aberta.
+Observações: ver "Detalhes 1.5".
+Próximo: 1.6.
+```
+**Detalhes 1.5 (diferenças em relação ao §11.1, conferidas nas versões instaladas):**
+- **spaCy 3.8.13:** o parâmetro de processos é `n_process` (não `n_processes`); `spacy.load` aceita `disable`/`enable`/`exclude`; o `en_core_web_sm` 3.8.0 tem os pipes `tok2vec, tagger, parser, attribute_ruler, lemmatizer, ner` e **não tem `morphologizer`** (UPOS e morfologia vêm do `attribute_ruler`). Componentes expostos: `pos, tag, lemma, morph`; parser e NER sempre desligados, lematizador só se `lemma` for pedido (`spacy_pos.disabled_pipes`). Tagger com 50 rótulos PTB (inclui `_SP`, `XX`, `NFP`, `HYPH`, `ADD`, `AFX`).
+- **Stanza 1.11.1:** o pacote padrão do inglês é `combined` (não `ewt`); há `default`, `default_fast`, `default_accurate` (transformer electra-large) e treebanks (`ewt`, `gum`, `partut`, `lines`, `atis`, `eslspok`, `craft`, `genia`, `mimic`), com variantes `_charlm/_nocharlm/_electra-large`. `tokenize_no_ssplit`, `tokenize_pretokenized` e `pos_batch_size` entram por `**kwargs` e funcionam (testado). Com `download_method=REUSE_RESOURCES` o Stanza **baixa em silêncio** o que falta (baixou 37 MB do `gum` no teste); os adaptadores agora usam `download=False` e dão erro com o comando.
+- **MFTE:** o pacote não traz descrições das tags; lista montada do código (e da saída real); `mfte_ext` = atalho com `extended=True`.
+- **BiberPlus:** opções que mudam o resultado: `function_words`, `binary_tags`; `usenlp` (tokenização por spaCy) ficou só no caminho antigo por pasta.
+- **Disponibilidade:** `available()` não levanta exceção; testa import e a ponte torch↔numpy (caso do Intel com numpy 2) e se o modelo padrão está instalado; devolve `motivo` traduzido e `comando`.
+- **Atalhos com nome de submódulo** (`biberplus`, `mfte`): importar o submódulo sobrescrevia a função no pacote (defeito antigo no `mfte`); `ttwtools.biberplus`/`ttwtools.mfte` agora sempre devolvem a função.
+
 
 ### 1.6 Formatos de entrada e saída
 
