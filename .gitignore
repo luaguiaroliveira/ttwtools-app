@@ -62,3 +62,5 @@ dist-release/
 # Local installers (nao versionar)
 Miniconda3*.sh
 /*.ttwa
+
+corporainternos/image.png
