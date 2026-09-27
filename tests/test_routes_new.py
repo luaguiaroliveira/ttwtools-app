@@ -153,3 +153,15 @@ def test_corpus_export_route(client, opened, tmp_path):
     r = client.post("/api/corpora/bawe/export", json={"format": "vrt", "dest": str(dest)}).json()
     assert r["out"] == str(dest) and dest.read_text().count("<text ") == 5
     assert "word" in client.post("/api/corpora/bawe/export", json={"format": "csv"}).json()["content"].splitlines()[0]
+
+
+def test_viz_routes(client, opened, spacy_model):
+    for c in ("bawe", "corifa"):
+        wait_job(client, client.post("/api/tagging/layers", json={"corpus": c, "tagger": "spacy", "preset": "rapido"}).json()["job_id"])
+    sides = [{"corpus": "bawe"}, {"corpus": "corifa"}]
+    m = client.post("/api/compare/viz/matrix", json={"sides": sides, "layer": "spacy", "top": 4}).json()
+    assert len(m["features"]) == 4 and len(m["rows"]) == 10
+    assert client.post("/api/compare/viz/heatmap", json={"sides": sides, "layer": "spacy"}).json()["rows"]
+    r = client.post("/api/compare/viz/reduction", json={"sides": sides, "layer": "spacy", "method": "pca3d"}).json()
+    assert "z" in r["coords"][0]
+    assert client.post("/api/compare/viz/reduction", json={"sides": sides, "layer": "spacy", "method": "x"}).status_code == 422

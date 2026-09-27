@@ -45,3 +45,10 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
 }
+
+/* Impressão (leitor de texto): só o conteúdo, sem navegação; cores das marcas preservadas */
+@media print {
+  nav, header, .print\:hidden, aside { display: none !important; }
+  main { padding: 0 !important; overflow: visible !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

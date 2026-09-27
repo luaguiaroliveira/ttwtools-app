@@ -4,11 +4,10 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
-import DivergingBars from '../../components/DivergingBars.vue'
+import ChartGallery from '../../components/ChartGallery.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
-const bars = ref(null)
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
@@ -42,7 +41,7 @@ async function select(name) {
   const row = data.value.rows.find((r) => r.Feature === name)
   detail.value = { name, row, v1: a.values, v2: b.values }
 }
-const barRows = computed(() => (data.value?.rows ?? []).map((r) => ({ label: r.Feature, value: r.Effect_Size })))
+const gallerySides = computed(() => [1, 2].map((n) => { const s = side(n); return { corpus: s.corpus, where: s.where, label: sameCorpus.value ? `${f.value.groupKey}=${f.value[`group${n}`]}` : s.corpus } }))
 const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(detail.value?.v2 ?? [])].map((v) => v.value)))
 </script>
 <template>
@@ -70,8 +69,8 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }}</p>
-      <div class="flex gap-1"><CopyCode analysis="kfa" :params="lastParams" /><ExportMenu name="kfa" :rows="data.rows" :svg-root="bars" /></div>
-      <DivergingBars ref="bars" :rows="barRows" :title="t('kfa.chart')" @select="select" />
+      <div class="flex gap-1"><CopyCode analysis="kfa" :params="lastParams" /><ExportMenu name="kfa" :rows="data.rows" /></div>
+      <ChartGallery :kfa="data" :layer="f.layer" :sides="gallerySides" @select="select" />
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>

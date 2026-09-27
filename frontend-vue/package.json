@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "pinia": "^4.0.3",
+    "plotly.js-dist-min": "^4.1.1",
     "vue": "^3.5.43",
     "vue-i18n": "^11.4.12",
     "vue-router": "^5.3.1"

@@ -17,6 +17,7 @@ const colorBy = ref(route.query.color || 'upos')
 const highlight = ref(route.query.highlight || null)
 const selected = ref(null)
 const tagset = ref({})
+const window = globalThis
 const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22',
   '#393b79', '#637939', '#8c6d31', '#843c39', '#7b4173', '#3182bd', '#e6550d']
 
@@ -75,6 +76,7 @@ function step(dir) {
       <label class="form-control"><span class="label-text">{{ t('reader.color_by') }}</span>
         <select v-model="colorBy" class="select select-sm"><option value="upos">UPOS</option><option value="xpos">XPOS</option><option value="tags">tags</option></select></label>
       <span v-if="doc?.layer" class="badge badge-ghost">{{ doc.layer.tool }} · {{ doc.layer.model }}</span>
+      <button class="btn btn-sm ml-auto print:hidden" @click="window.print()">{{ t('reader.print') }}</button>
     </div>
     <p v-if="doc && !doc.layer" class="text-sm opacity-70">{{ t('reader.no_layer') }}</p>
     <p v-if="doc && doc.text === null" role="alert" class="alert alert-warning text-sm">{{ t('reader.no_text') }}</p>
@@ -92,7 +94,7 @@ function step(dir) {
       </div>
     </div>
     <div class="grid lg:grid-cols-[1fr_16rem] gap-3">
-      <article class="bg-base-100 border border-base-300 rounded-box p-4 leading-8 whitespace-pre-wrap max-h-[70vh] overflow-auto" data-testid="reader-text">
+      <article class="reader-print bg-base-100 border border-base-300 rounded-box p-4 leading-8 whitespace-pre-wrap max-h-[70vh] overflow-auto print:max-h-none print:overflow-visible print:border-0" data-testid="reader-text">
         <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
             :data-start="p.tok.start_char" class="cursor-pointer rounded px-px"
             :class="{ 'ring-2 ring-primary': selected?.idx === p.tok.idx, 'bg-warning/40': hit(p.tok) }"

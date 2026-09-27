@@ -23,6 +23,7 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 - Ajuda na interface: balões, tour guiado, "Explicar esta tela", destino Aprender e visual interativo do d de Cohen. (passo 3.8)
 - Exportar tabelas (CSV/TXT), gráficos (SVG/PNG) e camadas (CoNLL-U, VRT, CSV); "copiar como código" em cada análise. (passo 3.9)
 - Testes de ponta a ponta (Playwright) e verificação de acessibilidade (axe, WCAG 2.2 AA) em 3 larguras e 3 temas, no CI; correções de contraste e de foco. (passo 3.10)
+- Interface nova cobre o que a antiga fazia: abrir .ttwt e arquivo pendente, salvar como, exportar projeto, galeria de gráficos da KFA (11 tipos, 3D sob demanda) e impressão do leitor. (passos 3.7 e 3.11)
 
 ### Alterado
 - Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)

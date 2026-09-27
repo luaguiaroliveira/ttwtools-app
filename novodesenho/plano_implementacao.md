@@ -124,7 +124,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.8 | Ajuda e Aprender | 3.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.8\]'` |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.9\]'` |
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[3.10\]'` |
-| 3.11 | Remover a interface antiga | 3.10 | [ ] | | |
+| 3.11 | Remover a interface antiga | 3.10 | [!] | | aguarda confirmação do usuário |
 | **Fase 4 — Catálogo de corpora** | | | | | |
 | 4.1 | Formato de pacote e catálogo | 1.2 | [ ] | | |
 | 4.2 | Baixar, instalar e atualizar | 4.1 | [ ] | | |
@@ -752,8 +752,8 @@ Próximo: 3.7.
 - **Ler antes:** `novomodelo.md` §16 e §17.3 ("Aba Resultados atual"); `frontend-src/src/views/{analysis,results}.js` só por `grep -n`.
 - **Fazer:**
   - [x] **Palavras-chave** contra referência (seletor de referência com a ficha do corpus, avisos de comparabilidade, tabela que leva ao KWIC).
-  - [~] **KFA**: portar a tela de análise e os resultados atuais (barras divergentes, dispersão, bolhas, faixas, mapa de calor, radar, violino, redução), trocando as sub-abas por uma galeria com seletor.
-  - [ ] Gráficos 3D e redução dimensional pesados carregados **sob demanda** (Plotly só aqui).
+  - [x] **KFA**: portar a tela de análise e os resultados atuais (barras divergentes, dispersão, bolhas, faixas, mapa de calor, radar, violino, redução), trocando as sub-abas por uma galeria com seletor.
+  - [x] Gráficos 3D e redução dimensional pesados carregados **sob demanda** (Plotly só aqui).
   - [x] Detalhe de feature (`feature-detail`) e abertura do texto com a tag marcada.
 - **Pronto quando:** a KFA de dois corpora de teste dá o mesmo resultado que a interface antiga, e as palavras-chave funcionam contra outro corpus do projeto.
 - **Relato:**
@@ -761,7 +761,7 @@ Próximo: 3.7.
 Feito: tela Comparar (#/comparar?tool=palavras-chave|kfa). Palavras-chave: referência = outro corpus, os demais grupos (metadado) ou lista .tsv; unidade, medida, freq. e textos mínimos, correção; avisos de comparabilidade; tabela com LL, log ratio, %DIFF, p corrigido e range; clicar leva ao KWIC. KFA: entre dois corpora ou dois grupos do mesmo corpus, camada, métrica (KFA/KFA2), |d| mínimo; barras divergentes clicáveis (com "ver como tabela"); detalhe do traço com um ponto por texto em cada lado e "Ver no leitor" com a tag destacada.
 Arquivos: frontend-vue/src/views/{CompareView.vue, compare/{KeywordsTool,KfaTool}.vue}, components/DivergingBars.vue, explore/{KwicTool,ReaderTool}.vue (?q=, ?highlight=); app/routes/api_new.py (POST /api/compare/kfa, GET /api/compare/feature); submódulo: ttwtools/features.py (novo), taggers/biberplus.py (alinhamento sem perder tags), cli.py (compare), codegen (kfa), tests/test_features.py.
 Testes: libs → 115 passed (tabelas das camadas migradas de MFTE e spaCy idênticas às antigas; camada nova do BiberPlus idêntica à tabela antiga e KFA2 com d igual ao resultado salvo pela versão 0.1.0, diferença < 1e-9); app → 31 passed; navegador: KFA bawe × corifa (spaCy, 100 × 100 textos, 11 traços com |d| ≥ 0,2) e detalhe; palavras-chave bawe × corifa → KWIC de "poem" (214).
-Pendências: galeria dos demais gráficos da interface antiga (dispersão de médias, bolhas, faixas, mapa de calor, radar, violino, redução dimensional e 3D com Plotly sob demanda) — a lógica de redução ainda está em app/routes/viz.py e precisa ir para o pacote antes; fica para um passo próprio.
+Pendências: nenhuma. (Completado depois: galeria com seletor — barras do d, médias, bolhas, faixas por texto, mapa de calor, radar, violino, histograma, coordenadas paralelas, redução PCA/t-SNE/UMAP/MDS e PCA 3D com Plotly carregado só nele; dados em ttwtools.viz, fora das rotas; os 11 gráficos conferidos no navegador com 100 × 100 textos.)
 Observações: KFA das camadas não reetiqueta; JSONL antigos do BiberPlus perderam tags de pontuação e de tokens não localizados (a camada migrada difere um pouco da tabela antiga; etiquetar de novo resolve).
 Próximo: 3.8.
 ```
@@ -828,13 +828,19 @@ Próximo: 3.11.
 
 ### 3.11 Remover a interface antiga
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [!] · Data: 2026-09-26 · Commit: — · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Fazer:**
-  - [ ] Conferir que nada de `frontend-src/` ficou sem equivalente na nova (lista de telas do plano).
+  - [x] Conferir que nada de `frontend-src/` ficou sem equivalente na nova (lista de telas do plano).
   - [ ] Remover `frontend-src/`, o `TTW_UI` e o Shoelace; ajustar `build/build.py`, `ci.yml` e `release.yml`.
   - [ ] `CHANGELOG.md`.
 - **Pronto quando:** o build e o CI passam sem `frontend-src/`.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: conferência das telas antigas (home, corpus, quickrun, tagging, analysis, results, feature-detail, text-viewer, export, viz-comparison, viz-reduction, viz-single). Lacunas encontradas e fechadas na interface nova: abrir .ttwt (descompactação com progresso) e arquivo pendente (duplo clique/--open, consultado ao abrir e ao focar a janela); salvar como .ttwt/.ttwa; exportar o projeto inteiro para uma pasta; galeria da KFA (ver 3.7); impressão do leitor (folha de estilo de impressão, sem paged.js). "Nova análise" (quickrun) virou assistente + etiquetar + KFA; migração v0.1→v0.3 é automática.
+Bloqueio: remover frontend-src/, TTW_UI e Shoelace apaga arquivos que não foram criados nesta sessão (regra do AGENTS.md): aguarda o usuário revisar a interface nova e confirmar. Quando confirmado: apagar frontend-src/ e frontend/ (build antigo versionado), Vite do Vue passar a sair em ../frontend, build.py sem TTW_UI (padrão Vue), ci.yml sem o passo do frontend antigo, rotas antigas sem uso (quickrun, viz, tags, analysis) removidas.
+Testes: e2e (6 passed) e vitest após as lacunas.
+Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
+```
 
 ---
 

@@ -369,6 +369,39 @@ def compare_feature(corpus: str, layer: str, name: str, feature: str | None = No
         return {"values": _call(feature_values, proj, corpus, layer, name, feature, _where(where))}
 
 
+class Side(BaseModel):
+    corpus: str
+    where: dict[str, list[str]] | None = None
+    label: str | None = None
+
+
+class VizRequest(BaseModel):
+    sides: list[Side]
+    layer: str
+    feature: Literal["tags", "upos", "xpos"] | None = None
+    features: list[str] | None = None
+    top: int = 20
+    method: str = "pca2d"
+    top_features: int = 30
+    perplexity: float = 30.0
+    n_neighbors: int = 15
+    min_dist: float = 0.1
+
+
+@router.post("/compare/viz/{kind}", tags=["compare"])
+def compare_viz(kind: Literal["matrix", "heatmap", "reduction"], req: VizRequest):
+    """Dados dos gráficos da galeria (ttwtools.viz): matriz por texto, mapa de calor, redução."""
+    from ttwtools import viz
+    sides = [s.model_dump() for s in req.sides]
+    with _project() as proj:
+        if kind == "matrix":
+            return _call(viz.feature_matrix, proj, sides, req.layer, req.features, req.feature, req.top)
+        if kind == "heatmap":
+            return _call(viz.heatmap, proj, sides, req.layer, req.feature, req.top)
+        return _call(viz.reduction, proj, sides, req.layer, req.method, req.feature, req.top_features,
+                     req.perplexity, req.n_neighbors, req.min_dist)
+
+
 @router.get("/references", tags=["compare"])
 def references():
     """Referências do catálogo (a partir do passo 4.1; por enquanto vazio)."""
