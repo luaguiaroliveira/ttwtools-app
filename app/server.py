@@ -57,7 +57,12 @@ class SafeJSONResponse(JSONResponse):
 
 
 def _frontend_dir() -> Path:
-    """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller."""
+    """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller.
+
+    TTW_FRONTEND_DIR aponta outra pasta (ex.: frontend-vue/dist durante a transição)."""
+    import os
+    if os.environ.get("TTW_FRONTEND_DIR"):
+        return Path(os.environ["TTW_FRONTEND_DIR"])
     base = Path(getattr(sys, "_MEIPASS", Path(__file__).parent.parent))
     return base / "frontend"
 
@@ -124,6 +129,14 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # ------------------------------------------------------------------
     # Frontend estático
     # ------------------------------------------------------------------
+    @app.middleware("http")
+    async def _no_cache_html(request, call_next):
+        # o index.html muda a cada build (nomes dos assets com hash): sempre revalidar
+        response = await call_next(request)
+        if not request.url.path.startswith("/api") and response.headers.get("content-type", "").startswith("text/html"):
+            response.headers["Cache-Control"] = "no-cache"
+        return response
+
     frontend = _frontend_dir()
     if frontend.is_dir():
         app.mount("/", StaticFiles(directory=str(frontend), html=True), name="frontend")

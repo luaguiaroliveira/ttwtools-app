@@ -71,3 +71,7 @@ corporainternos/image.png
 
 # Gerado por build/build.py
 app/_build_info.py
+
+# Interface Vue compilada (passo 3.1)
+frontend-vue/dist/
+frontend-vue/node_modules/

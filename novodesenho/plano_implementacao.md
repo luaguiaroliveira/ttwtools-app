@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.1 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 2.2 (2026-09-26); 0.1–0.4, Fases 1 e 2 prontas
+- **Passo atual:** 3.5 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.4 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -114,10 +114,10 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 2.1 | Rotas finas, versão e tarefas | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[2.1\]'` |
 | 2.2 | Rotas dos recursos novos | 2.1, 1.5–1.9 | [x] | 2026-09-26 | ver `git log --grep '\[2.2\]'` |
 | **Fase 3 — Interface Vue** | | | | | |
-| 3.1 | Esqueleto Vue | 0.3 | [ ] | | |
-| 3.2 | Casca responsiva, tema e traduções | 3.1 | [ ] | | |
-| 3.3 | Cliente da API e tarefas | 3.1, 2.1 | [ ] | | |
-| 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [ ] | | |
+| 3.1 | Esqueleto Vue | 0.3 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
+| 3.2 | Casca responsiva, tema e traduções | 3.1 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
+| 3.3 | Cliente da API e tarefas | 3.1, 2.1 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
+| 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [ ] | | |
 | 3.6 | Explorar | 3.4 | [ ] | | |
 | 3.7 | Comparar | 3.6 | [ ] | | |
@@ -620,57 +620,89 @@ Decisões: Vue 3, o mais leve possível (`novomodelo.md` §17.6). A interface no
 
 ### 3.1 Esqueleto Vue
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.1–3.4\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `frontend-src/package.json`, `frontend-src/vite.config.js`, `frontend-src/tailwind.config.js`.
 - **Fazer:**
-  - [ ] Criar `frontend-vue/` com Vue 3, Vite, Vue Router, Pinia e `vue-i18n`; Tailwind 4 e DaisyUI (sem Shoelace).
-  - [ ] Vite com saída em `../frontend` e carregamento **por rota** (importação dinâmica).
-  - [ ] Página mínima que chama `GET /api/version` e mostra o número.
-  - [ ] `build/build.py` (0.3) escolhe a pasta pelo `TTW_UI`.
-  - [ ] Meta de tamanho: registrar o tamanho comprimido da primeira tela no Relato (alvo: abaixo de cerca de 200 KB).
-  - [ ] **Compatibilidade com o WebKit do macOS 12 (Safari 17.6):** definir `build.target` do Vite como `safari16` e abrir a página mínima **na máquina Intel com macOS 12**, dentro do app empacotado. Se o Tailwind 4 falhar lá mesmo assim, reabrir a decisão D11 (Tailwind 3 com DaisyUI 4) antes de seguir para 3.2.
-  - [ ] `npm run build` funciona no CI (`ci.yml`).
+  - [x] Criar `frontend-vue/` com Vue 3, Vite, Vue Router, Pinia e `vue-i18n`; Tailwind 4 e DaisyUI (sem Shoelace).
+  - [x] Vite com saída em `../frontend` e carregamento **por rota** (importação dinâmica).
+  - [x] Página mínima que chama `GET /api/version` e mostra o número.
+  - [x] `build/build.py` (0.3) escolhe a pasta pelo `TTW_UI`.
+  - [x] Meta de tamanho: registrar o tamanho comprimido da primeira tela no Relato (alvo: abaixo de cerca de 200 KB).
+  - [~] **Compatibilidade com o WebKit do macOS 12 (Safari 17.6):** definir `build.target` do Vite como `safari16` e abrir a página mínima **na máquina Intel com macOS 12**, dentro do app empacotado. Se o Tailwind 4 falhar lá mesmo assim, reabrir a decisão D11 (Tailwind 3 com DaisyUI 4) antes de seguir para 3.2.
+  - [x] `npm run build` funciona no CI (`ci.yml`).
 - **Pronto quando:** o app empacotado abre a página mínima Vue mostrando a versão.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: frontend-vue/ com Vue 3.5, Vite 8, Vue Router 5 (hash), Pinia 4, vue-i18n 11, Tailwind 4.3 + DaisyUI 5.7 (sem Shoelace); telas por importação dinâmica; build.target safari16; página inicial mostra /api/version; TTW_UI=vue no build.py; ci.yml roda npm test e build.
+Arquivos: frontend-vue/** (novo), build/build.py, app/server.py (TTW_FRONTEND_DIR, index.html sem cache), .gitignore, .github/workflows/ci.yml.
+Testes: vite build ok; primeira tela ~73 KB gzip (JS 58,6 + CSS 13,9; meta 200 KB); app empacotado com TTW_UI=vue: --selftest OK, check_macos_min 12.3 OK, janela abre (1280×800) servindo a página Vue.
+Pendências: abrir o pacote na máquina Intel com macOS 12 (Safari 17.6) — só o usuário (D11 continua "a confirmar").
+Observações: saída em frontend-vue/dist (não em ../frontend, que é versionada e guarda a interface antiga); passa a ../frontend no 3.11. Servidor em modo web com TTW_FRONTEND_DIR=frontend-vue/dist.
+Próximo: 3.2.
+```
 
 ### 3.2 Casca responsiva, tema e traduções
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.1–3.4\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §17.3 e §17.4.
 - **Fazer:**
-  - [ ] Casca: cabeçalho com faixa do **corpus ativo** (corpus e camada), navegação (Corpora, Explorar, Comparar, Aprender) e menu Projeto/Configurações. Barra inferior no celular, trilho no tablet, barra lateral no computador (Tailwind por faixas de largura).
-  - [ ] Roteamento por URL (`#/corpora`, `#/explorar/kwic`, ...) e "voltar" funcionando.
-  - [ ] Tema claro, escuro e alto contraste, seguindo a preferência do sistema por padrão; guardar a escolha.
-  - [ ] Traduções `pt` e `en` carregadas de `GET /api/i18n/{lang}`, seletor de idioma da interface (independente do idioma do corpus).
-  - [ ] Componentes base acessíveis: botão, menu, janela, gaveta, painel recolhível, tabela, balão.
-  - [ ] Layout testado nas larguras 390, 768 e 1280 px (captura de tela guardada em `docs/telas/`).
+  - [x] Casca: cabeçalho com faixa do **corpus ativo** (corpus e camada), navegação (Corpora, Explorar, Comparar, Aprender) e menu Projeto/Configurações. Barra inferior no celular, trilho no tablet, barra lateral no computador (Tailwind por faixas de largura).
+  - [x] Roteamento por URL (`#/corpora`, `#/explorar/kwic`, ...) e "voltar" funcionando.
+  - [x] Tema claro, escuro e alto contraste, seguindo a preferência do sistema por padrão; guardar a escolha.
+  - [x] Traduções `pt` e `en` carregadas de `GET /api/i18n/{lang}`, seletor de idioma da interface (independente do idioma do corpus).
+  - [x] Componentes base acessíveis: botão, menu, janela, gaveta, painel recolhível, tabela, balão.
+  - [x] Layout testado nas larguras 390, 768 e 1280 px (captura de tela guardada em `docs/telas/`).
 - **Pronto quando:** navegar entre os quatro destinos vazios funciona nas três larguras, com troca de idioma e de tema.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: casca com faixa do corpus ativo (corpus e camada), navegação Corpora/Explorar/Comparar/Aprender (barra inferior < 768 px, trilho 768–1023, lateral ≥ 1024), menu de configurações com tema (sistema/claro/escuro/alto contraste, guardado) e idioma da interface (pt/en, guardado); rotas #/corpora, #/explorar/:ferramenta, #/comparar, #/aprender/:tópico; componentes base: Collapsible, AppDialog (<dialog>), HelpTip (balão), JobProgress, PagedTable, BarChart, StatCard; link "pular para o conteúdo", foco visível, prefers-reduced-motion.
+Arquivos: frontend-vue/src/{App.vue, router.js, i18n.js, theme.js, style.css, components/*}; textos em libs/ttwtools/ttwtools/data/i18n/ui.{pt,en}.json (servidos por /api/i18n).
+Testes: navegador (Chrome) a 390, 800 e 1280 px: layouts corretos (captura em docs/telas/3.2-larguras-390-800-1280.jpg); troca de idioma e de tema; voltar do navegador.
+Pendências: gaveta (drawer) entra com o painel de tags (3.5/3.6).
+Observações: vue-i18n com chave plana e compilador próprio só de {parâmetro} (os textos têm "@" e "|" literais). Com zoom fracionário do navegador, 768 px pode cair na faixa do celular (artefato de arredondamento).
+Próximo: 3.3.
+```
 
 ### 3.3 Cliente da API e tarefas
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.1–3.4\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Fazer:**
-  - [ ] Cliente único de API (`src/api/`) tipado, com tratamento de erro padrão.
-  - [ ] Composable de **tarefa em segundo plano** (iniciar, progresso, cancelar, retomar ao reabrir a tela).
-  - [ ] Componente de **tabela paginada/virtual** ligado a rotas paginadas.
-  - [ ] Estado global mínimo (Pinia): projeto aberto, corpus ativo, camada ativa.
-  - [ ] Testes de unidade (Vitest) do cliente e do composable.
+  - [x] Cliente único de API (`src/api/`) tipado, com tratamento de erro padrão.
+  - [x] Composable de **tarefa em segundo plano** (iniciar, progresso, cancelar, retomar ao reabrir a tela).
+  - [x] Componente de **tabela paginada/virtual** ligado a rotas paginadas.
+  - [x] Estado global mínimo (Pinia): projeto aberto, corpus ativo, camada ativa.
+  - [x] Testes de unidade (Vitest) do cliente e do composable.
 - **Pronto quando:** uma tarefa de exemplo mostra progresso e pode ser cancelada.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: cliente único (src/api/client.js: ApiError com status/detail, rede → status 0; src/api/index.js com todos os caminhos), composable useJob (iniciar, acompanhar, cancelar, retomar via sessionStorage), PagedTable ligado a rotas paginadas, store Pinia (projeto, corpus e camada ativos, lista de corpora; guarda a escolha), tarefa de exemplo POST /api/jobs/demo com painel "Diagnóstico" na tela inicial.
+Arquivos: frontend-vue/src/{api/*, composables/useJob.js, stores/session.js, components/{JobProgress,PagedTable}.vue, views/HomeView.vue}, app/routes/jobs.py (demo), src/test/*.test.js.
+Testes: npx vitest run → 9 passed (cliente: URL, POST, erro HTTP, rede, vazio; useJob: progresso até o fim, cancelar, retomar, erro); navegador: tarefa de exemplo mostra "8 de 20" com barra e cancela ("Cancelado 9 de 20").
+Pendências: nenhuma.
+Observações: —
+Próximo: 3.4.
+```
 
 ### 3.4 Corpora: biblioteca, importar, visão geral
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.1–3.4\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §3, §12 e §17.3.
 - **Fazer:**
-  - [ ] Tela **Corpora**: lista dos corpora do projeto e do catálogo (vazio até a Fase 4), abrir/criar/salvar projeto `.ttwa`/`.ttwl`, exportar o corpus ao lado do `.ttwl`.
-  - [ ] Assistente **Adicionar corpus** (origem → metadados e grupos → o que fazer agora).
-  - [ ] **Visão geral do corpus** (§12): números grandes, gráficos, convite discreto a etiquetar; mostra o nível pós-etiquetagem quando houver camada.
-  - [ ] Lista de camadas do corpus, com a configuração usada em cada uma.
-  - [ ] Faixa do corpus ativo ligada a essa escolha.
+  - [x] Tela **Corpora**: lista dos corpora do projeto e do catálogo (vazio até a Fase 4), abrir/criar/salvar projeto `.ttwa`/`.ttwl`, exportar o corpus ao lado do `.ttwl`.
+  - [x] Assistente **Adicionar corpus** (origem → metadados e grupos → o que fazer agora).
+  - [x] **Visão geral do corpus** (§12): números grandes, gráficos, convite discreto a etiquetar; mostra o nível pós-etiquetagem quando houver camada.
+  - [x] Lista de camadas do corpus, com a configuração usada em cada uma.
+  - [x] Faixa do corpus ativo ligada a essa escolha.
 - **Pronto quando:** importar uma pasta de `.txt` e ver a visão geral funciona pelo aplicativo.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: tela Corpora com barra do projeto (abrir por caminho ou seletor nativo, criar, separar/embutir corpus, exportar textos ao lado, aviso de textos ausentes no .ttwl), biblioteca (cartões, escolher corpus ativo), catálogo (vazio até a Fase 4), assistente Adicionar corpus (origem → metadados/grupos → o que fazer agora), visão geral (números grandes, palavras mais frequentes com "ver como tabela", nível pós-etiquetagem com classes e densidade lexical) calculada em tarefa, lista de camadas com configuração e "usar".
+Arquivos: frontend-vue/src/{views/CorporaView.vue, components/{ProjectBar,AddCorpusWizard,CorpusOverview,LayersList,BarChart,StatCard}.vue, stores/session.js}; app/routes/api_new.py (/api/project/info, /convert, /export-corpus, /api/corpora, /documents, /layers); submódulo: corpus.list_corpora/layer_summary.
+Testes: pytest tests -q → 28 passed; libs 109 passed; navegador: criar projeto → importar pasta de 100 ensaios com campos no nome → visão geral (100 documentos, 111.706 palavras, 11.055 formas, MATTR 0,792…).
+Pendências: gráficos D3 e curva de Zipf entram com Explorar (3.6); etiquetar pela tela é o 3.5.
+Observações: números no formato do idioma da interface; index.html com Cache-Control: no-cache (o navegador guardava a versão anterior).
+Próximo: 3.5.
+```
 
 ### 3.5 Escolha de tagger e "Personalizar"
 

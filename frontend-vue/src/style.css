@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/* Alto contraste: fundo preto, texto branco, foco amarelo bem visível */
+@plugin "daisyui/theme" {
+  name: "contrast";
+  color-scheme: dark;
+  --color-base-100: #000000;
+  --color-base-200: #0a0a0a;
+  --color-base-300: #1a1a1a;
+  --color-base-content: #ffffff;
+  --color-primary: #ffd400;
+  --color-primary-content: #000000;
+  --color-secondary: #00e5ff;
+  --color-secondary-content: #000000;
+  --color-accent: #ffffff;
+  --color-accent-content: #000000;
+  --color-neutral: #ffffff;
+  --color-neutral-content: #000000;
+  --color-error: #ff6b6b;
+  --color-error-content: #000000;
+  --color-warning: #ffd400;
+  --color-warning-content: #000000;
+  --border: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

@@ -100,6 +100,79 @@ def tag_layers(req: TagLayersRequest):
 
 
 # ---------------------------------------------------------------------------
+# Projeto e biblioteca de corpora
+# ---------------------------------------------------------------------------
+
+@router.get("/project/info", tags=["project"])
+def project_info():
+    """Projeto aberto: caminho, tipo (ttwa/ttwl), versão do esquema e situação do corpus (.ttwl)."""
+    if not app_state.current_project_path:
+        return {"open": False}
+    with _project() as proj:
+        status = proj.check_corpus()
+        return {"open": True, "path": str(proj.path), "kind": proj.kind,
+                "name": proj.get_meta("project_name", proj.path.stem),
+                "schema_version": str(proj.get_meta("schema_version")),
+                "corpus_status": {k: len(v) for k, v in status.items()}}
+
+
+class ConvertRequest(BaseModel):
+    to: Literal["ttwl", "ttwa"]
+    dest: str | None = None
+    open_after: bool = True
+
+
+@router.post("/project/convert", tags=["project"])
+def project_convert(req: ConvertRequest):
+    """.ttwa → .ttwl (separar corpus) ou .ttwl → .ttwa (embutir corpus); o original não muda."""
+    with _project() as proj:
+        try:
+            new = proj.detach_corpus(req.dest) if req.to == "ttwl" else proj.embed_corpus(req.dest)
+        except (ValueError, FileExistsError, FileNotFoundError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc
+        path = str(new.path)
+        new.close()
+    if req.open_after:
+        app_state.current_project_path = path
+    return {"path": path, "kind": req.to}
+
+
+class ExportNextToRequest(BaseModel):
+    folder: str | None = None
+
+
+@router.post("/project/export-corpus", tags=["project"])
+def project_export_corpus(req: ExportNextToRequest):
+    """Grava os textos numa pasta ao lado do projeto (no .ttwl, passa a apontar para ela)."""
+    with _project() as proj:
+        return {"folder": str(proj.export_corpus_next_to(req.folder))}
+
+
+@router.get("/corpora", tags=["corpora"])
+def corpora_list():
+    import ttwtools
+    with _project() as proj:
+        return {"corpora": ttwtools.list_corpora(proj)}
+
+
+@router.get("/corpora/{corpus}/documents", tags=["corpora"])
+def corpus_documents(corpus: str, limit: int = Query(50, le=1000), offset: int = 0,
+                     where: list[str] | None = Query(None)):
+    from ttwtools.corpus import filter_documents
+    with _project() as proj:
+        docs = filter_documents(proj, corpus, _where(where))
+    rows = [{"filename": d["filename"], "chars": d["n_chars"], **d["meta"]} for d in docs[offset:offset + limit]]
+    return {"total": len(docs), "offset": offset, "limit": limit, "rows": rows}
+
+
+@router.get("/corpora/{corpus}/layers", tags=["corpora"])
+def corpus_layers(corpus: str):
+    import ttwtools
+    with _project() as proj:
+        return {"layers": ttwtools.layer_summary(proj, corpus)}
+
+
+# ---------------------------------------------------------------------------
 # Visão geral do corpus
 # ---------------------------------------------------------------------------
 

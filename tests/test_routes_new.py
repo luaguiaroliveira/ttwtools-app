@@ -98,3 +98,21 @@ def test_docs_page(client):
     for p in ["/api/taggers", "/api/explore/kwic", "/api/compare/keywords", "/api/help/{topic}", "/api/code",
               "/api/jobs/{job_id}", "/api/corpora/{corpus}/overview", "/api/tagging/layers"]:
         assert p in paths, p
+
+
+def test_corpora_library_routes(client, opened, tmp_path):
+    info = client.get("/api/project/info").json()
+    assert info["open"] and info["kind"] == "ttwa"
+    lib = {c["name"]: c for c in client.get("/api/corpora").json()["corpora"]}
+    assert lib["bawe"]["documents"] == 5 and lib["bawe"]["metadata_keys"] == ["area", "resto"]
+    docs = client.get("/api/corpora/bawe/documents", params={"limit": 2, "offset": 1}).json()
+    assert docs["total"] == 5 and len(docs["rows"]) == 2 and "area" in docs["rows"][0]
+    client.get("/api/explore/search", params={"corpus": "bawe", "query": "the"})      # cria camada simple
+    assert client.get("/api/corpora/bawe/layers").json()["layers"][0]["tool"] == "simple"
+    light = client.post("/api/project/convert", json={"to": "ttwl", "dest": str(tmp_path / "leve.ttwl")}).json()
+    assert light["kind"] == "ttwl" and client.get("/api/project/info").json()["kind"] == "ttwl"
+    assert client.get("/api/project/info").json()["corpus_status"]["ok"] == 10
+    folder = client.post("/api/project/export-corpus", json={"folder": str(tmp_path / "copia")}).json()["folder"]
+    assert (tmp_path / "copia" / "bawe").is_dir() and folder.endswith("copia")
+    back = client.post("/api/project/convert", json={"to": "ttwa", "dest": str(tmp_path / "volta.ttwa")})
+    assert back.status_code == 200 and client.get("/api/project/info").json()["kind"] == "ttwa"

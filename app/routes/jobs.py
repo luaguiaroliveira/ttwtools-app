@@ -22,6 +22,21 @@ def get_job(job_id: str):
     return job
 
 
+@router.post("/demo")
+def demo_job(steps: int = 20, delay: float = 0.25):
+    """Tarefa de exemplo (espera `steps` × `delay` s) para testar progresso e cancelamento."""
+    import time
+
+    def work(job, steps=min(steps, 1000), delay=min(delay, 5.0)):
+        for i in range(steps):
+            job.progress(i, steps, f"passo {i + 1}")
+            time.sleep(delay)
+        job.progress(steps, steps, "fim")
+        return {"steps": steps}
+
+    return {"job_id": jobs.start("demo", work)}
+
+
 @router.post("/{job_id}/cancel")
 def cancel_job(job_id: str):
     if not jobs.cancel(job_id):
