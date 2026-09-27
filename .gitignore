@@ -78,3 +78,6 @@ frontend-vue/node_modules/
 # preparo de corpora (tools/corpora)
 tools/corpora/.cache/
 dist-corpora/
+
+# worktrees temporários de agentes
+.claude/worktrees/
