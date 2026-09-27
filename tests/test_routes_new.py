@@ -248,6 +248,7 @@ def test_lista_a_executar(client, tmp_path):
     assert len(client.get("/api/corpora/c/pipeline").json()["steps"]) == 2
     job = wait_job(client, client.post("/api/corpora/c/pipeline/run").json()["job_id"])
     assert job["status"] == "done" and [d["step"]["kind"] for d in job["result"]["done"]] == ["tag", "stats"]
+    assert [s["status"] for s in job["steps"]] == ["done", "done"] and job["done"] == job["total"] == 1000
     assert client.get("/api/corpora/c/pipeline").json()["steps"] == []
     client.post("/api/corpora/c/pipeline", json={"kind": "stats"})
     assert client.delete("/api/corpora/c/pipeline/0").json()["steps"] == []

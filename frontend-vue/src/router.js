@@ -24,3 +24,16 @@ export const router = createRouter({
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
+
+// Telas carregadas sob demanda: se a interface foi recompilada com a janela aberta, os
+// arquivos antigos somem e a navegação falharia em silêncio. Recarrega no destino pedido
+// (uma vez por destino, para não entrar em laço se o servidor realmente não tiver o arquivo).
+const CHUNK_ERROR = /dynamically imported module|Importing a module script failed|Failed to fetch|error loading dynamically/i
+router.onError((err, to) => {
+  if (!CHUNK_ERROR.test(String(err?.message ?? err))) return
+  const key = `ttw.reload.${to.fullPath}`
+  try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1') } catch { /* */ }
+  window.location.assign(`${window.location.pathname}#${to.fullPath}`)
+  window.location.reload()
+})
+router.afterEach((to) => { try { sessionStorage.removeItem(`ttw.reload.${to.fullPath}`) } catch { /* */ } })

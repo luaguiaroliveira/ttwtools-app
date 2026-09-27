@@ -59,12 +59,16 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('add-stats').click()
   await page.getByTestId('preset-spacy-rapido').click()
   await page.getByTestId('add-spacy').click()
-  await expect(page.getByTestId('pipeline-queue').locator('li')).toHaveCount(2)
+  await expect(page.getByTestId('queue-item')).toHaveCount(2)
   await expect(page.getByTestId('pipeline-queue')).toContainText(/5 de 5|5 of 5/)
   await a11y(page, 'etiquetagem')
   await page.getByTestId('pipeline-run').click()
   await expect(page.getByTestId('pipeline-done')).toBeVisible({ timeout: 120_000 })
-  await expect(page.getByTestId('pipeline-queue').locator('li')).toHaveCount(0)
+  await expect(page.getByTestId('pipeline-percent')).toHaveText('100%')
+  await expect(page.getByTestId('pipeline-step-0')).toHaveAttribute('data-status', 'done')
+  await expect(page.getByTestId('pipeline-step-1')).toHaveAttribute('data-status', 'done')
+  await a11y(page, 'etiquetagem-andamento')
+  await expect(page.getByTestId('queue-item')).toHaveCount(0)
 
   // 3. visão geral já calculada, em Corpora
   await page.goto('/#/corpora')
@@ -110,4 +114,15 @@ test('acessibilidade das demais telas, tema escuro e alto contraste', async ({ p
       await a11y(page, `${theme} ${route}`)
     }
   }
+})
+
+test('tela sob demanda que sumiu (interface recompilada com a janela aberta) recarrega e abre', async ({ page }) => {
+  await page.goto('/#/corpora')
+  await page.waitForLoadState('networkidle')
+  let blocked = 0
+  await page.route(/assets\/ExploreView-.*\.js$/, (route) => (blocked++ ? route.continue() : route.fulfill({ status: 404, body: '' })))
+  await page.locator('nav:visible').getByRole('link', { name: /Explorar|Explore/ }).click()
+  await expect(page).toHaveURL(/explorar/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Explorar|Explore/, { timeout: 15_000 })
+  expect(blocked).toBeGreaterThan(1)
 })

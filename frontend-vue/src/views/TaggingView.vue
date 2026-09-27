@@ -10,7 +10,7 @@ import { useSession } from '../stores/session.js'
 import { useJob } from '../composables/useJob.js'
 import TaggerCard from '../components/TaggerCard.vue'
 import LayersList from '../components/LayersList.vue'
-import JobProgress from '../components/JobProgress.vue'
+import PipelineProgress from '../components/PipelineProgress.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
@@ -101,8 +101,10 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
           <h2 class="text-xl font-bold">{{ t('pipeline.queue_title') }} ({{ steps.length }})</h2>
           <p class="text-sm opacity-80">{{ t('pipeline.queue_intro') }}</p>
           <p v-if="!steps.length" class="text-sm opacity-70">{{ t('pipeline.queue_empty') }}</p>
-          <ol class="flex flex-col gap-2">
-            <li v-for="(s, i) in steps" :key="i" class="bg-base-100 rounded-box p-2 flex flex-wrap items-center gap-2">
+          <!-- durante a execução, a lista vira o painel de andamento -->
+          <PipelineProgress v-if="job.job.value?.steps" :job="job.job.value" @cancel="job.cancel" />
+          <ol v-if="!running" class="flex flex-col gap-2">
+            <li data-testid="queue-item" v-for="(s, i) in steps" :key="i" class="bg-base-100 rounded-box p-2 flex flex-wrap items-center gap-2">
               <span class="badge badge-neutral badge-sm" aria-hidden="true">{{ i + 1 }}</span>
               <span class="font-medium">{{ s.kind === 'stats' ? t('pipeline.stats_title') : tagName(s.tagger) }}</span>
               <span v-if="s.kind === 'tag' && optionsText(s.options)" class="text-xs opacity-70">{{ optionsText(s.options) }}</span>
@@ -112,12 +114,10 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
               <button class="btn btn-xs btn-ghost ml-auto" :disabled="running" :aria-label="t('pipeline.remove') + ' ' + (i + 1)" @click="remove(i)">{{ t('pipeline.remove') }}</button>
             </li>
           </ol>
-          <button class="btn btn-primary w-fit" :disabled="!steps.length || running" data-testid="pipeline-run" @click="run">{{ t('pipeline.run') }}</button>
-          <JobProgress :job="job.job.value" @cancel="job.cancel" />
-          <p v-if="job.job.value?.status === 'done'" role="status" class="text-sm text-success" data-testid="pipeline-done">
+          <button v-if="!running" class="btn btn-primary w-fit" :disabled="!steps.length" data-testid="pipeline-run" @click="run">{{ t('pipeline.run') }}</button>
+          <p v-if="job.job.value?.status === 'done'" role="status" class="text-sm" data-testid="pipeline-done">
             {{ t('pipeline.done', { n: job.job.value.result.done.length }) }}
             <RouterLink to="/corpora" class="link">{{ t('pipeline.see_overview') }}</RouterLink></p>
-          <p v-if="job.job.value?.status === 'error'" role="alert" class="text-error text-sm">{{ job.job.value.error }}</p>
         </section>
       </template>
     </template>

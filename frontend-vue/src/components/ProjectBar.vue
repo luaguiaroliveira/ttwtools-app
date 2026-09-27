@@ -86,7 +86,7 @@ const exportAll = () => act(async () => {
     </p>
     <JobProgress v-if="opening" :job="opening" />
     <JobProgress :job="saveJob.job.value" @cancel="saveJob.cancel" />
-    <p v-if="done" role="status" class="text-sm text-success">{{ done }}</p>
+    <p v-if="done" role="status" class="text-sm flex items-center gap-1"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <Collapsible :title="project ? t('project.more') : t('project.type_path')">
       <div class="flex flex-col gap-3">

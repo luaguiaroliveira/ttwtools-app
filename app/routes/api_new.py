@@ -286,10 +286,26 @@ def pipeline_run(corpus: str):
     if not path:
         raise HTTPException(status_code=400, detail="Nenhum projeto aberto.")
 
+    # a tarefa guarda `steps` (um estado por passo) e o andamento geral em milésimos:
+    # passos concluídos + fração do passo em curso, para a barra geral andar sem saltos
     def work(job, corpus=corpus, path=path):
         import ttwtools
+        from ttwtools import pipeline
         with ttwtools.open_project(path) as proj:
-            return ttwtools.run_steps(proj, corpus, progress=lambda d, t, m: job.progress(d, t, m))
+            order = pipeline._ordered(pipeline.pending_steps(proj, corpus))
+            states = [{"kind": s["kind"], "tagger": s.get("tagger"), "options": s.get("options") or {},
+                       "status": "queued", "done": 0, "total": None, "item": None} for s in order]
+            job.update(steps=states)
+
+            def on_step(i, state):
+                states[i].update(state)
+                finished = sum(1 for s in states if s["status"] == "done")
+                cur = states[i]
+                frac = (cur["done"] or 0) / cur["total"] if cur["status"] == "running" and cur["total"] else 0
+                job.update(steps=[dict(s) for s in states])
+                job.progress(round(1000 * (finished + frac) / max(len(states), 1)), 1000, cur.get("item") or "")
+
+            return ttwtools.run_steps(proj, corpus, on_step=on_step)
 
     return {"job_id": jobs.start("pipeline", work, corpus=corpus)}
 

@@ -89,9 +89,9 @@ const changeLang = (value) => setLang(value)
     <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-base-300 bg-base-200 grid grid-cols-6 z-10"
          :aria-label="t('nav.label')">
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path"
-                  class="flex flex-col items-center py-2 text-xs gap-1" active-class="text-primary font-bold">
+                  class="flex flex-col items-center py-2 text-[0.65rem] leading-tight gap-1 min-w-0 px-0.5" active-class="text-primary font-bold">
         <NavIcon :d="item.icon" />
-        {{ t(item.label) }}
+        <span class="max-w-full truncate">{{ t(item.label) }}</span>
       </RouterLink>
     </nav>
   </div>
