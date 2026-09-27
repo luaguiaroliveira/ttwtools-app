@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 6.2 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Passo atual:** aguardando o usuário — 3.11 (remover a interface antiga), 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC), 6.2 (roteiro nos sistemas) e 6.3 (release 0.4.0)
 - **Último passo concluído:** 6.1 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -136,7 +136,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 5.3 | Português | 1.5, 4.3 | [x] | 2026-09-27 | ver `git log --grep '\[5.3'` |
 | **Fase 6 — Fechamento** | | | | | |
 | 6.1 | Documentação | 3.11 | [x] | 2026-09-27 | ver `git log --grep '\[6.1'` |
-| 6.2 | Verificação em cada sistema | 6.1 | [ ] | | |
+| 6.2 | Verificação em cada sistema | 6.1 | [!] | 2026-09-27 | roteiro pronto; execução pelo usuário |
 | 6.3 | Release 0.4.0 | 6.2 | [ ] | | |
 
 **Ordem sugerida:** Fase 0 inteira primeiro (prova o pipeline de build e release com o código atual). Depois 1.1 a 1.4, 2.1 e 3.1 a 3.3 (base), e então os recursos (1.5–1.10 com 2.2 e 3.4–3.9) em ordem de valor: **Corpora → Explorar → tagger e Personalizar → Comparar → Ajuda**. Fases 4 e 5 podem correr em paralelo depois de 1.6.
@@ -967,12 +967,14 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 6.2 Verificação em cada sistema
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [!] · Data: 2026-09-27 · Commit: ver `git log --grep '\[6.2'` · Agente/máquina: Claude (Opus) / Mac arm64 — roteiro pronto; execução pelo usuário
 - **Fazer:**
   - [ ] Roteiro manual (10 a 15 itens) executado em macOS (arm64 e, se possível, Intel), **incluindo a máquina com macOS 12**, Windows e Linux com o pacote da `-rc.1`. No macOS 12, conferir também que os taggers indisponíveis (se houver) aparecem com o motivo.
   - [ ] Registrar problemas por sistema (janela, caminhos, permissões, assinatura) e corrigir ou listar como conhecidos.
 - **Pronto quando:** o roteiro passou em todos os sistemas suportados, ou as exceções estão documentadas.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: roteiro de 15 itens em [`roteiro_verificacao.md`](roteiro_verificacao.md) (instalar, versão, projeto, importação com metadados, visão geral, etiquetagem e cache, taggers indisponíveis com motivo, exploração, palavras-chave, KFA e galeria, copiar como código, catálogo e modelo, português, salvar/reabrir `.ttwt`, ajuda e acessibilidade), com a tabela de resultado por sistema.
+  - Pendências (usuário): gerar a `-rc.1` (depois do 3.11, para o pacote já abrir a interface nova) e executar o roteiro em macOS arm64, macOS 12 Intel, Windows e Linux.
 
 ### 6.3 Release 0.4.0
 
