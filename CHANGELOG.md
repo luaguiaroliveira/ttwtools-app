@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.4.0-rc.1] — 2026-09-27
+
 ### Adicionado
 
 - Catálogo de corpora: pacotes com ficha e licença conferida, instalação com conferência de hash, remoção e aviso de atualização, pela interface (Corpora → Catálogo) e por `ttwtools catalog` (4.1–4.2).
@@ -23,6 +25,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 - Testes da interface (Vitest) não tentam mais rodar o teste de ponta a ponta do Playwright (4.4).
 - Buscas por lema ou classe sem camada escolhida usam a camada que tem esse campo (antes podiam cair numa camada sem lema e dar zero) (6.1).
+
+- Pacote `ttwtools` 0.2.0.dev0 (commit `1d318a8`).
 
 ## [0.4.0-alpha.1] — 2026-09-26
 
@@ -125,7 +129,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...HEAD
+[0.4.0-rc.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...v0.4.0-rc.1
 [0.4.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...v0.4.0-alpha.1
 [0.3.7]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.5...v0.3.6
