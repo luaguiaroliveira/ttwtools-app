@@ -319,6 +319,7 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
     _wait_for_server(host, port)
 
     url = f"http://{host}:{port}"
+    webview.settings["ALLOW_DOWNLOADS"] = True     # exportar tabelas, gráficos e corpora pela janela
     webview.create_window(
         title="TTWtools",
         url=url,

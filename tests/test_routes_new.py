@@ -143,3 +143,13 @@ def test_kfa_routes(client, opened, spacy_model):
     v = client.get("/api/compare/feature", params={"corpus": "bawe", "layer": "spacy", "name": "NOUN"}).json()
     assert len(v["values"]) == 5 and v["values"][0]["value"] > 0
     assert client.post("/api/compare/kfa", json={"corpus1": "bawe", "corpus2": "corifa", "layer": "mfte"}).status_code == 422
+
+
+def test_corpus_export_route(client, opened, tmp_path):
+    client.get("/api/explore/search", params={"corpus": "bawe", "query": "the"})
+    r = client.post("/api/corpora/bawe/export", json={"format": "conllu"}).json()
+    assert r["documents"] == 5 and r["content"].startswith("# newdoc id")
+    dest = tmp_path / "b.vrt"
+    r = client.post("/api/corpora/bawe/export", json={"format": "vrt", "dest": str(dest)}).json()
+    assert r["out"] == str(dest) and dest.read_text().count("<text ") == 5
+    assert "word" in client.post("/api/corpora/bawe/export", json={"format": "csv"}).json()["content"].splitlines()[0]

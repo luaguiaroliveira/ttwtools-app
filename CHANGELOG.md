@@ -21,6 +21,7 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 - Tela Explorar: busca, KWIC (abre o texto na ocorrência), frequência, colocados, dispersão e leitor com etiquetas coloridas. (passo 3.6)
 - Tela Comparar: palavras-chave contra outro corpus, grupos ou lista, e KFA a partir das camadas (mesmo resultado da versão anterior) com detalhe do traço. (passo 3.7)
 - Ajuda na interface: balões, tour guiado, "Explicar esta tela", destino Aprender e visual interativo do d de Cohen. (passo 3.8)
+- Exportar tabelas (CSV/TXT), gráficos (SVG/PNG) e camadas (CoNLL-U, VRT, CSV); "copiar como código" em cada análise. (passo 3.9)
 
 ### Alterado
 - Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)

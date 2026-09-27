@@ -187,6 +187,32 @@ def corpus_text(corpus: str, filename: str, layer: str | None = None):
             raise HTTPException(status_code=404, detail=exc.args[0]) from exc
 
 
+class ExportRequest(BaseModel):
+    format: Literal["conllu", "vrt", "csv"]
+    layer: str | None = None
+    dest: str | None = None          # caminho no disco; sem ele, o conteúdo volta na resposta
+    where: dict[str, list[str]] | None = None
+
+
+@router.post("/corpora/{corpus}/export", tags=["corpora"])
+def corpus_export(corpus: str, req: ExportRequest):
+    """Exporta a camada do corpus em CoNLL-U, VRT ou CSV de tokens (ttwtools.formats)."""
+    import tempfile
+    from pathlib import Path
+    from ttwtools.formats import export_conllu, export_tokens, export_vrt
+    fn = {"conllu": export_conllu, "vrt": export_vrt}.get(req.format)
+    with _project() as proj, tempfile.TemporaryDirectory() as tmp:
+        out = Path(req.dest) if req.dest else Path(tmp) / f"{corpus}.{req.format}"
+        if fn:
+            report = _call(fn, proj, corpus, out, tool=req.layer, where=req.where)
+        else:
+            report = _call(export_tokens, proj, corpus, out, fmt="csv", tool=req.layer, where=req.where)
+        if not req.dest:
+            report["content"] = out.read_text(encoding="utf-8")
+            report["out"] = None
+    return report
+
+
 @router.get("/corpora/{corpus}/layers", tags=["corpora"])
 def corpus_layers(corpus: str):
     import ttwtools

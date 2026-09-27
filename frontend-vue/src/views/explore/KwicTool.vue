@@ -6,6 +6,9 @@ import { onMounted } from 'vue'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
 import HelpTip from '../../components/HelpTip.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const router = useRouter()
@@ -33,7 +36,10 @@ function open(line) { router.push({ path: '/explorar/leitor', query: { file: lin
 </script>
 <template>
   <section id="busca-kwic" class="flex flex-col gap-3">
-    <div class="flex justify-end"><HelpTip topic="kwic" /></div>
+    <div class="flex justify-end gap-1">
+      <template v-if="data"><CopyCode analysis="kwic" :params="{ corpus, query, layer, context, limit, offset, sort }" />
+        <ExportMenu :name="`kwic_${query}`" :rows="data.lines" :columns="['filename', 'start_char', 'left', 'match', 'right', 'pos', 'lemma']" /></template>
+      <HelpTip topic="kwic" /></div>
     <QueryBox :initial="String(route.query.q || '')" @submit="submit">
       <label class="form-control w-24"><span class="label-text">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>

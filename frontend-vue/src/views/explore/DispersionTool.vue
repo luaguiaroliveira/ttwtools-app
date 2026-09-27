@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
 import HelpTip from '../../components/HelpTip.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+const fig = ref(null)
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const data = ref(null)
@@ -23,7 +26,9 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
     <template v-if="data">
       <p role="status" class="font-medium">{{ t('explore.dp', { dp: f3(data.dp), dp_norm: f3(data.dp_norm), range: data.range, documents: data.documents }) }}
         <HelpTip topic="dispersao" /></p>
-      <figure class="flex flex-col gap-1">
+      <div class="flex gap-1"><CopyCode analysis="dispersion" :params="{ corpus, query: data.query, layer }" />
+        <ExportMenu :name="`dispersao_${data.query}`" :rows="data.per_document.map(({ positions, ...r }) => r)" :svg-root="fig" /></div>
+      <figure ref="fig" class="flex flex-col gap-1">
         <figcaption class="text-sm flex items-center">{{ t('explore.barcode') }}
           <button class="btn btn-xs btn-ghost ml-auto" @click="asTable = !asTable">{{ asTable ? t('chart.as_chart') : t('chart.as_table') }}</button></figcaption>
         <table v-if="asTable" class="table table-xs"><thead><tr><th>{{ t('explore.file') }}</th><th class="text-right">{{ t('explore.freq') }}</th><th class="text-right">tokens</th></tr></thead>

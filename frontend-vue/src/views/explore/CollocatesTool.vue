@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
 import HelpTip from '../../components/HelpTip.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const f = ref({ left: 5, right: 5, unit: 'form', min_freq: 2, sort: 'll' })
@@ -31,7 +34,9 @@ const fx = (v, d = 2) => (v === null || v === undefined ? '—' : v.toFixed(d))
     </QueryBox>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <div v-if="data" class="overflow-x-auto">
-      <p class="text-sm mb-1">{{ data.node }} · {{ data.node_freq }}× <HelpTip topic="keyness" /></p>
+      <p class="text-sm mb-1 flex items-center gap-1">{{ data.node }} · {{ data.node_freq }}× <HelpTip topic="keyness" />
+        <span class="ml-auto flex gap-1"><CopyCode analysis="collocates" :params="{ corpus, node: data.node, layer, ...f }" />
+          <ExportMenu :name="`colocados_${data.node}`" :rows="data.rows" /></span></p>
       <table class="table table-xs"><thead><tr><th>{{ t('explore.collocate') }}</th><th class="text-right">{{ t('explore.freq') }}</th>
         <th class="text-right">LL</th><th class="text-right">MI</th><th class="text-right">T</th><th>{{ t('explore.position') }}</th></tr></thead>
         <tbody><tr v-for="r in data.rows" :key="r.collocate"><td>{{ r.collocate }}</td><td class="text-right tabular-nums">{{ r.freq }}</td>

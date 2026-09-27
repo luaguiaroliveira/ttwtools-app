@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.9 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.8 prontos
+- **Passo atual:** 3.10 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.9 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -122,7 +122,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.6 | Explorar | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.6\]'` |
 | 3.7 | Comparar | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.7\]'` |
 | 3.8 | Ajuda e Aprender | 3.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.8\]'` |
-| 3.9 | Exportar e "copiar como código" | 3.6 | [ ] | | |
+| 3.9 | Exportar e "copiar como código" | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.9\]'` |
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [ ] | | |
 | 3.11 | Remover a interface antiga | 3.10 | [ ] | | |
 | **Fase 4 — Catálogo de corpora** | | | | | |
@@ -790,13 +790,21 @@ Próximo: 3.9.
 
 ### 3.9 Exportar e "copiar como código"
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.9\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Fazer:**
-  - [ ] Exportar qualquer tabela em CSV/TXT e qualquer gráfico em PNG/SVG.
-  - [ ] Botão **"copiar como código"** em cada análise (comando `ttwtools ...` e trecho Python), usando o endpoint da 2.2.
-  - [ ] Exportar corpus/camadas em CoNLL-U e VRT (1.6).
+  - [x] Exportar qualquer tabela em CSV/TXT e qualquer gráfico em PNG/SVG.
+  - [x] Botão **"copiar como código"** em cada análise (comando `ttwtools ...` e trecho Python), usando o endpoint da 2.2.
+  - [x] Exportar corpus/camadas em CoNLL-U e VRT (1.6).
 - **Pronto quando:** o comando copiado de uma análise, rodado no terminal, dá o mesmo resultado que a tela.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: menu Exportar (tabela em CSV/TXT; gráfico em SVG/PNG com as cores do tema) e botão "Copiar como código" (comando ttwtools e trecho Python, via POST /api/code, com copiar para a área de transferência) na busca, KWIC, frequência, colocados, dispersão, visão geral, palavras-chave, KFA e etiquetagem; exportar cada camada em CoNLL-U, VRT ou CSV (POST /api/corpora/{c}/export, conteúdo para baixar ou gravação num caminho); downloads liberados na janela do app (pywebview ALLOW_DOWNLOADS).
+Arquivos: frontend-vue/src/{utils/export.js, components/{ExportMenu,CopyCode}.vue, test/export.test.js} e as telas; app/routes/api_new.py (export), app/__main__.py; submódulo: codegen (--where2; where1/where2 no Python da KFA), textos.
+Testes: vitest → 12 passed; pytest tests → 32 passed; libs codegen/features → 15 passed; navegador: KWIC "society" → "Copiar como código" → o comando rodado no terminal devolveu JSON idêntico ao da tela (46 linhas).
+Pendências: o download dentro da janela do pywebview (WebKit) não foi testado à mão; no navegador funciona.
+Observações: o gerador inclui todo parâmetro informado (os padrões do CLI e da função podem diferir).
+Próximo: 3.10.
+```
 
 ### 3.10 Acessibilidade e testes de interface
 

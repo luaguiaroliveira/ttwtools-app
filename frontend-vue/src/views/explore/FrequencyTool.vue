@@ -5,6 +5,9 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import BarChart from '../../components/BarChart.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+const chart = ref(null)
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const { activeCorpus } = storeToRefs(useSession())
@@ -32,7 +35,9 @@ async function run() {
     </form>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
-      <BarChart v-if="f.by === 'corpus'" :title="t(`explore.unit.${data.unit}`)" :items="data.rows.map((r) => ({ label: r.item, value: r.freq }))" value-label="freq" :max="25" />
+      <div class="flex gap-1"><CopyCode analysis="frequency" :params="{ corpus, layer, unit: f.unit, n: f.unit === 'ngram' ? f.n : null, by: f.by, top: f.top }" />
+        <ExportMenu :name="`frequencia_${f.unit}`" :rows="data.rows" :svg-root="f.by === 'corpus' ? chart : null" /></div>
+      <BarChart v-if="f.by === 'corpus'" ref="chart" :title="t(`explore.unit.${data.unit}`)" :items="data.rows.map((r) => ({ label: r.item, value: r.freq }))" value-label="freq" :max="25" />
       <div class="overflow-x-auto max-h-96">
         <table class="table table-xs"><thead><tr><th v-if="f.by !== 'corpus'">{{ t('explore.by') }}</th><th>{{ t('explore.item') }}</th><th class="text-right">{{ t('explore.freq') }}</th><th class="text-right">{{ t('explore.per_1000') }}</th></tr></thead>
           <tbody><tr v-for="(r, i) in data.rows" :key="i"><td v-if="f.by !== 'corpus'">{{ r.group }}</td><td>{{ r.item }}</td>

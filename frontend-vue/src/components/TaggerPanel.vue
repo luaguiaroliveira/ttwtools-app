@@ -9,6 +9,7 @@ import TagsetDrawer from './TagsetDrawer.vue'
 import JobProgress from './JobProgress.vue'
 import Collapsible from './Collapsible.vue'
 import HelpTip from './HelpTip.vue'
+import CopyCode from './CopyCode.vue'
 
 const props = defineProps({ corpus: { type: String, required: true } })
 const emit = defineEmits(['tagged'])
@@ -104,8 +105,11 @@ const current = computed(() => taggers.value.find((x) => x.id === tagger.value))
       <span v-if="plan.clonable"> {{ t('tag.plan_clone', plan) }}</span>
     </p>
     <p v-if="planError" role="alert" class="text-error text-sm">{{ planError }}</p>
+    <div class="flex gap-2 items-center">
+    <CopyCode analysis="tag" :params="{ corpus, tagger, options: Object.keys(options).length ? options : null }" />
     <button class="btn btn-primary btn-sm w-fit" data-testid="tag-run"
             :disabled="!!planError || ['queued', 'running'].includes(job.job.value?.status)" @click="run">{{ t('tag.run') }}</button>
+    </div>
     <JobProgress :job="job.job.value" @cancel="job.cancel" />
     <p v-if="job.job.value?.status === 'done'" role="status" class="text-sm">{{ t('tag.result', job.job.value.result) }}</p>
     <TagsetDrawer :open="showTags" :tagger="tagger" @close="showTags = false" />

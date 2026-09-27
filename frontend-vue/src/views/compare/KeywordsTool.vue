@@ -6,6 +6,9 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import HelpTip from '../../components/HelpTip.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -23,6 +26,8 @@ async function run() {
   error.value = null
   const reference = f.value.refKind === 'corpus' ? f.value.refCorpus : f.value.refKind === 'rest' ? `rest:${f.value.groupKey}` : f.value.listPath
   const where = f.value.refKind === 'rest' ? { [f.value.groupKey]: [f.value.groupValue] } : undefined
+  lastParams.value = { corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure, layer: layer.value,
+    min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction }
   try {
     data.value = await api.compare.keywords({ corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure,
       min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction, layer: layer.value, lang: locale.value })
@@ -61,6 +66,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p class="text-sm font-medium">{{ t('compare.words', { target: data.target, tw: data.target_words, reference: data.reference, rw: data.reference_words }) }}</p>
+      <div class="flex gap-1"><CopyCode analysis="keywords" :params="lastParams" /><ExportMenu name="palavras-chave" :rows="data.rows" /></div>
       <div v-for="w in data.warnings" :key="w.code" role="alert" class="alert py-1 text-sm"
            :class="{ 'alert-error': w.severity === 'error', 'alert-warning': w.severity === 'warning', 'alert-info': w.severity === 'info' }">{{ w.message }}</div>
       <div class="overflow-x-auto max-h-[60vh]">

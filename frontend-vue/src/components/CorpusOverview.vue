@@ -7,6 +7,9 @@ import { useJob } from '../composables/useJob.js'
 import StatCard from './StatCard.vue'
 import BarChart from './BarChart.vue'
 import JobProgress from './JobProgress.vue'
+import CopyCode from './CopyCode.vue'
+import ExportMenu from './ExportMenu.vue'
+
 
 const props = defineProps({ corpus: { type: String, required: true }, layer: { type: String, default: null } })
 const { t, locale } = useI18n()
@@ -38,6 +41,8 @@ const n = (v, d = 0) => (v === null || v === undefined ? '—' : Number(v).toLoc
     </div>
     <JobProgress v-if="job.job.value && job.job.value.status !== 'done'" :job="job.job.value" @cancel="job.cancel" />
     <template v-if="data">
+      <div class="flex gap-1"><CopyCode analysis="describe" :params="{ corpus, layer, hide_stopwords: hideStop || null }" />
+        <ExportMenu :name="`visao_geral_${corpus}`" :rows="data.text.per_document" /></div>
       <p class="text-sm opacity-70">{{ t('overview.estimates') }}</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2" data-testid="overview-stats">
         <StatCard :label="t('overview.documents')" :value="n(data.text.documents)" />

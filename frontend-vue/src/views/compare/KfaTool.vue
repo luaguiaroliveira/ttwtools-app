@@ -6,6 +6,10 @@ import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import DivergingBars from '../../components/DivergingBars.vue'
 import HelpTip from '../../components/HelpTip.vue'
+import CopyCode from '../../components/CopyCode.vue'
+import ExportMenu from '../../components/ExportMenu.vue'
+const bars = ref(null)
+const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
 const { corpora, activeCorpus } = storeToRefs(useSession())
@@ -26,6 +30,8 @@ async function run() {
   error.value = null
   detail.value = null
   const s1 = side(1), s2 = side(2)
+  lastParams.value = { corpus: s1.corpus, corpus2: s2.corpus, layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect,
+    where: s1.where, where2: s2.where }
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
       layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect })
@@ -36,7 +42,7 @@ async function select(name) {
   const row = data.value.rows.find((r) => r.Feature === name)
   detail.value = { name, row, v1: a.values, v2: b.values }
 }
-const bars = computed(() => (data.value?.rows ?? []).map((r) => ({ label: r.Feature, value: r.Effect_Size })))
+const barRows = computed(() => (data.value?.rows ?? []).map((r) => ({ label: r.Feature, value: r.Effect_Size })))
 const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(detail.value?.v2 ?? [])].map((v) => v.value)))
 </script>
 <template>
@@ -64,7 +70,8 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }}</p>
-      <DivergingBars :rows="bars" :title="t('kfa.chart')" @select="select" />
+      <div class="flex gap-1"><CopyCode analysis="kfa" :params="lastParams" /><ExportMenu name="kfa" :rows="data.rows" :svg-root="bars" /></div>
+      <DivergingBars ref="bars" :rows="barRows" :title="t('kfa.chart')" @select="select" />
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
