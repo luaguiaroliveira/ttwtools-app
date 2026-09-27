@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.7 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.6 prontos
+- **Passo atual:** 3.8 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.7 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -120,7 +120,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.5\]'` |
 | 3.6 | Explorar | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.6\]'` |
-| 3.7 | Comparar | 3.6 | [ ] | | |
+| 3.7 | Comparar | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.7\]'` |
 | 3.8 | Ajuda e Aprender | 3.2 | [ ] | | |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [ ] | | |
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [ ] | | |
@@ -748,15 +748,23 @@ Próximo: 3.7.
 
 ### 3.7 Comparar
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.7\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §16 e §17.3 ("Aba Resultados atual"); `frontend-src/src/views/{analysis,results}.js` só por `grep -n`.
 - **Fazer:**
-  - [ ] **Palavras-chave** contra referência (seletor de referência com a ficha do corpus, avisos de comparabilidade, tabela que leva ao KWIC).
-  - [ ] **KFA**: portar a tela de análise e os resultados atuais (barras divergentes, dispersão, bolhas, faixas, mapa de calor, radar, violino, redução), trocando as sub-abas por uma galeria com seletor.
+  - [x] **Palavras-chave** contra referência (seletor de referência com a ficha do corpus, avisos de comparabilidade, tabela que leva ao KWIC).
+  - [~] **KFA**: portar a tela de análise e os resultados atuais (barras divergentes, dispersão, bolhas, faixas, mapa de calor, radar, violino, redução), trocando as sub-abas por uma galeria com seletor.
   - [ ] Gráficos 3D e redução dimensional pesados carregados **sob demanda** (Plotly só aqui).
-  - [ ] Detalhe de feature (`feature-detail`) e abertura do texto com a tag marcada.
+  - [x] Detalhe de feature (`feature-detail`) e abertura do texto com a tag marcada.
 - **Pronto quando:** a KFA de dois corpora de teste dá o mesmo resultado que a interface antiga, e as palavras-chave funcionam contra outro corpus do projeto.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: tela Comparar (#/comparar?tool=palavras-chave|kfa). Palavras-chave: referência = outro corpus, os demais grupos (metadado) ou lista .tsv; unidade, medida, freq. e textos mínimos, correção; avisos de comparabilidade; tabela com LL, log ratio, %DIFF, p corrigido e range; clicar leva ao KWIC. KFA: entre dois corpora ou dois grupos do mesmo corpus, camada, métrica (KFA/KFA2), |d| mínimo; barras divergentes clicáveis (com "ver como tabela"); detalhe do traço com um ponto por texto em cada lado e "Ver no leitor" com a tag destacada.
+Arquivos: frontend-vue/src/views/{CompareView.vue, compare/{KeywordsTool,KfaTool}.vue}, components/DivergingBars.vue, explore/{KwicTool,ReaderTool}.vue (?q=, ?highlight=); app/routes/api_new.py (POST /api/compare/kfa, GET /api/compare/feature); submódulo: ttwtools/features.py (novo), taggers/biberplus.py (alinhamento sem perder tags), cli.py (compare), codegen (kfa), tests/test_features.py.
+Testes: libs → 115 passed (tabelas das camadas migradas de MFTE e spaCy idênticas às antigas; camada nova do BiberPlus idêntica à tabela antiga e KFA2 com d igual ao resultado salvo pela versão 0.1.0, diferença < 1e-9); app → 31 passed; navegador: KFA bawe × corifa (spaCy, 100 × 100 textos, 11 traços com |d| ≥ 0,2) e detalhe; palavras-chave bawe × corifa → KWIC de "poem" (214).
+Pendências: galeria dos demais gráficos da interface antiga (dispersão de médias, bolhas, faixas, mapa de calor, radar, violino, redução dimensional e 3D com Plotly sob demanda) — a lógica de redução ainda está em app/routes/viz.py e precisa ir para o pacote antes; fica para um passo próprio.
+Observações: KFA das camadas não reetiqueta; JSONL antigos do BiberPlus perderam tags de pontuação e de tokens não localizados (a camada migrada difere um pouco da tabela antiga; etiquetar de novo resolve).
+Próximo: 3.8.
+```
 
 ### 3.8 Ajuda e Aprender
 

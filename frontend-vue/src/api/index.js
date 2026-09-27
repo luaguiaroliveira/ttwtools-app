@@ -50,6 +50,8 @@ export const api = {
   },
   compare: {
     keywords: (body) => post('/api/compare/keywords', body),
+    kfa: (body) => post('/api/compare/kfa', body),
+    feature: (p) => get('/api/compare/feature', { ...p, where: where(p.where) }),
     references: () => get('/api/references'),
   },
   help: {

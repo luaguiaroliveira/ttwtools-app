@@ -313,6 +313,36 @@ def compare_keywords(req: KeywordsRequest):
                      correction=req.correction, top=req.top, lang=req.lang)
 
 
+class KfaRequest(BaseModel):
+    corpus1: str
+    corpus2: str
+    layer: str
+    feature: Literal["tags", "upos", "xpos"] | None = None
+    metric: Literal["kfa", "kfa2"] = "kfa"
+    min_effect: float = 0.0
+    join: Literal["union", "intersection"] = "union"
+    where1: dict[str, list[str]] | None = None
+    where2: dict[str, list[str]] | None = None
+
+
+@router.post("/compare/kfa", tags=["compare"])
+def compare_kfa(req: KfaRequest):
+    """KFA a partir das camadas (sem reetiquetar), entre corpora ou grupos."""
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.kfa_layers, proj, req.corpus1, req.corpus2, req.layer, req.feature, req.metric,
+                     req.min_effect, req.join, req.where1, req.where2)
+
+
+@router.get("/compare/feature", tags=["compare"])
+def compare_feature(corpus: str, layer: str, name: str, feature: str | None = None,
+                    where: list[str] | None = Query(None)):
+    """Valor por 1000 palavras de um traço em cada documento (detalhe do traço)."""
+    from ttwtools.features import feature_values
+    with _project() as proj:
+        return {"values": _call(feature_values, proj, corpus, layer, name, feature, _where(where))}
+
+
 @router.get("/references", tags=["compare"])
 def references():
     """Referências do catálogo (a partir do passo 4.1; por enquanto vazio)."""

@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { onMounted } from 'vue'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const router = useRouter()
+const route = useRoute()
 const query = ref('')
 const context = ref(5)
 const sort = ref('position')
@@ -24,12 +26,13 @@ async function load() {
   } catch (err) { error.value = err.message } finally { loading.value = false }
 }
 function submit(q) { query.value = q; offset.value = 0; load() }
+onMounted(() => { if (route.query.q) submit(String(route.query.q)) })
 function page(d) { offset.value = Math.max(0, offset.value + d * limit.value); load() }
 function open(line) { router.push({ path: '/explorar/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <QueryBox @submit="submit">
+    <QueryBox :initial="String(route.query.q || '')" @submit="submit">
       <label class="form-control w-24"><span class="label-text">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>
       <label class="form-control"><span class="label-text">{{ t('explore.sort') }}</span>
