@@ -56,7 +56,7 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
       <p class="opacity-80">{{ t('pipeline.intro') }}</p>
     </div>
     <p v-if="!hasProject || !corpora.length" class="opacity-70">{{ t('pipeline.need_corpus') }}
-      <RouterLink to="/corpora" class="link">{{ t('nav.corpora') }}</RouterLink></p>
+      <RouterLink to="/arquivo" class="link">{{ t('nav.corpora') }}</RouterLink></p>
     <template v-else>
       <label class="flex flex-col gap-1 w-fit"><span class="label-text">{{ t('pipeline.corpus') }}</span>
         <select class="select select-sm" :value="corpus" data-testid="pipeline-corpus" @change="session.setCorpus($event.target.value)">
@@ -117,7 +117,7 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
           <button v-if="!running" class="btn btn-primary w-fit" :disabled="!steps.length" data-testid="pipeline-run" @click="run">{{ t('pipeline.run') }}</button>
           <p v-if="job.job.value?.status === 'done'" role="status" class="text-sm" data-testid="pipeline-done">
             {{ t('pipeline.done', { n: job.job.value.result.done.length }) }}
-            <RouterLink to="/corpora" class="link">{{ t('pipeline.see_overview') }}</RouterLink></p>
+            <RouterLink to="/arquivo" class="link">{{ t('pipeline.see_overview') }}</RouterLink></p>
         </section>
       </template>
     </template>

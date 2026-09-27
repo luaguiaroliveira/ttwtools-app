@@ -110,7 +110,8 @@ def pick_save(suggested: str = "projeto.ttwa", default_location: str = ""):
     ext = Path(suggested).suffix or ".ttwa"
 
     def pick():
-        path = _webview_dialog("save", default_location, save_filename=suggested, exts=(ext.lstrip("."),))
+        others = tuple(e for e in ("ttwa", "ttwt") if e != ext.lstrip("."))
+        path = _webview_dialog("save", default_location, save_filename=suggested, exts=(ext.lstrip("."), *others))
         if path is None:
             if platform.system() == "Darwin":
                 path = _osascript(f'POSIX path of (choose file name with prompt "Salvar como:" '

@@ -36,7 +36,7 @@ Baixe o pacote do seu sistema na página de [releases](https://github.com/luagui
 - **Windows:** o SmartScreen pode avisar sobre um executável não assinado: **Mais informações** → **Executar assim mesmo**.
 - **macOS Intel:** o `torch` disponível é mais antigo (2.2.2). O Stanza e o MFTE funcionam, mas, se algum tagger não puder rodar, a tela mostra o motivo; spaCy e BiberPlus não dependem disso.
 
-O pacote já traz o modelo `en_core_web_sm` do spaCy. Outros modelos (inglês maiores, português) são baixados pelo próprio aplicativo, em **Corpora → Catálogo → Modelos**.
+O pacote já traz o modelo `en_core_web_sm` do spaCy. Outros modelos (inglês maiores, português) são baixados pelo próprio aplicativo, em **Módulos**.
 
 ## Primeira análise
 
@@ -76,7 +76,7 @@ Toda tabela e gráfico tem **Exportar** (CSV, TXT, SVG, PNG) e **Copiar como có
 
 ## Catálogo de corpora e modelos
 
-Em **Corpora → Catálogo**:
+Em **Módulos**:
 
 - **Corpora prontos** (já etiquetados, com ficha: idioma, variedade, período, gêneros, tamanho, licença, fonte). Cada corpus redistribuível tem também um pacote só com as **listas de frequência**, pequeno, que basta para usá-lo como referência em palavras-chave e faixas de frequência (`catalog:<id>`). Corpora cuja licença não permite redistribuir aparecem como **receita** (o comando para preparar a sua cópia).
 - **Modelos** do spaCy (inglês e português) para baixar sob demanda.

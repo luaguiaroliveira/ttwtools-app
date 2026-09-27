@@ -57,7 +57,8 @@ class UpgradeRequest(BaseModel):
 
 class SaveAsRequest(BaseModel):
     path: str
-    format: str  # 'ttwt' | 'ttwa'
+    format: str | None = None   # 'ttwt' | 'ttwa'; sem isso, vale a extensão de `path`
+    switch: bool = True         # passar a trabalhar no arquivo gravado (como "Salvar como" dos aplicativos)
 
 
 # ---------------------------------------------------------------------------
@@ -339,25 +340,49 @@ def export_project(req: ExportRequest):
 
 @router.post("/saveas")
 def saveas_project(req: SaveAsRequest):
-    """Inicia exportação do projeto atual para um novo arquivo (.ttwa ou .ttwt)."""
+    """Salvar como: grava o projeto atual em outro arquivo (.ttwa copia, .ttwt compacta), com as
+    alterações recentes, e (switch=True) passa a trabalhar nele. Tarefa; acompanhe em /api/jobs/{id}."""
     _require_project()
-    if req.format not in ("ttwt", "ttwa"):
+    dest = Path(req.path).expanduser()
+    fmt = req.format or ("ttwt" if dest.suffix.lower() == ".ttwt" else "ttwa")
+    if fmt not in ("ttwt", "ttwa"):
         raise HTTPException(status_code=400, detail="Formato inválido. Use 'ttwt' ou 'ttwa'.")
-    job_id = _jobs_registry.new("saveas")
-    _saveas_jobs[job_id].update({
-        "status": "running",
-        "done": 0,
-        "total": 0,
-        "message": "Iniciando…",
-        "result": None,
-        "error": None,
-    })
-    threading.Thread(
-        target=_run_saveas,
-        args=(job_id, app_state.current_project_path, os.path.expanduser(req.path), req.format),
-        daemon=True,
-    ).start()
-    return {"job_id": job_id}
+    if dest.suffix.lower() not in (".ttwt", ".ttwa", ".ttwl"):
+        dest = dest.with_suffix("." + fmt)
+    source = app_state.current_project_path
+
+    def work(job, source=source, dest=dest, switch=req.switch):
+        from ttwtools.project import save_project_as
+        job.update(stage="save")
+        save_project_as(source, dest, progress_cb=lambda d, t: job.progress(d, t, ""))
+        if switch:
+            if dest.suffix.lower() == ".ttwt":
+                app_state.source_ttwt_path = str(dest)      # continua na cópia de trabalho; "Salvar" grava aqui
+            else:
+                _cleanup_temp_ttwt()
+                app_state.current_project_path = str(dest.resolve())
+                app_state.source_ttwt_path = None
+        return {"path": str(dest), "size": dest.stat().st_size, "switched": switch}
+
+    return {"job_id": _jobs_registry.start("saveas", work)}
+
+
+@router.post("/save")
+def save_project():
+    """Salvar: .ttwa/.ttwl já gravam sozinhos (resposta `autosaved`); projeto aberto de um .ttwt
+    grava a cópia de trabalho de volta no .ttwt (tarefa)."""
+    _require_project()
+    if not app_state.source_ttwt_path:
+        return {"status": "autosaved", "path": app_state.current_project_path}
+    source, dest = app_state.current_project_path, app_state.source_ttwt_path
+
+    def work(job, source=source, dest=dest):
+        from ttwtools.project import save_project_as
+        job.update(stage="save")
+        save_project_as(source, dest, progress_cb=lambda d, t: job.progress(d, t, ""))
+        return {"path": dest, "size": Path(dest).stat().st_size}
+
+    return {"status": "saving", "job_id": _jobs_registry.start("save", work)}
 
 
 @router.get("/saveas-status/{job_id}")
@@ -519,49 +544,6 @@ def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
         })
     except Exception as exc:
         _open_jobs[job_id].update({
-            "status": "error",
-            "error": str(exc),
-            "message": str(exc),
-        })
-
-
-def _run_saveas(job_id: str, source: str, dest: str, fmt: str) -> None:
-    """Copia/comprime o projeto para um novo arquivo."""
-    import os
-    from ttwtools.project import compress_to_ttwt
-
-    def _progress(done: int, total: int):
-        label = "Comprimindo" if fmt == "ttwt" else "Copiando"
-        mb_done  = done  // (1024 * 1024)
-        mb_total = total // (1024 * 1024)
-        _saveas_jobs[job_id].update({
-            "done": done, "total": total,
-            "message": f"{label}… {mb_done} MB / {mb_total} MB",
-        })
-
-    try:
-        Path(dest).parent.mkdir(parents=True, exist_ok=True)
-        if fmt == "ttwt":
-            compress_to_ttwt(source, dest, progress_cb=_progress)
-        else:  # 'ttwa' — copy in chunks
-            total = os.path.getsize(source)
-            done = 0
-            with open(source, "rb") as src, open(dest, "wb") as out:
-                while True:
-                    chunk = src.read(65536)
-                    if not chunk:
-                        break
-                    out.write(chunk)
-                    done += len(chunk)
-                    _progress(done, total)
-
-        _saveas_jobs[job_id].update({
-            "status": "done",
-            "message": "Salvo com sucesso.",
-            "result": {"path": dest, "size": os.path.getsize(dest)},
-        })
-    except Exception as exc:
-        _saveas_jobs[job_id].update({
             "status": "error",
             "error": str(exc),
             "message": str(exc),

@@ -116,3 +116,31 @@ def test_criar_por_cima_so_com_overwrite(client, tmp_path):
     assert client.post("/api/project/create", json={"path": p}).status_code == 200
     assert client.post("/api/project/create", json={"path": p}).status_code == 409
     assert client.post("/api/project/create", json={"path": p, "overwrite": True}).status_code == 200
+
+
+def test_salvar_e_salvar_como_com_ttwt(client, tmp_path):
+    import ttwtools
+    from ttwtools.project import compress_to_ttwt
+    base = tmp_path / "base.ttwa"
+    ttwtools.create_project(base).close()
+    ttwt = tmp_path / "p.ttwt"
+    compress_to_ttwt(base, ttwt)
+    r = client.post("/api/project/open", json={"path": str(ttwt)}).json()
+    assert wait_job(client, r["job_id"])["status"] == "done"
+    info = client.get("/api/project/info").json()
+    assert info["source_ttwt"] == str(ttwt.resolve()) or info["source_ttwt"] == str(ttwt)
+    client.post("/api/corpora/import", json={"corpus_name": "novo", "source": {"kind": "text", "text": "Olá."}})
+    # Salvar grava a cópia de trabalho de volta no .ttwt
+    s = client.post("/api/project/save").json()
+    assert s["status"] == "saving" and wait_job(client, s["job_id"])["status"] == "done"
+    from ttwtools.project import decompress_from_ttwt
+    decompress_from_ttwt(ttwt, tmp_path / "check.ttwa")
+    with ttwtools.open_project(tmp_path / "check.ttwa") as c:
+        assert "novo" in c.list_corpus_names()
+    # Salvar como .ttwa: passa a trabalhar no arquivo novo, que já grava sozinho
+    dest = tmp_path / "copia.ttwa"
+    j = client.post("/api/project/saveas", json={"path": str(dest)}).json()
+    assert wait_job(client, j["job_id"])["result"]["switched"]
+    info = client.get("/api/project/info").json()
+    assert info["path"] == str(dest.resolve()) and info["source_ttwt"] is None
+    assert client.post("/api/project/save").json()["status"] == "autosaved"

@@ -35,7 +35,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   expect((await waitJob(request, job.job_id)).status).toBe('done')
 
   // 1. importar pela interface (assistente)
-  await page.goto('/#/corpora')
+  await page.goto('/#/arquivo')
   await page.getByTestId('add-corpus').click()
   await page.getByTestId('wizard-path').fill(path.join(CORPORA, 'essays_bawe_somentetexto_5'))
   await page.getByTestId('wizard-path').press('Tab')
@@ -71,7 +71,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page.getByTestId('queue-item')).toHaveCount(0)
 
   // 3. visão geral já calculada, em Corpora
-  await page.goto('/#/corpora')
+  await page.goto('/#/arquivo')
   await expect(page.getByTestId('overview-stats')).toContainText('5')
   await a11y(page, 'corpora-visao-geral')
 
@@ -117,7 +117,7 @@ test('acessibilidade das demais telas, tema escuro e alto contraste', async ({ p
 })
 
 test('tela sob demanda que sumiu (interface recompilada com a janela aberta) recarrega e abre', async ({ page }) => {
-  await page.goto('/#/corpora')
+  await page.goto('/#/arquivo')
   await page.waitForLoadState('networkidle')
   let blocked = 0
   await page.route(/assets\/ExploreView-.*\.js$/, (route) => (blocked++ ? route.continue() : route.fulfill({ status: 404, body: '' })))
@@ -125,4 +125,28 @@ test('tela sob demanda que sumiu (interface recompilada com a janela aberta) rec
   await expect(page).toHaveURL(/explorar/)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Explorar|Explore/, { timeout: 15_000 })
   expect(blocked).toBeGreaterThan(1)
+})
+
+test('arquivo .ttwt: cópia de trabalho, Salvar e pergunta antes de trocar de projeto', async ({ page, request }, info) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
+  const base = path.join(dir, `${info.project.name}.ttwa`)
+  const ttwt = path.join(dir, `${info.project.name}.ttwt`)
+  expect((await request.post('/api/project/create', { data: { path: base } })).ok()).toBeTruthy()
+  const job = await (await request.post('/api/project/saveas', { data: { path: ttwt, switch: false } })).json()
+  expect((await waitJob(request, job.job_id)).status).toBe('done')
+
+  await page.goto('/#/arquivo')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Arquivo|File/)
+  await page.getByText(/Mais opções do projeto|More project options/).click()
+  await page.getByTestId('project-path').fill(ttwt)
+  await page.getByTestId('project-open').click()
+  await expect(page.getByTestId('ttwt-note')).toBeVisible({ timeout: 30_000 })
+  await expect(page.getByTestId('project-current-path')).toContainText('.ttwt')
+  await page.getByTestId('project-save').click()
+  await expect(page.getByTestId('file-done')).toContainText('.ttwt', { timeout: 30_000 })
+  await page.getByTestId('project-new').click()
+  await expect(page.getByTestId('unsaved-prompt')).toBeVisible()
+  await a11y(page, 'arquivo-ttwt')
+  await page.getByRole('button', { name: /^(Cancelar|Cancel)$/ }).click()
+  await expect(page.getByTestId('unsaved-prompt')).toHaveCount(0)
 })

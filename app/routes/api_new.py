@@ -130,6 +130,8 @@ def project_info():
     with _project() as proj:
         status = proj.check_corpus()
         return {"open": True, "path": str(proj.path), "kind": proj.kind,
+                "source_ttwt": app_state.source_ttwt_path,         # aberto de um .ttwt: trabalha numa cópia
+                "display_path": app_state.source_ttwt_path or str(proj.path),
                 "name": proj.get_meta("project_name", proj.path.stem),
                 "schema_version": str(proj.get_meta("schema_version")),
                 "corpus_status": {k: len(v) for k, v in status.items()}}

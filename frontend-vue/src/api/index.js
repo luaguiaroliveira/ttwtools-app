@@ -21,6 +21,7 @@ export const api = {
     exportCorpus: (folder) => post('/api/project/export-corpus', { folder }),
     exportAll: (dest_folder) => post('/api/project/export', { items: null, dest_folder: dest_folder || null }),
     saveAs: (path, format) => post('/api/project/saveas', { path, format }),
+    save: () => post('/api/project/save'),
     pendingOpen: () => get('/api/project/pending-open'),
     summary: () => get('/api/project/summary'),
   },

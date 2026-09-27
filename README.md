@@ -36,7 +36,7 @@ Download the package for your system from the [releases](https://github.com/luag
 - **Windows:** SmartScreen may warn about an unsigned executable: **More info** → **Run anyway**.
 - **Intel Macs:** the available `torch` is older (2.2.2). Stanza and MFTE work, but if a tagger cannot run the screen shows why; spaCy and BiberPlus do not depend on it.
 
-The package ships spaCy's `en_core_web_sm`. Other models (larger English ones, Portuguese) are downloaded by the application itself, in **Corpora → Catalog → Models**.
+The package ships spaCy's `en_core_web_sm`. Other models (larger English ones, Portuguese) are downloaded by the application itself, in **Modules**.
 
 ## First analysis
 
@@ -76,7 +76,7 @@ Every table and chart has **Export** (CSV, TXT, SVG, PNG) and **Copy as code**.
 
 ## Corpus and model catalog
 
-In **Corpora → Catalog**:
+In **Modules**:
 
 - **Ready-made corpora** (already tagged, with a record card: language, variety, period, genres, size, licence, source). Each redistributable corpus also has a small package with just its **frequency lists**, which is enough to use it as a reference for keywords and frequency bands (`catalog:<id>`). Corpora whose licence does not allow redistribution appear as a **recipe** (the command to prepare your own copy).
 - spaCy **models** (English and Portuguese) to download on demand.

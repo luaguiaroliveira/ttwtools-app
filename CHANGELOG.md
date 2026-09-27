@@ -12,6 +12,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Alterado
 
+- "Corpora" passa a se chamar **Arquivo**, com Novo, Abrir, Salvar e Salvar como; projetos .ttwt têm Salvar de verdade e pergunta antes de trocar de projeto (6.2a).
 - Corpora não calcula nem etiqueta mais: a visão geral mostra o que já foi calculado e aponta para Etiquetagem (6.2a).
 - Assistente "Adicionar corpus" em dois passos: as informações sobre os textos (metadados) viraram um painel opcional recolhido, com os pedaços do nome de um arquivo real, pré-visualização e planilha CSV como alternativa (6.2a).
 - Projeto com **Novo projeto…**, **Abrir projeto…** e **Salvar cópia…** pelos diálogos do sistema; digitar o caminho fica num painel recolhido (6.2a).
@@ -21,6 +22,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - "Novo projeto…" sobre um arquivo existente falhava mesmo depois de o diálogo do sistema confirmar a substituição; no caminho digitado, a tela oferece "Substituir" (6.2a).
 - Depois de recompilar a interface com a janela aberta, as telas carregadas sob demanda (Explorar, Comparar...) não abriam; agora a página recarrega no destino (6.2a).
 - Projetos de versões anteriores grandes pareciam não abrir: a atualização de formato agora mostra o progresso, pode ser cancelada e retoma de onde parou, e ficou bem mais rápida (6.2a).
+- "Salvar como" podia deixar de fora as alterações mais recentes (ainda no WAL do SQLite); trabalho feito num projeto aberto de .ttwt se perdia ao abrir outro projeto (6.2a).
 - Caminhos com `~` (ex.: `~/projeto.ttwa`) davam "unable to open database file" (6.2a).
 - Depois de instalar um corpus ou baixar um modelo, a lista só se atualiza quando a tarefa termina (6.2a).
 
