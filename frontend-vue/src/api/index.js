@@ -16,7 +16,7 @@ export const api = {
     current: () => get('/api/project/current'),
     info: () => get('/api/project/info'),
     open: (path) => post('/api/project/open', { path }),
-    create: (path) => post('/api/project/create', { path }),
+    create: (path, overwrite = false) => post('/api/project/create', { path, overwrite }),
     convert: (to, dest) => post('/api/project/convert', { to, dest }),
     exportCorpus: (folder) => post('/api/project/export-corpus', { folder }),
     exportAll: (dest_folder) => post('/api/project/export', { items: null, dest_folder: dest_folder || null }),

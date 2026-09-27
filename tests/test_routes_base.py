@@ -103,3 +103,10 @@ def test_til_ao_criar_e_abrir(client, tmp_path, monkeypatch):
     r = client.post("/api/project/create", json={"path": "~/proj.ttwa"})
     assert r.status_code == 200 and r.json()["path"] == str((tmp_path / "proj.ttwa").resolve())
     assert client.post("/api/project/open", json={"path": "~/proj.ttwa"}).status_code == 200
+
+
+def test_criar_por_cima_so_com_overwrite(client, tmp_path):
+    p = str(tmp_path / "x.ttwa")
+    assert client.post("/api/project/create", json={"path": p}).status_code == 200
+    assert client.post("/api/project/create", json={"path": p}).status_code == 409
+    assert client.post("/api/project/create", json={"path": p, "overwrite": True}).status_code == 200

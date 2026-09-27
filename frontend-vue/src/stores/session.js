@@ -55,8 +55,8 @@ export const useSession = defineStore('session', {
       if (this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
       this.save()
     },
-    async createProject(path) {
-      await api.project.create(path)
+    async createProject(path, overwrite = false) {
+      await api.project.create(path, overwrite)
       await this.openProject(path)
     },
     /** Arquivo pedido pelo sistema (duplo clique, --open): abre se houver. */

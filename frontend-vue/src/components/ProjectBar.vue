@@ -28,9 +28,10 @@ async function act(fn) {
   busy.value = true
   try { await fn() } catch (err) { error.value = err.message } finally { busy.value = false }
 }
+// o diálogo de salvar do sistema já pergunta se pode substituir: aqui não se pergunta de novo
 const newProject = () => act(async () => {
   const r = await api.utils.pickSave('novo_projeto.ttwa')
-  if (r?.path) await session.createProject(r.path)
+  if (r?.path) await session.createProject(r.path, true)
 })
 const openProject = () => act(async () => {
   const r = await api.utils.pickFile()
@@ -46,7 +47,15 @@ const saveCopy = () => act(async () => {
 const savingTo = ref('')
 watch(() => saveJob.job.value?.status, (s) => { if (s === 'done') done.value = t('project.saved', { path: savingTo.value }) })
 const openTyped = () => act(() => session.openProject(path.value))
-const createTyped = () => act(() => session.createProject(path.value))
+// caminho digitado: se já existe, avisa e oferece "Substituir"
+const exists = ref(false)
+const createTyped = (overwrite = false) => act(async () => {
+  exists.value = false
+  try { await session.createProject(path.value, overwrite) } catch (err) {
+    if (err.status === 409) { exists.value = true; return }
+    throw err
+  }
+})
 const convert = (to) => act(async () => { await api.project.convert(to); await session.refresh() })
 const exportCorpus = () => act(async () => { await api.project.exportCorpus(); await session.refresh() })
 const exportAll = () => act(async () => {
@@ -86,8 +95,10 @@ const exportAll = () => act(async () => {
           <div class="flex flex-wrap gap-2">
             <input id="project-path" v-model="path" class="input input-sm flex-1 min-w-48" :placeholder="t('project.path')" data-testid="project-path" />
             <button type="submit" class="btn btn-sm" :disabled="busy || !path" data-testid="project-open">{{ t('project.open') }}</button>
-            <button type="button" class="btn btn-sm" :disabled="busy || !path" data-testid="project-create" @click="createTyped">{{ t('project.create') }}</button>
+            <button type="button" class="btn btn-sm" :disabled="busy || !path" data-testid="project-create" @click="createTyped()">{{ t('project.create') }}</button>
           </div>
+          <p v-if="exists" role="alert" class="text-sm text-warning flex flex-wrap items-center gap-2">{{ t('project.exists') }}
+            <button type="button" class="btn btn-xs btn-warning" data-testid="project-overwrite" @click="createTyped(true)">{{ t('project.overwrite') }}</button></p>
           <span class="text-xs opacity-70">{{ t('project.type_path_hint') }}</span>
         </form>
         <template v-if="project">
