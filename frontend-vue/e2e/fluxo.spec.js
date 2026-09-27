@@ -37,9 +37,12 @@ test('fluxo completo', async ({ page, request }, info) => {
   // 1. importar pela interface (assistente)
   await page.goto('/#/corpora')
   await page.getByTestId('add-corpus').click()
-  await page.getByTestId('wizard-name').fill('bawe')
   await page.getByTestId('wizard-path').fill(path.join(CORPORA, 'essays_bawe_somentetexto_5'))
   await page.getByTestId('wizard-path').press('Tab')
+  await expect(page.getByTestId('wizard-final-name')).toContainText('essays_bawe_somentetexto_5')   // padrão: nome da pasta
+  await page.getByTestId('wizard-rename').locator('summary').click()
+  await page.getByTestId('wizard-name').fill('bawe')
+  await expect(page.getByTestId('wizard-final-name')).toContainText('bawe')
   // informações sobre os textos: painel opcional recolhido, com os pedaços do nome real
   await page.getByTestId('wizard-meta').locator('summary').first().click()
   await page.getByTestId('wizard-piece-0').fill('area')

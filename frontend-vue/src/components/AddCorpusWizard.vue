@@ -1,6 +1,7 @@
 <script setup>
-// Assistente "Adicionar corpus": 1) de onde vêm os textos (com as informações sobre os
-// textos num painel opcional recolhido)  2) o que fazer agora.
+// Assistente "Adicionar corpus": 1) de onde vêm os textos (renomear e as informações sobre
+// os textos ficam em painéis opcionais recolhidos)  2) o que fazer agora.
+// O nome do corpus é o da pasta (ou "texto_colado"), salvo se a pessoa renomear.
 import { computed, reactive, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api/index.js'
@@ -9,7 +10,7 @@ import Collapsible from './Collapsible.vue'
 const emit = defineEmits(['done', 'overview', 'tag'])
 const { t } = useI18n()
 const step = ref(1)
-const form = reactive({ name: '', kind: 'folder', format: 'txt', path: '', text: '', delimiter: '_', pieces: [], metaCsv: '' })
+const form = reactive({ customName: '', kind: 'folder', format: 'txt', path: '', text: '', delimiter: '_', pieces: [], metaCsv: '' })
 const preview = ref(null)
 const result = ref(null)
 const error = ref(null)
@@ -18,16 +19,16 @@ const SEPARATORS = [['_', 'underscore'], ['-', 'hyphen'], ['.', 'dot'], [' ', 's
 
 async function chooseFolder() {
   const r = await api.utils.pickFolder().catch(() => null)
-  if (r?.path) {
-    form.path = r.path
-    if (!form.name) form.name = r.path.split(/[\\/]/).filter(Boolean).pop()
-  }
+  if (r?.path) form.path = r.path
 }
 async function chooseCsv() {
   const r = await api.utils.pickFile(undefined, 'csv').catch(() => null)
   if (r?.path) form.metaCsv = r.path
 }
-const canImport = computed(() => form.name && (form.kind === 'folder' ? form.path : form.kind === 'text' ? form.text : false))
+const defaultName = computed(() => (form.kind === 'text' ? 'texto_colado'
+  : (form.path.split(/[\\/]/).filter(Boolean).pop() || '').replace(/\.[^.]+$/, '')))
+const name = computed(() => form.customName.trim() || defaultName.value)
+const canImport = computed(() => name.value && (form.kind === 'folder' ? form.path : form.kind === 'text' ? form.text : false))
 const usesNames = computed(() => form.kind === 'folder' && form.format === 'txt')
 
 // um nome por pedaço (a lista inteira, para cada nome valer só para o seu pedaço); vazio = ignorar
@@ -44,7 +45,6 @@ async function loadPreview() {
   } catch { preview.value = null }
 }
 watch(() => [form.path, form.delimiter, form.format], () => { form.pieces = []; loadPreview() })
-watch(() => form.path, (v) => { if (v && !form.name) form.name = v.split(/[\\/]/).filter(Boolean).pop() })
 let timer = null
 watch(fields, () => { clearTimeout(timer); timer = setTimeout(loadPreview, 250) })
 const example = computed(() => preview.value?.examples?.[0])
@@ -54,14 +54,14 @@ async function doImport() {
   busy.value = true
   try {
     result.value = await api.corpora.import({
-      corpus_name: form.name,
+      corpus_name: name.value,
       source: form.kind === 'folder' ? { kind: 'folder', path: form.path, format: form.format } : { kind: 'text', text: form.text },
       filename_fields: usesNames.value ? fields.value : null,
       delimiter: form.delimiter,
       metadata_csv: form.metaCsv || null,
     })
     step.value = 2
-    emit('done', form.name)
+    emit('done', name.value)
   } catch (err) {
     error.value = err.message
   } finally {
@@ -78,8 +78,6 @@ async function doImport() {
     </ul>
 
     <div v-if="step === 1" class="flex flex-col gap-3">
-      <label class="flex flex-col gap-1 max-w-md"><span class="label-text">{{ t('wizard.name') }}</span>
-        <input v-model="form.name" class="input input-sm w-full" data-testid="wizard-name" /></label>
       <fieldset class="flex flex-wrap gap-3">
         <legend class="sr-only">{{ t('wizard.step_source') }}</legend>
         <label v-for="k in ['folder', 'text']" :key="k" class="flex items-center gap-1">
@@ -88,12 +86,19 @@ async function doImport() {
         </label>
       </fieldset>
       <div v-if="form.kind === 'folder'" class="flex flex-wrap gap-2">
-        <input v-model.lazy="form.path" class="input input-sm flex-1 min-w-48" :placeholder="t('wizard.folder')" :aria-label="t('wizard.folder')" data-testid="wizard-path" />
-        <button type="button" class="btn btn-sm" @click="chooseFolder">{{ t('wizard.choose_folder') }}</button>
+        <button type="button" class="btn btn-sm btn-primary" data-testid="wizard-choose-folder" @click="chooseFolder">{{ t('wizard.choose_folder') }}</button>
+        <input v-model.lazy="form.path" class="input input-sm flex-1 min-w-48" :placeholder="t('wizard.folder_or_type')" :aria-label="t('wizard.folder')" data-testid="wizard-path" />
         <select v-model="form.format" class="select select-sm" :aria-label="t('wizard.format')" data-testid="wizard-format">
           <option v-for="fm in ['txt', 'conllu', 'nltk', 'tei', 'graf']" :key="fm" :value="fm">{{ t(`wizard.format.${fm}`) }}</option></select>
       </div>
       <textarea v-if="form.kind === 'text'" v-model="form.text" class="textarea h-32" :aria-label="t('wizard.text')" />
+      <p v-if="name" class="text-sm" data-testid="wizard-final-name">{{ t('wizard.will_be_called') }} <strong>{{ name }}</strong></p>
+
+      <Collapsible :title="t('wizard.rename_title')" data-testid="wizard-rename">
+        <label class="flex flex-col gap-1 max-w-md"><span class="label-text">{{ t('wizard.name') }}</span>
+          <input v-model="form.customName" class="input input-sm w-full" :placeholder="defaultName" data-testid="wizard-name" />
+          <span class="text-xs opacity-70">{{ t('wizard.rename_hint') }}</span></label>
+      </Collapsible>
 
       <Collapsible v-if="usesNames" :title="t('wizard.meta_title')" data-testid="wizard-meta">
         <div class="flex flex-col gap-3">
@@ -154,8 +159,8 @@ joao_C1_2023.txt,C1,2023</pre>
     <div v-else class="flex flex-col gap-2">
       <p role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied ?? 0 }) }}</p>
       <div class="flex gap-2">
-        <button class="btn btn-sm btn-primary" data-testid="wizard-overview" @click="emit('overview', form.name)">{{ t('wizard.see_overview') }}</button>
-        <button class="btn btn-sm" @click="emit('tag', form.name)">{{ t('wizard.tag_now') }}</button>
+        <button class="btn btn-sm btn-primary" data-testid="wizard-overview" @click="emit('overview', name)">{{ t('wizard.see_overview') }}</button>
+        <button class="btn btn-sm" @click="emit('tag', name)">{{ t('wizard.tag_now') }}</button>
       </div>
     </div>
   </section>
