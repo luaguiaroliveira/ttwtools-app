@@ -901,19 +901,21 @@ Uma tela sempre acessível com:
 
 (espaço para os próximos acréscimos)
 
-### 19.1 Ideia para mais tarde: arquivo por corpus (`.ttwc`) e por conjunto (`.ttwa`)
+### 19.1 Ideia para mais tarde: arquivo por corpus (`.ttwc`) e de análise entre corpora (`.ttwa`)
 
-Registrada em 2026-09-27. Ainda não decidida nem planejada; pensar melhor antes de entrar no plano.
+Registrada em 2026-09-27. Nomes decididos pelo usuário em 2026-09-27; o resto ainda não foi planejado.
 
-- **`.ttwc`: um corpus.** Textos, metadados e camadas de um único corpus. É a unidade que se etiqueta, reaproveita e compartilha.
-- **`.ttwa`: conjunto de corpora (*bundle*).** Reúne vários corpora para as análises que os comparam (KFA, palavras-chave, Laboratório). Guarda as análises e aponta para os `.ttwc` (ou os embute).
-- **Manter o "l" de *light*** nos dois níveis: versão leve com o texto fora do arquivo, como o `.ttwl` de hoje (§9.3). Nomes a definir (por exemplo `.ttwcl` e `.ttwal`, ou outra forma curta).
-- A diferença de nome precisa deixar claro, só pela extensão, se o arquivo é um corpus ou um conjunto.
+- **`.ttwc`: um corpus.** Textos, metadados, as etiquetagens (camadas) e as análises feitas só nele (estatísticas descritivas, frequência, KWIC, colocados, dispersão). É a unidade que se etiqueta, reaproveita e compartilha.
+- **`.ttwa`: análises entre corpora** (o "a" de *análise*). Reúne dois ou mais corpora para as análises que os comparam (KFA, palavras-chave, Laboratório) e guarda esses resultados. Aponta para os `.ttwc` ou os embute.
+- **Manter o "l" de *light*** nos dois: versão leve com o texto fora do arquivo, como o `.ttwl` de hoje (§9.3). Proposta: `.ttwcl` e `.ttwal`, e o `.ttwl` atual continua aceito como sinônimo de `.ttwal`.
+- A extensão sozinha diz se o arquivo é um corpus ou uma análise entre corpora.
+- Nomes descartados: *bundle* (não diz para que serve), `.ttwm` de *multi* (nomeia a quantidade e não o papel, e trocaria a extensão dos arquivos atuais), `.ttwk` de coleção (letra forçada).
 
 A pensar:
 
-- Se o `.ttwa` referencia os `.ttwc` pelo caminho (com hash, como o `.ttwl`) ou os copia para dentro; e o que acontece quando um `.ttwc` muda depois da análise.
-- Como migrar os `.ttwa` atuais, que hoje já são projetos com vários corpora: viram conjuntos com os corpora embutidos?
+- Se o `.ttwa` referencia os `.ttwc` pelo caminho (com hash, como o `.ttwl`) ou os copia para dentro; e o que acontece quando um `.ttwc` muda depois da análise (camadas e resultados desatualizados).
+- Onde fica a etiquetagem usada numa comparação: sempre no `.ttwc`, e o `.ttwa` só registra qual camada usou.
+- Como migrar os `.ttwa` atuais, que hoje misturam corpora, camadas e análises: separar cada corpus num `.ttwc` e manter no `.ttwa` só as comparações, ou aceitar os antigos com os corpora embutidos.
 - Relação com os pacotes do catálogo (Fase 4): um corpus do catálogo poderia ser simplesmente um `.ttwc`.
 - O `.ttwt` (comprimido) continua valendo para os dois tipos ou ganha um equivalente por tipo.
-- Paridade (§10): comandos para criar, juntar e separar corpora e conjuntos no pacote e na GUI.
+- Paridade (§10): comandos para criar corpus, montar análise a partir de `.ttwc`, embutir e separar, no pacote e na GUI.
