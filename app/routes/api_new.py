@@ -5,7 +5,7 @@ valida a entrada e chama uma função pública do pacote `ttwtools`.
     /api/taggers, /api/taggers/{id}/options, /api/taggers/{id}/tagset
     /api/corpora/{corpus}/overview (GET: guardado; POST: calcula em tarefa)
     /api/explore/{search,kwic,frequency,collocates,dispersion}
-    /api/compare/keywords, /api/references
+    /api/compare/keywords, /api/compare/bands, /api/references
     /api/help, /api/help/{tópico}, /api/help/tours/{id}, /api/i18n/{lang}
     /api/code (comando de linha de comando e código Python equivalentes)
     POST /api/tagging/layers (etiquetar com opções, em tarefa)
@@ -404,8 +404,27 @@ def compare_viz(kind: Literal["matrix", "heatmap", "reduction"], req: VizRequest
 
 @router.get("/references", tags=["compare"])
 def references():
-    """Referências do catálogo (a partir do passo 4.1; por enquanto vazio)."""
-    return {"references": []}
+    """Listas de referência instaladas pelo catálogo (`ref` = `catalog:<id>`), uma por unidade."""
+    from ttwtools import corpus_catalog as cc
+    return {"references": cc.reference_lists()}
+
+
+class BandsRequest(BaseModel):
+    corpus: str
+    reference: str
+    unit: Literal["form", "lemma", "word_pos"] = "form"
+    bands: list[int] = [1000, 2000, 3000, 5000, 10000]
+    layer: str | None = None
+    where: dict[str, list[str]] | None = None
+
+
+@router.post("/compare/bands", tags=["compare"])
+def compare_bands(req: BandsRequest):
+    """Faixas de frequência lexical do corpus contra uma referência."""
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.frequency_bands, proj, req.corpus, req.reference, unit=req.unit,
+                     bands=tuple(req.bands), layer=req.layer, where=req.where)
 
 
 # ---------------------------------------------------------------------------

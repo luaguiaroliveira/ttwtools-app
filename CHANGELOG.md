@@ -8,6 +8,12 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 - Catálogo de corpora: pacotes com ficha e licença conferida, instalação com conferência de hash, remoção e aviso de atualização, pela interface (Corpora → Catálogo) e por `ttwtools catalog` (4.1–4.2).
 - Download de modelos spaCy e Stanza sob demanda para a pasta de dados do usuário, fora do binário (4.2).
+- Scripts de preparo dos corpora do catálogo em `tools/corpora/`: demonstração (Gutenberg), Brown, UD English EWT e receita do LOB (4.3).
+- Listas de referência do catálogo (`catalog:<id>`) nas palavras-chave, pacotes só de listas e **faixas de frequência lexical** (Comparar → Faixas de frequência; `ttwtools bands`) (4.4).
+
+### Corrigido
+
+- Testes da interface (Vitest) não tentam mais rodar o teste de ponta a ponta do Playwright (4.4).
 
 ## [0.4.0-alpha.1] — 2026-09-26
 

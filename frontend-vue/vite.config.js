@@ -18,5 +18,6 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    include: ['src/**/*.test.js'],   // e2e/ é do Playwright (npm run e2e)
   },
 })

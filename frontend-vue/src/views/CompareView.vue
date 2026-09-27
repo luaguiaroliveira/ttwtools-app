@@ -7,6 +7,7 @@ import { useSession } from '../stores/session.js'
 const TOOLS = {
   'palavras-chave': defineAsyncComponent(() => import('./compare/KeywordsTool.vue')),
   kfa: defineAsyncComponent(() => import('./compare/KfaTool.vue')),
+  faixas: defineAsyncComponent(() => import('./compare/BandsTool.vue')),
 }
 const { t } = useI18n()
 const route = useRoute()

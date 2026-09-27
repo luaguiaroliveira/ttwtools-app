@@ -185,5 +185,13 @@ def test_catalog_routes(client, tmp_path, monkeypatch):
     job = wait_job(client, client.post("/api/catalog/install", json={"id": "d"}).json()["job_id"])
     assert job["status"] == "done" and job["result"]["project"]
     assert client.get("/api/catalog").json()["installed"][0]["id"] == "d"
+    refs = client.get("/api/references").json()["references"]
+    assert {r["ref"] for r in refs} == {"catalog:d"}
+    client.post("/api/project/open", json={"path": str(proj)})
+    bands = client.post("/api/compare/bands", json={"corpus": "d", "reference": "catalog:d", "bands": [2, 4]}).json()
+    assert [r["band"] for r in bands["rows"]] == ["1-2", "3-4", ">4", "off_list"]
+    assert bands["rows"][-1]["tokens"] == 0
+    code = client.post("/api/code", json={"analysis": "bands", "params": {"corpus": "d", "reference": "catalog:d"}}).json()
+    assert "ttwtools bands" in code["cli"] and "--reference catalog:d" in code["cli"]
     assert client.post("/api/catalog/remove", json={"id": "d"}).json() == {"removed": 1}
     assert any(m["name"] == "en_core_web_sm" for m in client.get("/api/models").json()["spacy"])

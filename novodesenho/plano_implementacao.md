@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 4.3 (3.11 aguarda confirmação do usuário)
-- **Último passo concluído:** 4.2 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2 e 3 (exceto remoção da interface antiga, 3.11) prontas
+- **Passo atual:** 5.1 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Último passo concluído:** 4.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -128,8 +128,8 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | **Fase 4 — Catálogo de corpora** | | | | | |
 | 4.1 | Formato de pacote e catálogo | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
 | 4.2 | Baixar, instalar e atualizar | 4.1 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
-| 4.3 | Primeiros corpora | 4.2, 1.6 | [ ] | | |
-| 4.4 | Listas de frequência de referência | 4.3, 1.9 | [ ] | | |
+| 4.3 | Primeiros corpora | 4.2, 1.6 | [!] | 2026-09-26 | scripts prontos; licenças e publicação (D6) aguardam o usuário |
+| 4.4 | Listas de frequência de referência | 4.3, 1.9 | [x] | 2026-09-26 | ver `git log --grep '\[4.3'` |
 | **Fase 5 — Extras** | | | | | |
 | 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [ ] | | |
 | 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [ ] | | |
@@ -877,23 +877,30 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 4.3 Primeiros corpora
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [!] · Data: 2026-09-26 · Commit: ver `git log --grep '\[4.3'` · Agente/máquina: Claude (Opus) / Mac arm64 — aguarda licenças conferidas e D6
 - **Fazer:**
-  - [ ] Scripts de preparo em `tools/corpora/` (reproduzíveis) para: Brown e LOB (via NLTK), Universal Dependencies (inglês) e um corpus de demonstração pequeno com metadados (obras em domínio público, para os tours).
-  - [ ] Conferir e registrar a licença de cada um na ficha.
-  - [ ] Publicar no catálogo.
+  - [x] Scripts de preparo em `tools/corpora/` (reproduzíveis) para: Brown e LOB (via NLTK), Universal Dependencies (inglês) e um corpus de demonstração pequeno com metadados (obras em domínio público, para os tours).
+  - [!] Conferir e registrar a licença de cada um na ficha.
+  - [!] Publicar no catálogo.
 - **Pronto quando:** Brown está instalável pelo catálogo, já etiquetado, e abre na visão geral.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `tools/corpora/` com `_common.py`, `demo.py` (18 capítulos de Alice, Tom Sawyer e Sherlock Holmes, Projeto Gutenberg, sem cabeçalho/licença do PG e sem o `_itálico_`; metadados autor, obra, ano, variedade, capítulo), `brown.py` (nltk_data; etiquetas originais como camada `nltk_tagged`, tagset "brown", + spaCy; metadados category/section), `ud_english.py` (EWT r2.18, 1.174 documentos, camada `conllu`; genre/split), `lob.py` (só receita; prepara localmente a cópia da pessoa), `build_catalog.py` e `README.md`. Cada script grava pacote + entrada; sem `--license-verified` e `--redistributable` sai só receita. Pacotes já saem com a visão geral calculada.
+  - Conferido localmente (catálogo em pasta temporária): Brown completo (500 textos, 1.033.053 palavras, 114 MB, 2,5 min) instalado pela rota do catálogo e aberto; demo (5 MB) instalado e aberto pela tela; EWT (20 MB, 17 s).
+  - Licenças encontradas (a pessoa confere e registra a data): Brown — README do nltk_data diz "Distributed with the permission of the copyright holder, redistribution permitted."; EWT — CC BY-SA 4.0 (LICENSE.txt); demo — domínio público nos EUA; LOB — ICAME, sem redistribuição.
+  - Pendências (usuário): conferir as licenças e gerar com `--license-verified`; decidir onde publicar (D6). Observação: o texto do Gutenberg usa apóstrofo curvo (’) e o Brown, reto ('): em palavras-chave, `’s`/`n’t` aparecem como chave; avaliar normalizar apóstrofos na tokenização ou na comparação.
 
 ### 4.4 Listas de frequência de referência
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[4.3'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Fazer:**
-  - [ ] Gerar a lista de frequências de cada corpus do catálogo (forma, lema, classe, número de documentos).
-  - [ ] Ligar ao seletor de referência de 3.7 e às faixas de frequência lexical.
-  - [ ] Conferir a licença da lista derivada, separada da do texto.
+  - [x] Gerar a lista de frequências de cada corpus do catálogo (forma, lema, classe, número de documentos).
+  - [x] Ligar ao seletor de referência de 3.7 e às faixas de frequência lexical.
+  - [x] Conferir a licença da lista derivada, separada da do texto.
 - **Pronto quando:** palavras-chave de um corpus do usuário contra Brown funcionam sem instalar o Brown completo (só a lista).
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `corpus_catalog.make_reference_package` (pacote `<id>-lista`, só `referencia-form|lemma|pos.tsv`, licença própria em `license.reference_list`), `reference_lists()`, `reference_list_path()`; `catalog:<id>[@versão]` aceito como referência em `keywords()` e em `frequency_bands()` (novo: perfil de frequência lexical por faixas 1–1000, 1001–2000... + fora da lista, ocorrências e tipos, exemplos); `ttwtools bands`, `ttwtools catalog references`; rotas `/api/references` (listas instaladas) e `/api/compare/bands`; seletor "lista do catálogo" nas palavras-chave; aba **Faixas de frequência** em Comparar (gráfico, tabela, exportar, copiar como código); ajuda `faixas_frequencia` (pt/en).
+  - Testes: `test_corpus_catalog.py` (+2), `test_routes_new.py::test_catalog_routes` ampliado; no navegador: demo × lista do Brown (398 KB, sem o Brown completo) → 75,6% das ocorrências nas 1.000 primeiras; palavras-chave contra `catalog:brown` funcionam.
+  - Correção junto: o Vitest pegava `e2e/fluxo.spec.js` (Playwright) e o CI da interface estava vermelho desde o 3.10; `vite.config.js` agora inclui só `src/**/*.test.js`.
 
 ---
 

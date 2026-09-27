@@ -52,6 +52,7 @@ export const useSession = defineStore('session', {
       this.corpus = null
       this.layer = null
       await this.refresh()
+      if (this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
       this.save()
     },
     async createProject(path) {

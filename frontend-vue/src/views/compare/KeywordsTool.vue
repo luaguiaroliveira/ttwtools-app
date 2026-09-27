@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
@@ -14,17 +14,22 @@ const { t, locale } = useI18n()
 const router = useRouter()
 const session = useSession()
 const { corpora, activeCorpus, layer } = storeToRefs(session)
-const f = ref({ refKind: 'corpus', refCorpus: '', groupKey: '', groupValue: '', listPath: '', unit: 'form', measure: 'll', min_freq: 5, min_range: 1, correction: 'bonferroni' })
+const f = ref({ refKind: 'corpus', refCorpus: '', groupKey: '', groupValue: '', listPath: '', catalogRef: '', unit: 'form', measure: 'll', min_freq: 5, min_range: 1, correction: 'bonferroni' })
 const groups = ref([])
 const data = ref(null)
 const error = ref(null)
 const others = computed(() => corpora.value.filter((c) => c.name !== props.corpus))
+const catalogRefs = ref([])
+onMounted(async () => {
+  const seen = new Map((await api.compare.references()).references.map((r) => [r.ref, r]))
+  catalogRefs.value = [...seen.values()]
+})
 async function loadGroups() {
   groups.value = f.value.groupKey ? [...new Set((await api.corpora.documents(props.corpus, { limit: 1000 })).rows.map((r) => r[f.value.groupKey]))] : []
 }
 async function run() {
   error.value = null
-  const reference = f.value.refKind === 'corpus' ? f.value.refCorpus : f.value.refKind === 'rest' ? `rest:${f.value.groupKey}` : f.value.listPath
+  const reference = f.value.refKind === 'corpus' ? f.value.refCorpus : f.value.refKind === 'rest' ? `rest:${f.value.groupKey}` : f.value.refKind === 'catalog' ? f.value.catalogRef : f.value.listPath
   const where = f.value.refKind === 'rest' ? { [f.value.groupKey]: [f.value.groupValue] } : undefined
   lastParams.value = { corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure, layer: layer.value,
     min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction }
@@ -41,7 +46,9 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
     <form id="palavras-chave" class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="form-control"><span class="label-text">{{ t('compare.reference') }}</span>
         <select v-model="f.refKind" class="select select-sm"><option value="corpus">{{ t('compare.ref.corpus') }}</option>
-          <option value="rest" :disabled="!activeCorpus?.metadata_keys.length">{{ t('compare.ref.rest') }}</option><option value="list">{{ t('compare.ref.list') }}</option></select></label>
+          <option value="rest" :disabled="!activeCorpus?.metadata_keys.length">{{ t('compare.ref.rest') }}</option><option value="catalog" :disabled="!catalogRefs.length">{{ t('compare.ref.catalog') }}</option><option value="list">{{ t('compare.ref.list') }}</option></select></label>
+      <label v-if="f.refKind === 'catalog'" class="form-control"><span class="label-text">{{ t('compare.ref.catalog') }}</span>
+        <select v-model="f.catalogRef" class="select select-sm" data-testid="kw-catalog"><option v-for="r in catalogRefs" :key="r.ref" :value="r.ref">{{ r.name }} · {{ r.version }}</option></select></label>
       <label v-if="f.refKind === 'corpus'" class="form-control"><span class="label-text">{{ t('compare.ref.corpus') }}</span>
         <select v-model="f.refCorpus" class="select select-sm" data-testid="kw-ref"><option v-for="c in others" :key="c.name">{{ c.name }}</option></select></label>
       <template v-if="f.refKind === 'rest'">
