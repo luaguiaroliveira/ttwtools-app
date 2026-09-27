@@ -4,7 +4,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** aguardando o usuário — 3.11 (remover a interface antiga), 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC), 6.2 (roteiro nos sistemas) e 6.3 (release 0.4.0)
+- **Passo atual:** 3.11 em andamento. A Vue já é o padrão (branch `vue-padrao`); ver o Relato do 3.11, "Retomar aqui". Aguardam o usuário também: 3.11 (remover a interface antiga), 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC), 6.2 (roteiro nos sistemas) e 6.3 (release 0.4.0)
 - **Último passo concluído:** 6.1 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
@@ -841,6 +841,13 @@ Bloqueio: remover frontend-src/, TTW_UI e Shoelace apaga arquivos que não foram
 Testes: e2e (6 passed) e vitest após as lacunas.
 Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 ```
+- **Retomar aqui (2026-09-27, Vue como padrão).** O usuário rodou `python -m app` e viu a interface antiga, porque o servidor servia `frontend/` por padrão. Ele pediu a Vue como padrão, **sem** autorizar ainda apagar `frontend-src/`. Feito no branch `vue-padrao` (criado a partir do `new_set26`):
+  - `app/server.py` `_frontend_dir()`: no bundle, `<_MEIPASS>/frontend`; fora dele, `frontend-vue/dist` se houver `index.html`, senão `frontend/` com aviso no console. `TTW_FRONTEND_DIR` continua sobrepondo (`TTW_FRONTEND_DIR=frontend` = interface antiga).
+  - `build/build.py`: `TTW_UI` padrão `vue` (`TTW_UI=legacy` para a antiga). `release.yml`: cache do npm em `frontend-vue/package-lock.json`. Comentário do `.spec`. `LEIAME.md`, `README.md` e `CONTRIBUTING.md` sem `TTW_FRONTEND_DIR` nos comandos.
+  - Conferido: `npm run build` ok; `_frontend_dir()` devolve `frontend-vue/dist`.
+  - **Falta verificar:** `pytest tests -q` no worktree deu 11 failed/2 errors porque o submódulo `libs/ttwtools` não estava inicializado ali (falta `tests/data/v2_small.ttwa`). O usuário interrompeu antes do `git submodule update --init`, então rode os testes num clone com o submódulo e confira se as falhas somem. Rodar também o e2e (`frontend-vue/playwright.config.js` ainda passa `TTW_FRONTEND_DIR`, o que é inofensivo) e o `ci.yml` (continua compilando as duas interfaces).
+  - **Testar em desktop (usuário):** `cd frontend-vue && npm run build && cd .. && python -m app --mode desktop`. Conferir na janela pywebview os diálogos nativos (abrir/salvar `.ttwt`/`.ttwa`, escolher pasta), abrir arquivo por `--open` e duplo clique, e tema claro/escuro. No pacote: `python build/build.py` já sai com a Vue.
+  - **Depois (precisa de confirmação explícita do usuário):** o resto do 3.11, conforme o Bloqueio acima (apagar `frontend-src/` e `frontend/`, Vite saindo em `../frontend`, tirar o frontend antigo do `ci.yml`, remover as rotas antigas sem uso), mais a linha do `CHANGELOG.md`. Depois vêm a `-rc.1` e o 6.2.
 
 ---
 

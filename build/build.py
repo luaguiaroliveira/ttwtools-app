@@ -302,7 +302,7 @@ def main() -> int:
     parser.add_argument("--install-deps", action="store_true",
                         help="instala as dependências do alvo (environment.yml + build/constraints-*.txt)")
     parser.add_argument("--deps-only", action="store_true", help="para depois de instalar/ajustar dependências")
-    ui = os.environ.get("TTW_UI", "legacy")   # transição: legacy (frontend-src) ou vue (frontend-vue)
+    ui = os.environ.get("TTW_UI", "vue")   # transição: legacy (frontend-src) ou vue (frontend-vue)
     parser.add_argument("--frontend-src", default="frontend-vue" if ui == "vue" else "frontend-src",
                         help="pasta do código da interface (padrão pelo TTW_UI=legacy|vue)")
     parser.add_argument("--frontend-out", default="frontend-vue/dist" if ui == "vue" else "frontend",

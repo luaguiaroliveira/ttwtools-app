@@ -149,7 +149,7 @@ cd ttwtools-app
 conda env create -f environment.yml -n ttw314 && conda activate ttw314
 pip install --no-deps -e libs/ttwtools -e .
 (cd frontend-vue && npm ci && npm run build)
-TTW_FRONTEND_DIR=frontend-vue/dist python -m app --mode desktop   # ou --mode web e abra http://127.0.0.1:8765
+python -m app --mode desktop   # ou --mode web e abra http://127.0.0.1:8765
 ```
 
 No Mac Intel com macOS 12, use Python 3.11 e `torch==2.2.2` (veja [`CONTRIBUTING.md`](CONTRIBUTING.md)). Testes, build dos pacotes e releases: [`CONTRIBUTING.md`](CONTRIBUTING.md) e [`RELEASING.md`](RELEASING.md).

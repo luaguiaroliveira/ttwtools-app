@@ -59,12 +59,21 @@ class SafeJSONResponse(JSONResponse):
 def _frontend_dir() -> Path:
     """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller.
 
-    TTW_FRONTEND_DIR aponta outra pasta (ex.: frontend-vue/dist durante a transição)."""
+    No bundle: <_MEIPASS>/frontend. Fora dele: frontend-vue/dist (interface Vue), ou
+    frontend/ (interface antiga) se a Vue ainda não foi compilada.
+    TTW_FRONTEND_DIR aponta outra pasta (ex.: frontend para a interface antiga)."""
     import os
     if os.environ.get("TTW_FRONTEND_DIR"):
         return Path(os.environ["TTW_FRONTEND_DIR"])
-    base = Path(getattr(sys, "_MEIPASS", Path(__file__).parent.parent))
-    return base / "frontend"
+    if hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS) / "frontend"
+    root = Path(__file__).parent.parent
+    vue = root / "frontend-vue" / "dist"
+    if (vue / "index.html").exists():
+        return vue
+    print("[frontend] frontend-vue/dist não compilado; usando a interface antiga "
+          "(rode: cd frontend-vue && npm run build)", flush=True)
+    return root / "frontend"
 
 
 def build_app(open_file: str | None = None) -> FastAPI:
