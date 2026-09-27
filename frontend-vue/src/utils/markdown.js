@@ -13,7 +13,7 @@ export function markdown(src) {
   let code = []
   const flushPara = () => { if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = [] } }
   const flushList = () => { if (list) { out.push('</ul>'); list = false } }
-  const flushCode = () => { if (code.length) { out.push(`<pre><code>${esc(code.join('\n'))}</code></pre>`); code = [] } }
+  const flushCode = () => { if (code.length) { out.push(`<pre tabindex="0"><code>${esc(code.join("\n"))}</code></pre>`); code = [] } }
   for (const line of src.split('\n')) {
     if (/^ {4}\S/.test(line)) { flushPara(); flushList(); code.push(line.slice(4)); continue }
     flushCode()

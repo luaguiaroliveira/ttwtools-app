@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.10 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.9 prontos
+- **Passo atual:** 3.11 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.10 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -123,7 +123,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.7 | Comparar | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.7\]'` |
 | 3.8 | Ajuda e Aprender | 3.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.8\]'` |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.9\]'` |
-| 3.10 | Acessibilidade e testes de interface | 3.7 | [ ] | | |
+| 3.10 | Acessibilidade e testes de interface | 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[3.10\]'` |
 | 3.11 | Remover a interface antiga | 3.10 | [ ] | | |
 | **Fase 4 — Catálogo de corpora** | | | | | |
 | 4.1 | Formato de pacote e catálogo | 1.2 | [ ] | | |
@@ -808,13 +808,23 @@ Próximo: 3.10.
 
 ### 3.10 Acessibilidade e testes de interface
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.10\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Fazer:**
-  - [ ] Passe de acessibilidade (meta WCAG 2.2 AA): rótulos, foco visível, teclado, contraste, paletas seguras para daltonismo, `prefers-reduced-motion`.
-  - [ ] Testes de ponta a ponta com Playwright nos fluxos: importar → visão geral → etiquetar → KWIC → palavras-chave → KFA, em 390, 768 e 1280 px.
-  - [ ] Conferir tamanho do pacote da interface e tempo de abertura.
+  - [x] Passe de acessibilidade (meta WCAG 2.2 AA): rótulos, foco visível, teclado, contraste, paletas seguras para daltonismo, `prefers-reduced-motion`.
+  - [x] Testes de ponta a ponta com Playwright nos fluxos: importar → visão geral → etiquetar → KWIC → palavras-chave → KFA, em 390, 768 e 1280 px.
+  - [x] Conferir tamanho do pacote da interface e tempo de abertura.
 - **Pronto quando:** os fluxos passam nas três larguras e a verificação de acessibilidade não acusa erros graves.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: testes de ponta a ponta com Playwright (Chrome do sistema, sem baixar navegadores; o servidor Python sobe sozinho) no fluxo importar (assistente) → visão geral → etiquetar (spaCy) → KWIC → palavras-chave → KFA, em 390, 768 e 1280 px, e varredura das demais telas nos temas escuro e alto contraste; verificação axe-core (WCAG 2.0/2.1/2.2 A e AA) em cada tela, falhando em violações sérias ou críticas; CI roda `npm run e2e`.
+Correções de acessibilidade achadas pelo axe: abas inativas com contraste 3,3:1 (DaisyUI) → 82% do texto; texto em cor primária no tema escuro 3,6:1 → clareado; gráfico de barras clicável dentro de role="img" → role="group"; bloco de código rolável sem foco → tabindex.
+Arquivos: frontend-vue/{playwright.config.js, e2e/fluxo.spec.js, .gitignore, package.json (e2e)}, src/style.css, components/DivergingBars.vue, utils/markdown.js; .github/workflows/ci.yml.
+Testes: npx playwright test → 6 passed (3 larguras × 2 cenários); vitest → 12 passed.
+Medidas: interface compilada 436 KB; primeira tela ≈ 81 KB comprimidos (JS 61,9 + CSS 19,1); abertura 50–80 ms (Chrome, servidor local).
+Pendências: teste com leitor de tela real; conferir no WebKit do macOS 12 (Safari 17.6) — só na máquina do usuário.
+Observações: paleta do leitor (10 cores categóricas) não depende só de cor (legenda com rótulo e contagem, destaque por seleção).
+Próximo: 3.11.
+```
 
 ### 3.11 Remover a interface antiga
 

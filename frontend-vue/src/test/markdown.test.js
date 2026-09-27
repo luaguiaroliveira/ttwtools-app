@@ -7,6 +7,6 @@ describe('markdown', () => {
     expect(html).toContain('<li><strong>Sinal:</strong> positivo</li>')
     expect(html).toContain('<li><code>d</code></li>')
     expect(html).toContain('<p>texto &lt;b&gt;x&lt;/b&gt;</p>')
-    expect(html).toContain('<pre><code>d = a / b</code></pre>')
+    expect(html).toContain('<pre tabindex="0"><code>d = a / b</code></pre>')
   })
 })

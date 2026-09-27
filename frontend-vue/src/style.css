@@ -34,3 +34,14 @@
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* Contraste (WCAG AA 4,5:1): abas inativas do DaisyUI ficam claras demais */
+.tab:not(.tab-active) {
+  color: color-mix(in oklab, var(--color-base-content) 82%, var(--color-base-100));
+}
+
+/* Tema escuro: texto na cor primária precisa ser mais claro para ter 4,5:1 */
+:root[data-theme="dark"] .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
+}

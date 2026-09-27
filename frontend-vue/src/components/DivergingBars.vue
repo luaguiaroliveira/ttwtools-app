@@ -15,7 +15,7 @@ const x = (v) => 300 + (v / top.value) * 180
     <figcaption class="text-sm flex items-center">{{ title }}
       <button class="btn btn-xs btn-ghost ml-auto" @click="asTable = !asTable">{{ asTable ? t('chart.as_chart') : t('chart.as_table') }}</button></figcaption>
     <table v-if="asTable" class="table table-xs"><tbody><tr v-for="r in shown" :key="r.label"><td>{{ r.label }}</td><td class="text-right tabular-nums">{{ r.value.toFixed(3) }}</td></tr></tbody></table>
-    <svg v-else :viewBox="`0 0 600 ${shown.length * 18 + 6}`" class="w-full max-w-3xl" role="img" :aria-label="title">
+    <svg v-else :viewBox="`0 0 600 ${shown.length * 18 + 6}`" class="w-full max-w-3xl" role="group" :aria-label="title">
       <line x1="300" x2="300" y1="0" :y2="shown.length * 18 + 6" class="stroke-current opacity-40" />
       <g v-for="(r, i) in shown" :key="r.label" :transform="`translate(0 ${i * 18 + 3})`" class="cursor-pointer" tabindex="0"
          role="button" :aria-label="`${r.label} ${r.value.toFixed(2)}`" @click="emit('select', r.label)" @keydown.enter="emit('select', r.label)">

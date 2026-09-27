@@ -59,5 +59,12 @@ jobs:
         working-directory: frontend-vue
         run: npm ci && npm test && npm run build
 
+      - name: Interface Vue (ponta a ponta e acessibilidade, Chrome do runner)
+        working-directory: frontend-vue
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+          PYTHON: python
+        run: npm run e2e
+
       - name: Versão
         run: python -m app --version
