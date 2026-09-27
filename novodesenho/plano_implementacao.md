@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 5.2 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
-- **Último passo concluído:** 5.1 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** 5.3 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Último passo concluído:** 5.2 (2026-09-26, parcial); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -132,7 +132,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 4.4 | Listas de frequência de referência | 4.3, 1.9 | [x] | 2026-09-26 | ver `git log --grep '\[4.3'` |
 | **Fase 5 — Extras** | | | | | |
 | 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[5.1'` |
-| 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [ ] | | |
+| 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [!] | 2026-09-26 | falta testar com dados reais (anc.org inacessível) |
 | 5.3 | Português | 1.5, 4.3 | [ ] | | |
 | **Fase 6 — Fechamento** | | | | | |
 | 6.1 | Documentação | 3.11 | [ ] | | |
@@ -922,12 +922,15 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 5.2 Importador TEI e GrAF (OANC/BNC)
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [!] · Data: 2026-09-26 · Commit: ver `git log --grep '\[5.2'` · Agente/máquina: Claude (Opus) / Mac arm64 — falta testar com dados reais do OANC/MASC
 - **Fazer:**
-  - [ ] Leitura de TEI XML e do XML standoff (GrAF) do OANC/MASC para `documents` e `tokens`, conferindo as posições contra o texto original.
-  - [ ] Receita de preparo do OANC/MASC em `tools/corpora/` e ficha com a licença conferida.
+  - [x] Leitura de TEI XML e do XML standoff (GrAF) do OANC/MASC para `documents` e `tokens`, conferindo as posições contra o texto original.
+  - [!] Receita de preparo do OANC/MASC em `tools/corpora/` e ficha com a licença conferida.
 - **Pronto quando:** um trecho do OANC importado tem camada e abre no KWIC.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `ttwtools.formats.tei` (`parse_tei`/`import_tei`: TEI P5 e XML do BNC; um documento por `<TEI>`/`<bncDoc>`, texto com parágrafos, sem `note`/`fw`; com `<w>`/`<c>`/`<pc>` vira camada `tei` com forma, lema `lemma|hw`, etiqueta `c5|pos|msd|type|ana` e frases de `<s>`; metadados título, autor, data, `catRef`, `classCode`, tipo do `wtext`) e `ttwtools.formats.graf` (`read_header`, `parse_graf`, `import_graf`: cabeçalho `.anc`/`.hdr` → `.txt` + anotações; regiões, nós e anotações lidos de todos os arquivos do documento, pois o OANC liga tokens de `-hepple` a regiões de `-seg`; tokens de `-penn`/`-hepple` com lema, PTB e UPOS (tabela PTB→UPOS); frases de `-s`; cada token conferido contra `string` e as divergências contadas em `offset_mismatches`; metadados do cabeçalho e subpasta). `ttwtools import --format tei|graf` (auto por `.xml`/`.anc`); rota `/api/corpora/import` com `source.format` e seletor de formato no assistente "Adicionar corpus" (txt, CoNLL-U, palavra/TAG, TEI, GrAF). Receita `tools/corpora/masc.py` (`--id masc|oanc`, `--source` com a cópia local).
+  - Testes: `libs/ttwtools/tests/test_formats_tei_graf.py` (4: BNC, teiCorpus P5, GrAF com posições/frases/KWIC, divergência + CLI), `tests/test_routes_base.py::test_import_route_graf_and_tei_formats`.
+  - Pendências: anc.org não respondeu daqui (sem acesso aos dados reais); os testes usam arquivos no formato documentado do MASC/OANC. Falta rodar `masc.py` numa cópia real do MASC/OANC (conferir `offset_mismatches` = 0 e o KWIC) e conferir a licença.
 
 ### 5.3 Português
 

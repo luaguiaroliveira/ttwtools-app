@@ -8,6 +8,7 @@ Rodam com o ambiente do projeto (`ttwtools` instalado, spaCy `en_core_web_sm`).
 | `demo.py` | Demonstração: 18 capítulos de Alice, Tom Sawyer e Sherlock Holmes (81 mil palavras) | Projeto Gutenberg | domínio público (EUA) | pacote + lista |
 | `brown.py` | Brown Corpus (500 textos, 1 milhão de palavras), etiquetas originais + spaCy | `nltk_data` | README: *"Distributed with the permission of the copyright holder, redistribution permitted."* | pacote (~114 MB) + lista (~0,4 MB) |
 | `ud_english.py` | UD English EWT r2.18 (1.174 documentos, anotação manual) | GitHub UniversalDependencies | CC BY-SA 4.0 | pacote (~20 MB) + lista |
+| `masc.py` | MASC 3.0.0 ou OANC (`--id oanc`), do standoff GrAF | a sua cópia (anc.org) | a conferir | pacote + lista, ou receita |
 | `lob.py` | LOB Corpus | a sua cópia (ICAME) | sem redistribuição | só receita |
 
 ```

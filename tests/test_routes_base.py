@@ -72,7 +72,7 @@ def test_import_from_source(client, tmp_path):
     r = client.post("/api/corpora/import", json={"corpus_name": "colado", "source": {"kind": "text", "text": "Olá."}})
     assert r.json()["files"] == ["texto_colado.txt"]
     assert client.post("/api/corpora/import", json={"corpus_name": "x", "source": {"kind": "catalog",
-                                                                                      "catalog_id": "brown"}}).status_code == 501
+                                                                                      "catalog_id": "brown"}}).status_code == 422
     assert client.post("/api/corpora/import", json={"corpus_name": "x", "source": {"kind": "folder",
                                                                                       "path": "/nao/existe"}}).status_code == 422
     assert client.post("/api/corpora/import", json={"corpus_name": "x", "source": {"kind": "text"}}).status_code == 422
@@ -81,3 +81,21 @@ def test_import_from_source(client, tmp_path):
 def test_import_requires_project(client):
     r = client.post("/api/corpora/import", json={"corpus_name": "x", "source": {"kind": "text", "text": "a"}})
     assert r.status_code == 400
+
+
+def test_import_route_graf_and_tei_formats(client, tmp_path):
+    """Passo 5.2: o assistente importa TEI e GrAF pela mesma rota (format)."""
+    import ttwtools
+    proj = tmp_path / "f.ttwa"
+    ttwtools.create_project(proj).close()
+    client.post("/api/project/open", json={"path": str(proj)})
+    (tmp_path / "tei").mkdir()
+    (tmp_path / "tei" / "a.xml").write_text(
+        '<TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader/><text><body><p><w lemma="dog" pos="NOUN">Dogs</w> '
+        '<w lemma="bark" pos="VERB">bark</w><pc>.</pc></p></body></text></TEI>')
+    r = client.post("/api/corpora/import", json={"corpus_name": "t", "source": {"kind": "folder", "path": str(tmp_path / "tei"),
+                                                                                "format": "tei"}})
+    assert r.status_code == 200 and r.json()["with_layer"] == 1
+    bad = client.post("/api/corpora/import", json={"corpus_name": "g", "source": {"kind": "folder", "path": str(tmp_path / "tei"),
+                                                                                  "format": "graf"}})
+    assert bad.status_code == 422

@@ -22,7 +22,9 @@ class CorpusSource(BaseModel):
     path: str | None = None           # folder: pasta de .txt (ou um .txt / .csv)
     text: str | None = None           # text: conteúdo colado
     filename: str | None = None       # text: nome do documento (padrão texto_colado.txt)
-    catalog_id: str | None = None     # catalog: id do corpus no catálogo (passo 4.2)
+    catalog_id: str | None = None     # catalog: use /api/catalog/install (passo 4.2)
+    format: Literal["txt", "conllu", "nltk", "tei", "graf"] = "txt"   # folder: formato dos arquivos
+    tagset: str | None = None         # nltk: nome do tagset das etiquetas
 
 
 class ImportRequest(BaseModel):
@@ -41,12 +43,20 @@ def import_corpus(req: ImportRequest):
     import ttwtools
     src = req.source
     if src.kind == "catalog":
-        raise HTTPException(status_code=501, detail="Catálogo de corpora disponível a partir do passo 4.2.")
+        raise HTTPException(status_code=422, detail="Corpora do catálogo: use /api/catalog/install.")
     if src.kind == "folder" and not src.path:
         raise HTTPException(status_code=422, detail="source.path é obrigatório para kind='folder'.")
     if src.kind == "text" and not src.text:
         raise HTTPException(status_code=422, detail="source.text é obrigatório para kind='text'.")
     with ttwtools.open_project(app_state.current_project_path) as proj:
+        if src.kind == "folder" and src.format != "txt":     # arquivos já anotados: documento + camada
+            from ttwtools import formats
+            fn = {"conllu": formats.import_conllu, "tei": formats.import_tei, "graf": formats.import_graf,
+                  "nltk": lambda p, path, name: formats.import_nltk_tagged(p, path, name, tagset=src.tagset or "")}
+            try:
+                return fn[src.format](proj, src.path, req.corpus_name)
+            except (FileNotFoundError, NotADirectoryError, ValueError, SyntaxError) as exc:
+                raise HTTPException(status_code=422, detail=str(exc)) from exc
         try:
             report = ttwtools.import_corpus(
                 proj, src.path if src.kind == "folder" else None, req.corpus_name,

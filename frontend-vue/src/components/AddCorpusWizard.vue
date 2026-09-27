@@ -7,7 +7,7 @@ import { api } from '../api/index.js'
 const emit = defineEmits(['done', 'overview', 'tag'])
 const { t } = useI18n()
 const step = ref(1)
-const form = reactive({ name: '', kind: 'folder', path: '', text: '', fields: '', delimiter: '_', metaCsv: '' })
+const form = reactive({ name: '', kind: 'folder', format: 'txt', path: '', text: '', fields: '', delimiter: '_', metaCsv: '' })
 const result = ref(null)
 const error = ref(null)
 const busy = ref(false)
@@ -27,7 +27,7 @@ async function doImport() {
   try {
     result.value = await api.corpora.import({
       corpus_name: form.name,
-      source: form.kind === 'folder' ? { kind: 'folder', path: form.path } : { kind: 'text', text: form.text },
+      source: form.kind === 'folder' ? { kind: 'folder', path: form.path, format: form.format } : { kind: 'text', text: form.text },
       filename_fields: form.fields ? form.fields.split(',').map((s) => s.trim()).filter(Boolean) : null,
       delimiter: form.delimiter || '_',
       metadata_csv: form.metaCsv || null,
@@ -63,6 +63,8 @@ async function doImport() {
       <div v-if="form.kind === 'folder'" class="flex gap-2">
         <input v-model="form.path" class="input input-sm flex-1" :placeholder="t('wizard.folder')" :aria-label="t('wizard.folder')" data-testid="wizard-path" />
         <button type="button" class="btn btn-sm" @click="chooseFolder">{{ t('wizard.choose_folder') }}</button>
+        <select v-model="form.format" class="select select-sm" :aria-label="t('wizard.format')" data-testid="wizard-format">
+          <option v-for="fm in ['txt', 'conllu', 'nltk', 'tei', 'graf']" :key="fm" :value="fm">{{ t(`wizard.format.${fm}`) }}</option></select>
       </div>
       <textarea v-if="form.kind === 'text'" v-model="form.text" class="textarea h-32" :aria-label="t('wizard.text')" />
       <button class="btn btn-sm btn-primary w-fit" :disabled="!canContinue()" data-testid="wizard-next" @click="step = 2">{{ t('wizard.next') }}</button>
@@ -84,7 +86,7 @@ async function doImport() {
     </div>
 
     <div v-else class="flex flex-col gap-2">
-      <p role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied }) }}</p>
+      <p role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied ?? 0 }) }}</p>
       <div class="flex gap-2">
         <button class="btn btn-sm btn-primary" data-testid="wizard-overview" @click="emit('overview', form.name)">{{ t('wizard.see_overview') }}</button>
         <button class="btn btn-sm" @click="emit('tag', form.name)">{{ t('wizard.tag_now') }}</button>
