@@ -38,6 +38,7 @@ export const api = {
     options: (id, lang) => get(`/api/taggers/${id}/options`, { lang }),
     tagset: (id, lang, group) => get(`/api/taggers/${id}/tagset`, { lang, group }),
     tag: (body) => post('/api/tagging/layers', body),
+    plan: (body) => post('/api/tagging/plan', body),
   },
   explore: {
     search: (p) => get('/api/explore/search', { ...p, where: where(p.where) }),

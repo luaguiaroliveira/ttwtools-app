@@ -58,8 +58,11 @@ def taggers(lang: str | None = None):
 
 @router.get("/taggers/{tagger_id}/options", tags=["taggers"])
 def tagger_options(tagger_id: str, lang: str | None = None):
+    """Descritor de opções (textos no idioma) + disponibilidade de cada valor (modelos instalados)."""
     from ttwtools import taggers as tg
-    return _call(tg.options, tagger_id, lang=lang)
+    d = _call(tg.options, tagger_id, lang=lang)
+    d["availability"] = tg.value_availability(tagger_id)
+    return d
 
 
 @router.get("/taggers/{tagger_id}/tagset", tags=["taggers"])
@@ -76,6 +79,14 @@ class TagLayersRequest(BaseModel):
     components: list[str] | None = None
     where: dict[str, list[str]] | None = None
     force: bool = False
+
+
+@router.post("/tagging/plan", tags=["taggers"])
+def tag_plan(req: TagLayersRequest):
+    """Quantos documentos já têm camada suficiente e quantos seriam processados (não etiqueta)."""
+    from ttwtools.annotate import plan_tagging
+    with _project() as proj:
+        return _call(plan_tagging, proj, req.corpus, req.tagger, req.options, req.components, req.where, req.preset)
 
 
 @router.post("/tagging/layers", tags=["taggers"])

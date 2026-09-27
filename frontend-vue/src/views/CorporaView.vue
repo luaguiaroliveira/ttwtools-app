@@ -8,12 +8,24 @@ import AddCorpusWizard from '../components/AddCorpusWizard.vue'
 import CorpusOverview from '../components/CorpusOverview.vue'
 import LayersList from '../components/LayersList.vue'
 import Collapsible from '../components/Collapsible.vue'
+import TaggerPanel from '../components/TaggerPanel.vue'
 
 const { t } = useI18n()
 const session = useSession()
 const { corpora, corpus, layer, hasProject } = storeToRefs(session)
 const adding = ref(false)
 const wizardKey = ref(0)
+const layersRef = ref(null)
+function tagNow(name) {
+  session.setCorpus(name)
+  adding.value = false
+  setTimeout(() => document.getElementById('tagger-panel')?.scrollIntoView({ behavior: 'smooth' }), 100)
+}
+async function afterTag(tool) {
+  await session.refresh()
+  session.setLayer(tool)
+  layersRef.value?.reload()
+}
 
 async function afterImport(name) {
   await session.refresh()
@@ -33,7 +45,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
         <button class="btn btn-sm btn-primary ml-auto" data-testid="add-corpus" @click="startAdd">{{ t('corpora.add') }}</button>
       </div>
       <AddCorpusWizard v-if="adding" :key="wizardKey" @done="afterImport" @overview="showOverview"
-                       @tag="(n) => { session.setCorpus(n); adding = false }" />
+                       @tag="tagNow" />
       <p v-if="!corpora.length && !adding" class="opacity-70">{{ t('corpora.none') }}</p>
       <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-testid="corpus-list">
         <li v-for="c in corpora" :key="c.name">
@@ -48,7 +60,8 @@ function startAdd() { wizardKey.value++; adding.value = true }
       <Collapsible :title="t('corpora.catalog')"><p class="text-sm opacity-70">{{ t('corpora.catalog_soon') }}</p></Collapsible>
       <template v-if="corpus">
         <CorpusOverview :corpus="corpus" :layer="layer" />
-        <LayersList :corpus="corpus" />
+        <TaggerPanel :key="corpus" :corpus="corpus" @tagged="afterTag" />
+        <LayersList ref="layersRef" :corpus="corpus" />
       </template>
     </template>
   </div>

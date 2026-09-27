@@ -116,3 +116,12 @@ def test_corpora_library_routes(client, opened, tmp_path):
     assert (tmp_path / "copia" / "bawe").is_dir() and folder.endswith("copia")
     back = client.post("/api/project/convert", json={"to": "ttwa", "dest": str(tmp_path / "volta.ttwa")})
     assert back.status_code == 200 and client.get("/api/project/info").json()["kind"] == "ttwa"
+
+
+def test_tagging_plan_and_availability(client, opened):
+    opts = client.get("/api/taggers/spacy/options").json()
+    assert "en_core_web_sm" in opts["availability"]["model"]
+    plan = client.post("/api/tagging/plan", json={"corpus": "bawe", "tagger": "simple"}).json()
+    assert (plan["documents"], plan["to_tag"], plan["reusable"]) == (5, 5, 0)
+    assert client.post("/api/tagging/plan", json={"corpus": "bawe", "tagger": "spacy",
+                                                  "options": {"model": "x"}}).status_code == 422

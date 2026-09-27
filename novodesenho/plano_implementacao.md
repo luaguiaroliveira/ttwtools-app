@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.5 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.4 prontos
+- **Passo atual:** 3.6 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.5 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -118,7 +118,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.2 | Casca responsiva, tema e traduções | 3.1 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.3 | Cliente da API e tarefas | 3.1, 2.1 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
-| 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [ ] | | |
+| 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.5\]'` |
 | 3.6 | Explorar | 3.4 | [ ] | | |
 | 3.7 | Comparar | 3.6 | [ ] | | |
 | 3.8 | Ajuda e Aprender | 3.2 | [ ] | | |
@@ -706,16 +706,24 @@ Próximo: 3.5.
 
 ### 3.5 Escolha de tagger e "Personalizar"
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.5\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §11 e §11.2.
 - **Fazer:**
-  - [ ] Seletor de tagger (lista de `GET /api/taggers`, filtrada pelo idioma do corpus).
-  - [ ] Botão **"ver tags"**: painel com o tagset (busca, grupos, definição, exemplo).
-  - [ ] Botão **"Personalizar"**: painel recolhido, gerado **a partir do descritor** de opções (não escrito à mão), com grupos, marca "muda o resultado / só velocidade", explicação e impacto; linha de resumo; "restaurar recomendado"; predefinições; combinações inválidas desativadas.
-  - [ ] Aviso de reaproveitamento: "X de Y documentos já têm esta camada; serão processados Z".
-  - [ ] Progresso da etiquetagem pela tarefa em segundo plano (3.3), com retomada.
+  - [x] Seletor de tagger (lista de `GET /api/taggers`, filtrada pelo idioma do corpus).
+  - [x] Botão **"ver tags"**: painel com o tagset (busca, grupos, definição, exemplo).
+  - [x] Botão **"Personalizar"**: painel recolhido, gerado **a partir do descritor** de opções (não escrito à mão), com grupos, marca "muda o resultado / só velocidade", explicação e impacto; linha de resumo; "restaurar recomendado"; predefinições; combinações inválidas desativadas.
+  - [x] Aviso de reaproveitamento: "X de Y documentos já têm esta camada; serão processados Z".
+  - [x] Progresso da etiquetagem pela tarefa em segundo plano (3.3), com retomada.
 - **Pronto quando:** etiquetar com spaCy mudando o modelo e um componente pela tela, e reexecutar sem reprocessar.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: painel Etiquetar na tela Corpora: seletor de tagger (de /api/taggers; indisponíveis desativados com motivo e comando), "Ver tags" (gaveta com tagset, busca e grupos), predefinições Rápido/Recomendado/Mais preciso, "Personalizar" gerado do descritor (grupos, tipo de campo, "muda o resultado / só muda a velocidade", padrão, explicação, impacto; valores não instalados desativados com o comando), resumo da configuração, "restaurar recomendado", aviso "X de Y já têm esta camada; Z serão processados" (POST /api/tagging/plan), etiquetagem em tarefa com progresso, cancelamento e retomada.
+Arquivos: frontend-vue/src/components/{TaggerPanel,OptionsForm,TagsetDrawer}.vue, views/CorporaView.vue, api/index.js; app/routes/api_new.py (/api/tagging/plan; options com availability); submódulo: annotate.plan_tagging, taggers.value_availability, textos ui.*.json.
+Testes: pytest tests -q → 29 passed; libs → 111 passed; navegador: spaCy sem lema pelo "Personalizar" em 100 ensaios → "100 etiquetados"; reexecutar → "0 etiquetados, 100 reaproveitados" e o aviso "Nada a processar".
+Pendências: mudar o modelo pela tela não foi testado porque só o en_core_web_sm está instalado (os demais aparecem desativados com "python -m spacy download ..."). Filtro de taggers pelo idioma do corpus depende de o corpus ter idioma (hoje só inglês).
+Observações: só as opções diferentes do padrão vão no pedido (o comando equivalente fica curto).
+Próximo: 3.6.
+```
 
 ### 3.6 Explorar
 
