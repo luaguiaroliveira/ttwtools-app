@@ -4,6 +4,19 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Módulos**: área própria para modelos de etiquetagem (spaCy e Stanza, em inglês e português) e corpora do catálogo, com o que cada um faz, fonte, licença, dados de treino e tamanho; `ttwtools catalog models` mostra as mesmas fichas (6.2a).
+
+### Alterado
+
+- Projeto com **Novo projeto…**, **Abrir projeto…** e **Salvar cópia…** pelos diálogos do sistema; digitar o caminho fica num painel recolhido (6.2a).
+
+### Corrigido
+
+- Caminhos com `~` (ex.: `~/projeto.ttwa`) davam "unable to open database file" (6.2a).
+- Depois de instalar um corpus ou baixar um modelo, a lista só se atualiza quando a tarefa termina (6.2a).
+
 ## [0.4.0-rc.1] — 2026-09-27
 
 ### Adicionado

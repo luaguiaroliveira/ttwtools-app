@@ -13,29 +13,28 @@ Prints em `prints/`, com nome `arm-NN-descricao.png` (NN = número do item).
 ### 1. Instalar e abrir
 _Como:_ abrir o `.dmg`/`.zip`/`.tar.gz`, abrir o app (no macOS: botão direito → Abrir) · _Esperado:_ janela abre em até ~15 s; nenhuma janela de erro
 
-- Resultado:
-- O que aconteceu:
-- Sugestão de melhoria:
-- Prioridade:
-- Print:
+- Resultado: ok
+- O que aconteceu: abre bem, sem problemas.
+- Sugestão de melhoria: nada
+- Prioridade: -- 
+- Print: novodesenho/verificacao/prints/image_arm64_1.png
 
 ### 2. Versão
 _Como:_ ⚙ ou `TTWtools --version` (Linux/Windows pelo terminal) · _Esperado:_ versão da `-rc` e do pacote `ttwtools`
 
-- Resultado:
+- Resultado: 
 - O que aconteceu:
 - Sugestão de melhoria:
 - Prioridade:
-- Print:
+- Print: 
 
 ### 3. Criar projeto
 _Como:_ Corpora → caminho `~/teste.ttwa` → Criar novo · _Esperado:_ projeto aparece como aberto
 
-- Resultado:
-- O que aconteceu:
-- Sugestão de melhoria:
+- Resultado: Enquanto abrir projeto está claro, criar é confuso e não consegui criar (veja screenshot).
+- Sugestão de melhoria: Quero algo mais tradicional em aplicativos com botões de New, Open, Save. A interface precisa ser mais clara... os módulos a baixar (assim como corpora tradicionais e outros recursos), que aparecem aqui, deveriam ter um campo próprio de 'módulos', bem categorizados e explicados (para que serve cada coisa, de onde está baixando, e licença): na tela sempre algo mais acessível e simples, mas sempre coma opção de compreender melhor.
 - Prioridade:
-- Print:
+- Print: 3-criar_projeto.png
 
 ### 4. Importar com metadados
 _Como:_ Adicionar corpus → pasta `textos/` → campos `aluno,nivel,ano` · _Esperado:_ N documentos; metadados `nivel` e `ano` listados

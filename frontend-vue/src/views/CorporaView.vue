@@ -7,9 +7,7 @@ import ProjectBar from '../components/ProjectBar.vue'
 import AddCorpusWizard from '../components/AddCorpusWizard.vue'
 import CorpusOverview from '../components/CorpusOverview.vue'
 import LayersList from '../components/LayersList.vue'
-import Collapsible from '../components/Collapsible.vue'
 import TaggerPanel from '../components/TaggerPanel.vue'
-import CatalogPanel from '../components/CatalogPanel.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -64,6 +62,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
         <LayersList ref="layersRef" :corpus="corpus" />
       </template>
     </template>
-    <Collapsible :title="t('corpora.catalog')" data-testid="catalog"><CatalogPanel /></Collapsible>
+    <p class="text-sm opacity-80 flex flex-wrap items-center gap-2">{{ t('corpora.modules_hint') }}
+      <RouterLink to="/modulos" class="btn btn-xs" data-testid="go-modules">{{ t('corpora.go_modules') }}</RouterLink></p>
   </div>
 </template>

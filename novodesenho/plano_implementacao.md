@@ -137,7 +137,8 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | **Fase 6 — Fechamento** | | | | | |
 | 6.1 | Documentação | 3.11 | [x] | 2026-09-27 | ver `git log --grep '\[6.1'` |
 | 6.2 | Verificação em cada sistema | 6.1 | [!] | 2026-09-27 | roteiro pronto; execução pelo usuário |
-| 6.3 | Release 0.4.0 | 6.2 | [ ] | | |
+| 6.2a | Correções da verificação | 6.2 | [~] | 2026-09-27 | ver `git log --grep '\[6.2a'` |
+| 6.3 | Release 0.4.0 | 6.2a | [ ] | | |
 
 **Ordem sugerida:** Fase 0 inteira primeiro (prova o pipeline de build e release com o código atual). Depois 1.1 a 1.4, 2.1 e 3.1 a 3.3 (base), e então os recursos (1.5–1.10 com 2.2 e 3.4–3.9) em ordem de valor: **Corpora → Explorar → tagger e Personalizar → Comparar → Ajuda**. Fases 4 e 5 podem correr em paralelo depois de 1.6.
 
@@ -991,6 +992,21 @@ Próximo: gerar a -rc.1 (já com a interface nova) e executar o 6.2.
   - Feito: roteiro de 15 itens em [`roteiro_verificacao.md`](roteiro_verificacao.md) (instalar, versão, projeto, importação com metadados, visão geral, etiquetagem e cache, taggers indisponíveis com motivo, exploração, palavras-chave, KFA e galeria, copiar como código, catálogo e modelo, português, salvar/reabrir `.ttwt`, ajuda e acessibilidade), com a tabela de resultado por sistema.
   - `-rc.1` (2026-09-27): PR #3 mesclado na `main`; `release.py --version 0.4.0-rc.1` → `release.yml` verde nos 4 sistemas; rascunho de pre-release com os pacotes e `SHA256SUMS.txt`. Conferido: dmg arm64 baixado da release bate com o SHA256SUMS, `--selftest` OK (0.4.0rc1, interface nova).
   - Pendências (usuário): executar o roteiro em macOS arm64, macOS 12 Intel, Windows e Linux com os pacotes da `-rc.1`; o rascunho continua sem publicar.
+
+### 6.2a Correções da verificação
+
+Um subitem por problema apontado nos arquivos de `verificacao/`, com a origem (arquivo e item). Ideias maiores, que não são correção, vão para "Depois da 0.4.0".
+
+- Estado: [~] · Data: 2026-09-27 · Commit: ver `git log --grep '\[6.2a'` · Agente/máquina: Claude (Opus 5.5) / Mac arm64
+- **Fazer:**
+  - [x] `macos-arm64` item 3: "unable to open database file" ao criar `~/projeto2.ttwa`. O `~` não era expandido: agora é, no pacote (projeto, importação, exportação, `.ttwt`, taggers) e nas rotas. Testes em `test_project.py` e `test_routes_base.py`.
+  - [x] `macos-arm64` item 3: projeto com botões tradicionais. **Novo projeto…**, **Abrir projeto…** e **Salvar cópia…** abrem os diálogos do sistema (pywebview no desktop nos 3 sistemas; AppleScript/tkinter no modo web; rota nova `/api/utils/pick-save`). Aviso de que o projeto grava sozinho. Digitar o caminho e as opções (converter, exportar) ficam em painel recolhido.
+  - [x] `macos-arm64` item 3: área própria **Módulos** (novo destino na navegação): modelos agrupados por idioma, com uma linha sobre para que serve e detalhes recolhidos (identificador, fonte, de onde baixa, licença, dados de treino, tamanho); corpora do catálogo com a ficha; endereço do catálogo e pasta de dados em "Configurações avançadas". Fichas no pacote (`data/models.json`, `models.model_info()`, `list_models(lang)`, `ttwtools catalog models`), com licenças e tamanhos conferidos nos metadados oficiais do spaCy. `en_core_web_trf` aparece como indisponível, com o motivo (falta `spacy_curated_transformers`), e o pacote recusa baixá-lo. Stanza en/pt entram na lista.
+  - [x] Encontrado junto: `useJob.start()` volta antes do fim da tarefa, então recarregar depois de instalar ou baixar (catálogo, modelos) e a mensagem de "Salvar como" saíam cedo demais; agora observam o estado da tarefa.
+  - [ ] Testar os diálogos nativos na janela desktop (macOS, Windows, Linux): o CI e o e2e rodam no modo web.
+  - [ ] Demais itens do roteiro, conforme o usuário preencher.
+- **Depois da 0.4.0:** _(ideias maiores que surgirem na verificação)_
+- **Relato:** _(preencher ao fechar)_
 
 ### 6.3 Release 0.4.0
 

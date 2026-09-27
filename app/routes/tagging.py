@@ -123,7 +123,7 @@ def _tag_job(job_id: str, req: TagRequest, project_path: str) -> None:
             else:
                 if not req.folder_path:
                     raise ValueError("folder_path é obrigatório quando source='folder'.")
-                corpus_dir = Path(req.folder_path)
+                corpus_dir = Path(req.folder_path).expanduser()
 
             if req.tagger == "biberplus":
                 configdict = {

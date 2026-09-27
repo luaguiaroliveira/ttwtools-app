@@ -210,7 +210,7 @@ def corpus_export(corpus: str, req: ExportRequest):
     from ttwtools.formats import export_conllu, export_tokens, export_vrt
     fn = {"conllu": export_conllu, "vrt": export_vrt}.get(req.format)
     with _project() as proj, tempfile.TemporaryDirectory() as tmp:
-        out = Path(req.dest) if req.dest else Path(tmp) / f"{corpus}.{req.format}"
+        out = Path(req.dest).expanduser() if req.dest else Path(tmp) / f"{corpus}.{req.format}"
         if fn:
             report = _call(fn, proj, corpus, out, tool=req.layer, where=req.where)
         else:
@@ -574,9 +574,9 @@ def catalog_remove(req: CatalogPackageRequest):
 
 
 @router.get("/models", tags=["catalog"])
-def models_list():
+def models_list(lang: str | None = None):
     from ttwtools import models
-    return models.list_models()
+    return models.list_models(lang)
 
 
 class ModelRequest(BaseModel):

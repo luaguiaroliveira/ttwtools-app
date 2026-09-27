@@ -27,6 +27,7 @@ export const api = {
   utils: {
     pickFolder: (default_location) => get('/api/utils/pick-folder', { default_location }),
     pickFile: (default_location) => get('/api/utils/pick-file', { default_location }),
+    pickSave: (suggested, default_location) => get('/api/utils/pick-save', { suggested, default_location }),
   },
   corpora: {
     list: () => get('/api/corpora'),

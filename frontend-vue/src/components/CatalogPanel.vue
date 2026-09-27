@@ -1,37 +1,32 @@
 <script setup>
-// Catálogo de corpora (instalar, ver a ficha, abrir, remover) e modelos baixáveis.
-import { onMounted, ref } from 'vue'
+// Corpora do catálogo (instalar, ver a ficha, abrir, remover); endereço do catálogo em "avançado".
+import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { get, post } from '../api/client.js'
 import { useJob } from '../composables/useJob.js'
 import { useSession } from '../stores/session.js'
 import JobProgress from './JobProgress.vue'
+import Collapsible from './Collapsible.vue'
 
 const { t } = useI18n()
 const session = useSession()
 const view = ref(null)
 const url = ref('')
-const models = ref([])
 const job = useJob('catalog')
 async function load() {
   view.value = await get('/api/catalog')
   url.value = view.value.url || ''
-  models.value = (await get('/api/models')).spacy
 }
 onMounted(load)
+watch(() => job.job.value?.status, (s) => { if (s && !['queued', 'running'].includes(s)) load() })
 async function saveUrl() { await post('/api/catalog/url', { url: url.value }); await load() }
-async function install(id) { await job.start(() => post('/api/catalog/install', { id })); await load() }
+function install(id) { job.start(() => post('/api/catalog/install', { id })) }
 async function remove(id) { await post('/api/catalog/remove', { id }); await load() }
-async function download(name) { await job.start(() => post('/api/models/download', { name })); await load() }
 const installedIds = () => new Set((view.value?.installed ?? []).map((i) => `${i.id}@${i.version}`))
 </script>
 <template>
   <div class="flex flex-col gap-3" v-if="view">
-    <form class="flex flex-wrap gap-2 items-end" @submit.prevent="saveUrl">
-      <label class="form-control flex-1 min-w-56"><span class="label-text">{{ t('catalog.url') }}</span>
-        <input v-model="url" class="input input-sm" data-testid="catalog-url" /></label>
-      <button class="btn btn-sm">{{ t('catalog.save_url') }}</button>
-    </form>
+    <p class="text-sm opacity-80">{{ t('modules.corpora_intro') }}</p>
     <p v-if="!view.url" class="text-sm opacity-70">{{ t('catalog.no_url') }} {{ t('corpora.catalog_soon') }}</p>
     <p v-if="view.error" role="alert" class="text-error text-sm">{{ view.error }}</p>
     <ul class="flex flex-col gap-2">
@@ -40,12 +35,25 @@ const installedIds = () => new Set((view.value?.installed ?? []).map((i) => `${i
           <span class="font-medium">{{ p.ficha.name }}</span><span class="badge badge-ghost">{{ p.version }}</span>
           <span class="badge badge-outline">{{ p.ficha.lang }}{{ p.ficha.variety ? ' · ' + p.ficha.variety : '' }}</span>
           <span v-if="p.ficha.size" class="text-xs opacity-70">{{ t('catalog.words', { n: p.ficha.size.words }) }}</span>
+          <span class="badge badge-outline badge-sm">{{ p.ficha.license.name }}</span>
           <button v-if="(p.kind || 'package') === 'package' && !installedIds().has(`${p.id}@${p.version}`)" class="btn btn-xs btn-primary ml-auto"
                   :data-testid="`install-${p.id}`" @click="install(p.id)">{{ t('catalog.install') }}</button>
           <span v-else-if="p.kind === 'recipe'" class="text-xs ml-auto opacity-70">{{ t('catalog.recipe') }}</span>
         </div>
-        <p class="text-xs opacity-80">{{ t('catalog.license') }}: {{ p.ficha.license.name }} · {{ t('catalog.source') }}: {{ p.ficha.source.citation || p.ficha.source.url }}
-          <span v-if="p.ficha.period"> · {{ p.ficha.period }}</span><span v-if="p.ficha.genres"> · {{ p.ficha.genres.join(', ') }}</span></p>
+        <p v-if="p.ficha.description" class="text-sm">{{ p.ficha.description }}</p>
+        <details class="text-xs">
+          <summary class="cursor-pointer opacity-80">{{ t('modules.details') }}</summary>
+          <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 mt-1">
+            <dt class="opacity-70">{{ t('catalog.source') }}</dt>
+            <dd><a v-if="p.ficha.source.url" class="link" :href="p.ficha.source.url" target="_blank" rel="noopener">{{ p.ficha.source.citation || p.ficha.source.url }}</a>
+              <span v-else>{{ p.ficha.source.citation }}</span></dd>
+            <dt class="opacity-70">{{ t('catalog.license') }}</dt>
+            <dd><a v-if="p.ficha.license.url" class="link" :href="p.ficha.license.url" target="_blank" rel="noopener">{{ p.ficha.license.name }}</a>
+              <span v-else>{{ p.ficha.license.name }}</span></dd>
+            <template v-if="p.ficha.period"><dt class="opacity-70">·</dt><dd>{{ p.ficha.period }}</dd></template>
+            <template v-if="p.ficha.genres"><dt class="opacity-70">·</dt><dd>{{ p.ficha.genres.join(', ') }}</dd></template>
+          </dl>
+        </details>
       </li>
     </ul>
     <JobProgress :job="job.job.value" @cancel="job.cancel" />
@@ -60,12 +68,13 @@ const installedIds = () => new Set((view.value?.installed ?? []).map((i) => `${i
         </li>
       </ul>
     </template>
-    <h3 class="font-bold text-sm">{{ t('catalog.models') }}</h3>
-    <ul class="flex flex-wrap gap-2">
-      <li v-for="m in models" :key="m.name" class="badge badge-lg gap-2">{{ m.name }}
-        <span v-if="m.installed" class="text-success text-xs">{{ t('catalog.model_ok') }}</span>
-        <button v-else class="btn btn-xs" @click="download(m.name)">{{ t('catalog.download') }}</button></li>
-    </ul>
-    <p class="text-xs opacity-60">{{ t('catalog.data_dir', { path: view.data_dir }) }}</p>
+    <Collapsible :title="t('modules.advanced')">
+      <form class="flex flex-wrap gap-2 items-end" @submit.prevent="saveUrl">
+        <label class="form-control flex-1 min-w-56"><span class="label-text">{{ t('catalog.url') }}</span>
+          <input v-model="url" class="input input-sm" data-testid="catalog-url" /></label>
+        <button class="btn btn-sm">{{ t('catalog.save_url') }}</button>
+      </form>
+      <p class="text-xs opacity-60 mt-2">{{ t('catalog.data_dir', { path: view.data_dir }) }}</p>
+    </Collapsible>
   </div>
 </template>

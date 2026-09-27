@@ -92,7 +92,7 @@ test('acessibilidade das demais telas, tema escuro e alto contraste', async ({ p
     await page.goto('/')
     await page.evaluate((t) => localStorage.setItem('ttw.theme', t), theme)
     for (const route of ['/', '/aprender', '/aprender/cohens_d', '/explorar/busca', '/explorar/frequencia',
-      '/explorar/colocados', '/explorar/dispersao', '/explorar/leitor', '/comparar']) {
+      '/explorar/colocados', '/explorar/dispersao', '/explorar/leitor', '/comparar', '/modulos']) {
       await page.goto(`/?t=${theme}#${route}`)
       await page.waitForLoadState('networkidle')
       await a11y(page, `${theme} ${route}`)

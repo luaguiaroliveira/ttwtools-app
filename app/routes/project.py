@@ -4,6 +4,7 @@ routes/project.py — Gerenciamento de arquivos .ttwa (abrir, criar, resumo, exp
 
 from __future__ import annotations
 
+import os
 import threading
 import uuid
 from pathlib import Path
@@ -81,14 +82,14 @@ def create_project(req: CreateProjectRequest):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
-    app_state.current_project_path = str(Path(req.path).resolve())
+    app_state.current_project_path = str(Path(req.path).expanduser().resolve())
     return {"status": "created", "path": app_state.current_project_path}
 
 
 @router.post("/open")
 def open_project(req: OpenProjectRequest):
     """Abre um arquivo .ttwa (direto) ou .ttwt (inicia descompressão em background)."""
-    p = Path(req.path).resolve()
+    p = Path(req.path).expanduser().resolve()
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"Arquivo não encontrado: {p}")
 
@@ -241,7 +242,7 @@ def export_project(req: ExportRequest):
     ttwa_path = Path(app_state.current_project_path)
 
     if req.dest_folder:
-        dest = Path(req.dest_folder).resolve()
+        dest = Path(req.dest_folder).expanduser().resolve()
     else:
         dest = ttwa_path.parent / ttwa_path.stem
 
@@ -345,7 +346,7 @@ def saveas_project(req: SaveAsRequest):
     })
     threading.Thread(
         target=_run_saveas,
-        args=(job_id, app_state.current_project_path, req.path, req.format),
+        args=(job_id, app_state.current_project_path, os.path.expanduser(req.path), req.format),
         daemon=True,
     ).start()
     return {"job_id": job_id}

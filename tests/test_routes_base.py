@@ -96,3 +96,10 @@ def test_import_route_graf_and_tei_formats(client, tmp_path):
     bad = client.post("/api/corpora/import", json={"corpus_name": "g", "source": {"kind": "folder", "path": str(tmp_path / "tei"),
                                                                                   "format": "graf"}})
     assert bad.status_code == 422
+
+
+def test_til_ao_criar_e_abrir(client, tmp_path, monkeypatch):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    r = client.post("/api/project/create", json={"path": "~/proj.ttwa"})
+    assert r.status_code == 200 and r.json()["path"] == str((tmp_path / "proj.ttwa").resolve())
+    assert client.post("/api/project/open", json={"path": "~/proj.ttwa"}).status_code == 200
