@@ -18,6 +18,7 @@ Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.
 - Processo de release: `build/release.py` (com `--dry-run`), `RELEASING.md` completo e `build/release_github.sh` para pacotes feitos localmente. (passo 0.5)
 - Interface nova em Vue 3 (`frontend-vue/`, `TTW_UI=vue`): casca responsiva com corpus ativo, tema claro/escuro/alto contraste, pt/en, tarefas com progresso e cancelamento, tela Corpora (projeto, importar com metadados, visão geral, camadas). (passos 3.1–3.4)
 - Tela de etiquetagem: escolha de tagger, "ver tags", "Personalizar" gerado do descritor, predefinições e aviso de reaproveitamento. (passo 3.5)
+- Tela Explorar: busca, KWIC (abre o texto na ocorrência), frequência, colocados, dispersão e leitor com etiquetas coloridas. (passo 3.6)
 
 ### Alterado
 - Versão do app corrigida de `0.1.0` (desatualizada) para `0.4.0.dev0`; Python mínimo passa a 3.11. (passo 0.2)

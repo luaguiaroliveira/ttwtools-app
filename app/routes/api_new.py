@@ -176,6 +176,17 @@ def corpus_documents(corpus: str, limit: int = Query(50, le=1000), offset: int =
     return {"total": len(docs), "offset": offset, "limit": limit, "rows": rows}
 
 
+@router.get("/corpora/{corpus}/text/{filename}", tags=["corpora"])
+def corpus_text(corpus: str, filename: str, layer: str | None = None):
+    """Texto do documento e tokens da camada (leitor com etiquetas)."""
+    import ttwtools
+    with _project() as proj:
+        try:
+            return ttwtools.read_document(proj, corpus, filename, layer)
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=exc.args[0]) from exc
+
+
 @router.get("/corpora/{corpus}/layers", tags=["corpora"])
 def corpus_layers(corpus: str):
     import ttwtools

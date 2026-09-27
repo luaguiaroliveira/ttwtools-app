@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.6 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.5 prontos
+- **Passo atual:** 3.7 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.6 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -119,7 +119,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.3 | Cliente da API e tarefas | 3.1, 2.1 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.4 | Corpora: biblioteca, importar, visão geral | 3.2, 3.3, 2.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.1–3.4\]'` |
 | 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.5\]'` |
-| 3.6 | Explorar | 3.4 | [ ] | | |
+| 3.6 | Explorar | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.6\]'` |
 | 3.7 | Comparar | 3.6 | [ ] | | |
 | 3.8 | Ajuda e Aprender | 3.2 | [ ] | | |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [ ] | | |
@@ -727,16 +727,24 @@ Próximo: 3.6.
 
 ### 3.6 Explorar
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.6\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §4 e §17.4 (esboço do KWIC); `frontend-src/src/views/text-viewer.js` (962 linhas, só a estrutura com `grep -n "^export\|^function"`).
 - **Fazer:**
-  - [ ] Busca de palavra (quantas vezes ocorre, por documento e grupo).
-  - [ ] **KWIC** paginado: contexto esquerdo, palavra, contexto direito, classe, arquivo; toque/clique abre o contexto completo e o arquivo; versão em cartões no celular.
-  - [ ] Frequência (unidade escolhível), colocados e dispersão (gráfico de barras).
-  - [ ] **Leitor de texto** com etiquetas coloridas (portar `text-viewer.js`; painel de tags como gaveta; definições ao toque e ao teclado, não só ao passar o mouse).
-  - [ ] Gráficos reaproveitando os módulos D3 existentes (`chart.js`, `viz-*.js`) como componentes; cada um com "ver como tabela".
+  - [x] Busca de palavra (quantas vezes ocorre, por documento e grupo).
+  - [x] **KWIC** paginado: contexto esquerdo, palavra, contexto direito, classe, arquivo; toque/clique abre o contexto completo e o arquivo; versão em cartões no celular.
+  - [x] Frequência (unidade escolhível), colocados e dispersão (gráfico de barras).
+  - [x] **Leitor de texto** com etiquetas coloridas (portar `text-viewer.js`; painel de tags como gaveta; definições ao toque e ao teclado, não só ao passar o mouse).
+  - [~] Gráficos reaproveitando os módulos D3 existentes (`chart.js`, `viz-*.js`) como componentes; cada um com "ver como tabela".
 - **Pronto quando:** dá para buscar uma palavra, ver o KWIC, clicar e ler o texto com as tags.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: tela Explorar com abas por URL (#/explorar/{busca,kwic,frequencia,colocados,dispersao,leitor}), cada ferramenta carregada sob demanda: busca (total, por documento ou por metadado, gráfico com "ver como tabela"), KWIC paginado e ordenável (tabela alinhada no computador, cartões no celular; clicar/Enter abre o leitor na posição), frequência (forma, lema, palavra+classe, classe, n-grama; por corpus, documento ou grupo; sem palavras funcionais), colocados (janela, unidade, LL/MI/T/freq, lado), dispersão (DP, DP normalizado, range e "código de barras" por texto, com tabela), leitor com etiquetas (cor por UPOS/XPOS/tags, legenda clicável que destaca uma classe, navegação anterior/próximo destacado, clique no token mostra palavra, lema, classes, traços e a definição do tagset; ocorrência do KWIC destacada).
+Arquivos: frontend-vue/src/views/{ExploreView.vue, explore/{QueryBox,SearchTool,KwicTool,FrequencyTool,CollocatesTool,DispersionTool,ReaderTool}.vue}, api/index.js; app/routes/api_new.py (GET /api/corpora/{c}/text/{arquivo}); submódulo: query.read_document, textos.
+Testes: pytest tests -q → 30 passed; libs → 112 passed; navegador com 100 ensaios etiquetados pelo spaCy: KWIC "society" → 46 linhas com classe NOUN; clique → leitor destacando "society" (1.268 tokens coloridos); seleção de token com definição; frequência; dispersão (DP 0,738, range 24/100).
+Pendências: gráficos em SVG próprio (barras e código de barras), não os módulos D3 da interface antiga (chart.js e viz-*.js são da KFA/visualizações e entram em Comparar, 3.7). Leitor paginado (paged.js) não portado.
+Observações: cada ferramenta tem menos de 3 KB comprimidos. KWIC com sentença inteira no title da linha.
+Próximo: 3.7.
+```
 
 ### 3.7 Comparar
 

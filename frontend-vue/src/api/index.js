@@ -29,6 +29,7 @@ export const api = {
     list: () => get('/api/corpora'),
     documents: (corpus, params) => get(`/api/corpora/${encodeURIComponent(corpus)}/documents`, { ...params, where: where(params?.where) }),
     layers: (corpus) => get(`/api/corpora/${encodeURIComponent(corpus)}/layers`),
+    text: (corpus, filename, layer) => get(`/api/corpora/${encodeURIComponent(corpus)}/text/${encodeURIComponent(filename)}`, { layer }),
     import: (body) => post('/api/corpora/import', body),
     overview: (corpus, params) => get(`/api/corpora/${encodeURIComponent(corpus)}/overview`, params),
     computeOverview: (corpus, body) => post(`/api/corpora/${encodeURIComponent(corpus)}/overview`, body),

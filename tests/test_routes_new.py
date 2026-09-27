@@ -125,3 +125,11 @@ def test_tagging_plan_and_availability(client, opened):
     assert (plan["documents"], plan["to_tag"], plan["reusable"]) == (5, 5, 0)
     assert client.post("/api/tagging/plan", json={"corpus": "bawe", "tagger": "spacy",
                                                   "options": {"model": "x"}}).status_code == 422
+
+
+def test_corpus_text_route(client, opened):
+    client.get("/api/explore/search", params={"corpus": "bawe", "query": "the"})
+    name = client.get("/api/corpora/bawe/documents").json()["rows"][0]["filename"]
+    d = client.get(f"/api/corpora/bawe/text/{name}").json()
+    assert d["text"] and d["tokens"] and d["layer"]["tool"] == "simple"
+    assert client.get("/api/corpora/bawe/text/nao.txt").status_code == 404
