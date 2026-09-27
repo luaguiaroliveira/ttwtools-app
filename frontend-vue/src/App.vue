@@ -18,7 +18,8 @@ const loadError = ref(null)
 const explaining = ref(false)
 
 onMounted(async () => {
-  try { await session.load() } catch (err) { loadError.value = err }
+  try { await session.load(); await session.checkPendingOpen() } catch (err) { loadError.value = err }
+  window.addEventListener('focus', () => session.checkPendingOpen().catch(() => {}))
 })
 const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const changeLang = (value) => setLang(value)

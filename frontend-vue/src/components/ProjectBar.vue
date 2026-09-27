@@ -4,6 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useSession } from '../stores/session.js'
 import { api } from '../api/index.js'
+import { useJob } from '../composables/useJob.js'
+import JobProgress from './JobProgress.vue'
+import Collapsible from './Collapsible.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -11,6 +14,21 @@ const { project } = storeToRefs(session)
 const path = ref('')
 const error = ref(null)
 const busy = ref(false)
+const saveAsPath = ref('')
+const saveAsFormat = ref('ttwt')
+const exportDest = ref('')
+const done = ref('')
+const saveJob = useJob('saveas')
+const { opening } = storeToRefs(session)
+async function saveAs() {
+  done.value = ''
+  await saveJob.start(() => api.project.saveAs(saveAsPath.value, saveAsFormat.value))
+  if (saveJob.job.value?.status === 'done') done.value = t('project.saved', { path: saveAsPath.value })
+}
+const exportAll = () => act(async () => {
+  const r = await api.project.exportAll(exportDest.value)
+  done.value = t('project.exported', { n: ['corpora', 'tagged', 'tables', 'kfa'].reduce((a, k) => a + (r[k] ?? 0), 0), dest: r.dest })
+})
 
 async function act(fn) {
   error.value = null
@@ -48,6 +66,25 @@ const exportCorpus = () => act(async () => { await api.project.exportCorpus(); a
       <button type="submit" class="btn btn-sm btn-primary" :disabled="busy || !path" data-testid="project-open">{{ t('project.open') }}</button>
       <button type="button" class="btn btn-sm" :disabled="busy || !path" data-testid="project-create" @click="create">{{ t('project.create') }}</button>
     </form>
+    <JobProgress v-if="opening" :job="opening" />
+    <Collapsible v-if="project" :title="t('project.save_as') + ' · ' + t('project.export_all')">
+      <div class="flex flex-col gap-3">
+        <form class="flex flex-wrap gap-2 items-end" @submit.prevent="saveAs">
+          <label class="form-control flex-1 min-w-48"><span class="label-text">{{ t('project.save_as_path') }}</span>
+            <input v-model="saveAsPath" class="input input-sm" data-testid="saveas-path" /></label>
+          <select v-model="saveAsFormat" class="select select-sm" :aria-label="t('project.save_as')">
+            <option value="ttwt">{{ t('project.format.ttwt') }}</option><option value="ttwa">{{ t('project.format.ttwa') }}</option></select>
+          <button class="btn btn-sm" :disabled="!saveAsPath" data-testid="saveas-go">{{ t('project.save') }}</button>
+        </form>
+        <JobProgress :job="saveJob.job.value" @cancel="saveJob.cancel" />
+        <form class="flex flex-wrap gap-2 items-end" @submit.prevent="exportAll">
+          <label class="form-control flex-1 min-w-48"><span class="label-text">{{ t('project.export_dest') }}</span>
+            <input v-model="exportDest" class="input input-sm" /></label>
+          <button class="btn btn-sm" :disabled="busy">{{ t('project.export_all') }}</button>
+        </form>
+        <p v-if="done" role="status" class="text-sm text-success">{{ done }}</p>
+      </div>
+    </Collapsible>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
   </section>
 </template>
