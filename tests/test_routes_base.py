@@ -39,7 +39,13 @@ def test_migrated_v2_project(client, v2_project):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         r = client.post("/api/project/open", json={"path": str(v2_project)})
-    assert r.status_code == 200 and str(r.json()["schema_version"]) == "0.3"
+    # esquema antigo: abre numa tarefa (migração com progresso); só vira o projeto atual no fim
+    assert r.status_code == 200 and r.json()["status"] == "migrating"
+    job = wait_job(client, r.json()["job_id"])
+    assert job["status"] == "done" and str(job["result"]["schema_version"]) == "0.3"
+    assert job["stage"] == "done" and job["total"] > 0
+    # de novo: já migrado, abre na hora
+    assert client.post("/api/project/open", json={"path": str(v2_project)}).json()["status"] == "opened"
     assert client.get("/api/corpus/list").json()["corpora"] == ["CorIFAessaysNE_5", "essays_bawe_somentetexto_5"]
     assert client.get("/api/project/summary").status_code == 200
 

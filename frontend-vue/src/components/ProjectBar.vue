@@ -84,7 +84,8 @@ const exportAll = () => act(async () => {
        class="alert alert-warning w-full text-sm py-1">
       {{ t('project.corpus_missing', { missing: project.corpus_status.missing, changed: project.corpus_status.changed }) }}
     </p>
-    <JobProgress v-if="opening" :job="opening" />
+    <JobProgress v-if="opening" :job="opening" @cancel="api.jobs.cancel(opening.id)" />
+    <p v-if="opening?.stage === 'migrate'" class="text-xs opacity-70">{{ t('project.migrate_hint') }}</p>
     <JobProgress :job="saveJob.job.value" @cancel="saveJob.cancel" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>

@@ -38,7 +38,7 @@ export const useSession = defineStore('session', {
     },
     async openProject(path) {
       const r = await api.project.open(path)
-      if (r?.status === 'decompressing') {        // .ttwt: descompacta numa tarefa
+      if (['decompressing', 'migrating'].includes(r?.status)) {   // .ttwt ou projeto antigo: tarefa com progresso
         this.opening = { status: 'running' }
         for (;;) {
           const job = await api.jobs.get(r.job_id)
@@ -46,6 +46,7 @@ export const useSession = defineStore('session', {
           if (!['queued', 'running'].includes(job.status)) break
           await new Promise((res) => setTimeout(res, 300))
         }
+        if (this.opening.status === 'cancelled') { this.opening = null; return }
         if (this.opening.status !== 'done') throw new Error(this.opening.error || 'erro ao abrir')
         this.opening = null
       }

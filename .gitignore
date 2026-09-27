@@ -81,3 +81,11 @@ dist-corpora/
 
 # worktrees temporários de agentes
 .claude/worktrees/
+
+# arquivos auxiliares do SQLite (projetos abertos)
+*.ttwa-wal
+*.ttwa-shm
+*.ttwa-journal
+*.ttwl-wal
+*.ttwl-shm
+*.ttwl-journal

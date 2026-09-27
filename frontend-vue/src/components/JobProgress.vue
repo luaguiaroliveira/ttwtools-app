@@ -10,11 +10,13 @@ const active = computed(() => ['queued', 'running'].includes(props.job?.status))
 </script>
 <template>
   <div v-if="job" class="flex flex-col gap-2" role="status" aria-live="polite">
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
       <span class="badge" :class="{ 'badge-error': job.status === 'error', 'badge-success': job.status === 'done' }">
         {{ t(`job.${job.status}`) }}
       </span>
-      <span v-if="job.total" class="text-sm">{{ t('job.progress', { done: job.done ?? 0, total: job.total }) }}</span>
+      <span v-if="job.total && !job.stage" class="text-sm">{{ t('job.progress', { done: job.done ?? 0, total: job.total }) }}</span>
+      <span v-if="job.stage && job.stage !== 'done'" class="text-sm font-medium">{{ t(`job.stage.${job.stage}`) }}</span>
+      <span v-if="pct !== null && active" class="text-sm tabular-nums">{{ pct }}%</span>
       <span class="text-sm opacity-70 truncate">{{ job.message }}</span>
       <button v-if="active" class="btn btn-sm btn-outline ml-auto" data-testid="job-cancel" @click="emit('cancel')">
         {{ t('job.cancel') }}

@@ -20,6 +20,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 - "Novo projeto…" sobre um arquivo existente falhava mesmo depois de o diálogo do sistema confirmar a substituição; no caminho digitado, a tela oferece "Substituir" (6.2a).
 - Depois de recompilar a interface com a janela aberta, as telas carregadas sob demanda (Explorar, Comparar...) não abriam; agora a página recarrega no destino (6.2a).
+- Projetos de versões anteriores grandes pareciam não abrir: a atualização de formato agora mostra o progresso, pode ser cancelada e retoma de onde parou, e ficou bem mais rápida (6.2a).
 - Caminhos com `~` (ex.: `~/projeto.ttwa`) davam "unable to open database file" (6.2a).
 - Depois de instalar um corpus ou baixar um modelo, a lista só se atualiza quando a tarefa termina (6.2a).
 

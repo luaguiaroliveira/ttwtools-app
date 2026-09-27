@@ -97,10 +97,10 @@ def open_project(req: OpenProjectRequest):
         # Decompression is slow — run in background and return a job_id
         job_id = _jobs_registry.new("open_ttwt")
         _open_jobs[job_id].update({
-            "status": "running",
+            "status": "running", "started_at": __import__("time").time(), "stage": "decompress",
             "done": 0,
             "total": 0,
-            "message": "Iniciando descompressão…",
+            "message": "",
             "result": None,
             "error": None,
         })
@@ -111,13 +111,21 @@ def open_project(req: OpenProjectRequest):
         ).start()
         return {"status": "decompressing", "job_id": job_id}
 
-    # .ttwa — open immediately
+    # .ttwa de esquema antigo: a migração pode levar minutos → tarefa com progresso.
+    # O projeto só vira o "atual" no fim, para outras chamadas não migrarem em paralelo.
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, needs_migration
+    if needs_migration(p):
+        import time as _time
+        job_id = _jobs_registry.new("open_migrate", status="running", started_at=_time.time(), done=0, total=0,
+                                    stage="migrate", message="", result=None, error=None)
+        threading.Thread(target=_run_open_migrate, args=(job_id, str(p)), daemon=True).start()
+        return {"status": "migrating", "job_id": job_id}
+
     _cleanup_temp_ttwt()
-    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY
-    app_state.current_project_path = str(p)
-    app_state.source_ttwt_path = None
     with TTWAProject.open(p) as proj:
         schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
+    app_state.current_project_path = str(p)
+    app_state.source_ttwt_path = None
     return {"status": "opened", "path": str(p), "schema_version": schema_v}
 
 
@@ -438,6 +446,37 @@ def _run_upgrade(job_id: str, project_path: str, compress: bool) -> None:
         })
 
 
+def _migration_progress(job_id: str):
+    """Progresso da migração v0.3 na tarefa: etapa (layers/indexes) e arquivos feitos/total."""
+    def cb(done: int, total: int, stage: str):
+        _open_jobs[job_id].update({"done": done, "total": total, "stage": "indexes" if stage == "indexes" else "migrate",
+                                   "message": f"{done}/{total}"})
+        if _open_jobs[job_id].get("cancel_requested"):      # a migração retoma de onde parou na próxima vez
+            raise _jobs_registry.JobCancelled()
+    return cb
+
+
+def _run_open_migrate(job_id: str, path: str) -> None:
+    """Abre um .ttwa de esquema antigo, migrando para v0.3 com progresso."""
+    import warnings
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            with TTWAProject.open(path, progress=_migration_progress(job_id)) as proj:
+                schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
+                report = getattr(proj, "migration_report", None)
+        _cleanup_temp_ttwt()
+        app_state.current_project_path = path
+        app_state.source_ttwt_path = None
+        _open_jobs[job_id].update({"status": "done", "stage": "done", "message": "",
+                                   "result": {"path": path, "schema_version": schema_v, "migration": report}})
+    except _jobs_registry.JobCancelled:
+        _open_jobs[job_id].update({"status": "cancelled", "message": ""})
+    except Exception as exc:  # noqa: BLE001
+        _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc)})
+
+
 def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
     """Descomprime .ttwt para .ttwa temporário e define como projeto atual."""
     import os
@@ -448,8 +487,8 @@ def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
         mb_done  = done  // (1024 * 1024)
         mb_total = total // (1024 * 1024)
         _open_jobs[job_id].update({
-            "done": done, "total": total,
-            "message": f"Descomprimindo… {mb_done} MB / {mb_total} MB",
+            "done": done, "total": total, "stage": "decompress",
+            "message": f"{mb_done} MB / {mb_total} MB",
         })
 
     try:
@@ -459,15 +498,18 @@ def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
 
         _cleanup_temp_ttwt()
 
-        with TTWAProject.open(tmp_path) as proj:
-            schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
+        import warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            with TTWAProject.open(tmp_path, progress=_migration_progress(job_id)) as proj:
+                schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
 
         app_state.current_project_path = tmp_path
         app_state.source_ttwt_path = source_ttwt
 
         _open_jobs[job_id].update({
-            "status": "done",
-            "message": "Pronto!",
+            "status": "done", "stage": "done",
+            "message": "",
             "result": {
                 "path": source_ttwt,
                 "schema_version": schema_v,
