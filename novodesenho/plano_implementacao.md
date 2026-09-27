@@ -4,10 +4,10 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 6.2, o usuário executa o roteiro com a `v0.4.0-rc.1` (rascunho de pre-release no GitHub, pacotes dos 4 sistemas). Aguardam o usuário também: 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC) e 6.3 (release 0.4.0). Ajustes pequenos da interface nova, apontados pelo usuário, ficaram para depois
-- **Último passo concluído:** 3.11 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** 6.2a (correções da verificação), em andamento: o usuário testa no macOS arm64 (feedback em `verificacao/macos-arm64.md`, itens 1–3 tratados e várias mudanças pedidas na conversa; ver o Relato do 6.2a, "Retomar aqui"). Depois: gerar a `-rc.2`, rodar o roteiro nos outros sistemas (6.2) e a release 0.4.0 (6.3). Aguardam o usuário também: 4.3 (licenças e D6) e 5.2 (dados reais do OANC/MASC)
+- **Último passo concluído:** 3.11 (2026-09-27); `v0.4.0-rc.1` publicada como rascunho; Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
-- **Versão alvo:** `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`
+- **Versão alvo:** `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`, com as correções do 6.2a ainda fora da `main`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
 
 ## Como usar (leia isto primeiro, é curto)
@@ -1020,6 +1020,12 @@ Um subitem por problema apontado nos arquivos de `verificacao/`, com a origem (a
   - [ ] Demais itens do roteiro, conforme o usuário preencher.
 - **Depois da 0.4.0:** _(ideias maiores que surgirem na verificação)_
 - **Relato:** _(preencher ao fechar)_
+- **Retomar aqui (2026-09-27, fim da sessão).**
+  - Feito nesta rodada (todos com teste; ver os `[x]` acima): `~` nos caminhos; Novo/Abrir/Salvar/Salvar como com diálogos do sistema; área Módulos com fichas dos modelos; assistente de importação em 2 passos com metadados em painel opcional e pré-visualização; tela **Etiquetagem** com lista "a executar" guardada no projeto e painel de andamento; "Corpora" → **Arquivo**; abrir projetos antigos com migração retomável e progresso; arquivos **compactados por padrão** com cópia de trabalho, aviso "não salvo" e confirmação ao fechar; opções de gravação visíveis (compactar, **guardar tabelas de busca**); formatos **.ttwc/.ttwcl**.
+  - Testes na última execução: `pytest libs/ttwtools/tests -q` → 166 passed; `pytest tests -q` → 41 passed; `npm test` → 12 passed; `npm run e2e` → 12 passed (3 larguras).
+  - Medidas no projeto real de `ttwa_files/` (2 corpora, 1.525 textos, 10.675 camadas, 19 M tokens): compactado com tabelas 1,06 GB, abre em ~5 s, salva em ~23 s; sem tabelas 496 MB, abre em ~66 s; sem compactar 3 GB; `.ttwc` só do CorIFAessays 48 MB em 18 s; migração do esquema 0.1/0.2 ~2,5 min.
+  - `ttwa_files/`: os dois arquivos foram convertidos no lugar para o formato atual compactado (conteúdo igual nos dois) e estão marcados `git update-index --skip-worktree` **só nesta máquina**, para o Git LFS não reprocessá-los (isso encheu o disco com ~33 GB em `.git/lfs/tmp`; limpo). Não usar `git add -A` neste repositório. Desfazer a marca: `git update-index --no-skip-worktree ttwa_files/<arquivo>`. Versionar as versões novas (~1 GB cada no LFS) só se o usuário pedir.
+  - Pendentes: os dois `[ ]` acima (mensagens de erro traduzidas; testar os diálogos nativos na janela desktop nos 3 sistemas); continuar o `verificacao/macos-arm64.md` a partir do item 4; revisar LEIAME/README com os nomes novos das telas (Arquivo, Etiquetagem, Módulos) e os formatos novos; depois, `-rc.2` (PR do `new_set26` para a `main` e `release.py`).
 
 ### 6.3 Release 0.4.0
 
