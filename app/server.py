@@ -69,6 +69,11 @@ def _frontend_dir() -> Path:
 
 def build_app(open_file: str | None = None) -> FastAPI:
     _ensure_ttwtools_importable()
+    try:  # modelos baixados pelo catálogo (pasta de dados do usuário) entram no caminho
+        from ttwtools.models import activate
+        activate()
+    except Exception:
+        pass
 
     app = FastAPI(
         title="ttwtools-app",

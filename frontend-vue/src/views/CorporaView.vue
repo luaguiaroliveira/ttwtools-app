@@ -9,6 +9,7 @@ import CorpusOverview from '../components/CorpusOverview.vue'
 import LayersList from '../components/LayersList.vue'
 import Collapsible from '../components/Collapsible.vue'
 import TaggerPanel from '../components/TaggerPanel.vue'
+import CatalogPanel from '../components/CatalogPanel.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -57,12 +58,12 @@ function startAdd() { wizardKey.value++; adding.value = true }
           </button>
         </li>
       </ul>
-      <Collapsible :title="t('corpora.catalog')"><p class="text-sm opacity-70">{{ t('corpora.catalog_soon') }}</p></Collapsible>
       <template v-if="corpus">
         <CorpusOverview :corpus="corpus" :layer="layer" />
         <TaggerPanel :key="corpus" :corpus="corpus" @tagged="afterTag" />
         <LayersList ref="layersRef" :corpus="corpus" />
       </template>
     </template>
+    <Collapsible :title="t('corpora.catalog')" data-testid="catalog"><CatalogPanel /></Collapsible>
   </div>
 </template>

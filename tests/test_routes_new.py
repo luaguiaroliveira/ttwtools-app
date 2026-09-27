@@ -165,3 +165,25 @@ def test_viz_routes(client, opened, spacy_model):
     r = client.post("/api/compare/viz/reduction", json={"sides": sides, "layer": "spacy", "method": "pca3d"}).json()
     assert "z" in r["coords"][0]
     assert client.post("/api/compare/viz/reduction", json={"sides": sides, "layer": "spacy", "method": "x"}).status_code == 422
+
+
+def test_catalog_routes(client, tmp_path, monkeypatch):
+    import ttwtools
+    from ttwtools import corpus_catalog as cc
+    monkeypatch.setenv("TTWTOOLS_DATA_DIR", str(tmp_path / "dados"))
+    proj = tmp_path / "d.ttwa"
+    with ttwtools.create_project(proj) as p:
+        p.add_corpus_text("d", "a.txt", "The cat sat. Dogs ran.")
+        ttwtools.tag_corpus(p, "d", "simple")
+    ficha = {"id": "d", "name": "D", "version": "1", "lang": "en", "source": {"url": "x"},
+             "license": {"name": "CC0", "redistributable": True, "verified_on": "2026-09-26"}}
+    cc.write_catalog([cc.make_package(proj, tmp_path / "pub", ficha)], tmp_path / "pub" / "catalogo.json")
+    assert client.get("/api/catalog").json()["url"] is None
+    client.post("/api/catalog/url", json={"url": str(tmp_path / "pub" / "catalogo.json")})
+    view = client.get("/api/catalog").json()
+    assert view["packages"][0]["id"] == "d" and view["error"] is None
+    job = wait_job(client, client.post("/api/catalog/install", json={"id": "d"}).json()["job_id"])
+    assert job["status"] == "done" and job["result"]["project"]
+    assert client.get("/api/catalog").json()["installed"][0]["id"] == "d"
+    assert client.post("/api/catalog/remove", json={"id": "d"}).json() == {"removed": 1}
+    assert any(m["name"] == "en_core_web_sm" for m in client.get("/api/models").json()["spacy"])

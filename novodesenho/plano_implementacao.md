@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.11 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.10 prontos
+- **Passo atual:** 4.3 (3.11 aguarda confirmação do usuário)
+- **Último passo concluído:** 4.2 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2 e 3 (exceto remoção da interface antiga, 3.11) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -126,8 +126,8 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[3.10\]'` |
 | 3.11 | Remover a interface antiga | 3.10 | [!] | | aguarda confirmação do usuário |
 | **Fase 4 — Catálogo de corpora** | | | | | |
-| 4.1 | Formato de pacote e catálogo | 1.2 | [ ] | | |
-| 4.2 | Baixar, instalar e atualizar | 4.1 | [ ] | | |
+| 4.1 | Formato de pacote e catálogo | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
+| 4.2 | Baixar, instalar e atualizar | 4.1 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
 | 4.3 | Primeiros corpora | 4.2, 1.6 | [ ] | | |
 | 4.4 | Listas de frequência de referência | 4.3, 1.9 | [ ] | | |
 | **Fase 5 — Extras** | | | | | |
@@ -848,25 +848,32 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 4.1 Formato de pacote e catálogo
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[4.1'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Ler antes:** `novomodelo.md` §6, §9.5 e §16.3 a §16.5.
 - **Fazer:**
-  - [ ] Formato de **pacote de corpus**: um `.ttwa` já indexado e etiquetado, ou só a lista de frequências, mais uma **ficha** (`ficha.json`: idioma, variedade, período, gêneros, tamanho, licença e fonte, camadas com tagger e versão, hash).
-  - [ ] **Catálogo** (`catalogo.json`) publicado como arquivo de uma release do GitHub (ou de um repositório de dados), com URL, tamanho e hash de cada pacote.
-  - [ ] **Regra de licença:** nenhum corpus entra no catálogo sem a licença conferida na fonte e registrada na ficha. Corpus de licença restrita fica só como receita de importação, sem redistribuição.
+  - [x] Formato de **pacote de corpus**: um `.ttwa` já indexado e etiquetado, ou só a lista de frequências, mais uma **ficha** (`ficha.json`: idioma, variedade, período, gêneros, tamanho, licença e fonte, camadas com tagger e versão, hash).
+  - [x] **Catálogo** (`catalogo.json`) publicado como arquivo de uma release do GitHub (ou de um repositório de dados), com URL, tamanho e hash de cada pacote.
+  - [x] **Regra de licença:** nenhum corpus entra no catálogo sem a licença conferida na fonte e registrada na ficha. Corpus de licença restrita fica só como receita de importação, sem redistribuição.
 - **Pronto quando:** existe o esquema do catálogo e um pacote de exemplo valida contra ele.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `ttwtools.corpus_catalog`: `validate_ficha`/`validate_catalog` (campos obrigatórios; `license.redistributable`, `license.verified_on`; pacote sem licença conferida é recusado; licença restrita → entrada `kind: "recipe"`, sem arquivo), `make_package` (zip `<id>-<versão>.zip` com `ficha.json`, `corpus.ttwa` e `referencia-<unidade>.tsv`; tamanho, camadas com tagger/versão e sha256 preenchidos), `write_catalog`/`load_catalog` (arquivo local ou http).
+  - Testes: `libs/ttwtools/tests/test_corpus_catalog.py` (6).
+  - Decisões: o catálogo **não tem URL padrão** enquanto D6 (hospedagem; repositório privado) não for resolvida: a pessoa informa o endereço (configuração em `settings.json` da pasta de dados ou `TTWTOOLS_CATALOG_URL`).
+  - Pendências: escolher onde publicar `catalogo.json` (D6).
 
 ### 4.2 Baixar, instalar e atualizar
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[4.1'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Fazer:**
-  - [ ] Pasta de dados do usuário por sistema (padrão do sistema operacional), com corpora e modelos baixados.
-  - [ ] `ttwtools catalog list|install|remove|update`, com conferência de hash e progresso.
-  - [ ] Tela em Corpora para instalar, ver a ficha e remover.
-  - [ ] Download de **modelos** de spaCy e Stanza sob demanda (informando o tamanho), fora do binário.
+  - [x] Pasta de dados do usuário por sistema (padrão do sistema operacional), com corpora e modelos baixados.
+  - [x] `ttwtools catalog list|install|remove|update`, com conferência de hash e progresso.
+  - [x] Tela em Corpora para instalar, ver a ficha e remover.
+  - [x] Download de **modelos** de spaCy e Stanza sob demanda (informando o tamanho), fora do binário.
 - **Pronto quando:** instalar um pacote pequeno pelo catálogo e abri-lo na interface funciona.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: pasta de dados via `platformdirs` (`TTWTOOLS_DATA_DIR` para sobrepor); `install` (download com progresso, conferência de sha256, extração em `<dados>/corpora/<id>/<versão>`), `installed`, `remove`, `updates`; `ttwtools catalog list|installed|install|remove|update|validate|models|download-model`. `ttwtools.models`: modelos spaCy baixados como roda do GitHub (versão pela `compatibility.json`) e extraídos em `<dados>/models/python`, que `activate()` põe no `sys.path` (funciona no binário, sem pip); Stanza em `<dados>/models/stanza`. App: rotas `/api/catalog` (GET, `/url`, `/install` como tarefa, `/remove`), `/api/models` e `/api/models/download`; `activate()` na partida do servidor; painel **Catálogo** em Corpora (visível mesmo sem projeto aberto): endereço, fichas, instalar com progresso, instalados com Abrir/Remover e aviso de atualização, modelos spaCy com Baixar.
+  - Testes: `tests/test_routes_new.py::test_catalog_routes`; conferido no navegador: instalar o pacote de demonstração e abri-lo na interface.
+  - Pendências: download de Stanza só pela linha de comando/rota (`stanza:<idioma>`), sem botão; tamanho do modelo aparece só no progresso.
 
 ### 4.3 Primeiros corpora
 

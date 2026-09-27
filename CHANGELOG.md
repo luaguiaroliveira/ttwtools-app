@@ -4,6 +4,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- Catálogo de corpora: pacotes com ficha e licença conferida, instalação com conferência de hash, remoção e aviso de atualização, pela interface (Corpora → Catálogo) e por `ttwtools catalog` (4.1–4.2).
+- Download de modelos spaCy e Stanza sob demanda para a pasta de dados do usuário, fora do binário (4.2).
+
 ## [0.4.0-alpha.1] — 2026-09-26
 
 Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.md`).

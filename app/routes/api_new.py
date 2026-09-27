@@ -457,3 +457,76 @@ def code(req: CodeRequest):
     path = app_state.current_project_path or "projeto.ttwa"
     return {"cli": _call(cli_command, req.analysis, path, req.params, windows=req.windows),
             "python": _call(python_code, req.analysis, path, req.params)}
+
+
+# ---------------------------------------------------------------------------
+# Catálogo de corpora e modelos (passo 4.2)
+# ---------------------------------------------------------------------------
+
+@router.get("/catalog", tags=["catalog"])
+def catalog_view():
+    """Catálogo configurado (se houver), pacotes instalados e a URL em uso."""
+    from ttwtools import corpus_catalog as cc
+    out = {"url": cc.catalog_url(), "installed": cc.installed(), "packages": [], "error": None,
+           "data_dir": str(cc.data_dir())}
+    if out["url"]:
+        try:
+            cat = cc.load_catalog(out["url"])
+            out["packages"] = cat["packages"]
+            out["updates"] = cc.updates(cat)
+        except Exception as exc:  # noqa: BLE001 — catálogo inacessível vira mensagem
+            out["error"] = f"{type(exc).__name__}: {exc}"
+    return out
+
+
+class CatalogUrlRequest(BaseModel):
+    url: str
+
+
+@router.post("/catalog/url", tags=["catalog"])
+def catalog_set_url(req: CatalogUrlRequest):
+    from ttwtools import corpus_catalog as cc
+    cc.set_setting("catalog_url", req.url.strip() or None)
+    return {"url": cc.catalog_url()}
+
+
+class CatalogPackageRequest(BaseModel):
+    id: str
+    version: str | None = None
+
+
+@router.post("/catalog/install", tags=["catalog"])
+def catalog_install(req: CatalogPackageRequest):
+    """Baixa e instala um pacote (tarefa com progresso)."""
+    def work(job, req=req):
+        from ttwtools import corpus_catalog as cc
+        return cc.install(req.id, req.version, progress=lambda d, t, n: job.progress(d, t, n))
+    return {"job_id": jobs.start("catalog_install", work, package=req.id)}
+
+
+@router.post("/catalog/remove", tags=["catalog"])
+def catalog_remove(req: CatalogPackageRequest):
+    from ttwtools import corpus_catalog as cc
+    return {"removed": cc.remove(req.id, req.version)}
+
+
+@router.get("/models", tags=["catalog"])
+def models_list():
+    from ttwtools import models
+    return models.list_models()
+
+
+class ModelRequest(BaseModel):
+    name: str                       # en_core_web_md, pt_core_news_sm... ou stanza:pt
+
+
+@router.post("/models/download", tags=["catalog"])
+def models_download(req: ModelRequest):
+    """Baixa um modelo spaCy (ou Stanza, com 'stanza:<idioma>') para a pasta de dados (tarefa)."""
+    def work(job, req=req):
+        from ttwtools import models
+        prog = lambda d, t, n: job.progress(d, t, n)  # noqa: E731
+        path = models.download_stanza(req.name.split(":", 1)[1], progress=prog) if req.name.startswith("stanza:") \
+            else models.download_spacy_model(req.name, progress=prog)
+        return {"path": str(path)}
+    return {"job_id": jobs.start("model_download", work, model=req.name)}
