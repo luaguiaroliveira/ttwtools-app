@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.11 em andamento. A Vue já é o padrão (branch `vue-padrao`); ver o Relato do 3.11, "Retomar aqui". Aguardam o usuário também: 3.11 (remover a interface antiga), 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC), 6.2 (roteiro nos sistemas) e 6.3 (release 0.4.0)
-- **Último passo concluído:** 6.1 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** gerar a `-rc.1` e executar o 6.2 (roteiro nos sistemas). Aguardam o usuário também: 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC) e 6.3 (release 0.4.0). Ajustes pequenos da interface nova, apontados pelo usuário, ficaram para depois
+- **Último passo concluído:** 3.11 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -13,7 +13,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 ## Como usar (leia isto primeiro, é curto)
 
 1. **Leia só:** este cabeçalho, a tabela de andamento e **o passo atual**. Ache o passo com `grep -n '^### ' novodesenho/plano_implementacao.md` e leia só aquele trecho (`Read` com `offset` e `limit`).
-2. **Não leia arquivos inteiros grandes.** Use `grep -n` e `Read` com `offset`/`limit`. Em especial: `frontend-src/index.html` (1.250 linhas), `libs/ttwtools/ttwtools/project.py` (1.141 linhas), `novodesenho/novomodelo.md` (só as seções citadas). **Nunca abra** `repomix-output.xml`, `libs/repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/` nem `test_corpora/full`.
+2. **Não leia arquivos inteiros grandes.** Use `grep -n` e `Read` com `offset`/`limit`. Em especial: `libs/ttwtools/ttwtools/project.py` (1.141 linhas), `novodesenho/novomodelo.md` (só as seções citadas). **Nunca abra** `repomix-output.xml`, `libs/repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/` nem `test_corpora/full`.
 3. **Um passo por vez.** Cada passo cabe em uma sessão. Não comece o próximo sem fechar o atual.
 4. **Ao concluir um passo:** marque `[x]` nos subpassos e na tabela, preencha o **Relato** (modelo abaixo), atualize "Estado atual", rode os testes do passo e **faça um commit** com a mensagem começando pelo número do passo (ex.: `[1.2] esquema v3 do projeto`).
 5. **Se travar,** marque `[!]`, escreva o motivo no Relato e siga para um passo que não dependa dele (a coluna "Depende de" diz quais).
@@ -77,8 +77,8 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 
 | Onde | O quê |
 |---|---|
-| `app/` | Servidor FastAPI local: `server.py`, `__main__.py` (modos `desktop` com pywebview e `web`), `state.py`, `routes/{analysis,corpus,project,quickrun,tagging,tags,utils,viz}.py` |
-| `frontend-src/` | Interface **atual** (JS puro, Vite, Tailwind/DaisyUI, D3): `index.html`, `src/{api,chart,main,state,ui}.js`, `src/views/*`. O build vai para `frontend/`, que o servidor serve (`_frontend_dir`) |
+| `app/` | Servidor FastAPI local: `server.py`, `__main__.py` (modos `desktop` com pywebview e `web`), `state.py`, `routes/{api_new,corpus,jobs,project,sources,tagging,utils}.py` (rotas antigas sem uso removidas no 3.11) |
+| `frontend-vue/` | Interface (Vue 3, Vite, Tailwind/DaisyUI). O build vai para `frontend/` (fora do git), que o servidor serve (`_frontend_dir`). A interface antiga (`frontend-src/`) saiu no 3.11 |
 | `libs/ttwtools/` | Pacote (submódulo): `ttwtools/{analysis,project,tagged_io,tagging,__init__}.py`, `ttwtools/taggers/{biberplus,mfte,spacy_pos,stanza_pos}.py`, `tags_biber.json` |
 | `build/` | **Removida** no commit `5c4b862`. Recuperar do commit `a28c79a`: `git show a28c79a:build/<arquivo>` (spec, hooks, scripts de build e release, ícone) |
 | `.github/workflows/build.yml` | CI atual: só macOS arm64, dispara em tag `v*.*.*`, cria release |
@@ -124,7 +124,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.8 | Ajuda e Aprender | 3.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.8\]'` |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.9\]'` |
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[3.10\]'` |
-| 3.11 | Remover a interface antiga | 3.10 | [!] | | aguarda confirmação do usuário |
+| 3.11 | Remover a interface antiga | 3.10 | [x] | 2026-09-27 | ver `git log --grep '\[3.11'` |
 | **Fase 4 — Catálogo de corpora** | | | | | |
 | 4.1 | Formato de pacote e catálogo | 1.2 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
 | 4.2 | Baixar, instalar e atualizar | 4.1 | [x] | 2026-09-26 | ver `git log --grep '\[4.1'` |
@@ -828,11 +828,11 @@ Próximo: 3.11.
 
 ### 3.11 Remover a interface antiga
 
-- Estado: [!] · Data: 2026-09-26 · Commit: — · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
+- Estado: [x] · Data: 2026-09-27 · Commit: ver `git log --grep '\[3.11'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Fazer:**
   - [x] Conferir que nada de `frontend-src/` ficou sem equivalente na nova (lista de telas do plano).
-  - [ ] Remover `frontend-src/`, o `TTW_UI` e o Shoelace; ajustar `build/build.py`, `ci.yml` e `release.yml`.
-  - [ ] `CHANGELOG.md`.
+  - [x] Remover `frontend-src/`, o `TTW_UI` e o Shoelace; ajustar `build/build.py`, `ci.yml` e `release.yml`.
+  - [x] `CHANGELOG.md`.
 - **Pronto quando:** o build e o CI passam sem `frontend-src/`.
 - **Relato:**
 ```
@@ -848,6 +848,14 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
   - **Falta verificar:** `pytest tests -q` no worktree deu 11 failed/2 errors porque o submódulo `libs/ttwtools` não estava inicializado ali (falta `tests/data/v2_small.ttwa`). O usuário interrompeu antes do `git submodule update --init`, então rode os testes num clone com o submódulo e confira se as falhas somem. Rodar também o e2e (`frontend-vue/playwright.config.js` ainda passa `TTW_FRONTEND_DIR`, o que é inofensivo) e o `ci.yml` (continua compilando as duas interfaces).
   - **Testar em desktop (usuário):** `cd frontend-vue && npm run build && cd .. && python -m app --mode desktop`. Conferir na janela pywebview os diálogos nativos (abrir/salvar `.ttwt`/`.ttwa`, escolher pasta), abrir arquivo por `--open` e duplo clique, e tema claro/escuro. No pacote: `python build/build.py` já sai com a Vue.
   - **Depois (precisa de confirmação explícita do usuário):** o resto do 3.11, conforme o Bloqueio acima (apagar `frontend-src/` e `frontend/`, Vite saindo em `../frontend`, tirar o frontend antigo do `ci.yml`, remover as rotas antigas sem uso), mais a linha do `CHANGELOG.md`. Depois vêm a `-rc.1` e o 6.2.
+- **Conclusão (2026-09-27).** O usuário conferiu a interface nova (abrir `.ttwa` incluso) e autorizou a remoção completa.
+```
+Feito: apagados frontend-src/ e frontend/ (build antigo versionado) e as rotas sem uso na Vue (analysis, quickrun, tags, viz); o Vite grava em ../frontend (no .gitignore); _frontend_dir() serve frontend/ (TTW_FRONTEND_DIR continua sobrepondo); build.py sem TTW_UI; ci.yml só com a Vue; playwright sem TTW_FRONTEND_DIR. Shoelace já não era usado na Vue.
+Arquivos: app/server.py, app/__init__.py, app/routes/__init__.py, app/jobs.py, build/build.py, build/ttwtools-app.spec, .github/workflows/ci.yml, frontend-vue/{vite,playwright}.config.js, .gitignore, tests/test_routes_base.py, LEIAME/README/CONTRIBUTING/AGENTS, CHANGELOG.
+Testes: pytest tests -q → 37 passed (no worktree as falhas eram só o submódulo); npm test → 12 passed; npm run e2e → 6 passed; build.py --skip-frontend --no-package → selftest OK (frontend ok), check_macos_min 12.3 OK.
+Pendências: /api/corpus (list, files, file) também não tem uso na Vue, mas ficou (fora do que foi autorizado); só test_routes_base o usa. Ajustes pequenos da interface anotados pelo usuário para depois.
+Próximo: gerar a -rc.1 (já com a interface nova) e executar o 6.2.
+```
 
 ---
 

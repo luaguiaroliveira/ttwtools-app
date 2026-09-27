@@ -37,9 +37,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: |
-            frontend-src/package-lock.json
-            frontend-vue/package-lock.json
+          cache-dependency-path: frontend-vue/package-lock.json
 
       - name: Dependências
         run: |
@@ -56,10 +54,6 @@ jobs:
         run: |
           pytest tests -q
           pytest libs/ttwtools/tests -q
-
-      - name: Frontend
-        working-directory: frontend-src
-        run: npm ci && npm run build
 
       - name: Interface Vue (testes e build)
         working-directory: frontend-vue

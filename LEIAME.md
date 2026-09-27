@@ -6,7 +6,7 @@ Aplicativo de análise de corpus para ensino e pesquisa em linguística: você r
 
 Tudo o que o aplicativo faz também pode ser feito pela linha de comando e em Python com o pacote [`ttwtools`](https://github.com/luaguiaroliveira/ttwtools), e cada análise tem um botão **"Copiar como código"** com o comando equivalente.
 
-> **Versão 0.4 (em teste).** Esta é a linha nova, redesenhada a partir da versão focada em KFA. Mudanças em [`CHANGELOG.md`](CHANGELOG.md). Durante a transição, o aplicativo empacotado ainda abre a interface antiga por padrão; a interface nova, descrita aqui, é a de `frontend-vue/` (veja [Rodar a partir do código](#rodar-a-partir-do-código)).
+> **Versão 0.4 (em teste).** Esta é a linha nova, redesenhada a partir da versão focada em KFA. Mudanças em [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Sumário
 

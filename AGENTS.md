@@ -22,7 +22,7 @@ Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek..
 ## Economia de contexto
 
 - **Nunca abra:** `repomix-output.xml`, `libs/repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/`, `test_corpora/full`, `frontend/` (saída de build).
-- **Arquivos grandes:** use `grep -n` e leitura por trechos (`offset`/`limit`). Em especial `frontend-src/index.html` (1.250 linhas) e `libs/ttwtools/ttwtools/project.py` (1.141 linhas).
+- **Arquivos grandes:** use `grep -n` e leitura por trechos (`offset`/`limit`). Em especial `libs/ttwtools/ttwtools/project.py` (1.141 linhas).
 - Rode só os testes do que mexeu, e não o conjunto inteiro, a menos que o passo peça.
 
 ## Comandos essenciais
@@ -49,7 +49,6 @@ Se um comando acima ainda não existir, é porque o passo que o cria não foi co
 | `novodesenho/plano_implementacao.md` | Plano, andamento, relatos e decisões pendentes |
 | `novodesenho/novomodelo.md` | Desenho do novo TTWtools |
 | `app/` | Servidor FastAPI local |
-| `frontend-src/` | Interface antiga (JS puro), removida no passo 3.11 |
-| `frontend-vue/` | Interface nova (Vue 3), a partir do passo 3.1 |
+| `frontend-vue/` | Interface (Vue 3); o build sai em `frontend/` (fora do git) |
 | `libs/ttwtools/` | Pacote Python (submódulo) |
 | `build/`, `.github/workflows/` | Empacotamento (PyInstaller) e releases |

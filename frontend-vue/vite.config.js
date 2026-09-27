@@ -2,13 +2,12 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 
-// Saída em dist/ (fora do git). O build/build.py usa esta pasta com TTW_UI=vue;
-// no passo 3.11 (fim da interface antiga) passa a ser ../frontend.
+// Saída em ../frontend (fora do git), que o servidor serve e o build/build.py empacota.
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
   base: './',
   build: {
-    outDir: 'dist',
+    outDir: '../frontend',
     emptyOutDir: true,
     target: 'safari16',          // WebKit do macOS 12 (Safari 17.6)
     chunkSizeWarningLimit: 300,

@@ -59,21 +59,14 @@ class SafeJSONResponse(JSONResponse):
 def _frontend_dir() -> Path:
     """Localiza a pasta frontend corretamente dentro e fora do bundle PyInstaller.
 
-    No bundle: <_MEIPASS>/frontend. Fora dele: frontend-vue/dist (interface Vue), ou
-    frontend/ (interface antiga) se a Vue ainda não foi compilada.
-    TTW_FRONTEND_DIR aponta outra pasta (ex.: frontend para a interface antiga)."""
+    No bundle: <_MEIPASS>/frontend. Fora dele: frontend/ na raiz, onde o Vite de
+    frontend-vue/ grava o build. TTW_FRONTEND_DIR aponta outra pasta."""
     import os
     if os.environ.get("TTW_FRONTEND_DIR"):
         return Path(os.environ["TTW_FRONTEND_DIR"])
     if hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS) / "frontend"
-    root = Path(__file__).parent.parent
-    vue = root / "frontend-vue" / "dist"
-    if (vue / "index.html").exists():
-        return vue
-    print("[frontend] frontend-vue/dist não compilado; usando a interface antiga "
-          "(rode: cd frontend-vue && npm run build)", flush=True)
-    return root / "frontend"
+    return Path(__file__).parent.parent / "frontend"
 
 
 def build_app(open_file: str | None = None) -> FastAPI:
@@ -102,7 +95,7 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # ------------------------------------------------------------------
     # Rotas da API
     # ------------------------------------------------------------------
-    from app.routes import corpus, tagging, analysis, project as project_routes, quickrun, utils, tags, viz
+    from app.routes import corpus, tagging, project as project_routes, utils
     from app.routes import jobs as jobs_routes, sources as sources_routes
 
     @app.get("/api/version", tags=["meta"])
@@ -116,12 +109,8 @@ def build_app(open_file: str | None = None) -> FastAPI:
 
     app.include_router(corpus.router,          prefix="/api/corpus",    tags=["corpus"])
     app.include_router(tagging.router,         prefix="/api/tagging",   tags=["tagging"])
-    app.include_router(analysis.router,        prefix="/api/analysis",  tags=["analysis"])
     app.include_router(project_routes.router,  prefix="/api/project",   tags=["project"])
-    app.include_router(quickrun.router,        prefix="/api/quickrun",  tags=["quickrun"])
     app.include_router(utils.router,           prefix="/api/utils",     tags=["utils"])
-    app.include_router(tags.router,            prefix="/api/tags",      tags=["tags"])
-    app.include_router(viz.router,             prefix="/api/viz",       tags=["viz"])
     app.include_router(jobs_routes.router,     prefix="/api/jobs",      tags=["jobs"])
     app.include_router(sources_routes.router,  prefix="/api/corpora",   tags=["corpora"])
     from app.routes import api_new
@@ -157,6 +146,6 @@ def build_app(open_file: str | None = None) -> FastAPI:
     else:
         @app.get("/")
         def root():
-            return {"message": "Frontend não encontrado. Execute o build do frontend."}
+            return {"message": "Frontend não encontrado. Compile a interface: cd frontend-vue && npm ci && npm run build"}
 
     return app

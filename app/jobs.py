@@ -8,7 +8,7 @@ jobs.py — Tarefas em segundo plano do servidor (um registro só para todas).
 
 Cada tarefa é um dicionário em JOBS: id, kind, status (queued, running, done,
 error, cancelled), done/total/message, result, error, created_at, finished_at.
-As rotas antigas (/api/tagging/status, /api/quickrun/status, /api/project/...-status)
+As rotas antigas (/api/tagging/status, /api/project/...-status)
 leem o mesmo dicionário, então continuam iguais; /api/jobs lista e cancela todas.
 """
 

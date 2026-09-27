@@ -35,15 +35,12 @@ def test_jobs_lifecycle_and_cancel(client):
     assert client.get("/api/jobs/nao-existe").status_code == 404
 
 
-def test_old_routes_with_migrated_v2_project(client, v2_project):
+def test_migrated_v2_project(client, v2_project):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         r = client.post("/api/project/open", json={"path": str(v2_project)})
     assert r.status_code == 200 and str(r.json()["schema_version"]) == "0.3"
     assert client.get("/api/corpus/list").json()["corpora"] == ["CorIFAessaysNE_5", "essays_bawe_somentetexto_5"]
-    feats = client.get("/api/analysis/features/CorIFAessaysNE_5/norm1000")     # antes: 500 por NaN
-    assert feats.status_code == 200 and len(feats.json()["data"]) == 5
-    assert client.get("/api/analysis/kfa/list").status_code == 200
     assert client.get("/api/project/summary").status_code == 200
 
 

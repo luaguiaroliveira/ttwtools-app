@@ -25,7 +25,7 @@ pip install --no-deps -e libs/ttwtools -e .
 
 ```bash
 (cd frontend-vue && npm run build)
-python -m app --mode web --port 8765      # http://127.0.0.1:8765 (serve frontend-vue/dist)
+python -m app --mode web --port 8765      # http://127.0.0.1:8765 (serve frontend/, gerada por frontend-vue)
 python -m app --mode desktop                                                # janela nativa (pywebview)
 (cd frontend-vue && npm run dev)          # interface com recarga automática; usa a API em :8765
 ```
@@ -50,7 +50,6 @@ O teste do fluxo em português roda se `pt_core_news_sm` estiver instalado (`ttw
 ```bash
 python build/build.py                     # pacote do sistema atual em dist/release/
 python build/build.py --arch x86_64       # macOS Intel, num Mac Apple Silicon (sob Rosetta)
-TTW_UI=legacy python build/build.py       # com a interface antiga (até a remoção dela no 3.11)
 ```
 
 O `build.py` fixa as versões do alvo, compila a interface, roda o PyInstaller, testa o binário (`--selftest`) e, no macOS, confere a versão mínima do sistema (12.0 no Intel, 12.3 no Apple Silicon). Releases: [`RELEASING.md`](RELEASING.md).
@@ -71,7 +70,6 @@ O `build.py` fixa as versões do alvo, compila a interface, roda o PyInstaller, 
 |---|---|
 | `app/` | servidor FastAPI local (rotas, tarefas em segundo plano, janela) |
 | `frontend-vue/` | interface (Vue 3, Vite, Tailwind/DaisyUI); testes em `src/test` e `e2e/` |
-| `frontend-src/` | interface antiga (será removida no passo 3.11) |
 | `libs/ttwtools/` | pacote Python (submódulo): projeto, camadas, taggers, consultas, estatísticas, catálogo |
 | `tools/corpora/` | scripts de preparo dos corpora do catálogo |
 | `build/`, `.github/workflows/` | empacotamento (PyInstaller) e CI/releases |

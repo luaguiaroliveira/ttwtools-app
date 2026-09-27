@@ -6,7 +6,7 @@ A corpus analysis application for linguistics teaching and research: gather text
 
 Everything the application does can also be done from the command line and in Python with the [`ttwtools`](https://github.com/luaguiaroliveira/ttwtools) package, and every analysis has a **"Copy as code"** button with the equivalent command.
 
-> **Version 0.4 (testing).** This is the new line, redesigned from the KFA-focused version. Changes in [`CHANGELOG.md`](CHANGELOG.md). During the transition, the packaged application still opens the old interface by default; the new interface described here is the one in `frontend-vue/` (see [Running from source](#running-from-source)).
+> **Version 0.4 (testing).** This is the new line, redesigned from the KFA-focused version. Changes in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contents
 

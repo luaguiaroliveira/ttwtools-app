@@ -4,7 +4,7 @@
 # roda este spec, testa e empacota). Direto: `pyinstaller build/ttwtools-app.spec`.
 #
 # Variáveis de ambiente:
-#   TTW_FRONTEND_DIR  pasta com a interface compilada (o build.py passa frontend-vue/dist)
+#   TTW_FRONTEND_DIR  pasta com a interface compilada (padrão: frontend/, gerada por frontend-vue)
 #
 # Pré-requisito: python -m spacy download en_core_web_sm
 # Só o en_core_web_sm é embutido; modelos grandes são baixados depois (passo 4.2).

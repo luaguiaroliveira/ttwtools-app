@@ -1,5 +1,5 @@
 // Testes de ponta a ponta nas três larguras, com o Chrome instalado (sem baixar navegadores).
-// O servidor Python sobe sozinho servindo frontend-vue/dist (rode `npm run build` antes).
+// O servidor Python sobe sozinho servindo ../frontend (rode `npm run build` antes).
 import { defineConfig } from '@playwright/test'
 
 const PORT = 8792
@@ -17,7 +17,6 @@ export default defineConfig({
   webServer: {
     command: `${process.env.PYTHON || 'python'} -m app --mode web --port ${PORT}`,
     cwd: '..',
-    env: { TTW_FRONTEND_DIR: 'frontend-vue/dist' },
     url: `http://127.0.0.1:${PORT}/api/health`,
     reuseExistingServer: false,
     timeout: 120_000,

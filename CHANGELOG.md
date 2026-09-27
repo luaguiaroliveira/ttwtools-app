@@ -15,6 +15,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Português**: modelos spaCy `pt_core_news_*` e Stanza em português, sugeridos automaticamente para corpora em português; idioma do corpus detectado para as palavras funcionais; UD Portuguese Bosque como referência (`tools/corpora/ud.py`) (5.3).
 - Documentação: LEIAME/README para quem usa, `CONTRIBUTING.md`, `RELEASING.md` revisto; no pacote, guia rápido e referência de todas as funções (6.1).
 
+### Removido
+
+- Interface antiga (`frontend-src/`, JS puro) e o build dela versionado em `frontend/`; a interface Vue é a única, e o build dela passa a sair em `frontend/` (fora do git). Rotas sem uso na interface nova: `/api/analysis`, `/api/quickrun`, `/api/tags`, `/api/viz` (3.11).
+
 ### Corrigido
 
 - Testes da interface (Vitest) não tentam mais rodar o teste de ponta a ponta do Playwright (4.4).
