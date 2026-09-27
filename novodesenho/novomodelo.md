@@ -900,3 +900,20 @@ Uma tela sempre acessível com:
 ## 19. A incluir
 
 (espaço para os próximos acréscimos)
+
+### 19.1 Ideia para mais tarde: arquivo por corpus (`.ttwc`) e por conjunto (`.ttwa`)
+
+Registrada em 2026-09-27. Ainda não decidida nem planejada; pensar melhor antes de entrar no plano.
+
+- **`.ttwc`: um corpus.** Textos, metadados e camadas de um único corpus. É a unidade que se etiqueta, reaproveita e compartilha.
+- **`.ttwa`: conjunto de corpora (*bundle*).** Reúne vários corpora para as análises que os comparam (KFA, palavras-chave, Laboratório). Guarda as análises e aponta para os `.ttwc` (ou os embute).
+- **Manter o "l" de *light*** nos dois níveis: versão leve com o texto fora do arquivo, como o `.ttwl` de hoje (§9.3). Nomes a definir (por exemplo `.ttwcl` e `.ttwal`, ou outra forma curta).
+- A diferença de nome precisa deixar claro, só pela extensão, se o arquivo é um corpus ou um conjunto.
+
+A pensar:
+
+- Se o `.ttwa` referencia os `.ttwc` pelo caminho (com hash, como o `.ttwl`) ou os copia para dentro; e o que acontece quando um `.ttwc` muda depois da análise.
+- Como migrar os `.ttwa` atuais, que hoje já são projetos com vários corpora: viram conjuntos com os corpora embutidos?
+- Relação com os pacotes do catálogo (Fase 4): um corpus do catálogo poderia ser simplesmente um `.ttwc`.
+- O `.ttwt` (comprimido) continua valendo para os dois tipos ou ganha um equivalente por tipo.
+- Paridade (§10): comandos para criar, juntar e separar corpora e conjuntos no pacote e na GUI.
