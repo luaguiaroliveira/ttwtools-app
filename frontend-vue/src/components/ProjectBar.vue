@@ -1,7 +1,7 @@
 <script setup>
 // Barra "Arquivo": Novo, Abrir, Salvar e Salvar como, pelos diálogos do sistema; o resto em
-// "Mais opções". O .ttwa/.ttwl grava sozinho (Salvar só confirma); aberto de um .ttwt, o
-// projeto fica numa cópia de trabalho e Salvar grava de volta no .ttwt.
+// "Mais opções". Os arquivos são salvos compactados por padrão: abertos, ficam numa cópia de
+// trabalho e Salvar grava de volta. Sem compressão (opção avançada) o banco grava sozinho.
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -13,7 +13,7 @@ import Collapsible from './Collapsible.vue'
 
 const { t } = useI18n()
 const session = useSession()
-const { project, opening } = storeToRefs(session)
+const { project, opening, corpora } = storeToRefs(session)
 const path = ref('')
 const error = ref(null)
 const busy = ref(false)
@@ -21,7 +21,18 @@ const exportDest = ref('')
 const done = ref('')
 const saveJob = useJob('save')
 const pending = ref(null)          // ação à espera de "salvar antes?" (projeto de .ttwt)
-const fromTtwt = computed(() => Boolean(project.value?.source_ttwt))
+const fromTtwt = computed(() => Boolean(project.value?.compressed))
+// opções de gravação do arquivo (lembradas nele): compactar e guardar as tabelas de busca
+const opts = computed(() => project.value?.save_options ?? { compress: true, search_tables: true })
+const optsNote = ref('')
+async function setOption(key, value) {
+  optsNote.value = ''
+  const r = await api.project.setSaveOptions({ [key]: value })
+  await session.refresh()
+  if (r.needs_save_as) optsNote.value = t('project.options_need_save_as')
+}
+const oneCorpus = ref('')              // corpus para "Salvar um corpus como"
+const ext = computed(() => (shown.value || '').split('.').pop().toLowerCase())
 const shown = computed(() => project.value?.display_path ?? project.value?.path)
 const stem = computed(() => (shown.value || 'projeto').split(/[\\/]/).pop().replace(/\.[^.]+$/, ''))
 const saving = computed(() => ['queued', 'running'].includes(saveJob.job.value?.status))
@@ -42,7 +53,10 @@ const doOpen = () => act(async () => {
   if (r?.path) await session.openProject(r.path)
 })
 // projeto aberto de um .ttwt: antes de trocar de projeto, oferece salvar (a cópia de trabalho some)
-function guard(action) { if (fromTtwt.value) pending.value = action; else action() }
+async function guard(action) {
+  if (fromTtwt.value) await session.refresh()
+  if (project.value?.unsaved) pending.value = action; else action()
+}
 const newProject = () => guard(doNew)
 const openProject = () => guard(doOpen)
 async function resolvePending(saveFirst) {
@@ -65,10 +79,20 @@ function save() {
   })
 }
 const saveAs = () => act(async () => {
-  const r = await api.utils.pickSave(`${stem.value}.ttwa`)
+  const keep = ['ttwa', 'ttwl'].includes(ext.value) ? ext.value : 'ttwa'
+  const r = await api.utils.pickSave(`${stem.value}.${keep}`)
   if (!r?.path) return
   lastSaved.value = r.path
   saveJob.start(() => api.project.saveAs(r.path))
+})
+const saveCorpus = () => act(async () => {
+  const corpus = oneCorpus.value || corpora.value[0]?.name
+  if (!corpus) return
+  const r = await api.utils.pickSave(`${corpus}.ttwc`)
+  if (!r?.path) return
+  const path = /\.ttwcl?$/i.test(r.path) ? r.path : r.path.replace(/\.[^.\\/]+$/, '') + '.ttwc'
+  lastSaved.value = path
+  saveJob.start(() => api.project.saveAs(path, { corpus }))
 })
 watch(() => saveJob.job.value?.status, async (s) => {
   if (s === 'done') {
@@ -103,7 +127,8 @@ const exportAll = () => act(async () => {
     <div class="flex flex-wrap items-center gap-2">
       <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm min-w-0 flex-1">
         <span class="font-medium">{{ project.name }}</span>
-        <span class="badge badge-outline">{{ fromTtwt ? t('project.kind.ttwt') : t(`project.kind.${project.kind}`) }}</span>
+        <span class="badge badge-outline" data-testid="project-kind">{{ t(`project.ext.${ext}`) }}</span>
+        <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
         <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
       </div>
       <p v-else class="text-sm flex-1 min-w-48">{{ t('project.intro') }}</p>
@@ -117,9 +142,35 @@ const exportAll = () => act(async () => {
         </template>
       </div>
     </div>
+    <fieldset v-if="project" class="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" data-testid="save-options"
+              data-explain="explain.corpora.save_options">
+      <legend class="sr-only">{{ t('project.options_title') }}</legend>
+      <span class="text-xs font-medium opacity-80">{{ t('project.options_title') }}:</span>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="toggle toggle-sm toggle-primary" :checked="opts.compress" data-testid="opt-compress"
+               @change="setOption('compress', $event.target.checked)" />
+        <span>{{ t('project.opt_compress') }} <span class="text-xs opacity-70">— {{ opts.compress ? t('project.opt_compress_on') : t('project.opt_compress_off') }}</span></span>
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="toggle toggle-sm toggle-primary" :checked="opts.search_tables" data-testid="opt-search-tables"
+               @change="setOption('search_tables', $event.target.checked)" />
+        <span>{{ t('project.opt_search_tables') }} <span class="text-xs opacity-70">— {{ opts.search_tables ? t('project.opt_search_on') : t('project.opt_search_off') }}</span></span>
+      </label>
+      <details class="text-xs w-full">
+        <summary class="cursor-pointer opacity-80">{{ t('project.options_more') }}</summary>
+        <ul class="list-disc ml-5 mt-1 flex flex-col gap-1">
+          <li>{{ t('project.options_help_compress') }}</li>
+          <li>{{ t('project.options_help_search') }}</li>
+          <li>{{ t('project.options_help_example') }}</li>
+        </ul>
+      </details>
+      <p v-if="optsNote" role="status" class="text-xs text-warning w-full">{{ optsNote }}</p>
+    </fieldset>
     <p v-if="project && !fromTtwt" class="text-xs opacity-70 flex items-center gap-1" data-testid="autosave-note">
       <span class="badge badge-success badge-xs" aria-hidden="true">✓</span>{{ t('project.autosave') }}</p>
-    <p v-if="fromTtwt" class="alert alert-info text-sm py-1" data-testid="ttwt-note">{{ t('project.ttwt_working_copy') }}</p>
+    <p v-if="fromTtwt" class="text-xs opacity-80 flex flex-wrap items-center gap-1" data-testid="ttwt-note">
+      <span v-if="project.unsaved" class="badge badge-warning badge-xs" data-testid="unsaved-badge">{{ t('project.unsaved_badge') }}</span>
+      <span v-else class="badge badge-success badge-xs" aria-hidden="true">✓</span>{{ t('project.ttwt_working_copy') }}</p>
 
     <div v-if="pending" role="alertdialog" aria-modal="false" :aria-label="t('project.unsaved_title')"
          class="alert alert-warning flex flex-wrap items-center gap-2 text-sm" data-testid="unsaved-prompt">
@@ -152,6 +203,14 @@ const exportAll = () => act(async () => {
           <span class="text-xs opacity-70">{{ t('project.type_path_hint') }}</span>
         </form>
         <template v-if="project">
+          <div class="flex flex-wrap items-end gap-2">
+            <label class="flex flex-col gap-1"><span class="label-text">{{ t('project.save_corpus') }}</span>
+              <select v-model="oneCorpus" class="select select-sm" :disabled="!corpora.length" data-testid="save-corpus-select">
+                <option value="">{{ corpora[0]?.name ?? '—' }}</option>
+                <option v-for="c in corpora.slice(1)" :key="c.name" :value="c.name">{{ c.name }}</option></select></label>
+            <button class="btn btn-sm" :disabled="busy || saving || !corpora.length" data-testid="save-corpus" @click="saveCorpus">{{ t('project.save_corpus_button') }}</button>
+          </div>
+          <p class="text-xs opacity-70">{{ t('project.save_corpus_hint') }}</p>
           <p class="text-xs opacity-80">{{ t('project.formats_hint') }}</p>
           <div class="flex flex-wrap gap-1">
             <button v-if="project.kind === 'ttwa'" class="btn btn-xs" :disabled="busy" @click="convert('ttwl')">{{ t('project.to_ttwl') }}</button>

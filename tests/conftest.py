@@ -15,8 +15,10 @@ CORPORA = ROOT / "libs" / "ttwtools" / "examples" / "test_corpora"
 
 @pytest.fixture
 def client():
+    app_state.drop_working_copy()
     app_state.current_project_path = None
     yield TestClient(build_app())
+    app_state.drop_working_copy()          # não deixa cópias de trabalho na pasta temporária
     app_state.current_project_path = None
 
 

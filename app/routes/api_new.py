@@ -130,8 +130,14 @@ def project_info():
     with _project() as proj:
         status = proj.check_corpus()
         return {"open": True, "path": str(proj.path), "kind": proj.kind,
-                "source_ttwt": app_state.source_ttwt_path,         # aberto de um .ttwt: trabalha numa cópia
+                "source_ttwt": app_state.source_ttwt_path,         # arquivo compactado: trabalha numa cópia
                 "display_path": app_state.source_ttwt_path or str(proj.path),
+                "compressed": bool(app_state.source_ttwt_path),
+                "unsaved": app_state.unsaved(),
+                "single_corpus": proj.single_corpus,
+                "save_options": {**proj.save_options(),        # banco direto sem opção lembrada: não compactado
+                                 **({"compress": False} if not app_state.source_ttwt_path
+                                    and proj.get_meta("save.compress") is None else {})},
                 "name": proj.get_meta("project_name", proj.path.stem),
                 "schema_version": str(proj.get_meta("schema_version")),
                 "corpus_status": {k: len(v) for k, v in status.items()}}
@@ -154,7 +160,7 @@ def project_convert(req: ConvertRequest):
         path = str(new.path)
         new.close()
     if req.open_after:
-        app_state.current_project_path = path
+        app_state.set_plain(path)
     return {"path": path, "kind": req.to}
 
 

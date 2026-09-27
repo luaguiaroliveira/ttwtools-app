@@ -127,7 +127,7 @@ test('tela sob demanda que sumiu (interface recompilada com a janela aberta) rec
   expect(blocked).toBeGreaterThan(1)
 })
 
-test('arquivo .ttwt: cópia de trabalho, Salvar e pergunta antes de trocar de projeto', async ({ page, request }, info) => {
+test('arquivo compactado: cópia de trabalho, Salvar, "não salvo" e pergunta antes de trocar de projeto', async ({ page, request }, info) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
   const base = path.join(dir, `${info.project.name}.ttwa`)
   const ttwt = path.join(dir, `${info.project.name}.ttwt`)
@@ -142,8 +142,16 @@ test('arquivo .ttwt: cópia de trabalho, Salvar e pergunta antes de trocar de pr
   await page.getByTestId('project-open').click()
   await expect(page.getByTestId('ttwt-note')).toBeVisible({ timeout: 30_000 })
   await expect(page.getByTestId('project-current-path')).toContainText('.ttwt')
+  // opções de gravação visíveis: desligar as tabelas de busca e salvar (fica lembrado no arquivo)
+  await expect(page.getByTestId('opt-compress')).toBeChecked()
+  await page.getByTestId('opt-search-tables').uncheck()
+  await expect(page.getByTestId('opt-search-tables')).not.toBeChecked()
   await page.getByTestId('project-save').click()
   await expect(page.getByTestId('file-done')).toContainText('.ttwt', { timeout: 30_000 })
+  expect((await (await request.get('/api/project/save-options')).json()).search_tables).toBe(false)
+  // uma alteração → "não salvo" na barra e no cabeçalho; só então Novo… pergunta se quer salvar
+  await request.post('/api/corpora/import', { data: { corpus_name: 'colado', source: { kind: 'text', text: 'Olá.' } } })
+  await expect(page.getByTestId('header-unsaved')).toBeVisible({ timeout: 10_000 })
   await page.getByTestId('project-new').click()
   await expect(page.getByTestId('unsaved-prompt')).toBeVisible()
   await a11y(page, 'arquivo-ttwt')

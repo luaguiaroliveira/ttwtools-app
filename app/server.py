@@ -120,14 +120,13 @@ def build_app(open_file: str | None = None) -> FastAPI:
     # Estado global mínimo: arquivo .ttwa aberto
     # ------------------------------------------------------------------
     from app import state as app_state
+    import atexit
+    atexit.register(app_state.drop_working_copy)    # a cópia de trabalho não fica para trás ao sair
+    app_state.purge_stale_workdirs()                # restos de sessões encerradas à força
 
     if open_file:
-        p = Path(open_file).resolve()
-        if p.suffix.lower() == '.ttwt':
-            # .ttwt needs decompression — queue for frontend (shows progress bar)
-            app_state.pending_open_path = str(p)
-        else:
-            app_state.current_project_path = str(p)
+        # qualquer projeto pode estar compactado ou precisar de migração: a tela abre com progresso
+        app_state.pending_open_path = str(Path(open_file).resolve())
 
     # ------------------------------------------------------------------
     # Frontend estático

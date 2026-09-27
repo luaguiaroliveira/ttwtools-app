@@ -320,7 +320,7 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
 
     url = f"http://{host}:{port}"
     webview.settings["ALLOW_DOWNLOADS"] = True     # exportar tabelas, gráficos e corpora pela janela
-    webview.create_window(
+    window = webview.create_window(
         title="TTWtools",
         url=url,
         width=1280,
@@ -328,7 +328,25 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
         resizable=True,
         min_size=(900, 600),
     )
-    webview.start(debug=False)
+
+    # projeto compactado com alterações não salvas: o sistema pede confirmação ao fechar
+    # (confirm_close é lido na hora de fechar nos três sistemas)
+    def _watch_unsaved():
+        import time
+        from app import state as app_state
+        while True:
+            try:
+                window.confirm_close = app_state.unsaved()
+            except Exception:  # noqa: BLE001
+                pass
+            time.sleep(1)
+
+    threading.Thread(target=_watch_unsaved, daemon=True, name="unsaved-watch").start()
+
+    webview.start(debug=False, localization={
+        "global.quitConfirmation": "Há alterações não salvas no projeto (use Arquivo → Salvar). Fechar mesmo assim?\n"
+                                   "There are unsaved changes in the project (use File → Save). Quit anyway?",
+    })
 
 
 def _wait_for_server(host: str, port: int, timeout: float = 10.0) -> None:

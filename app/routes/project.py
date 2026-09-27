@@ -35,6 +35,7 @@ class CreateProjectRequest(BaseModel):
     name: str = ""
     description: str = ""
     overwrite: bool = False
+    compress: bool = True       # salvar compactado (padrão): trabalha numa cópia; False = banco direto
 
 
 class OpenProjectRequest(BaseModel):
@@ -57,8 +58,16 @@ class UpgradeRequest(BaseModel):
 
 class SaveAsRequest(BaseModel):
     path: str
-    format: str | None = None   # 'ttwt' | 'ttwa'; sem isso, vale a extensão de `path`
+    format: str | None = None   # (antigo) 'ttwt' | 'ttwa'; hoje vale a extensão de `path`
     switch: bool = True         # passar a trabalhar no arquivo gravado (como "Salvar como" dos aplicativos)
+    compress: bool | None = None       # None = opção lembrada no arquivo (padrão: compactado)
+    search_tables: bool | None = None  # None = opção lembrada (padrão: com tabelas de busca)
+    corpus: str | None = None   # .ttwc/.ttwcl: o corpus a gravar (um só)
+
+
+class SaveOptionsRequest(BaseModel):
+    compress: bool | None = None
+    search_tables: bool | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -67,24 +76,26 @@ class SaveAsRequest(BaseModel):
 
 @router.post("/create")
 def create_project(req: CreateProjectRequest):
-    """Cria um novo arquivo .ttwa vazio."""
-    from ttwtools.project import TTWAProject
-
+    """Cria um projeto novo. Compactado (padrão): o arquivo é gravado já compactado e o
+    trabalho segue numa cópia (Salvar grava nele); compress=False: banco direto."""
+    from ttwtools.project import TTWAProject, save_project_as
+    dest = Path(req.path).expanduser().resolve()
+    if dest.exists() and not req.overwrite:
+        raise HTTPException(status_code=409, detail=f"O arquivo '{dest}' já existe.")
     try:
-        proj = TTWAProject.create(
-            req.path,
-            name=req.name,
-            description=req.description,
-            overwrite=req.overwrite,
-        )
-        proj.close()
+        if not req.compress:
+            TTWAProject.create(dest, name=req.name, description=req.description, overwrite=req.overwrite).close()
+            app_state.set_plain(str(dest))
+        else:
+            work = app_state.new_workdir(dest.name)
+            TTWAProject.create(work, name=req.name or dest.stem, description=req.description).close()
+            save_project_as(work, dest, compress=True)
+            app_state.set_working_copy(work, str(dest))
     except FileExistsError as exc:
         raise HTTPException(status_code=409, detail=str(exc))
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
-
-    app_state.current_project_path = str(Path(req.path).expanduser().resolve())
-    return {"status": "created", "path": app_state.current_project_path}
+    return {"status": "created", "path": str(dest), "compressed": req.compress}
 
 
 @router.post("/open")
@@ -94,27 +105,17 @@ def open_project(req: OpenProjectRequest):
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"Arquivo não encontrado: {p}")
 
-    if p.suffix.lower() == ".ttwt":
-        # Decompression is slow — run in background and return a job_id
-        job_id = _jobs_registry.new("open_ttwt")
-        _open_jobs[job_id].update({
-            "status": "running", "started_at": __import__("time").time(), "stage": "decompress",
-            "done": 0,
-            "total": 0,
-            "message": "",
-            "result": None,
-            "error": None,
-        })
-        threading.Thread(
-            target=_run_open_ttwt,
-            args=(job_id, str(p)),
-            daemon=True,
-        ).start()
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, compression_of, needs_migration
+    if compression_of(p):
+        # compactado (o padrão ao salvar): descompacta numa cópia de trabalho, com progresso
+        import time as _time
+        job_id = _jobs_registry.new("open_compressed", status="running", started_at=_time.time(), stage="decompress",
+                                    done=0, total=0, message="", result=None, error=None)
+        threading.Thread(target=_run_open_compressed, args=(job_id, str(p)), daemon=True).start()
         return {"status": "decompressing", "job_id": job_id}
 
-    # .ttwa de esquema antigo: a migração pode levar minutos → tarefa com progresso.
+    # banco direto de esquema antigo: a migração pode levar minutos → tarefa com progresso.
     # O projeto só vira o "atual" no fim, para outras chamadas não migrarem em paralelo.
-    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, needs_migration
     if needs_migration(p):
         import time as _time
         job_id = _jobs_registry.new("open_migrate", status="running", started_at=_time.time(), done=0, total=0,
@@ -122,11 +123,9 @@ def open_project(req: OpenProjectRequest):
         threading.Thread(target=_run_open_migrate, args=(job_id, str(p)), daemon=True).start()
         return {"status": "migrating", "job_id": job_id}
 
-    _cleanup_temp_ttwt()
     with TTWAProject.open(p) as proj:
         schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
-    app_state.current_project_path = str(p)
-    app_state.source_ttwt_path = None
+    app_state.set_plain(str(p))
     return {"status": "opened", "path": str(p), "schema_version": schema_v}
 
 
@@ -340,47 +339,105 @@ def export_project(req: ExportRequest):
 
 @router.post("/saveas")
 def saveas_project(req: SaveAsRequest):
-    """Salvar como: grava o projeto atual em outro arquivo (.ttwa copia, .ttwt compacta), com as
-    alterações recentes, e (switch=True) passa a trabalhar nele. Tarefa; acompanhe em /api/jobs/{id}."""
+    """Salvar como: grava o projeto atual em outro arquivo, compactado por padrão, e (switch)
+    passa a trabalhar nele. `.ttwc`/`.ttwcl` gravam só o corpus `corpus` (e não trocam de
+    projeto). Tarefa; acompanhe em /api/jobs/{id}."""
     _require_project()
-    dest = Path(req.path).expanduser()
-    fmt = req.format or ("ttwt" if dest.suffix.lower() == ".ttwt" else "ttwa")
-    if fmt not in ("ttwt", "ttwa"):
-        raise HTTPException(status_code=400, detail="Formato inválido. Use 'ttwt' ou 'ttwa'.")
-    if dest.suffix.lower() not in (".ttwt", ".ttwa", ".ttwl"):
-        dest = dest.with_suffix("." + fmt)
+    from ttwtools.project import SINGLE_CORPUS_EXTENSIONS, PROJECT_EXTENSIONS
+    dest = Path(req.path).expanduser().resolve()
+    if dest.suffix.lower() not in PROJECT_EXTENSIONS:
+        dest = dest.with_suffix("." + (req.format or "ttwa"))
+    single = dest.suffix.lower() in SINGLE_CORPUS_EXTENSIONS
     source = app_state.current_project_path
+    corpus = req.corpus
+    if single and not corpus:
+        import ttwtools
+        with ttwtools.open_project(source) as proj:
+            names = proj.list_corpus_names()
+        if len(names) != 1:
+            raise HTTPException(status_code=422, detail="Escolha o corpus a gravar (.ttwc/.ttwcl guardam um só).")
+        corpus = names[0]
 
-    def work(job, source=source, dest=dest, switch=req.switch):
-        from ttwtools.project import save_project_as
+    import ttwtools
+    with ttwtools.open_project(source) as proj:
+        opts = proj.save_options() if single else proj.set_save_options(req.compress, req.search_tables)
+    compress = opts["compress"] if req.compress is None else req.compress
+    tables = opts["search_tables"] if req.search_tables is None else req.search_tables
+
+    def work(job, source=source, dest=dest, switch=req.switch, compress=compress, tables=tables, corpus=corpus):
+        from ttwtools.project import save_corpus_as, save_project_as, decompress_project_file
         job.update(stage="save")
-        save_project_as(source, dest, progress_cb=lambda d, t: job.progress(d, t, ""))
+        prog = lambda d, t: job.progress(d, t, "")  # noqa: E731
+        stage = lambda d, t, m: job.update(stage="pack" if m == "pack" else "save", done=d, total=t)  # noqa: E731
+        if single:
+            with ttwtools.open_project(source) as proj:
+                save_corpus_as(proj, corpus, dest, progress_cb=prog, compress=compress, search_tables=tables)
+            return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpus": corpus}
+        save_project_as(source, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
         if switch:
-            if dest.suffix.lower() == ".ttwt":
-                app_state.source_ttwt_path = str(dest)      # continua na cópia de trabalho; "Salvar" grava aqui
+            if compress or not tables:
+                # passa a trabalhar numa cópia do arquivo novo (a cópia atual já tem as tabelas de busca)
+                import shutil as _sh
+                from ttwtools.project import checkpoint
+                work_path = app_state.new_workdir(dest.name)
+                checkpoint(source)
+                _sh.copyfile(source, work_path)
+                app_state.set_working_copy(work_path, str(dest))
             else:
-                _cleanup_temp_ttwt()
-                app_state.current_project_path = str(dest.resolve())
-                app_state.source_ttwt_path = None
+                app_state.set_plain(str(dest))
         return {"path": str(dest), "size": dest.stat().st_size, "switched": switch}
 
     return {"job_id": _jobs_registry.start("saveas", work)}
 
 
+@router.get("/save-options")
+def get_save_options():
+    """Como o arquivo aberto é gravado: {"compress", "search_tables"}."""
+    _require_project()
+    import ttwtools
+    with ttwtools.open_project(app_state.current_project_path) as proj:
+        return proj.save_options()
+
+
+@router.post("/save-options")
+def set_save_options(req: SaveOptionsRequest):
+    """Muda (e lembra no arquivo) como ele é gravado; vale para Salvar, Salvar como e Salvar corpus."""
+    _require_project()
+    import ttwtools
+    with ttwtools.open_project(app_state.current_project_path) as proj:
+        opts = proj.set_save_options(req.compress, req.search_tables)
+    if not app_state.source_ttwt_path and (not opts["search_tables"] or opts["compress"]):
+        # banco direto que passará a ser gravado compactado/sem tabelas: precisa de Salvar
+        opts["needs_save_as"] = True
+    return opts
+
+
+@router.get("/unsaved")
+def project_unsaved():
+    """Leve (sem abrir o banco): há alterações não salvas no arquivo compactado?"""
+    return {"compressed": bool(app_state.source_ttwt_path), "unsaved": app_state.unsaved()}
+
+
 @router.post("/save")
 def save_project():
-    """Salvar: .ttwa/.ttwl já gravam sozinhos (resposta `autosaved`); projeto aberto de um .ttwt
-    grava a cópia de trabalho de volta no .ttwt (tarefa)."""
+    """Salvar: arquivo compactado (o padrão) → grava a cópia de trabalho de volta nele (tarefa);
+    banco direto (sem compressão) → as alterações já estão no arquivo (`autosaved`)."""
     _require_project()
     if not app_state.source_ttwt_path:
         return {"status": "autosaved", "path": app_state.current_project_path}
     source, dest = app_state.current_project_path, app_state.source_ttwt_path
+    import ttwtools
+    with ttwtools.open_project(source) as proj:
+        opts = proj.save_options()
 
-    def work(job, source=source, dest=dest):
+    def work(job, source=source, dest=dest, opts=opts):
         from ttwtools.project import save_project_as
         job.update(stage="save")
-        save_project_as(source, dest, progress_cb=lambda d, t: job.progress(d, t, ""))
-        return {"path": dest, "size": Path(dest).stat().st_size}
+        save_project_as(source, dest, progress_cb=lambda d, t: job.progress(d, t, ""),
+                        compress=opts["compress"], search_tables=opts["search_tables"],
+                        progress=lambda d, t, m: job.update(stage="pack" if m == "pack" else "save", done=d, total=t))
+        app_state.mark_saved()
+        return {"path": dest, "size": Path(dest).stat().st_size, **opts}
 
     return {"status": "saving", "job_id": _jobs_registry.start("save", work)}
 
@@ -404,13 +461,8 @@ def _require_project():
 
 
 def _cleanup_temp_ttwt() -> None:
-    """Apaga o .ttwa temporário criado ao abrir um .ttwt, se houver."""
-    if app_state.source_ttwt_path and app_state.current_project_path:
-        try:
-            Path(app_state.current_project_path).unlink(missing_ok=True)
-        except Exception:
-            pass
-    app_state.source_ttwt_path = None
+    """Apaga a cópia de trabalho atual (ver app.state.drop_working_copy)."""
+    app_state.drop_working_copy()
 
 
 # ---------------------------------------------------------------------------
@@ -474,7 +526,8 @@ def _run_upgrade(job_id: str, project_path: str, compress: bool) -> None:
 def _migration_progress(job_id: str):
     """Progresso da migração v0.3 na tarefa: etapa (layers/indexes) e arquivos feitos/total."""
     def cb(done: int, total: int, stage: str):
-        _open_jobs[job_id].update({"done": done, "total": total, "stage": "indexes" if stage == "indexes" else "migrate",
+        _open_jobs[job_id].update({"done": done, "total": total,
+                                   "stage": stage if stage in ("indexes", "search", "decompress") else "migrate",
                                    "message": f"{done}/{total}"})
         if _open_jobs[job_id].get("cancel_requested"):      # a migração retoma de onde parou na próxima vez
             raise _jobs_registry.JobCancelled()
@@ -491,9 +544,7 @@ def _run_open_migrate(job_id: str, path: str) -> None:
             with TTWAProject.open(path, progress=_migration_progress(job_id)) as proj:
                 schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
                 report = getattr(proj, "migration_report", None)
-        _cleanup_temp_ttwt()
-        app_state.current_project_path = path
-        app_state.source_ttwt_path = None
+        app_state.set_plain(path)
         _open_jobs[job_id].update({"status": "done", "stage": "done", "message": "",
                                    "result": {"path": path, "schema_version": schema_v, "migration": report}})
     except _jobs_registry.JobCancelled:
@@ -502,49 +553,37 @@ def _run_open_migrate(job_id: str, path: str) -> None:
         _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc)})
 
 
-def _run_open_ttwt(job_id: str, source_ttwt: str) -> None:
-    """Descomprime .ttwt para .ttwa temporário e define como projeto atual."""
+def _run_open_compressed(job_id: str, source: str) -> None:
+    """Descompacta o projeto numa cópia de trabalho (migrando se for antigo) e o torna o atual."""
     import os
-    import tempfile
-    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, decompress_from_ttwt
+    import warnings
+    from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, decompress_project_file, register_working_copy
 
     def _progress(done: int, total: int):
-        mb_done  = done  // (1024 * 1024)
-        mb_total = total // (1024 * 1024)
-        _open_jobs[job_id].update({
-            "done": done, "total": total, "stage": "decompress",
-            "message": f"{mb_done} MB / {mb_total} MB",
-        })
+        _open_jobs[job_id].update({"done": done, "total": total, "stage": "decompress",
+                                   "message": f"{done // (1024 * 1024)} MB / {total // (1024 * 1024)} MB"})
+        if _open_jobs[job_id].get("cancel_requested"):
+            raise _jobs_registry.JobCancelled()
 
+    work = app_state.new_workdir(Path(source).name)
     try:
-        fd, tmp_path = tempfile.mkstemp(suffix=".ttwa", prefix="ttwt_")
-        os.close(fd)
-        decompress_from_ttwt(source_ttwt, tmp_path, progress_cb=_progress)
-
-        _cleanup_temp_ttwt()
-
-        import warnings
+        decompress_project_file(source, work, progress_cb=_progress)
+        register_working_copy(work, source)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            with TTWAProject.open(tmp_path, progress=_migration_progress(job_id)) as proj:
+            with TTWAProject.open(work, progress=_migration_progress(job_id)) as proj:
                 schema_v = proj.get_meta("schema_version", SCHEMA_VERSION_LEGACY)
-
-        app_state.current_project_path = tmp_path
-        app_state.source_ttwt_path = source_ttwt
-
+        app_state.set_working_copy(work, source)
         _open_jobs[job_id].update({
-            "status": "done", "stage": "done",
-            "message": "",
-            "result": {
-                "path": source_ttwt,
-                "schema_version": schema_v,
-                "ttwt_size": os.path.getsize(source_ttwt),
-                "ttwa_size": os.path.getsize(tmp_path),
-            },
+            "status": "done", "stage": "done", "message": "",
+            "result": {"path": source, "schema_version": schema_v,
+                       "compressed_size": os.path.getsize(source), "size": os.path.getsize(work)},
         })
-    except Exception as exc:
-        _open_jobs[job_id].update({
-            "status": "error",
-            "error": str(exc),
-            "message": str(exc),
-        })
+    except _jobs_registry.JobCancelled:
+        register_working_copy(work, None)
+        import shutil
+        shutil.rmtree(Path(work).parent, ignore_errors=True)
+        _open_jobs[job_id].update({"status": "cancelled", "message": ""})
+    except Exception as exc:  # noqa: BLE001
+        register_working_copy(work, None)
+        _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc)})

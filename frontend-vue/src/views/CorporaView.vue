@@ -35,11 +35,13 @@ function startAdd() { wizardKey.value++; adding.value = true }
     <template v-if="hasProject">
       <div class="flex items-center gap-2" data-explain="explain.corpora.library">
         <h2 class="text-xl font-bold">{{ t('corpora.library') }}</h2>
-        <button id="importar-corpus" class="btn btn-sm btn-primary ml-auto" data-testid="add-corpus" @click="startAdd">{{ t('corpora.add') }}</button>
+        <button id="importar-corpus" class="btn btn-sm btn-primary ml-auto" data-testid="add-corpus"
+                :disabled="session.project?.single_corpus && corpora.length > 0" @click="startAdd">{{ t('corpora.add') }}</button>
       </div>
       <AddCorpusWizard v-if="adding" :key="wizardKey" @done="afterImport" @overview="showOverview"
                        @tag="tagNow" />
       <p v-if="!corpora.length && !adding" class="opacity-70">{{ t('corpora.none') }}</p>
+      <p v-if="session.project?.single_corpus && corpora.length" class="text-xs opacity-70">{{ t('corpora.single_hint') }}</p>
       <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-testid="corpus-list">
         <li v-for="c in corpora" :key="c.name">
           <button class="card bg-base-200 w-full text-left p-3 hover:bg-base-300" :class="{ 'ring-2 ring-primary': c.name === corpus }"

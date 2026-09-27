@@ -137,10 +137,27 @@ def test_salvar_e_salvar_como_com_ttwt(client, tmp_path):
     decompress_from_ttwt(ttwt, tmp_path / "check.ttwa")
     with ttwtools.open_project(tmp_path / "check.ttwa") as c:
         assert "novo" in c.list_corpus_names()
-    # Salvar como .ttwa: passa a trabalhar no arquivo novo, que já grava sozinho
+    # Salvar como .ttwa (compactado, o padrão): passa a trabalhar no arquivo novo
+    from ttwtools.project import compression_of
     dest = tmp_path / "copia.ttwa"
     j = client.post("/api/project/saveas", json={"path": str(dest)}).json()
     assert wait_job(client, j["job_id"])["result"]["switched"]
     info = client.get("/api/project/info").json()
-    assert info["path"] == str(dest.resolve()) and info["source_ttwt"] is None
-    assert client.post("/api/project/save").json()["status"] == "autosaved"
+    assert info["display_path"] == str(dest.resolve()) and info["compressed"] and not info["unsaved"]
+    assert compression_of(dest) == "gzip"
+    client.post("/api/corpora/import", json={"corpus_name": "mais", "source": {"kind": "text", "text": "Outro."}})
+    assert client.get("/api/project/info").json()["unsaved"]
+    s = client.post("/api/project/save").json()
+    assert wait_job(client, s["job_id"])["status"] == "done" and not client.get("/api/project/info").json()["unsaved"]
+    # opção avançada: sem compressão → banco direto, que salva sozinho
+    raw = tmp_path / "direto.ttwa"
+    j = client.post("/api/project/saveas", json={"path": str(raw), "compress": False}).json()
+    wait_job(client, j["job_id"])
+    assert compression_of(raw) is None and client.post("/api/project/save").json()["status"] == "autosaved"
+    # um corpus só: .ttwc, sem trocar de projeto
+    one = tmp_path / "so_mais.ttwc"
+    j = client.post("/api/project/saveas", json={"path": str(one), "corpus": "mais"}).json()
+    assert wait_job(client, j["job_id"])["result"]["corpus"] == "mais"
+    with ttwtools.open_project(one) as c:
+        assert c.list_corpus_names() == ["mais"] and c.single_corpus
+    assert client.get("/api/project/info").json()["path"] == str(raw.resolve())

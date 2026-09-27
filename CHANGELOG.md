@@ -6,6 +6,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Adicionado
 
+- Projetos **salvos compactados por padrão**, com opções visíveis ao salvar: compactar e guardar as tabelas de busca (sem elas o arquivo fica bem menor e as tabelas são recriadas ao abrir); aviso "não salvo" e confirmação ao fechar (6.2a).
+- Formatos **.ttwc** e **.ttwcl** para guardar um corpus só, com as camadas e análises dele ("Salvar corpus…") (6.2a).
 - **Etiquetagem**: tela própria para acrescentar camadas ao corpus (estatísticas básicas e etiquetadores, com as opções de cada um); as escolhas vão para uma lista "A executar" guardada no projeto e executada numa etapa só, que pode ser ampliada depois; `ttwtools pipeline` faz o mesmo na linha de comando (6.2a).
 - Andamento de "Executar análise e etiquetagem": porcentagem geral e por tarefa, passo atual, tempo decorrido e estimativa (6.2a).
 - **Módulos**: área própria para modelos de etiquetagem (spaCy e Stanza, em inglês e português) e corpora do catálogo, com o que cada um faz, fonte, licença, dados de treino e tamanho; `ttwtools catalog models` mostra as mesmas fichas (6.2a).

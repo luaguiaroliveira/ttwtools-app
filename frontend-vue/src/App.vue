@@ -12,7 +12,7 @@ import ExplainOverlay from './components/ExplainOverlay.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
-const { corpus, layer, projectPath } = storeToRefs(session)
+const { corpus, layer, projectPath, unsaved } = storeToRefs(session)
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
@@ -54,6 +54,8 @@ const changeLang = (value) => setLang(value)
             {{ t('header.layer') }}: {{ layer || t('header.no_layer') }}
           </span>
         </div>
+        <RouterLink v-if="unsaved" to="/arquivo" class="badge badge-warning gap-1" data-testid="header-unsaved"
+                    :title="t('project.unsaved_text')">● {{ t('project.unsaved_badge') }}</RouterLink>
         <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
         <details class="dropdown dropdown-end">
           <summary class="btn btn-ghost btn-sm" :aria-label="t('menu.settings')">⚙︎</summary>

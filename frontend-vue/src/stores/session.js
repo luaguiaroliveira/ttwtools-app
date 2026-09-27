@@ -12,7 +12,8 @@ export const useSession = defineStore('session', {
     corpora: [],            // /api/corpora
     corpus: null,           // corpus ativo
     layer: null,            // ferramenta da camada ativa (null = formas)
-    opening: null,          // progresso ao abrir um .ttwt
+    opening: null,          // progresso ao abrir um arquivo compactado ou antigo
+    unsaved: false,         // arquivo compactado com alterações ainda não gravadas
   }),
   getters: {
     hasProject: (s) => Boolean(s.projectPath),
@@ -32,6 +33,8 @@ export const useSession = defineStore('session', {
     async refresh() {
       const info = await api.project.info()
       this.project = info.open ? info : null
+      this.unsaved = Boolean(info.unsaved)
+      this.watchUnsaved()
       this.projectPath = info.open ? info.path : null
       this.corpora = info.open ? (await api.corpora.list()).corpora : []
       if (this.corpus && !this.corpora.some((c) => c.name === this.corpus)) this.setCorpus(null)
@@ -64,6 +67,14 @@ export const useSession = defineStore('session', {
     async checkPendingOpen() {
       const { path } = await api.project.pendingOpen()
       if (path) await this.openProject(path)
+    },
+    /** Consulta leve a cada 3 s enquanto o arquivo está compactado (aviso "não salvo"). */
+    watchUnsaved() {
+      clearInterval(this._unsavedTimer)
+      if (!this.project?.compressed) { this.unsaved = false; return }
+      this._unsavedTimer = setInterval(async () => {
+        try { this.unsaved = (await api.project.unsaved()).unsaved } catch { /* */ }
+      }, 3000)
     },
     setCorpus(corpus) {
       this.corpus = corpus
