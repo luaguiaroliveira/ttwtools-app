@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 6.1 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
-- **Último passo concluído:** 5.3 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** 6.2 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Último passo concluído:** 6.1 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -135,7 +135,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [!] | 2026-09-26 | falta testar com dados reais (anc.org inacessível) |
 | 5.3 | Português | 1.5, 4.3 | [x] | 2026-09-27 | ver `git log --grep '\[5.3'` |
 | **Fase 6 — Fechamento** | | | | | |
-| 6.1 | Documentação | 3.11 | [ ] | | |
+| 6.1 | Documentação | 3.11 | [x] | 2026-09-27 | ver `git log --grep '\[6.1'` |
 | 6.2 | Verificação em cada sistema | 6.1 | [ ] | | |
 | 6.3 | Release 0.4.0 | 6.2 | [ ] | | |
 
@@ -952,14 +952,18 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 6.1 Documentação
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-27 · Commit: ver `git log --grep '\[6.1'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Fazer:**
-  - [ ] Atualizar `README.md`/`LEIAME.md` (instalação, uso do aplicativo, uso pela linha de comando, formatos, projeto `.ttwa`/`.ttwl`).
-  - [ ] Documentação do pacote (`libs/ttwtools/docs`): guia rápido e referência de cada função pública.
-  - [ ] Guia de contribuição curto e `RELEASING.md` revisado.
-  - [ ] Atualizar o artigo/descrição (ELC) apenas se você pedir.
+  - [x] Atualizar `README.md`/`LEIAME.md` (instalação, uso do aplicativo, uso pela linha de comando, formatos, projeto `.ttwa`/`.ttwl`).
+  - [x] Documentação do pacote (`libs/ttwtools/docs`): guia rápido e referência de cada função pública.
+  - [x] Guia de contribuição curto e `RELEASING.md` revisado.
+  - [ ] Atualizar o artigo/descrição (ELC) apenas se você pedir. *(não pedido)*
 - **Pronto quando:** alguém consegue instalar e fazer a primeira análise só com o `LEIAME.md`.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `LEIAME.md` (pt) e `README.md` (en) reescritos para quem usa: instalar por sistema (avisos de assinatura no macOS/Windows, Intel), primeira análise em 6 passos, cada tela, projetos `.ttwa`/`.ttwl`/`.ttwt` e camadas, catálogo e pasta de dados, idiomas, linha de comando e Python, tabela de formatos, rodar a partir do código; avisam que o pacote ainda abre a interface antiga até o 3.11. As instruções de desenvolvimento e build (desatualizadas: `build_mac.sh`, `build_win.bat`) foram para o novo `CONTRIBUTING.md` (ambientes ttw314/ttw311, rodar, testes, `build.py`, regras, mapa do repositório). `RELEASING.md` revisto (checklist de versão final, corpora fora da release). Pacote: `docs/guia_rapido.md` (fluxo completo, português, catálogo, laboratório, formatos, CLI, variáveis de ambiente), `docs/referencia.md` gerada das docstrings por `docs/gerar_referencia.py` (165 funções; 33 docstrings que faltavam foram escritas; teste `test_docs.py` confere a cobertura), `README.md` do pacote com a visão atual no topo e as notas da 0.1 como histórico, `CHANGELOG.md` do pacote com as fases 4–6.
+  - Conferência: os exemplos de Python do guia foram executados num corpus de teste; os rótulos citados no README batem com as traduções da interface; as opções de linha de comando conferidas com `--help`.
+  - Correção encontrada ao rodar o guia: sem `layer`, `lemma=`/`pos=` usavam a camada mais recente mesmo sem o campo (BiberPlus sem lema → 0 resultados); agora usam a mais recente que tem o campo (`query._needs`, teste em `test_query.py`).
+  - Pendências: "pronto quando" (alguém instalar só com o LEIAME) depende de um teste com uma pessoa; o README ainda descreve a interface nova como a de `frontend-vue/` até a remoção da antiga (3.11).
 
 ### 6.2 Verificação em cada sistema
 

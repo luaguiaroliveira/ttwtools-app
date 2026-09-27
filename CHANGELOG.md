@@ -13,10 +13,12 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Laboratório** (experimental) em Comparar: N grupos por metadado ou corpus — um contra todos, par a par, Kruskal-Wallis, PCA, dendrograma e "meu texto contra referências"; `ttwtools compare --group-by/--group` (5.1).
 - Importadores de **TEI XML/BNC XML** e do standoff **GrAF (OANC/MASC)**, pela linha de comando (`import --format tei|graf`) e pelo assistente "Adicionar corpus"; receita `tools/corpora/masc.py` (5.2).
 - **Português**: modelos spaCy `pt_core_news_*` e Stanza em português, sugeridos automaticamente para corpora em português; idioma do corpus detectado para as palavras funcionais; UD Portuguese Bosque como referência (`tools/corpora/ud.py`) (5.3).
+- Documentação: LEIAME/README para quem usa, `CONTRIBUTING.md`, `RELEASING.md` revisto; no pacote, guia rápido e referência de todas as funções (6.1).
 
 ### Corrigido
 
 - Testes da interface (Vitest) não tentam mais rodar o teste de ponta a ponta do Playwright (4.4).
+- Buscas por lema ou classe sem camada escolhida usam a camada que tem esse campo (antes podiam cair numa camada sem lema e dar zero) (6.1).
 
 ## [0.4.0-alpha.1] — 2026-09-26
 

@@ -1,6 +1,6 @@
 # Como lançar uma versão do TTWtools
 
-> Esqueleto criado no passo 0.2. O passo a passo completo (CI, pacotes, publicação) entra no passo 0.5.
+> Como gerar e publicar uma versão do aplicativo. Desenvolvimento e testes: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Regra de versão
 
@@ -44,6 +44,18 @@
 - **Nunca** apagar nem reescrever uma tag já publicada (quem baixou ficaria com um pacote que não corresponde à tag).
 - Rascunho ainda não publicado com defeito: apagar o rascunho e a tag (`gh release delete vX --cleanup-tag`), corrigir, lançar de novo.
 - Release publicada com defeito: corrigir e lançar uma nova versão `PATCH` (ex.: `0.4.1`), explicando no CHANGELOG.
+
+## Checklist antes de uma versão final
+
+- [ ] CI verde na `main` nos 4 sistemas.
+- [ ] `CHANGELOG.md` → `[Unreleased]` completo (uma linha por mudança visível).
+- [ ] Submódulo `ttwtools` com tag própria (`git -C libs/ttwtools tag vX.Y.Z && git -C libs/ttwtools push --tags`) e versão no `libs/ttwtools/pyproject.toml`.
+- [ ] Roteiro manual do passo 6.2 do plano executado com o pacote `-rc` (incluindo macOS 12 Intel).
+- [ ] Pacotes baixados da release abrem e o `SHA256SUMS.txt` confere (`shasum -a 256 -c SHA256SUMS.txt`).
+
+## Corpora do catálogo
+
+Os pacotes de corpus não fazem parte da release do aplicativo: são gerados por `tools/corpora/` e publicados junto com um `catalogo.json` (local ainda a decidir, decisão D6 do plano). Veja [`tools/corpora/README.md`](tools/corpora/README.md).
 
 ## Submódulo `ttwtools`
 
