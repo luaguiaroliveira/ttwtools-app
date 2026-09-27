@@ -1,7 +1,7 @@
 """
 _common.py — Peças comuns dos scripts de preparo de corpora do catálogo (passo 4.3).
 
-Cada script (brown.py, lob.py, ud_english.py, demo.py) baixa ou lê a fonte, monta
+Cada script (brown.py, lob.py, ud.py, masc.py, demo.py) baixa ou lê a fonte, monta
 um projeto `.ttwa` etiquetado e chama `finish()`, que grava em `--out`:
 
     <id>-<versão>.zip          pacote (só se a licença foi conferida e permite redistribuir)

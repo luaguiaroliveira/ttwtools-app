@@ -220,3 +220,16 @@ def test_lab_compare_route(client, tmp_path, spacy_model):
     code = client.post("/api/code", json={"analysis": "lab", "params": {"corpus": "c", "group_by": "g", "layer": "spacy",
                                                                        "method": "anova", "groups": r["group_specs"]}}).json()
     assert "ttwtools compare" in code["cli"] and "--group-by g" in code["cli"] and "compare_groups" in code["python"]
+
+
+def test_tagger_options_suggest_language(client, tmp_path):
+    """Passo 5.3: corpus em português → o painel já sugere o modelo pt (e atalhos do mesmo tamanho)."""
+    import ttwtools
+    proj = tmp_path / "pt.ttwa"
+    with ttwtools.create_project(proj) as p:
+        p.add_corpus_text("pt", "a.txt", "Os meninos não foram à escola ontem, mas estudaram muito em casa.")
+    client.post("/api/project/open", json={"path": str(proj)})
+    d = client.get("/api/taggers/spacy/options", params={"corpus": "pt"}).json()
+    assert d["corpus_lang"] == "pt" and d["suggested"]["model"].startswith("pt_core_news_")
+    assert d["suggested_presets"]["preciso"]["model"] == "pt_core_news_lg"
+    assert client.get("/api/taggers/stanza/options", params={"corpus": "pt"}).json()["suggested"] == {"lang": "pt"}

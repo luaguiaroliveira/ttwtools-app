@@ -45,8 +45,14 @@ jobs:
         run: |
           python build/build.py --install-deps --deps-only
           pip install pytest
+          # modelo de português pelo baixador do próprio pacote (testa models.download_spacy_model)
+          python -m ttwtools.cli catalog download-model pt_core_news_sm
+        env:
+          TTWTOOLS_DATA_DIR: ${{ runner.temp }}/ttw-dados
 
       - name: Testes
+        env:
+          TTWTOOLS_DATA_DIR: ${{ runner.temp }}/ttw-dados
         run: |
           pytest tests -q
           pytest libs/ttwtools/tests -q

@@ -14,7 +14,9 @@ const { t } = useI18n()
 const GROUPS = ['modelo', 'extrair', 'desempenho', 'avancado']
 const groups = computed(() => GROUPS.map((g) => ({ id: g, options: props.descriptor.options.filter((o) => o.grupo === g) }))
   .filter((g) => g.options.length))
-const avail = (o, v) => props.descriptor.availability?.[o.id]?.[v]
+const lang = () => props.modelValue.lang
+const avail = (o, v) => (lang() && lang() !== 'en' && props.descriptor.availability?.[`${o.id}@${lang()}`]?.[v]) || props.descriptor.availability?.[o.id]?.[v]
+const values = (o) => o.por_idioma?.[lang()] ?? o.valores     // ex.: pacotes do Stanza por idioma
 const set = (id, value) => emit('update:modelValue', { ...props.modelValue, [id]: value })
 function toggle(o, v, on) {
   const cur = new Set(props.modelValue[o.id] ?? o.padrao)
@@ -39,7 +41,7 @@ const shown = (v) => (Array.isArray(v) ? v.join(', ') : String(v))
         </div>
         <select v-if="o.tipo === 'escolha'" :id="`opt-${o.id}`" class="select select-sm w-fit" :value="modelValue[o.id] ?? o.padrao"
                 @change="set(o.id, $event.target.value)">
-          <option v-for="v in o.valores" :key="v" :value="v" :disabled="avail(o, v) && !avail(o, v).installed">
+          <option v-for="v in values(o)" :key="v" :value="v" :disabled="avail(o, v) && !avail(o, v).installed">
             {{ v }}{{ avail(o, v) && !avail(o, v).installed ? ` (${t('tag.not_installed', { command: avail(o, v).command })})` : '' }}
           </option>
         </select>

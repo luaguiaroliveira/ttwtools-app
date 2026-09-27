@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 5.3 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
-- **Último passo concluído:** 5.2 (2026-09-26, parcial); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** 6.1 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Último passo concluído:** 5.3 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -133,7 +133,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | **Fase 5 — Extras** | | | | | |
 | 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[5.1'` |
 | 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [!] | 2026-09-26 | falta testar com dados reais (anc.org inacessível) |
-| 5.3 | Português | 1.5, 4.3 | [ ] | | |
+| 5.3 | Português | 1.5, 4.3 | [x] | 2026-09-27 | ver `git log --grep '\[5.3'` |
 | **Fase 6 — Fechamento** | | | | | |
 | 6.1 | Documentação | 3.11 | [ ] | | |
 | 6.2 | Verificação em cada sistema | 6.1 | [ ] | | |
@@ -884,7 +884,7 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
   - [!] Publicar no catálogo.
 - **Pronto quando:** Brown está instalável pelo catálogo, já etiquetado, e abre na visão geral.
 - **Relato:**
-  - Feito: `tools/corpora/` com `_common.py`, `demo.py` (18 capítulos de Alice, Tom Sawyer e Sherlock Holmes, Projeto Gutenberg, sem cabeçalho/licença do PG e sem o `_itálico_`; metadados autor, obra, ano, variedade, capítulo), `brown.py` (nltk_data; etiquetas originais como camada `nltk_tagged`, tagset "brown", + spaCy; metadados category/section), `ud_english.py` (EWT r2.18, 1.174 documentos, camada `conllu`; genre/split), `lob.py` (só receita; prepara localmente a cópia da pessoa), `build_catalog.py` e `README.md`. Cada script grava pacote + entrada; sem `--license-verified` e `--redistributable` sai só receita. Pacotes já saem com a visão geral calculada.
+  - Feito: `tools/corpora/` com `_common.py`, `demo.py` (18 capítulos de Alice, Tom Sawyer e Sherlock Holmes, Projeto Gutenberg, sem cabeçalho/licença do PG e sem o `_itálico_`; metadados autor, obra, ano, variedade, capítulo), `brown.py` (nltk_data; etiquetas originais como camada `nltk_tagged`, tagset "brown", + spaCy; metadados category/section), `ud_english.py` (EWT r2.18, 1.174 documentos, camada `conllu`; genre/split; no 5.3 virou `ud.py --treebank en-ewt|pt-bosque`), `lob.py` (só receita; prepara localmente a cópia da pessoa), `build_catalog.py` e `README.md`. Cada script grava pacote + entrada; sem `--license-verified` e `--redistributable` sai só receita. Pacotes já saem com a visão geral calculada.
   - Conferido localmente (catálogo em pasta temporária): Brown completo (500 textos, 1.033.053 palavras, 114 MB, 2,5 min) instalado pela rota do catálogo e aberto; demo (5 MB) instalado e aberto pela tela; EWT (20 MB, 17 s).
   - Licenças encontradas (a pessoa confere e registra a data): Brown — README do nltk_data diz "Distributed with the permission of the copyright holder, redistribution permitted."; EWT — CC BY-SA 4.0 (LICENSE.txt); demo — domínio público nos EUA; LOB — ICAME, sem redistribuição.
   - Pendências (usuário): conferir as licenças e gerar com `--license-verified`; decidir onde publicar (D6). Observação: o texto do Gutenberg usa apóstrofo curvo (’) e o Brown, reto ('): em palavras-chave, `’s`/`n’t` aparecem como chave; avaliar normalizar apóstrofos na tokenização ou na comparação.
@@ -934,13 +934,17 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 5.3 Português
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-27 · Commit: ver `git log --grep '\[5.3'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Fazer:**
-  - [ ] Descritores e tagsets para os modelos de português (spaCy e Stanza), com traduções.
-  - [ ] Corpus de referência em português com licença clara (avaliar UD português, Tycho Brahe, Corpus Brasileiro).
-  - [ ] Teste do fluxo completo em português.
+  - [x] Descritores e tagsets para os modelos de português (spaCy e Stanza), com traduções.
+  - [x] Corpus de referência em português com licença clara (avaliar UD português, Tycho Brahe, Corpus Brasileiro).
+  - [x] Teste do fluxo completo em português.
 - **Pronto quando:** etiquetar e explorar um corpus em português pela interface.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: descritores com português — spaCy `pt_core_news_sm|md|lg` (no spaCy pt a etiqueta fina é a própria UPOS; sem PTB) e Stanza `lang=pt` com os pacotes bosque, cintil, dantestocks, gsd, petrogold e porttinari (conferidos no resources.json 1.11); `por_idioma` valida o pacote pelo idioma e filtra a lista na tela; disponibilidade dos pacotes por idioma (`package@pt`). `taggers.language_defaults(tagger, idioma, atual)` adapta as opções ao idioma do corpus mantendo o tamanho do modelo (trf → lg em pt); a rota de opções devolve `corpus_lang`, `suggested` e `suggested_presets`, e o painel "Etiquetar" já abre com o modelo pt num corpus em português. `stats.guess_language` (idioma das camadas; senão palavras funcionais numa amostra) passou a escolher a lista de palavras funcionais em `describe`, `freq` e na rota de frequência (antes era sempre inglês); lista pt ampliada. CoNLL-U aceita `# newdoc_id`. Referência em português: `tools/corpora/ud.py --treebank pt-bosque` (UD Portuguese Bosque r2.18, CC BY-SA 4.0, 1.961 documentos, metadados fonte/variedade CF = pt-BR, CP = pt-PT; pacote 17 MB + lista 217 KB).
+  - Avaliados e deixados para depois: Tycho Brahe (português histórico; licença própria, a conferir) e Corpus Brasileiro (sem licença de redistribuição clara) — ficariam como receita.
+  - Testes: `libs/ttwtools/tests/test_portugues.py` (5; o fluxo completo roda quando `pt_core_news_sm` está instalado; no CI o modelo é baixado pelo `ttwtools catalog download-model`), `tests/test_routes_new.py::test_tagger_options_suggest_language`. Conferido na interface: 10 capítulos de *Dom Casmurro* etiquetados com `pt_core_news_sm` (6.256 tokens) e KWIC por lema (`lemma=olho`); download real do modelo pelo catálogo.
+  - Observações: o lema do spaCy pt para contrações sai como "a o" (à), "de o"...; textos com ortografia antiga (1899) etiquetam razoavelmente, mas os lemas de grafias antigas não são normalizados.
 
 ---
 

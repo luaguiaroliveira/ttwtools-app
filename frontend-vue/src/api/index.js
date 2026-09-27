@@ -39,7 +39,7 @@ export const api = {
   },
   taggers: {
     list: (lang) => get('/api/taggers', { lang }),
-    options: (id, lang) => get(`/api/taggers/${id}/options`, { lang }),
+    options: (id, lang, corpus) => get(`/api/taggers/${id}/options`, { lang, corpus }),
     tagset: (id, lang, group) => get(`/api/taggers/${id}/tagset`, { lang, group }),
     tag: (body) => post('/api/tagging/layers', body),
     plan: (body) => post('/api/tagging/plan', body),

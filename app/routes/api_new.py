@@ -57,11 +57,19 @@ def taggers(lang: str | None = None):
 
 
 @router.get("/taggers/{tagger_id}/options", tags=["taggers"])
-def tagger_options(tagger_id: str, lang: str | None = None):
-    """Descritor de opções (textos no idioma) + disponibilidade de cada valor (modelos instalados)."""
+def tagger_options(tagger_id: str, lang: str | None = None, corpus: str | None = None):
+    """Descritor de opções (textos no idioma) + disponibilidade de cada valor (modelos instalados).
+    Com `corpus`: `corpus_lang` (idioma detectado) e `suggested` (opções para esse idioma)."""
     from ttwtools import taggers as tg
     d = _call(tg.options, tagger_id, lang=lang)
     d["availability"] = tg.value_availability(tagger_id)
+    if corpus and app_state.current_project_path:
+        from ttwtools.stats import guess_language
+        with _project() as proj:
+            d["corpus_lang"] = guess_language(proj, corpus)
+        d["suggested"] = tg.language_defaults(tagger_id, d["corpus_lang"])
+        d["suggested_presets"] = {name: {**pre, **tg.language_defaults(tagger_id, d["corpus_lang"], pre)}
+                                  for name, pre in (d.get("presets") or {}).items()}
     return d
 
 
@@ -286,10 +294,11 @@ def explore_kwic(corpus: str, query: str, layer: str | None = None, context: int
 @router.get("/explore/frequency", tags=["explore"])
 def explore_frequency(corpus: str, unit: Literal["form", "lemma", "word_pos", "pos", "ngram"] = "form", n: int = 2,
                       by: str = "corpus", layer: str | None = None, top: int = 100, hide_stopwords: bool = False,
-                      stopwords_lang: str = "en", where: list[str] | None = Query(None)):
+                      stopwords_lang: str | None = None, where: list[str] | None = Query(None)):
     import ttwtools
-    stop = _call(ttwtools.stopwords, stopwords_lang) if hide_stopwords else None
+    from ttwtools.stats import guess_language
     with _project() as proj:
+        stop = _call(ttwtools.stopwords, stopwords_lang or guess_language(proj, corpus) or "en") if hide_stopwords else None
         return _call(ttwtools.frequency, proj, corpus, unit, n, by, layer, _where(where), top, stop=stop)
 
 

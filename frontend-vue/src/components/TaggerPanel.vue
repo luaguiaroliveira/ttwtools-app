@@ -30,8 +30,8 @@ onMounted(async () => {
   job.resume()
 })
 watch([tagger, locale], async () => {
-  descriptor.value = await api.taggers.options(tagger.value, locale.value)
-  values.value = {}
+  descriptor.value = await api.taggers.options(tagger.value, locale.value, props.corpus)
+  values.value = { ...(descriptor.value.suggested ?? {}) }   // ex.: corpus em português → modelo pt
 }, { immediate: true })
 
 // só as opções diferentes do padrão vão no pedido
@@ -60,7 +60,9 @@ watch(body, () => {
   }, 250)
 }, { immediate: true, deep: true })
 
-function applyPreset(name) { values.value = { ...descriptor.value.presets[name] } }
+function applyPreset(name) {   // atalhos já adaptados ao idioma do corpus (ex.: modelo pt do mesmo tamanho)
+  values.value = { ...(descriptor.value.suggested_presets?.[name] ?? descriptor.value.presets[name]) }
+}
 async function run() {
   await job.start(() => api.taggers.tag(body.value))
 }
