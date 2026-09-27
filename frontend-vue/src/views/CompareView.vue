@@ -8,6 +8,7 @@ const TOOLS = {
   'palavras-chave': defineAsyncComponent(() => import('./compare/KeywordsTool.vue')),
   kfa: defineAsyncComponent(() => import('./compare/KfaTool.vue')),
   faixas: defineAsyncComponent(() => import('./compare/BandsTool.vue')),
+  laboratorio: defineAsyncComponent(() => import('./compare/LabTool.vue')),
 }
 const { t } = useI18n()
 const route = useRoute()
@@ -21,7 +22,7 @@ const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palav
     <template v-else>
       <div role="tablist" class="tabs tabs-box w-fit" data-explain="explain.compare.tabs">
         <RouterLink v-for="(_, id) in TOOLS" :key="id" role="tab" :to="{ path: '/comparar', query: { tool: id } }" class="tab"
-                    :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`compare.tool.${id}`) }}</RouterLink>
+                    :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`compare.tool.${id}`) }}<span v-if="id === 'laboratorio'" class="badge badge-warning badge-xs ml-1">{{ t('lab.badge') }}</span></RouterLink>
       </div>
       <KeepAlive><component :is="TOOLS[tool]" :key="tool + corpus" :corpus="corpus" /></KeepAlive>
     </template>

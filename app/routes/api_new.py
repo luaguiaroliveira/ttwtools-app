@@ -5,7 +5,7 @@ valida a entrada e chama uma função pública do pacote `ttwtools`.
     /api/taggers, /api/taggers/{id}/options, /api/taggers/{id}/tagset
     /api/corpora/{corpus}/overview (GET: guardado; POST: calcula em tarefa)
     /api/explore/{search,kwic,frequency,collocates,dispersion}
-    /api/compare/keywords, /api/compare/bands, /api/references
+    /api/compare/keywords, /api/compare/bands, /api/references, /api/lab/compare
     /api/help, /api/help/{tópico}, /api/help/tours/{id}, /api/i18n/{lang}
     /api/code (comando de linha de comando e código Python equivalentes)
     POST /api/tagging/layers (etiquetar com opções, em tarefa)
@@ -407,6 +407,41 @@ def references():
     """Listas de referência instaladas pelo catálogo (`ref` = `catalog:<id>`), uma por unidade."""
     from ttwtools import corpus_catalog as cc
     return {"references": cc.reference_lists()}
+
+
+class LabGroup(BaseModel):
+    corpus: str
+    where: dict[str, list[str]] | None = None
+    label: str | None = None
+
+
+class LabRequest(BaseModel):
+    corpus: str | None = None                      # com group_by: um grupo por valor do metadado
+    group_by: str | None = None
+    groups: list[LabGroup] | None = None
+    layer: str
+    method: Literal["one_vs_rest", "pairwise", "anova", "profile", "dendrogram", "nearest"] = "one_vs_rest"
+    feature: Literal["tags", "upos", "xpos"] | None = None
+    metric: Literal["kfa", "kfa2"] = "kfa"
+    top: int = 10
+    correction: Literal["fdr", "bonferroni", "none"] = "fdr"
+    lang: str | None = None
+
+
+@router.post("/lab/compare", tags=["lab"])
+def lab_compare(req: LabRequest):
+    """Laboratório (experimental): comparar N grupos (ttwtools.experimental.compare_groups)."""
+    from ttwtools import experimental as ex
+    with _project() as proj:
+        if req.group_by:
+            if not req.corpus:
+                raise HTTPException(status_code=400, detail="group_by pede corpus")
+            groups = ex.groups_by_metadata(proj, req.corpus, req.group_by)
+        else:
+            groups = [g.model_dump(exclude_none=True) for g in req.groups or []]
+        result = _call(ex.compare_groups, proj, groups, req.layer, method=req.method, feature=req.feature,
+                       metric=req.metric, top=req.top, correction=req.correction, lang=req.lang)
+    return {**result, "group_specs": groups}
 
 
 class BandsRequest(BaseModel):

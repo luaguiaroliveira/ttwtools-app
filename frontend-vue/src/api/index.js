@@ -58,6 +58,9 @@ export const api = {
     feature: (p) => get('/api/compare/feature', { ...p, where: where(p.where) }),
     references: () => get('/api/references'),
   },
+  lab: {
+    compare: (body) => post('/api/lab/compare', body),
+  },
   help: {
     topics: (lang, q) => get('/api/help', { lang, q }),
     topic: (id, lang) => get(`/api/help/${id}`, { lang }),

@@ -195,3 +195,28 @@ def test_catalog_routes(client, tmp_path, monkeypatch):
     assert "ttwtools bands" in code["cli"] and "--reference catalog:d" in code["cli"]
     assert client.post("/api/catalog/remove", json={"id": "d"}).json() == {"removed": 1}
     assert any(m["name"] == "en_core_web_sm" for m in client.get("/api/models").json()["spacy"])
+
+
+def test_lab_compare_route(client, tmp_path, spacy_model):
+    import ttwtools
+    proj = tmp_path / "lab.ttwa"
+    texts = {"a": "The cat sat on the mat. The dog ran.", "b": "Quickly and quietly she walked home.",
+             "c": "Run! Stop! Why? Wait here!"}
+    with ttwtools.create_project(proj) as p:
+        for g, text in texts.items():
+            for i in range(3):
+                p.add_corpus_text("c", f"{g}{i}.txt", " ".join([text] * (i + 2)))
+        ttwtools.corpus.apply_metadata(p, "c", {f"{g}{i}.txt": {"g": g} for g in texts for i in range(3)})
+        ttwtools.tag_corpus(p, "c", "spacy", options={"model": "en_core_web_sm"})
+    client.post("/api/project/open", json={"path": str(proj)})
+    r = client.post("/api/lab/compare", json={"corpus": "c", "group_by": "g", "layer": "spacy", "method": "pairwise"}).json()
+    assert r["labels"] == ["a", "b", "c"] and {w["code"] for w in r["warnings"]} >= {"experimental", "small_group"}
+    r = client.post("/api/lab/compare", json={"groups": [{"corpus": "c", "where": {"g": ["a"]}, "label": "a"},
+                                                         {"corpus": "c", "where": {"g": ["b"]}, "label": "b"}],
+                                              "layer": "spacy", "method": "nearest"}).json()
+    assert r["target"] == "a" and r["group_specs"][0]["label"] == "a"
+    bad = client.post("/api/lab/compare", json={"corpus": "c", "group_by": "g", "layer": "spacy", "feature": "tags"})
+    assert bad.status_code == 422
+    code = client.post("/api/code", json={"analysis": "lab", "params": {"corpus": "c", "group_by": "g", "layer": "spacy",
+                                                                       "method": "anova", "groups": r["group_specs"]}}).json()
+    assert "ttwtools compare" in code["cli"] and "--group-by g" in code["cli"] and "compare_groups" in code["python"]

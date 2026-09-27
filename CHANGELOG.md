@@ -10,6 +10,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - Download de modelos spaCy e Stanza sob demanda para a pasta de dados do usuário, fora do binário (4.2).
 - Scripts de preparo dos corpora do catálogo em `tools/corpora/`: demonstração (Gutenberg), Brown, UD English EWT e receita do LOB (4.3).
 - Listas de referência do catálogo (`catalog:<id>`) nas palavras-chave, pacotes só de listas e **faixas de frequência lexical** (Comparar → Faixas de frequência; `ttwtools bands`) (4.4).
+- **Laboratório** (experimental) em Comparar: N grupos por metadado ou corpus — um contra todos, par a par, Kruskal-Wallis, PCA, dendrograma e "meu texto contra referências"; `ttwtools compare --group-by/--group` (5.1).
 
 ### Corrigido
 

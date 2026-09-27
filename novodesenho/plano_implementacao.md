@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 5.1 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
-- **Último passo concluído:** 4.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
+- **Passo atual:** 5.2 (3.11 e 4.3 aguardam o usuário: remoção da interface antiga; licenças e D6)
+- **Último passo concluído:** 5.1 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1, 2, 3 (exceto 3.11) e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -131,7 +131,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 4.3 | Primeiros corpora | 4.2, 1.6 | [!] | 2026-09-26 | scripts prontos; licenças e publicação (D6) aguardam o usuário |
 | 4.4 | Listas de frequência de referência | 4.3, 1.9 | [x] | 2026-09-26 | ver `git log --grep '\[4.3'` |
 | **Fase 5 — Extras** | | | | | |
-| 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [ ] | | |
+| 5.1 | Laboratório: comparar N grupos | 1.7, 3.7 | [x] | 2026-09-26 | ver `git log --grep '\[5.1'` |
 | 5.2 | Importador TEI e GrAF (OANC/BNC) | 1.6 | [ ] | | |
 | 5.3 | Português | 1.5, 4.3 | [ ] | | |
 | **Fase 6 — Fechamento** | | | | | |
@@ -908,14 +908,17 @@ Próximo: com a confirmação, fazer a remoção; enquanto isso, Fases 4 e 5.
 
 ### 5.1 Laboratório: comparar N grupos
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[5.1'` · Agente/máquina: Claude (Opus) / Mac arm64
 - **Ler antes:** `novomodelo.md` §14.
 - **Fazer:**
-  - [ ] `ttwtools.experimental.compare_groups(...)`: um contra todos, par a par (matriz), meu texto contra referências; depois mapa de perfis e dendrograma.
-  - [ ] Aba **Laboratório** com aviso de experimental, escolha de grupos (pasta, metadado, seleção) e balão para cada método.
-  - [ ] Avisos de cuidado: comparações múltiplas, grupos pequenos ou desiguais.
+  - [x] `ttwtools.experimental.compare_groups(...)`: um contra todos, par a par (matriz), meu texto contra referências; depois mapa de perfis e dendrograma.
+  - [x] Aba **Laboratório** com aviso de experimental, escolha de grupos (pasta, metadado, seleção) e balão para cada método.
+  - [x] Avisos de cuidado: comparações múltiplas, grupos pequenos ou desiguais.
 - **Pronto quando:** "um contra todos" roda para 3 grupos e aparece na tela.
-- **Relato:** _(preencher)_
+- **Relato:**
+  - Feito: `ttwtools.experimental` (API experimental): `groups_by_metadata`, `compare_groups(proj, grupos, camada, method=...)` com `one_vs_rest` (d por traço, kfa/kfa2), `pairwise` (matriz N×N de média de |d| e traços por par), `anova` (Kruskal-Wallis, epsilon², p corrigido FDR/Bonferroni), `profile` (PCA via viz.reduction), `dendrogram` (Ward sobre perfis médios padronizados, coordenadas do scipy) e `nearest` ("meu texto": distância pela raiz do z² médio e traços que mais afastam). Avisos traduzidos: experimental, grupos pequenos (< 5 textos), tamanhos desiguais (≥ 3×), comparações múltiplas. Resultado salvo em `analyses` (tipo `lab`). CLI: `ttwtools compare --group-by CHAVE | --group [RÓTULO=]CORPUS[:CHAVE=VALOR] --method ...`; copiar como código (`lab`). Rota `POST /api/lab/compare`. Aba **Laboratório** (selo "experimental") em Comparar: grupos por metadado do corpus ativo ou um por corpus, camada, traços, método com explicação sempre visível e balão `laboratorio` (pt/en), resultado de cada método (tabelas com cor pelo d/z, matriz, dendrograma em SVG, PCA), exportar.
+  - Testes: `libs/ttwtools/tests/test_experimental.py` (9), `tests/test_routes_new.py::test_lab_compare_route`; no navegador: demo agrupado por autor, um contra todos, dendrograma e meu texto contra referências.
+  - Pendências: grupos por seleção manual de textos e por pasta/padrão no nome (hoje: metadado ou corpus inteiro); itens 3 (pares só nos traços significativos), 6–8 e 10 do §14 ficam para depois.
 
 ### 5.2 Importador TEI e GrAF (OANC/BNC)
 
