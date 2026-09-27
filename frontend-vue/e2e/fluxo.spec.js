@@ -39,10 +39,14 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('add-corpus').click()
   await page.getByTestId('wizard-name').fill('bawe')
   await page.getByTestId('wizard-path').fill(path.join(CORPORA, 'essays_bawe_somentetexto_5'))
-  await page.getByTestId('wizard-next').click()
-  await page.getByTestId('wizard-fields').fill('area,resto')
+  await page.getByTestId('wizard-path').press('Tab')
+  // informações sobre os textos: painel opcional recolhido, com os pedaços do nome real
+  await page.getByTestId('wizard-meta').locator('summary').first().click()
+  await page.getByTestId('wizard-piece-0').fill('area')
+  await expect(page.getByTestId('wizard-meta').locator('table')).toContainText('AH')
+  await a11y(page, 'corpora-assistente-metadados')
   await page.getByTestId('wizard-import').click()
-  await expect(page.getByRole('status').filter({ hasText: /5 document/ })).toBeVisible()
+  await expect(page.getByRole('status').filter({ hasText: /5 document.*5/ })).toBeVisible()
   await a11y(page, 'corpora-assistente')
 
   // 2. visão geral

@@ -34,7 +34,7 @@ def _webview_dialog(kind: str, directory: str = "", save_filename: str = "", ext
     import webview
     dialog = {"open": webview.FileDialog.OPEN, "save": webview.FileDialog.SAVE,
               "folder": webview.FileDialog.FOLDER}[kind]
-    types = (f"Projeto TTWtools ({';'.join('*.' + e for e in exts)})", "Todos (*.*)") if exts else ()
+    types = (f"TTWtools ({';'.join('*.' + e for e in exts)})", "Todos (*.*)") if exts else ()
     result = win.create_file_dialog(dialog, directory=directory, save_filename=save_filename, file_types=types)
     if not result:
         return ""
@@ -82,19 +82,25 @@ def pick_folder(default_location: str = ""):
     return _answer(pick)
 
 
+FILE_KINDS = {"project": PROJECT_EXTS, "csv": ("csv", "tsv", "txt")}
+
+
 @router.get("/pick-file")
-def pick_file(default_location: str = ""):
-    """Abre o seletor de arquivo nativo (projetos .ttwa, .ttwl, .ttwt) e retorna o caminho."""
+def pick_file(default_location: str = "", kind: str = "project"):
+    """Abre o seletor de arquivo nativo e retorna o caminho. kind: project (.ttwa/.ttwl/.ttwt) ou csv."""
+    exts = FILE_KINDS.get(kind, PROJECT_EXTS)
+
     def pick():
-        path = _webview_dialog("open", default_location, exts=PROJECT_EXTS)
+        path = _webview_dialog("open", default_location, exts=exts)
         if path is not None:
             return path
         if platform.system() == "Darwin":
-            types = ", ".join(f'"{e}"' for e in PROJECT_EXTS)
-            return _osascript('POSIX path of (choose file with prompt "Selecione um projeto (.ttwa, .ttwl ou .ttwt):" '
+            types = ", ".join(f'"{e}"' for e in exts)
+            return _osascript('POSIX path of (choose file with prompt "Selecione o arquivo:" '
                               f'of type {{{types}, "public.data"}}{_where(default_location)})')
         init = f", initialdir={default_location!r}" if default_location else ""
-        return _tk(f"askopenfilename(filetypes=[('TTWtools', '*.ttwa *.ttwl *.ttwt'), ('Todos', '*')]{init})")
+        pattern = " ".join("*." + e for e in exts)
+        return _tk(f"askopenfilename(filetypes=[('TTWtools', {pattern!r}), ('Todos', '*')]{init})")
     return _answer(pick)
 
 

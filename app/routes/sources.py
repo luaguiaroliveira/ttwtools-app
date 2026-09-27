@@ -36,6 +36,13 @@ class ImportRequest(BaseModel):
     text_column: str = "text"
 
 
+@router.get("/preview-names")
+def preview_names(path: str, delimiter: str = "_", fields: str | None = None):
+    """Como os nomes dos arquivos da pasta viram metadados (ttwtools.preview_filenames), sem importar."""
+    import ttwtools
+    return ttwtools.preview_filenames(path, delimiter, fields.split(",") if fields else None)
+
+
 @router.post("/import")
 def import_corpus(req: ImportRequest):
     if not app_state.current_project_path:

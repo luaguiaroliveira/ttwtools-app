@@ -10,6 +10,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Alterado
 
+- Assistente "Adicionar corpus" em dois passos: as informações sobre os textos (metadados) viraram um painel opcional recolhido, com os pedaços do nome de um arquivo real, pré-visualização e planilha CSV como alternativa (6.2a).
 - Projeto com **Novo projeto…**, **Abrir projeto…** e **Salvar cópia…** pelos diálogos do sistema; digitar o caminho fica num painel recolhido (6.2a).
 
 ### Corrigido

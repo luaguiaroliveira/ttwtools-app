@@ -26,7 +26,7 @@ export const api = {
   },
   utils: {
     pickFolder: (default_location) => get('/api/utils/pick-folder', { default_location }),
-    pickFile: (default_location) => get('/api/utils/pick-file', { default_location }),
+    pickFile: (default_location, kind) => get('/api/utils/pick-file', { default_location, kind }),
     pickSave: (suggested, default_location) => get('/api/utils/pick-save', { suggested, default_location }),
   },
   corpora: {
@@ -35,6 +35,7 @@ export const api = {
     layers: (corpus) => get(`/api/corpora/${encodeURIComponent(corpus)}/layers`),
     text: (corpus, filename, layer) => get(`/api/corpora/${encodeURIComponent(corpus)}/text/${encodeURIComponent(filename)}`, { layer }),
     import: (body) => post('/api/corpora/import', body),
+    previewNames: (path, delimiter, fields) => get('/api/corpora/preview-names', { path, delimiter, fields }),
     overview: (corpus, params) => get(`/api/corpora/${encodeURIComponent(corpus)}/overview`, params),
     computeOverview: (corpus, body) => post(`/api/corpora/${encodeURIComponent(corpus)}/overview`, body),
   },
