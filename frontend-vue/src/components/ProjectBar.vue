@@ -25,7 +25,7 @@ const exportCorpus = () => act(async () => { await api.project.exportCorpus(); a
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 bg-base-200 rounded-box p-3">
+  <section class="flex flex-col gap-2 bg-base-200 rounded-box p-3" data-explain="explain.corpora.project">
     <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm">
       <span class="font-medium">{{ project.name }}</span>
       <span class="badge badge-outline">{{ t(`project.kind.${project.kind}`) }}</span>

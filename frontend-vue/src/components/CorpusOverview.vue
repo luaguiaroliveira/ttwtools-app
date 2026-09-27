@@ -30,7 +30,7 @@ const n = (v, d = 0) => (v === null || v === undefined ? '—' : Number(v).toLoc
 </script>
 
 <template>
-  <section class="flex flex-col gap-4" :aria-label="t('overview.title')">
+  <section class="flex flex-col gap-4" :aria-label="t('overview.title')" data-explain="explain.corpora.overview">
     <div class="flex items-center gap-2">
       <h2 class="text-xl font-bold">{{ t('overview.title') }}: {{ corpus }}</h2>
       <label class="ml-auto flex items-center gap-2 text-sm"><input v-model="hideStop" type="checkbox" class="checkbox checkbox-sm" />{{ t('overview.hide_stopwords') }}</label>

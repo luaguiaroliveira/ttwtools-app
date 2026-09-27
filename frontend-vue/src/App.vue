@@ -7,12 +7,15 @@ import { useSession } from './stores/session.js'
 import { LANGS, setLang } from './i18n.js'
 import { THEMES, applyTheme, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
+import TourOverlay from './components/TourOverlay.vue'
+import ExplainOverlay from './components/ExplainOverlay.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
 const { corpus, layer, projectPath } = storeToRefs(session)
 const theme = ref(initialTheme())
 const loadError = ref(null)
+const explaining = ref(false)
 
 onMounted(async () => {
   try { await session.load() } catch (err) { loadError.value = err }
@@ -50,6 +53,7 @@ const changeLang = (value) => setLang(value)
             {{ t('header.layer') }}: {{ layer || t('header.no_layer') }}
           </span>
         </div>
+        <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
         <details class="dropdown dropdown-end">
           <summary class="btn btn-ghost btn-sm" :aria-label="t('menu.settings')">⚙︎</summary>
           <div class="dropdown-content z-20 menu bg-base-200 rounded-box w-64 p-3 shadow gap-3">
@@ -78,6 +82,8 @@ const changeLang = (value) => setLang(value)
       </main>
     </div>
 
+    <TourOverlay />
+    <ExplainOverlay v-if="explaining" @close="explaining = false" />
     <!-- barra inferior (celular) -->
     <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-base-300 bg-base-200 grid grid-cols-4 z-10"
          :aria-label="t('nav.label')">

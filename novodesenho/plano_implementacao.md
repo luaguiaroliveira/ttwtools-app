@@ -4,8 +4,8 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** 3.8 (0.5 e 0.6 podem seguir: dependem só do 0.4)
-- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.7 prontos
+- **Passo atual:** 3.9 (0.5 e 0.6 podem seguir: dependem só do 0.4)
+- **Último passo concluído:** 3.4 (2026-09-26); Fases 0 (exceto teste no macOS 12), 1 e 2 prontas; 3.1–3.8 prontos
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
@@ -121,7 +121,7 @@ Depois: ler o cabeçalho deste plano, achar o **Passo atual** e o último Relato
 | 3.5 | Escolha de tagger e "Personalizar" | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.5\]'` |
 | 3.6 | Explorar | 3.4 | [x] | 2026-09-26 | ver `git log --grep '\[3.6\]'` |
 | 3.7 | Comparar | 3.6 | [x] | 2026-09-26 | ver `git log --grep '\[3.7\]'` |
-| 3.8 | Ajuda e Aprender | 3.2 | [ ] | | |
+| 3.8 | Ajuda e Aprender | 3.2 | [x] | 2026-09-26 | ver `git log --grep '\[3.8\]'` |
 | 3.9 | Exportar e "copiar como código" | 3.6 | [ ] | | |
 | 3.10 | Acessibilidade e testes de interface | 3.7 | [ ] | | |
 | 3.11 | Remover a interface antiga | 3.10 | [ ] | | |
@@ -768,17 +768,25 @@ Próximo: 3.8.
 
 ### 3.8 Ajuda e Aprender
 
-- Estado: [ ] · Data: — · Commit: — · Agente/máquina: —
+- Estado: [x] · Data: 2026-09-26 · Commit: ver `git log --grep '\[3.8\]'` · Agente/máquina: Claude (Opus 5.5) / Mac Apple Silicon
 - **Ler antes:** `novomodelo.md` §13.
 - **Fazer:**
-  - [ ] Componente **balão de ajuda** (`?`) ligado a `GET /api/help/{topico}`.
-  - [ ] **Tour guiado** com destaque (escolher e conferir a licença da biblioteca, ou escrever o overlay próprio) lendo os JSON de `tours/`.
-  - [ ] Botão **"Explicar esta tela"** (destaques com `rough-notation`, que já é dependência).
-  - [ ] Destino **Aprender**: glossário pesquisável, lista de tours, exemplos.
-  - [ ] Visual interativo do d de Cohen (duas curvas e controle deslizante) como primeiro exemplo.
-  - [ ] Balões colocados nas telas já feitas (tagger, KWIC, palavras-chave, KFA).
+  - [x] Componente **balão de ajuda** (`?`) ligado a `GET /api/help/{topico}`.
+  - [x] **Tour guiado** com destaque (escolher e conferir a licença da biblioteca, ou escrever o overlay próprio) lendo os JSON de `tours/`.
+  - [x] Botão **"Explicar esta tela"** (destaques com `rough-notation`, que já é dependência).
+  - [x] Destino **Aprender**: glossário pesquisável, lista de tours, exemplos.
+  - [x] Visual interativo do d de Cohen (duas curvas e controle deslizante) como primeiro exemplo.
+  - [x] Balões colocados nas telas já feitas (tagger, KWIC, palavras-chave, KFA).
 - **Pronto quando:** o tour do primeiro corpus roda de ponta a ponta e o balão do d de Cohen mostra o visual.
-- **Relato:** _(preencher)_
+- **Relato:**
+```
+Feito: balão "?" (HelpTip, GET /api/help/{tópico}); tour guiado com overlay próprio (recorte do alvo, balão, teclado Esc/setas, cada passo leva à rota do alvo) lendo data/help/tours/*.json; "Explicar esta tela" (áreas marcadas com data-explain e explicações traduzidas); destino Aprender com busca, tópicos por área, lista de tours e página do tópico (Markdown mínimo, relacionados, aviso de texto em inglês); visual interativo do d de Cohen (duas normais, controle deslizante, sobreposição 2·Φ(−d/2)) na página e no balão do d; balões em tagger, KWIC, palavras-chave, colocados, dispersão e KFA; ids estáveis para o tour (#importar-corpus, #botao-tagger, #busca-kwic, #palavras-chave).
+Arquivos: frontend-vue/src/{views/LearnView.vue, components/{TourOverlay,ExplainOverlay,CohenDVisual,HelpTip}.vue, composables/useTour.js, utils/markdown.js, test/markdown.test.js} e marcações nas telas; submódulo: tour com "rota" por passo, help.tour() devolve route, textos ui.*.json.
+Testes: vitest → 10 passed; navegador: tour completo (4 passos em /corpora, /explorar/kwic, /comparar); d = 0,8 → 69% e d = 2,0 → 32% de sobreposição (valores teóricos); balão da KFA com o visual; "Explicar esta tela" com as notas.
+Pendências: glossário próprio (hoje a busca percorre os tópicos); mais tours e tópicos conforme as telas amadurecem.
+Observações: D7 resolvida — overlay próprio em vez de Driver.js/Shepherd/rough-notation (menos dependências, sem questão de licença).
+Próximo: 3.9.
+```
 
 ### 3.9 Exportar e "copiar como código"
 
@@ -938,7 +946,7 @@ Próximo: 3.8.
 | D4 | **Assinatura e notarização:** macOS (conta de desenvolvedor da Apple) e Windows (certificado). Sem elas, o sistema mostra avisos ao abrir o pacote | 0.4, 6.2 | aberta; o pipeline nasce sem assinar |
 | D5 | Formato do pacote no Windows e no Linux (`.zip`/`.tar.gz` simples agora; instalador e AppImage depois) | 0.3 | aberta (padrão: simples) |
 | D6 | Onde hospedar o catálogo de corpora (release do GitHub ou repositório de dados) | 4.1 | aberta |
-| D7 | Biblioteca para o tour com destaque, ou overlay próprio (checar licença) | 3.8 | aberta |
+| D7 | Biblioteca para o tour com destaque, ou overlay próprio (checar licença) | 3.8 | **resolvida em 3.8:** overlay próprio (sem dependência nem questão de licença) |
 | D8 | Nomes dos destinos e do rótulo do corpus ativo | 3.2 | aberta |
 | D9 | Padrão recomendado de cada tagger (medir tempo e qualidade) | 1.5 | aberta |
 

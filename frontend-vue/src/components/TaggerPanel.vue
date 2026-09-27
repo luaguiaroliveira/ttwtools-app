@@ -8,6 +8,7 @@ import OptionsForm from './OptionsForm.vue'
 import TagsetDrawer from './TagsetDrawer.vue'
 import JobProgress from './JobProgress.vue'
 import Collapsible from './Collapsible.vue'
+import HelpTip from './HelpTip.vue'
 
 const props = defineProps({ corpus: { type: String, required: true } })
 const emit = defineEmits(['tagged'])
@@ -69,18 +70,19 @@ const current = computed(() => taggers.value.find((x) => x.id === tagger.value))
 </script>
 
 <template>
-  <section class="flex flex-col gap-3 bg-base-200 rounded-box p-3" :aria-label="t('tag.title')" id="tagger-panel">
+  <section class="flex flex-col gap-3 bg-base-200 rounded-box p-3" :aria-label="t('tag.title')" id="tagger-panel" data-explain="explain.corpora.tagger">
     <h2 class="text-xl font-bold">{{ t('tag.title') }}: {{ corpus }}</h2>
     <div class="flex flex-wrap items-end gap-2">
       <label class="form-control">
         <span class="label-text">{{ t('tag.choose') }}</span>
-        <select v-model="tagger" class="select select-sm" data-testid="tagger-select">
+        <select id="botao-tagger" v-model="tagger" class="select select-sm" data-testid="tagger-select">
           <option v-for="tg in taggers" :key="tg.id" :value="tg.id" :disabled="!tg.disponivel">
             {{ tg.id }}{{ tg.disponivel ? '' : ` — ${t('tag.unavailable')}` }}
           </option>
         </select>
       </label>
       <button class="btn btn-sm" data-testid="see-tags" @click="showTags = true">{{ t('tag.see_tags') }}</button>
+      <HelpTip topic="tagset_biber" />
       <div class="join">
         <button v-for="p in ['rapido', 'recomendado', 'preciso']" :key="p" class="btn btn-sm join-item"
                 :data-testid="`preset-${p}`" @click="applyPreset(p)">{{ t(`tagger.preset.${p}`) }}</button>

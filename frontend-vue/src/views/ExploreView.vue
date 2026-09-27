@@ -25,7 +25,7 @@ const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwi
     <h1 class="text-2xl font-bold">{{ t('explore.title') }}</h1>
     <p v-if="!corpus" class="opacity-70">{{ t('explore.need_corpus') }} <RouterLink to="/corpora" class="link">{{ t('nav.corpora') }}</RouterLink></p>
     <template v-else>
-      <div role="tablist" :aria-label="t('explore.tools')" class="tabs tabs-box overflow-x-auto flex-nowrap">
+      <div role="tablist" :aria-label="t('explore.tools')" class="tabs tabs-box overflow-x-auto flex-nowrap" data-explain="explain.explore.tabs">
         <RouterLink v-for="(_, id) in TOOLS" :key="id" role="tab" :to="`/explorar/${id}`" class="tab whitespace-nowrap"
                     :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`explore.tool.${id}`) }}</RouterLink>
       </div>

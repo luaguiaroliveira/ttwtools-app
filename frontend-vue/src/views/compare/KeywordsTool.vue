@@ -33,7 +33,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <form class="flex flex-wrap items-end gap-2" @submit.prevent="run">
+    <form id="palavras-chave" class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="form-control"><span class="label-text">{{ t('compare.reference') }}</span>
         <select v-model="f.refKind" class="select select-sm"><option value="corpus">{{ t('compare.ref.corpus') }}</option>
           <option value="rest" :disabled="!activeCorpus?.metadata_keys.length">{{ t('compare.ref.rest') }}</option><option value="list">{{ t('compare.ref.list') }}</option></select></label>

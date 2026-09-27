@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
+import HelpTip from '../../components/HelpTip.vue'
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const router = useRouter()
@@ -31,7 +32,8 @@ function page(d) { offset.value = Math.max(0, offset.value + d * limit.value); l
 function open(line) { router.push({ path: '/explorar/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
 </script>
 <template>
-  <section class="flex flex-col gap-3">
+  <section id="busca-kwic" class="flex flex-col gap-3">
+    <div class="flex justify-end"><HelpTip topic="kwic" /></div>
     <QueryBox :initial="String(route.query.q || '')" @submit="submit">
       <label class="form-control w-24"><span class="label-text">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>

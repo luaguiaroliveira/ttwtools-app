@@ -18,7 +18,7 @@ const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palav
     <h1 class="text-2xl font-bold">{{ t('compare.title') }}</h1>
     <p v-if="!corpus" class="opacity-70">{{ t('compare.need_corpus') }} <RouterLink to="/corpora" class="link">{{ t('nav.corpora') }}</RouterLink></p>
     <template v-else>
-      <div role="tablist" class="tabs tabs-box w-fit">
+      <div role="tablist" class="tabs tabs-box w-fit" data-explain="explain.compare.tabs">
         <RouterLink v-for="(_, id) in TOOLS" :key="id" role="tab" :to="{ path: '/comparar', query: { tool: id } }" class="tab"
                     :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`compare.tool.${id}`) }}</RouterLink>
       </div>

@@ -40,9 +40,9 @@ function startAdd() { wizardKey.value++; adding.value = true }
     <h1 class="text-2xl font-bold">{{ t('corpora.title') }}</h1>
     <ProjectBar />
     <template v-if="hasProject">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2" data-explain="explain.corpora.library">
         <h2 class="text-xl font-bold">{{ t('corpora.library') }}</h2>
-        <button class="btn btn-sm btn-primary ml-auto" data-testid="add-corpus" @click="startAdd">{{ t('corpora.add') }}</button>
+        <button id="importar-corpus" class="btn btn-sm btn-primary ml-auto" data-testid="add-corpus" @click="startAdd">{{ t('corpora.add') }}</button>
       </div>
       <AddCorpusWizard v-if="adding" :key="wizardKey" @done="afterImport" @overview="showOverview"
                        @tag="tagNow" />
