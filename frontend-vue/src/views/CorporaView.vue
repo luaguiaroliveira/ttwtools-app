@@ -1,29 +1,23 @@
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useSession } from '../stores/session.js'
 import ProjectBar from '../components/ProjectBar.vue'
 import AddCorpusWizard from '../components/AddCorpusWizard.vue'
 import CorpusOverview from '../components/CorpusOverview.vue'
-import LayersList from '../components/LayersList.vue'
-import TaggerPanel from '../components/TaggerPanel.vue'
 
 const { t } = useI18n()
 const session = useSession()
 const { corpora, corpus, layer, hasProject } = storeToRefs(session)
 const adding = ref(false)
 const wizardKey = ref(0)
-const layersRef = ref(null)
+const router = useRouter()
 function tagNow(name) {
   session.setCorpus(name)
   adding.value = false
-  setTimeout(() => document.getElementById('tagger-panel')?.scrollIntoView({ behavior: 'smooth' }), 100)
-}
-async function afterTag(tool) {
-  await session.refresh()
-  session.setLayer(tool)
-  layersRef.value?.reload()
+  router.push('/etiquetagem')
 }
 
 async function afterImport(name) {
@@ -57,9 +51,11 @@ function startAdd() { wizardKey.value++; adding.value = true }
         </li>
       </ul>
       <template v-if="corpus">
+        <div class="flex flex-wrap items-center gap-2 bg-base-200 rounded-box p-3">
+          <p class="text-sm flex-1 min-w-64">{{ t('corpora.layers_hint') }}</p>
+          <RouterLink to="/etiquetagem" class="btn btn-sm btn-primary" data-testid="go-tagging">{{ t('corpora.go_tagging') }}</RouterLink>
+        </div>
         <CorpusOverview :corpus="corpus" :layer="layer" />
-        <TaggerPanel :key="corpus" :corpus="corpus" @tagged="afterTag" />
-        <LayersList ref="layersRef" :corpus="corpus" />
       </template>
     </template>
     <p class="text-sm opacity-80 flex flex-wrap items-center gap-2">{{ t('corpora.modules_hint') }}

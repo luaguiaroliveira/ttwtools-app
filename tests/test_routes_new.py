@@ -233,3 +233,21 @@ def test_tagger_options_suggest_language(client, tmp_path):
     assert d["corpus_lang"] == "pt" and d["suggested"]["model"].startswith("pt_core_news_")
     assert d["suggested_presets"]["preciso"]["model"] == "pt_core_news_lg"
     assert client.get("/api/taggers/stanza/options", params={"corpus": "pt"}).json()["suggested"] == {"lang": "pt"}
+
+
+def test_lista_a_executar(client, tmp_path):
+    import ttwtools
+    path = tmp_path / "pl.ttwa"
+    ttwtools.create_project(path).close()
+    assert client.post("/api/project/open", json={"path": str(path)}).status_code == 200
+    client.post("/api/corpora/import", json={"corpus_name": "c", "source": {"kind": "folder", "path": str(CORPORA / "CorIFAessaysNE_5")}})
+    r = client.post("/api/corpora/c/pipeline", json={"kind": "tag", "tagger": "spacy", "preset": "rapido"}).json()
+    assert r["steps"][0]["plan"]["to_tag"] == 5
+    client.post("/api/corpora/c/pipeline", json={"kind": "stats"})
+    assert client.post("/api/corpora/c/pipeline", json={"kind": "tag"}).status_code == 422
+    assert len(client.get("/api/corpora/c/pipeline").json()["steps"]) == 2
+    job = wait_job(client, client.post("/api/corpora/c/pipeline/run").json()["job_id"])
+    assert job["status"] == "done" and [d["step"]["kind"] for d in job["result"]["done"]] == ["tag", "stats"]
+    assert client.get("/api/corpora/c/pipeline").json()["steps"] == []
+    client.post("/api/corpora/c/pipeline", json={"kind": "stats"})
+    assert client.delete("/api/corpora/c/pipeline/0").json()["steps"] == []

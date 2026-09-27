@@ -52,18 +52,23 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page.getByRole('status').filter({ hasText: /5 document.*5/ })).toBeVisible()
   await a11y(page, 'corpora-assistente')
 
-  // 2. visão geral
-  await page.getByTestId('wizard-overview').click()
-  await page.getByTestId('overview-compute').click()
-  await expect(page.getByTestId('overview-stats')).toContainText('5')
+  // 2. etiquetagem: escolher camadas (nada roda ainda) e executar numa etapa só
+  await page.getByTestId('wizard-tag').click()
+  await expect(page).toHaveURL(/etiquetagem/)
   await expect(page.getByTestId('active-corpus')).toHaveText('bawe')
+  await page.getByTestId('add-stats').click()
+  await page.getByTestId('preset-spacy-rapido').click()
+  await page.getByTestId('add-spacy').click()
+  await expect(page.getByTestId('pipeline-queue').locator('li')).toHaveCount(2)
+  await expect(page.getByTestId('pipeline-queue')).toContainText(/5 de 5|5 of 5/)
+  await a11y(page, 'etiquetagem')
+  await page.getByTestId('pipeline-run').click()
+  await expect(page.getByTestId('pipeline-done')).toBeVisible({ timeout: 120_000 })
+  await expect(page.getByTestId('pipeline-queue').locator('li')).toHaveCount(0)
 
-  // 3. etiquetar (spaCy, predefinição rápida)
-  await page.getByTestId('tagger-select').selectOption('spacy')
-  await page.getByTestId('preset-rapido').click()
-  await expect(page.getByTestId('tag-plan')).toContainText('5')
-  await page.getByTestId('tag-run').click()
-  await expect(page.locator('#tagger-panel [role=status]').filter({ hasText: /5 etiquetados|5 tagged/ })).toBeVisible({ timeout: 120_000 })
+  // 3. visão geral já calculada, em Corpora
+  await page.goto('/#/corpora')
+  await expect(page.getByTestId('overview-stats')).toContainText('5')
   await a11y(page, 'corpora-visao-geral')
 
   // 4. KWIC
@@ -99,7 +104,7 @@ test('acessibilidade das demais telas, tema escuro e alto contraste', async ({ p
     await page.goto('/')
     await page.evaluate((t) => localStorage.setItem('ttw.theme', t), theme)
     for (const route of ['/', '/aprender', '/aprender/cohens_d', '/explorar/busca', '/explorar/frequencia',
-      '/explorar/colocados', '/explorar/dispersao', '/explorar/leitor', '/comparar', '/modulos']) {
+      '/explorar/colocados', '/explorar/dispersao', '/explorar/leitor', '/comparar', '/modulos', '/etiquetagem']) {
       await page.goto(`/?t=${theme}#${route}`)
       await page.waitForLoadState('networkidle')
       await a11y(page, `${theme} ${route}`)

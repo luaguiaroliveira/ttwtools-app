@@ -86,7 +86,7 @@ const changeLang = (value) => setLang(value)
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />
     <!-- barra inferior (celular) -->
-    <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-base-300 bg-base-200 grid grid-cols-5 z-10"
+    <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-base-300 bg-base-200 grid grid-cols-6 z-10"
          :aria-label="t('nav.label')">
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path"
                   class="flex flex-col items-center py-2 text-xs gap-1" active-class="text-primary font-bold">

@@ -6,10 +6,12 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Adicionado
 
+- **Etiquetagem**: tela própria para acrescentar camadas ao corpus (estatísticas básicas e etiquetadores, com as opções de cada um); as escolhas vão para uma lista "A executar" guardada no projeto e executada numa etapa só, que pode ser ampliada depois; `ttwtools pipeline` faz o mesmo na linha de comando (6.2a).
 - **Módulos**: área própria para modelos de etiquetagem (spaCy e Stanza, em inglês e português) e corpora do catálogo, com o que cada um faz, fonte, licença, dados de treino e tamanho; `ttwtools catalog models` mostra as mesmas fichas (6.2a).
 
 ### Alterado
 
+- Corpora não calcula nem etiqueta mais: a visão geral mostra o que já foi calculado e aponta para Etiquetagem (6.2a).
 - Assistente "Adicionar corpus" em dois passos: as informações sobre os textos (metadados) viraram um painel opcional recolhido, com os pedaços do nome de um arquivo real, pré-visualização e planilha CSV como alternativa (6.2a).
 - Projeto com **Novo projeto…**, **Abrir projeto…** e **Salvar cópia…** pelos diálogos do sistema; digitar o caminho fica num painel recolhido (6.2a).
 

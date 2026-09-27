@@ -229,6 +229,72 @@ def corpus_layers(corpus: str):
 
 
 # ---------------------------------------------------------------------------
+# Lista "a executar": camadas escolhidas agora, calculadas depois (ttwtools.pipeline)
+# ---------------------------------------------------------------------------
+
+def _steps_with_plan(proj, corpus: str) -> list[dict]:
+    from ttwtools import pipeline
+    from ttwtools.annotate import plan_tagging
+    out = []
+    for s in pipeline.pending_steps(proj, corpus):
+        item = dict(s)
+        if s["kind"] == "tag":
+            try:
+                item["plan"] = plan_tagging(proj, corpus, s["tagger"], s.get("options"), s.get("components"),
+                                            None, s.get("preset"))
+            except Exception as exc:  # noqa: BLE001  (tagger indisponível etc.)
+                item["error"] = str(exc)
+        out.append(item)
+    return out
+
+
+class StepRequest(BaseModel):
+    kind: Literal["tag", "stats"]
+    tagger: str | None = None
+    options: dict[str, Any] | None = None
+    preset: Literal["rapido", "recomendado", "preciso"] | None = None
+    components: list[str] | None = None
+
+
+@router.get("/corpora/{corpus}/pipeline", tags=["corpora"])
+def pipeline_list(corpus: str):
+    """Passos guardados na lista "a executar" do corpus, com o plano de cada etiquetagem."""
+    with _project() as proj:
+        return {"steps": _steps_with_plan(proj, corpus)}
+
+
+@router.post("/corpora/{corpus}/pipeline", tags=["corpora"])
+def pipeline_add(corpus: str, req: StepRequest):
+    from ttwtools import pipeline
+    with _project() as proj:
+        _call(pipeline.add_step, proj, corpus, req.model_dump(exclude_none=True))
+        return {"steps": _steps_with_plan(proj, corpus)}
+
+
+@router.delete("/corpora/{corpus}/pipeline/{index}", tags=["corpora"])
+def pipeline_remove(corpus: str, index: int):
+    from ttwtools import pipeline
+    with _project() as proj:
+        _call(pipeline.remove_step, proj, corpus, index)
+        return {"steps": _steps_with_plan(proj, corpus)}
+
+
+@router.post("/corpora/{corpus}/pipeline/run", tags=["corpora"])
+def pipeline_run(corpus: str):
+    """Executa a lista (etiquetagens e, por último, estatísticas) numa tarefa; acompanhe em /api/jobs/{id}."""
+    path = app_state.current_project_path
+    if not path:
+        raise HTTPException(status_code=400, detail="Nenhum projeto aberto.")
+
+    def work(job, corpus=corpus, path=path):
+        import ttwtools
+        with ttwtools.open_project(path) as proj:
+            return ttwtools.run_steps(proj, corpus, progress=lambda d, t, m: job.progress(d, t, m))
+
+    return {"job_id": jobs.start("pipeline", work, corpus=corpus)}
+
+
+# ---------------------------------------------------------------------------
 # Visão geral do corpus
 # ---------------------------------------------------------------------------
 

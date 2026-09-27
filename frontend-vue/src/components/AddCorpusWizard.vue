@@ -159,8 +159,8 @@ joao_C1_2023.txt,C1,2023</pre>
     <div v-else class="flex flex-col gap-2">
       <p role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied ?? 0 }) }}</p>
       <div class="flex gap-2">
-        <button class="btn btn-sm btn-primary" data-testid="wizard-overview" @click="emit('overview', name)">{{ t('wizard.see_overview') }}</button>
-        <button class="btn btn-sm" @click="emit('tag', name)">{{ t('wizard.tag_now') }}</button>
+        <button class="btn btn-sm btn-primary" data-testid="wizard-tag" @click="emit('tag', name)">{{ t('wizard.tag_now') }}</button>
+        <button class="btn btn-sm" data-testid="wizard-overview" @click="emit('overview', name)">{{ t('wizard.see_overview') }}</button>
       </div>
     </div>
   </section>

@@ -5,7 +5,7 @@ import { api } from '../api/index.js'
 import { useSession } from '../stores/session.js'
 import { download } from '../utils/export.js'
 import { post } from '../api/client.js'
-const props = defineProps({ corpus: { type: String, required: true } })
+const props = defineProps({ corpus: { type: String, required: true }, title: { type: String, default: null } })
 const { t } = useI18n()
 const session = useSession()
 const layers = ref([])
@@ -18,7 +18,7 @@ defineExpose({ reload: async () => { layers.value = (await api.corpora.layers(pr
 </script>
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('layers.title')">
-    <h2 class="text-xl font-bold">{{ t('layers.title') }}</h2>
+    <h2 class="text-xl font-bold">{{ title ?? t('layers.title') }}</h2>
     <p v-if="!layers.length" class="text-sm opacity-70">{{ t('layers.none') }}</p>
     <ul class="flex flex-col gap-2">
       <li v-for="l in layers" :key="l.tool + l.config_hash" class="bg-base-200 rounded-box p-3 flex flex-wrap gap-2 items-center">
