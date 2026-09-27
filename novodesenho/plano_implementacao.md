@@ -4,10 +4,10 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** gerar a `-rc.1` e executar o 6.2 (roteiro nos sistemas). Aguardam o usuário também: 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC) e 6.3 (release 0.4.0). Ajustes pequenos da interface nova, apontados pelo usuário, ficaram para depois
+- **Passo atual:** 6.2, o usuário executa o roteiro com a `v0.4.0-rc.1` (rascunho de pre-release no GitHub, pacotes dos 4 sistemas). Aguardam o usuário também: 4.3 (licenças e D6), 5.2 (dados reais do OANC/MASC) e 6.3 (release 0.4.0). Ajustes pequenos da interface nova, apontados pelo usuário, ficaram para depois
 - **Último passo concluído:** 3.11 (2026-09-27); Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
-- **Versão alvo:** `0.4.0` (D1 resolvida); `pyproject.toml` em `0.4.0.dev0`
+- **Versão alvo:** `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
 
 ## Como usar (leia isto primeiro, é curto)
@@ -989,7 +989,8 @@ Próximo: gerar a -rc.1 (já com a interface nova) e executar o 6.2.
 - **Pronto quando:** o roteiro passou em todos os sistemas suportados, ou as exceções estão documentadas.
 - **Relato:**
   - Feito: roteiro de 15 itens em [`roteiro_verificacao.md`](roteiro_verificacao.md) (instalar, versão, projeto, importação com metadados, visão geral, etiquetagem e cache, taggers indisponíveis com motivo, exploração, palavras-chave, KFA e galeria, copiar como código, catálogo e modelo, português, salvar/reabrir `.ttwt`, ajuda e acessibilidade), com a tabela de resultado por sistema.
-  - Pendências (usuário): gerar a `-rc.1` (depois do 3.11, para o pacote já abrir a interface nova) e executar o roteiro em macOS arm64, macOS 12 Intel, Windows e Linux.
+  - `-rc.1` (2026-09-27): PR #3 mesclado na `main`; `release.py --version 0.4.0-rc.1` → `release.yml` verde nos 4 sistemas; rascunho de pre-release com os pacotes e `SHA256SUMS.txt`. Conferido: dmg arm64 baixado da release bate com o SHA256SUMS, `--selftest` OK (0.4.0rc1, interface nova).
+  - Pendências (usuário): executar o roteiro em macOS arm64, macOS 12 Intel, Windows e Linux com os pacotes da `-rc.1`; o rascunho continua sem publicar.
 
 ### 6.3 Release 0.4.0
 
