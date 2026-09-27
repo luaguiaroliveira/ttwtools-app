@@ -1,0 +1,37 @@
+<script setup>
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { api } from '../api/index.js'
+import { useSession } from '../stores/session.js'
+import { download } from '../utils/export.js'
+import { post } from '../api/client.js'
+const props = defineProps({ corpus: { type: String, required: true } })
+const { t } = useI18n()
+const session = useSession()
+const layers = ref([])
+async function exportLayer(tool, format) {
+  const r = await post(`/api/corpora/${encodeURIComponent(props.corpus)}/export`, { format, layer: tool })
+  download(`${props.corpus}_${tool}.${format}`, r.content)
+}
+watch(() => props.corpus, async (c) => { layers.value = (await api.corpora.layers(c)).layers }, { immediate: true })
+defineExpose({ reload: async () => { layers.value = (await api.corpora.layers(props.corpus)).layers } })
+</script>
+<template>
+  <section class="flex flex-col gap-2" :aria-label="t('layers.title')">
+    <h2 class="text-xl font-bold">{{ t('layers.title') }}</h2>
+    <p v-if="!layers.length" class="text-sm opacity-70">{{ t('layers.none') }}</p>
+    <ul class="flex flex-col gap-2">
+      <li v-for="l in layers" :key="l.tool + l.config_hash" class="bg-base-200 rounded-box p-3 flex flex-wrap gap-2 items-center">
+        <span class="font-medium">{{ l.tool }}</span>
+        <span class="badge badge-ghost">{{ l.model }}</span>
+        <span class="text-xs opacity-70">v{{ l.tool_version }}</span>
+        <span class="text-sm">{{ t('layers.coverage', { docs: l.documents, tokens: l.tokens }) }}</span>
+        <span class="ml-auto join">
+          <button v-for="fm in ['conllu', 'vrt', 'csv']" :key="fm" class="btn btn-xs join-item" :title="t('layers.export')" @click="exportLayer(l.tool, fm)">{{ fm }}</button>
+        </span>
+        <button class="btn btn-xs" :class="{ 'btn-primary': session.layer === l.tool }" @click="session.setLayer(l.tool)">{{ t('layers.use') }}</button>
+        <details class="w-full text-xs"><summary>{{ t('layers.config') }}</summary><pre class="whitespace-pre-wrap">{{ JSON.stringify(l.config, null, 1) }}</pre></details>
+      </li>
+    </ul>
+  </section>
+</template>

@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/* Alto contraste: fundo preto, texto branco, foco amarelo bem visível */
+@plugin "daisyui/theme" {
+  name: "contrast";
+  color-scheme: dark;
+  --color-base-100: #000000;
+  --color-base-200: #0a0a0a;
+  --color-base-300: #1a1a1a;
+  --color-base-content: #ffffff;
+  --color-primary: #ffd400;
+  --color-primary-content: #000000;
+  --color-secondary: #00e5ff;
+  --color-secondary-content: #000000;
+  --color-accent: #ffffff;
+  --color-accent-content: #000000;
+  --color-neutral: #ffffff;
+  --color-neutral-content: #000000;
+  --color-error: #ff6b6b;
+  --color-error-content: #000000;
+  --color-warning: #ffd400;
+  --color-warning-content: #000000;
+  --border: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Contraste (WCAG AA 4,5:1): abas inativas do DaisyUI ficam claras demais */
+.tab:not(.tab-active) {
+  color: color-mix(in oklab, var(--color-base-content) 82%, var(--color-base-100));
+}
+
+/* Tema escuro: texto na cor primária precisa ser mais claro para ter 4,5:1 */
+:root[data-theme="dark"] .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
+}
+
+/* Impressão (leitor de texto): só o conteúdo, sem navegação; cores das marcas preservadas */
+@media print {
+  nav, header, .print\:hidden, aside { display: none !important; }
+  main { padding: 0 !important; overflow: visible !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

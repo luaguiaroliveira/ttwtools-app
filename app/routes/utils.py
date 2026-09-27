@@ -75,8 +75,8 @@ def pick_file(default_location: str = ""):
             )
             script = (
                 'POSIX path of (choose file '
-                'with prompt "Selecione um arquivo .ttwa ou .ttwt:" '
-                f'of type {{"ttwa", "ttwt", "public.data"}}{loc_clause})'
+                'with prompt "Selecione um arquivo .ttwa, .ttwl ou .ttwt:" '
+                f'of type {{"ttwa", "ttwl", "ttwt", "public.data"}}{loc_clause})'
             )
             result = subprocess.run(
                 ["osascript", "-e", script],
@@ -88,7 +88,7 @@ def pick_file(default_location: str = ""):
             script = (
                 "import tkinter as tk; from tkinter import filedialog; "
                 "root = tk.Tk(); root.withdraw(); root.wm_attributes('-topmost', True); "
-                f"p = filedialog.askopenfilename(filetypes=[('TTWA/TTWT','*.ttwa *.ttwt'),('Todos','*')]{init_dir}); print(p)"
+                f"p = filedialog.askopenfilename(filetypes=[('TTWA/TTWL/TTWT','*.ttwa *.ttwl *.ttwt'),('Todos','*')]{init_dir}); print(p)"
             )
             result = subprocess.run(
                 [sys.executable, "-c", script],

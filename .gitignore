@@ -1,7 +1,5 @@
 # Node.js
 node_modules/
-frontend-src/node_modules/
-frontend-src/.vite/
 npm-debug.log
 yarn-error.log
 .npm
@@ -22,6 +20,10 @@ build/**
 !build/*.bat
 !build/*.spec
 !build/*.icns
+!build/*.ico
+!build/*.png
+!build/*.py
+!build/*.txt
 !build/hooks/
 !build/hooks/**
 build/hooks/__pycache__/
@@ -62,3 +64,20 @@ dist-release/
 # Local installers (nao versionar)
 Miniconda3*.sh
 /*.ttwa
+
+corporainternos/image.png
+
+# Gerado por build/build.py
+app/_build_info.py
+
+# Interface Vue compilada (passo 3.1)
+/frontend/
+frontend-vue/dist/
+frontend-vue/node_modules/
+
+# preparo de corpora (tools/corpora)
+tools/corpora/.cache/
+dist-corpora/
+
+# worktrees temporários de agentes
+.claude/worktrees/

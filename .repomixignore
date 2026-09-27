@@ -1,0 +1,88 @@
+# ==========================================
+# Controle de Versão e SO
+# ==========================================
+.git/
+.github/          # Opcional: ignore se não for analisar workflows de CI/CD
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# Backend: Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+# Arquivos de lock do Python (muito extensos e com pouco valor para análise lógica)
+poetry.lock
+Pipfile.lock
+
+# ==========================================
+# Frontend: JavaScript/Node.js
+# ==========================================
+node_modules/
+dist/
+build/
+out/
+.next/            # Se usar Next.js
+.nuxt/            # Se usar Nuxt
+.vuepress/dist
+.cache/
+# Arquivos de lock do JS (Gigantes e devoradores de tokens)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ==========================================
+# Dados, Corpora e Bancos de Dados
+# ==========================================
+data/
+corpora/
+datasets/
+*.sqlite3
+*.db
+*.csv
+*.tsv
+*.parquet
+*.jsonl
+# *.json        # Cuidado: ignorar todos os .json pode excluir seu package.json. Prefira ignorar a pasta específica de dados.
+*.txt         # Cuidado: pode ignorar seu requirements.txt ou CMakeLists.txt. Ignore a pasta de dados.
+*.ttwt
+*.ttwa
+*.ttw
+test_corpora/
+
+# ==========================================
+# Binários, Arquivos Compactados e Mídia
+# ==========================================
+*.pdf
+*.zip
+*.tar.gz
+*.rar
+*.jpg
+*.jpeg
+*.png
+*.svg
+*.gif
+*.mp3
+*.mp4
+*.wav
+
+# ==========================================
+# Logs, IDEs e Segredos
+# ==========================================
+*.log
+.vscode/
+.idea/
+.env            # NUNCA envie chaves de API ou senhas
+*.pem
+*.key

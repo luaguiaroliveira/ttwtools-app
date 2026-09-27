@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ttwtools-app"
-version = "0.1.0"
+version = "0.4.0a2.dev0"
 description = "Web/desktop application for ttwtools linguistic analysis."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
   "ttwtools",
   "fastapi>=0.111",

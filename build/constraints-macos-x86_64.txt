@@ -1,0 +1,5 @@
+# Versões fixas do macOS Intel (x86_64), aplicadas pelo build/build.py.
+# torch 2.2.2 é o último com rodas para Intel Mac; foi compilado para NumPy 1.x:
+# com numpy 2, Stanza e MFTE falham em silêncio (Relato 0.1, D10).
+torch==2.2.2
+numpy==1.26.4

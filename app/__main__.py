@@ -51,7 +51,27 @@ def _prewarm_torch() -> None:
         print("[prewarm] WARNING: torch._C._distributed_c10d not in sys.modules after prewarm", flush=True)
 
 
+def _ensure_std_streams() -> None:
+    """No executável de janela do Windows (PyInstaller, console=False) stdout e
+    stderr são None; o uvicorn e o logging quebram ao usá-los, e o PyInstaller
+    mostra a exceção numa caixa de diálogo. Aponta-os para os.devnull."""
+    import os
+    for name in ("stdout", "stderr"):
+        if getattr(sys, name) is None:
+            setattr(sys, name, open(os.devnull, "w", encoding="utf-8"))
+
+
 def main() -> None:
+    _ensure_std_streams()
+    if "--version" in sys.argv[1:]:
+        # Responde antes de carregar torch e o resto do app.
+        from app._version import version_info
+        info = version_info()
+        print(f"TTWtools {info['app']} (ttwtools {info['ttwtools']}, commit {info['commit']})")
+        return
+    if "--selftest" in sys.argv[1:]:
+        sys.exit(_selftest())
+
     _prewarm_torch()
     # Register macOS 'odoc' handler as early as possible so queued startup
     # events are delivered naturally when webview.start() runs the Cocoa loop.
@@ -64,13 +84,16 @@ def main() -> None:
         default="desktop",
         help="'desktop' abre janela nativa (pywebview); 'web' inicia apenas o servidor.",
     )
+    parser.add_argument("--version", action="store_true", help="Mostra a versão e sai.")
+    parser.add_argument("--selftest", action="store_true",
+                        help="Sobe o servidor numa porta livre, confere /api/version e sai (0 = OK).")
     parser.add_argument("--host", default="127.0.0.1", help="Host do servidor HTTP.")
     parser.add_argument("--port", type=int, default=8765, help="Porta do servidor HTTP.")
     parser.add_argument(
         "--open",
         metavar="FILE",
         default=None,
-        help="Abre um arquivo .ttwa ou .ttwt ao iniciar.",
+        help="Abre um arquivo .ttwa, .ttwl ou .ttwt ao iniciar.",
     )
     args = parser.parse_args()
 
@@ -78,7 +101,7 @@ def main() -> None:
     open_file = args.open
     if not open_file:
         for arg in sys.argv[1:]:
-            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwt'):
+            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwl', '.ttwt'):
                 open_file = arg
                 break
 
@@ -170,6 +193,107 @@ def _register_macos_open_handler() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Autoteste do pacote (usado pelo build e pelo CI)
+# ---------------------------------------------------------------------------
+
+def _selftest() -> int:
+    """Sobe o servidor numa porta livre, confere GET /api/version e testa os
+    componentes. Falha (1) só no essencial: servidor, versão e spaCy. torch e
+    Stanza ausentes ou quebrados viram AVISO (Stanza/MFTE ficam indisponíveis)."""
+    import os
+
+    # Sem console (executável de janela no Windows) o stdout é None; o build lê o arquivo.
+    log_path = os.environ.get("TTW_SELFTEST_LOG")
+    log_file = open(log_path, "w", encoding="utf-8") if log_path else None
+
+    def emit(line: str) -> None:
+        print(line, flush=True)
+        if log_file:
+            log_file.write(line + "\n")
+            log_file.flush()
+
+    try:
+        return _selftest_checks(emit)
+    except BaseException as exc:  # nunca deixar a exceção virar diálogo no Windows
+        import traceback
+        emit("[selftest] erro inesperado: " + "".join(traceback.format_exception(exc)))
+        emit("FALHOU")
+        return 1
+    finally:
+        if log_file:
+            log_file.close()
+
+
+def _selftest_checks(emit) -> int:
+    import json
+    import socket
+    import time
+    import urllib.request
+
+    import uvicorn
+
+    from app._version import __version__
+    from app.server import build_app
+
+    ok = True
+
+    def report(name: str, passed: bool, detail: str = "", essential: bool = True) -> None:
+        nonlocal ok
+        label = "ok" if passed else ("FALHOU" if essential else "AVISO")
+        emit(f"[selftest] {name}: {label}{' — ' + detail if detail else ''}")
+        if not passed and essential:
+            ok = False
+
+    try:
+        import torch
+        import numpy as np
+        _prewarm_torch()
+        torch.from_numpy(np.arange(3.0))  # falha com numpy 2 no torch 2.2 (Intel)
+        report("torch", True, f"{torch.__version__}, numpy {np.__version__}", essential=False)
+    except Exception as exc:
+        report("torch", False, f"{type(exc).__name__}: {exc}", essential=False)
+
+    try:
+        import stanza
+        report("stanza", True, stanza.__version__, essential=False)
+    except Exception as exc:
+        report("stanza", False, f"{type(exc).__name__}: {exc}", essential=False)
+
+    try:
+        import spacy
+        nlp = spacy.load("en_core_web_sm")
+        report("spacy", True, f"{spacy.__version__}, {len(nlp('A small test.'))} tokens")
+    except Exception as exc:
+        report("spacy", False, f"{type(exc).__name__}: {exc}")
+
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    server = uvicorn.Server(uvicorn.Config(build_app(), host="127.0.0.1", port=port, log_level="warning"))
+    thread = threading.Thread(target=server.run, daemon=True)
+    thread.start()
+    try:
+        deadline = time.time() + 30
+        while not server.started and time.time() < deadline:
+            time.sleep(0.1)
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/version", timeout=10) as resp:
+            data = json.load(resp)
+        report("/api/version", data.get("app") == __version__, json.dumps(data))
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/health", timeout=10) as resp:
+            report("/api/health", json.load(resp).get("status") == "ok")
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/", timeout=10) as resp:
+            report("frontend", resp.status == 200 and b"<html" in resp.read(4096).lower())
+    except Exception as exc:
+        report("servidor", False, f"{type(exc).__name__}: {exc}")
+    finally:
+        server.should_exit = True
+        thread.join(timeout=10)
+
+    emit("OK" if ok else "FALHOU")
+    return 0 if ok else 1
+
+
+# ---------------------------------------------------------------------------
 # Modos de execução
 # ---------------------------------------------------------------------------
 
@@ -195,6 +319,7 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
     _wait_for_server(host, port)
 
     url = f"http://{host}:{port}"
+    webview.settings["ALLOW_DOWNLOADS"] = True     # exportar tabelas, gráficos e corpora pela janela
     webview.create_window(
         title="TTWtools",
         url=url,

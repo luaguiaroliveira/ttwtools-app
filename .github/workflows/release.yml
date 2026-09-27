@@ -1,0 +1,125 @@
+name: Release
+
+# Em tag v*.*.* (ex.: v0.4.0, v0.4.0-alpha.1): valida a tag, gera os pacotes em
+# cada sistema (com --selftest do binário) e cria a release em RASCUNHO.
+# Push em branch release-test/** ou workflow_dispatch: só gera os pacotes como
+# artefatos, sem publicar (teste do pipeline; o dispatch exige o arquivo na main).
+on:
+  push:
+    tags:
+      - "v[0-9]*.[0-9]*.[0-9]*"
+    branches:
+      - "release-test/**"
+  workflow_dispatch:
+
+env:
+  PYTHONUTF8: "1"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Tag = versão do pyproject e seção no CHANGELOG
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: python build/release_notes.py "${GITHUB_REF_NAME}" --out release_notes.md
+      - name: Notas (sem tag)
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: echo "Execução manual de teste (sem tag)." > release_notes.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
+
+  build:
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: macos-14,        python: "3.14", name: macos-arm64 }
+          # Último runner Intel do GitHub; usa build/constraints-macos-x86_64.txt (torch 2.2.2, numpy<2).
+          # Se o rótulo sumir, o pacote Intel é feito localmente: python build/build.py --arch x86_64
+          - { runner: macos-15-intel,  python: "3.11", name: macos-x86_64 }
+          - { runner: windows-latest,  python: "3.14", name: windows-x86_64 }
+          - { runner: ubuntu-latest,   python: "3.14", name: linux-x86_64 }
+    runs-on: ${{ matrix.runner }}
+    name: build ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GH_PAT }}   # submódulo privado libs/ttwtools
+          # Sem LFS: só ttwa_files/ (exemplos) está no LFS e o build não usa.
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: |
+            environment.yml
+            build/constraints-*.txt
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend-vue/package-lock.json
+
+      - name: Cache do PyInstaller
+        uses: actions/cache@v4
+        with:
+          path: build/_work
+          key: pyinstaller-${{ matrix.name }}-${{ hashFiles('environment.yml', 'build/constraints-*.txt', 'build/ttwtools-app.spec') }}
+
+      # build.py: dependências, frontend, PyInstaller, --selftest do binário,
+      # check_macos_min (macOS) e pacote em dist/release/.
+      - name: Build
+        run: python build/build.py --install-deps
+
+      # ── Assinatura (D4, pendente) ─────────────────────────────────────
+      # macOS: precisa de conta Apple Developer, certificado "Developer ID
+      # Application" (secrets MACOS_CERT_P12, MACOS_CERT_PASSWORD) e senha de app
+      # para notarização (APPLE_ID, APPLE_TEAM_ID, APPLE_APP_PASSWORD):
+      #   codesign --deep --force --options runtime --sign "Developer ID Application: ..." dist/<alvo>/TTWtools.app
+      #   xcrun notarytool submit dist/release/*.dmg --apple-id ... --team-id ... --password ... --wait
+      #   xcrun stapler staple dist/release/*.dmg
+      # Windows: certificado de assinatura de código (WINDOWS_CERT_PFX, WINDOWS_CERT_PASSWORD):
+      #   signtool sign /f cert.pfx /p ... /tr http://timestamp.digicert.com /td sha256 /fd sha256 dist\windows-x86_64\TTWtools\TTWtools.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pkg-${{ matrix.name }}
+          path: dist/release/*
+          if-no-files-found: error
+          compression-level: 0
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: pkg-*
+          path: pkgs
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-notes
+      - name: SHA256SUMS
+        working-directory: pkgs
+        run: sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: TTWtools ${{ github.ref_name }}
+          body_path: release_notes.md
+          draft: true
+          prerelease: ${{ contains(github.ref_name, '-') }}   # -alpha, -beta, -rc
+          files: pkgs/*
