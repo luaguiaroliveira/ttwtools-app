@@ -1,6 +1,6 @@
 # Roteiro de verificação por sistema (passo 6.2)
 
-Executar com o pacote da release `-rc` baixado do GitHub (não com o código-fonte), em cada sistema: macOS Apple Silicon, macOS Intel **com macOS 12**, Windows 10/11 e Linux. Anote o resultado de cada item (ok / problema + print) na tabela do fim.
+Executar com o pacote da release `-rc` baixado do GitHub (não com o código-fonte), em cada sistema: macOS Apple Silicon, macOS Intel **com macOS 12**, Windows 10/11 e Linux. Anote o feedback de cada item no arquivo do sistema em [`verificacao/`](verificacao/) (`macos-arm64.md`, `macos12-intel.md`, `windows.md`, `linux.md`; prints em `verificacao/prints/`) e o resumo na tabela do fim.
 
 Preparação: uma pasta `textos/` com 6 a 10 arquivos `.txt` em inglês nomeados `aluno_nivel_ano.txt` (ex.: `ana_B1_2024.txt`) e outra com 3 a 5 textos em português.
 
