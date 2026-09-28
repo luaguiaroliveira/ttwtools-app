@@ -33,6 +33,11 @@ function submit(q) { query.value = q; offset.value = 0; load() }
 onMounted(() => { if (route.query.q) submit(String(route.query.q)) })
 function page(d) { offset.value = Math.max(0, offset.value + d * limit.value); load() }
 function open(line) { router.push({ path: '/explorar/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
+// Cor da classe gramatical (tokens em style.css); UPOS e tags do Penn começam com a mesma letra
+const posBucket = (p = '') => {
+  const c = p[0]
+  return c === 'N' ? 'noun' : c === 'V' ? 'verb' : (c === 'J' || p.startsWith('ADJ')) ? 'adj' : (c === 'R' || p.startsWith('ADV')) ? 'adv' : 'other'
+}
 </script>
 <template>
   <section id="busca-kwic" class="flex flex-col gap-3">
@@ -61,7 +66,7 @@ function open(line) { router.push({ path: '/explorar/leitor', query: { file: lin
               <td class="text-right whitespace-nowrap overflow-hidden max-w-[20rem]" style="direction: rtl"><bdi>{{ l.left }}</bdi></td>
               <td class="font-bold text-primary whitespace-nowrap">{{ l.match }}</td>
               <td class="whitespace-nowrap overflow-hidden max-w-[20rem]">{{ l.right }}</td>
-              <td class="text-xs opacity-70">{{ l.pos }}</td>
+              <td class="text-xs"><span class="pos-tag" :data-bucket="posBucket(l.pos)">{{ l.pos }}</span></td>
               <td class="text-xs opacity-70 whitespace-nowrap">{{ l.filename }}:{{ l.start_char }}</td>
             </tr>
           </tbody>

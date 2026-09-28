@@ -30,8 +30,8 @@ export function initialLang() {
     const saved = localStorage.getItem(STORAGE)
     if (LANGS.includes(saved)) return saved
   } catch { /* sem armazenamento */ }
-  const nav = (globalThis.navigator?.language || 'pt').slice(0, 2)
-  return LANGS.includes(nav) ? nav : 'pt'
+  // Público-alvo é brasileiro: português por padrão; o inglês fica em Configurações.
+  return 'pt'
 }
 
 export async function setLang(lang) {

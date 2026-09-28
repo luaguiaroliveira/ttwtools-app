@@ -14,6 +14,38 @@ apontar o que melhorar para **estudantes e pesquisadores**, sem abreviações se
 > Prioridades: **P0** = atrapalha o fluxo hoje · **P1** = melhora clara, esforço médio ·
 > **P2** = polimento.
 
+## 0. Status da implementação (2026-09-28)
+
+Implementado neste branch (a lógica do pacote não mudou; só `frontend-vue/`, i18n e este
+relatório):
+
+- **Tokens (§4):** definidos em `style.css` (`@theme`) e usados na casca, em `BarChart`/
+  `ParCoords` (paleta `--chart-*`), nas marcas de classe gramatical (`--pos-*`, aplicadas no
+  KWIC) e nos pontos das camadas (`--layer-*`).
+- **A:** glossário com 28 verbetes + `HelpTip` com `term`/`topic`, `aria-describedby` e
+  abertura no foco/toque; anotados a consulta (operadores), os cabeçalhos de Colocados
+  (LL/MI/T), Frequência (lema/n-grama/per 1.000/palavras funcionais), Palavras-chave
+  (LL/log ratio/%DIFF/range) e KFA (KFA/d de Cohen).
+- **B:** menu "Arquivo" → **Projeto** e "Módulos" → **Recursos**, com os textos que os
+  citavam ajustados.
+- **C:** o seletor de corpus do cabeçalho mostra o número de camadas; o cartão do corpus
+  ganhou selo "etiquetado".
+- **D:** vazios de Explorar/Comparar trazem o próprio seletor de corpus; Explorar ganhou uma
+  faixa "Próximo passo".
+- **E2:** `ParCoords` corrigido (só traço, sem preenchimento), com legenda e rolagem
+  horizontal.
+- **F:** Frequência com "Mostrar N" (25–500), rolagem vertical própria (`overflow-auto` +
+  cabeçalho fixo) e botão de tabela junto do gráfico; Colocados com ordenação por coluna e
+  `aria-sort`.
+- **G:** Palavras-chave e KFA com "Opções avançadas" recolhidas.
+- **H:** português como idioma padrão; erros da API traduzidos nos casos comuns
+  (`utils/errors.js`, sem tocar no pacote).
+
+**Parcial / pendente:** nomes definitivos dos menus (decisão D8 do plano); tradução de
+**todas** as mensagens do servidor (hoje só os casos comuns — o pacote ainda não manda
+códigos de erro estáveis); reordenar o menu/tour com indicador de etapas; agrupar também os
+formulários de Colocados/Dispersão/Laboratório.
+
 ---
 
 ## 1. Corrigido nesta sessão (P0)

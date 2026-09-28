@@ -27,7 +27,7 @@ const fmt = (v) => (Number.isInteger(v) ? v : v.toFixed(2))
     <svg v-else :viewBox="`0 0 400 ${rows.length * 20 + 4}`" role="img" :aria-label="title" class="w-full max-w-xl">
       <g v-for="(r, i) in rows" :key="r.label" :transform="`translate(0 ${i * 20 + 2})`">
         <text x="110" y="13" text-anchor="end" class="fill-current text-[11px]">{{ r.label }}</text>
-        <rect x="116" y="3" :width="Math.max(1, (r.value / top) * 240)" height="13" class="fill-primary" rx="2" />
+        <rect x="116" y="3" :width="Math.max(1, (r.value / top) * 240)" height="13" rx="2" :style="{ fill: 'var(--chart-1)' }" />
         <text :x="120 + (r.value / top) * 240" y="13" class="fill-current text-[10px] opacity-70">{{ fmt(r.value) }}</text>
       </g>
     </svg>

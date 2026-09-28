@@ -16,20 +16,32 @@ const TOOLS = {
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const { corpus, layer } = storeToRefs(useSession())
+const session = useSession()
+const { corpus, layer, corpora } = storeToRefs(session)
 const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwic'))
 </script>
 
 <template>
   <div class="flex flex-col gap-3 max-w-6xl">
     <h1 class="text-2xl font-bold">{{ t('explore.title') }}</h1>
-    <p v-if="!corpus" class="opacity-70">{{ t('explore.need_corpus') }}</p>
+    <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
+      <span>{{ t('explore.need_corpus') }}</span>
+      <select v-if="corpora.length" class="select select-sm" data-testid="explore-corpus" :value="corpus || ''"
+              :aria-label="t('header.active_corpus')" @change="session.setCorpus($event.target.value || null)">
+        <option value="">{{ t('header.select_corpus') }}</option>
+        <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}</option>
+      </select>
+    </div>
     <template v-else>
       <div role="tablist" :aria-label="t('explore.tools')" class="tabs tabs-box overflow-x-auto flex-nowrap" data-explain="explain.explore.tabs">
         <RouterLink v-for="(_, id) in TOOLS" :key="id" role="tab" :to="`/explorar/${id}`" class="tab whitespace-nowrap"
                     :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`explore.tool.${id}`) }}</RouterLink>
       </div>
       <KeepAlive><component :is="TOOLS[tool]" :key="tool + corpus + (layer || '')" :corpus="corpus" :layer="layer" /></KeepAlive>
+      <p class="text-sm opacity-70 flex flex-wrap items-center gap-2 border-t border-base-300 pt-3">
+        {{ t('explore.next_step') }}
+        <RouterLink to="/comparar" class="btn btn-xs">{{ t('nav.compare') }}</RouterLink>
+      </p>
     </template>
   </div>
 </template>

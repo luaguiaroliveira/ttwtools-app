@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
@@ -18,6 +18,22 @@ async function run(node) {
   catch (err) { error.value = err.message }
 }
 const fx = (v, d = 2) => (v === null || v === undefined ? '—' : v.toFixed(d))
+const sortBy = ref('ll')
+const dir = ref(-1)
+const sortedRows = computed(() => {
+  const rows = [...(data.value?.rows ?? [])]
+  rows.sort((a, b) => {
+    const x = a[sortBy.value], y = b[sortBy.value]
+    const c = typeof x === 'string' ? String(x).localeCompare(String(y)) : (x ?? 0) - (y ?? 0)
+    return dir.value * c
+  })
+  return rows
+})
+const ariaSort = (k) => (sortBy.value === k ? (dir.value < 0 ? 'descending' : 'ascending') : 'none')
+function setSort(k) {
+  if (sortBy.value === k) dir.value *= -1
+  else { sortBy.value = k; dir.value = k === 'collocate' ? 1 : -1 }
+}
 </script>
 <template>
   <section class="flex flex-col gap-3">
@@ -34,12 +50,17 @@ const fx = (v, d = 2) => (v === null || v === undefined ? '—' : v.toFixed(d))
     </QueryBox>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <div v-if="data" class="overflow-x-auto">
-      <p class="text-sm mb-1 flex items-center gap-1">{{ data.node }} · {{ data.node_freq }}× <HelpTip topic="keyness" />
+      <p class="text-sm mb-1 flex items-center gap-1">{{ data.node }} · {{ data.node_freq }}× <HelpTip term="collocate" />
         <span class="ml-auto flex gap-1"><CopyCode analysis="collocates" :params="{ corpus, node: data.node, layer, ...f }" />
           <ExportMenu :name="`colocados_${data.node}`" :rows="data.rows" /></span></p>
-      <table class="table table-xs"><thead><tr><th>{{ t('explore.collocate') }}</th><th class="text-right">{{ t('explore.freq') }}</th>
-        <th class="text-right">LL</th><th class="text-right">MI</th><th class="text-right">T</th><th>{{ t('explore.position') }}</th></tr></thead>
-        <tbody><tr v-for="r in data.rows" :key="r.collocate"><td>{{ r.collocate }}</td><td class="text-right tabular-nums">{{ r.freq }}</td>
+      <table class="table table-xs"><thead><tr>
+        <th :aria-sort="ariaSort('collocate')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('collocate')">{{ t('explore.collocate') }}<span aria-hidden="true">{{ sortBy === 'collocate' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button></th>
+        <th class="text-right" :aria-sort="ariaSort('freq')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('freq')">{{ t('explore.freq') }}<span aria-hidden="true">{{ sortBy === 'freq' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button></th>
+        <th class="text-right whitespace-nowrap" :aria-sort="ariaSort('ll')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('ll')">LL <span aria-hidden="true">{{ sortBy === 'll' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button> <HelpTip term="ll" /></th>
+        <th class="text-right whitespace-nowrap" :aria-sort="ariaSort('mi')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('mi')">MI <span aria-hidden="true">{{ sortBy === 'mi' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button> <HelpTip term="mi" /></th>
+        <th class="text-right whitespace-nowrap" :aria-sort="ariaSort('t_score')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('t_score')">T <span aria-hidden="true">{{ sortBy === 't_score' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button> <HelpTip term="t_score" /></th>
+        <th>{{ t('explore.position') }}</th></tr></thead>
+        <tbody><tr v-for="r in sortedRows" :key="r.collocate"><td>{{ r.collocate }}</td><td class="text-right tabular-nums">{{ r.freq }}</td>
           <td class="text-right tabular-nums">{{ fx(r.ll) }}</td><td class="text-right tabular-nums">{{ fx(r.mi) }}</td>
           <td class="text-right tabular-nums">{{ fx(r.t_score) }}</td><td>{{ r.position }}</td></tr></tbody></table>
     </div>

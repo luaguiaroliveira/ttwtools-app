@@ -20,6 +20,7 @@ defineExpose({ reload: () => session.loadLayers() })
     <p v-if="!layers.length" class="text-sm opacity-70">{{ t('layers.none') }}</p>
     <ul class="flex flex-col gap-2">
       <li v-for="l in layers" :key="l.tool + l.config_hash" class="bg-base-200 rounded-box p-3 flex flex-wrap gap-2 items-center">
+        <span class="layer-dot" :data-tool="l.tool" aria-hidden="true"></span>
         <span class="font-medium">{{ l.tool }}</span>
         <span class="badge badge-ghost">{{ l.model }}</span>
         <span class="text-xs opacity-70">v{{ l.tool_version }}</span>

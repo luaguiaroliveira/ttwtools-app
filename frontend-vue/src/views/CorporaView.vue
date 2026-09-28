@@ -48,6 +48,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
                   :aria-pressed="c.name === corpus" @click="session.setCorpus(c.name)">
             <span class="font-medium">{{ c.name }}</span>
             <span class="text-sm opacity-70">{{ t('corpora.documents', { n: c.documents }) }} · {{ c.layers.length }} {{ t('layers.title').toLowerCase() }}</span>
+            <span v-if="c.layers.length" class="badge badge-success badge-sm mt-1">{{ t('corpora.tagged') }}</span>
             <span v-if="c.name === corpus" class="badge badge-primary badge-sm mt-1">{{ t('corpora.active') }}</span>
           </button>
         </li>

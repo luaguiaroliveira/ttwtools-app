@@ -2,12 +2,15 @@
 // Erros viram ApiError com status e detail; as telas mostram err.message traduzido.
 
 export class ApiError extends Error {
+  /** Tradução opcional, instalada em main.js (`utils/errors.js`), para `err.message`. */
+  static translateFn = null
   /** @param {number} status @param {any} detail */
   constructor(status, detail) {
     super(typeof detail === 'string' ? detail : JSON.stringify(detail))
     this.name = 'ApiError'
     this.status = status
     this.detail = detail
+    if (ApiError.translateFn) this.message = ApiError.translateFn(status, detail)
   }
 }
 

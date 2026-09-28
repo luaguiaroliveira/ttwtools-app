@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import ChartGallery from '../../components/ChartGallery.vue'
+import Collapsible from '../../components/Collapsible.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
@@ -58,14 +59,20 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
         <label class="form-control"><span class="label-text">{{ t('kfa.group1') }}</span><select v-model="f.group1" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
         <label class="form-control"><span class="label-text">{{ t('kfa.group2') }}</span><select v-model="f.group2" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
       </template>
-      <label class="form-control"><span class="label-text">{{ t('kfa.layer') }}</span>
-        <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-      <label class="form-control"><span class="label-text">{{ t('kfa.metric') }}</span>
-        <select v-model="f.metric" class="select select-sm"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
-      <label class="form-control w-24"><span class="label-text">{{ t('kfa.min_effect') }}</span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
       <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
-      <HelpTip topic="cohens_d" />
+      <HelpTip term="kfa" />
     </form>
+    <div class="w-full">
+      <Collapsible :title="t('compare.advanced')">
+        <div class="flex flex-wrap items-end gap-2 pt-2">
+          <label class="form-control"><span class="label-text">{{ t('kfa.layer') }}</span>
+            <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
+          <label class="form-control"><span class="label-text flex items-center gap-1">{{ t('kfa.metric') }}<HelpTip term="kfa" /></span>
+            <select v-model="f.metric" class="select select-sm"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
+          <label class="form-control w-24"><span class="label-text flex items-center gap-1">{{ t('kfa.min_effect') }}<HelpTip term="cohens_d" /></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
+        </div>
+      </Collapsible>
+    </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }}</p>

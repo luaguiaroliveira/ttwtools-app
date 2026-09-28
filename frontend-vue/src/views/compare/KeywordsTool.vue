@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import HelpTip from '../../components/HelpTip.vue'
+import Collapsible from '../../components/Collapsible.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 const lastParams = ref(null)
@@ -59,17 +60,23 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
       </template>
       <label v-if="f.refKind === 'list'" class="form-control flex-1 min-w-48"><span class="label-text">{{ t('compare.list_path') }}</span>
         <input v-model="f.listPath" class="input input-sm" /></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.unit') }}</span>
-        <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'pos', 'word_pos', 'ngram']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.measure') }}</span>
-        <select v-model="f.measure" class="select select-sm"><option value="ll">log-likelihood</option><option value="log_ratio">log ratio</option><option value="pct_diff">%DIFF</option><option value="log_odds">log-odds</option></select></label>
-      <label class="form-control w-20"><span class="label-text">{{ t('explore.min_freq') }}</span><input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
-      <label class="form-control w-20"><span class="label-text">{{ t('compare.min_range') }}</span><input v-model.number="f.min_range" type="number" min="1" class="input input-sm" /></label>
-      <label class="form-control"><span class="label-text">{{ t('compare.correction') }}</span>
-        <select v-model="f.correction" class="select select-sm"><option>bonferroni</option><option>fdr</option><option>none</option></select></label>
       <button class="btn btn-sm btn-primary" data-testid="kw-run">{{ t('compare.run') }}</button>
-      <HelpTip topic="keyness" />
+      <HelpTip term="keyness" />
     </form>
+    <div class="w-full">
+      <Collapsible :title="t('compare.advanced')">
+        <div class="flex flex-wrap items-end gap-2 pt-2">
+          <label class="form-control"><span class="label-text flex items-center gap-1">{{ t('explore.unit') }}<HelpTip term="lemma" /></span>
+            <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'pos', 'word_pos', 'ngram']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
+          <label class="form-control"><span class="label-text flex items-center gap-1">{{ t('explore.measure') }}<HelpTip term="ll" /></span>
+            <select v-model="f.measure" class="select select-sm"><option value="ll">log-likelihood</option><option value="log_ratio">log ratio</option><option value="pct_diff">%DIFF</option><option value="log_odds">log-odds</option></select></label>
+          <label class="form-control w-20"><span class="label-text">{{ t('explore.min_freq') }}</span><input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
+          <label class="form-control w-20"><span class="label-text">{{ t('compare.min_range') }}</span><input v-model.number="f.min_range" type="number" min="1" class="input input-sm" /></label>
+          <label class="form-control"><span class="label-text">{{ t('compare.correction') }}</span>
+            <select v-model="f.correction" class="select select-sm"><option>bonferroni</option><option>fdr</option><option>none</option></select></label>
+        </div>
+      </Collapsible>
+    </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p class="text-sm font-medium">{{ t('compare.words', { target: data.target, tw: data.target_words, reference: data.reference, rw: data.reference_words }) }}</p>
@@ -79,7 +86,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
       <div class="overflow-x-auto max-h-[60vh]">
         <table class="table table-xs table-pin-rows" data-testid="kw-table">
           <thead><tr><th>{{ t('explore.item') }}</th><th>{{ t('compare.direction') }}</th><th class="text-right">{{ t('compare.target') }}</th><th class="text-right">{{ t('compare.reference') }}</th>
-            <th class="text-right">LL</th><th class="text-right">log ratio</th><th class="text-right">%DIFF</th><th class="text-right">p corr.</th><th class="text-right">range</th></tr></thead>
+            <th class="text-right whitespace-nowrap">LL <HelpTip term="ll" /></th><th class="text-right whitespace-nowrap">log ratio <HelpTip term="log_ratio" /></th><th class="text-right whitespace-nowrap">%DIFF <HelpTip term="percent_diff" /></th><th class="text-right">p corr.</th><th class="text-right whitespace-nowrap">range <HelpTip term="range" /></th></tr></thead>
           <tbody><tr v-for="r in data.rows" :key="r.item + r.direction" class="hover cursor-pointer" tabindex="0" @click="kwic(r.item)" @keydown.enter="kwic(r.item)">
             <td class="font-medium">{{ r.item }}</td><td :class="r.direction === '+' ? 'text-success' : 'text-error'">{{ r.direction }}</td>
             <td class="text-right tabular-nums">{{ r.freq_target }}</td><td class="text-right tabular-nums">{{ r.freq_reference }}</td>

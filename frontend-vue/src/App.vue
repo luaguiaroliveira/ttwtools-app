@@ -51,7 +51,7 @@ const changeLang = (value) => setLang(value)
                   :disabled="!corpora.length" :aria-label="t('header.active_corpus')" :value="corpus || ''"
                   @change="session.setCorpus($event.target.value || null)">
             <option value="">{{ t('header.select_corpus') }}</option>
-            <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}</option>
+            <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}{{ c.layers?.length ? ` · ${t('header.corpus_layers', { n: c.layers.length })}` : '' }}</option>
           </select>
           <span v-else class="badge badge-outline ml-1 max-w-48 truncate">{{ t('header.no_corpus') }}</span>
           <span class="hidden sm:inline-flex items-center gap-1 ml-1" :title="t('header.layer_hint')">

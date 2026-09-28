@@ -3,6 +3,30 @@
   themes: light --default, dark --prefersdark;
 }
 
+/* Tokens do TTWtools (ver novodesenho/relatorio_usabilidade.md §4).
+   Paleta de dados, cores de POS/etiquetador e medidas ficam num só lugar para
+   telas, tabelas e gráficos usarem os mesmos valores. */
+@theme {
+  --ttw-page-max: 72rem;
+  --ttw-reading: 68ch;
+  --ttw-gap: 1rem;
+  --ttw-pad: 1.25rem;
+  --ttw-shadow-card: 0 1px 2px rgb(0 0 0 / .06), 0 1px 3px rgb(0 0 0 / .10);
+  --ttw-shadow-pop: 0 10px 30px rgb(0 0 0 / .15);
+
+  /* paleta categórica (grupos, lados, traços) */
+  --chart-1: #4f46e5; --chart-2: #0ea5e9; --chart-3: #10b981; --chart-4: #f59e0b;
+  --chart-5: #ef4444; --chart-6: #8b5cf6; --chart-7: #14b8a6; --chart-8: #64748b;
+
+  /* classes gramaticais (POS/UPOS) */
+  --pos-noun: #2563eb; --pos-verb: #16a34a; --pos-adj: #d97706;
+  --pos-adv: #7c3aed; --pos-other: #6b7280;
+
+  /* etiquetadores e camadas */
+  --layer-stats: #64748b; --layer-spacy: #0ea5e9; --layer-stanza: #8b5cf6;
+  --layer-mfte: #f59e0b; --layer-biberplus: #10b981;
+}
+
 /* Alto contraste: fundo preto, texto branco, foco amarelo bem visível */
 @plugin "daisyui/theme" {
   name: "contrast";
@@ -51,4 +75,35 @@
   nav, header, .print\:hidden, aside { display: none !important; }
   main { padding: 0 !important; overflow: visible !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Componentes base, tokenizados. Em @layer para as utilidades do Tailwind ainda
+   poderem sobrescrever. */
+@layer components {
+  .page { width: 100%; max-width: var(--ttw-page-max); display: flex; flex-direction: column; gap: var(--ttw-gap); }
+  .page-title { font-size: 1.5rem; line-height: 1.2; font-weight: 700; }
+  .section-title { font-size: 1.125rem; line-height: 1.3; font-weight: 700; }
+  .panel { background: var(--color-base-200); border: 1px solid color-mix(in oklab, var(--color-base-content) 12%, transparent);
+    border-radius: var(--radius-box); padding: 0.75rem; box-shadow: var(--ttw-shadow-card); }
+  .field-help { font-size: 0.75rem; opacity: 0.75; max-width: var(--ttw-reading); }
+  .prose-read { max-width: var(--ttw-reading); }
+
+  /* Marcas de classe gramatical: mesma cor em tabela, gráfico e leitor */
+  .pos-tag { display: inline-block; padding: 0 0.35rem; border-radius: 0.35rem; font-size: 0.7rem; line-height: 1.5;
+    font-weight: 600; color: #fff; background: var(--pos-other); }
+  .pos-tag[data-bucket="noun"] { background: var(--pos-noun); }
+  .pos-tag[data-bucket="verb"] { background: var(--pos-verb); }
+  .pos-tag[data-bucket="adj"] { background: var(--pos-adj); }
+  .pos-tag[data-bucket="adv"] { background: var(--pos-adv); }
+
+  /* Cor por etiquetador/camada, para a lista de camadas */
+  .layer-dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--layer-stats); }
+  .layer-dot[data-tool="spacy"] { background: var(--layer-spacy); }
+  .layer-dot[data-tool="stanza"] { background: var(--layer-stanza); }
+  .layer-dot[data-tool="mfte"] { background: var(--layer-mfte); }
+  .layer-dot[data-tool="biberplus"] { background: var(--layer-biberplus); }
+
+  /* Tabelas com rolagem própria (vertical e horizontal) */
+  .table-scroll { max-height: 24rem; overflow: auto; }
+  .table-scroll thead { position: sticky; top: 0; background: var(--color-base-100); z-index: 1; }
 }
