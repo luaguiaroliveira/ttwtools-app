@@ -12,7 +12,7 @@ import ExplainOverlay from './components/ExplainOverlay.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
-const { corpus, layer, projectPath, unsaved } = storeToRefs(session)
+const { corpus, layer, layers, projectPath, unsaved } = storeToRefs(session)
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
@@ -50,8 +50,14 @@ const changeLang = (value) => setLang(value)
           <span class="badge badge-outline ml-1 max-w-48 truncate" data-testid="active-corpus">
             {{ corpus || t('header.no_corpus') }}
           </span>
-          <span class="badge badge-ghost ml-1 hidden sm:inline-flex">
-            {{ t('header.layer') }}: {{ layer || t('header.no_layer') }}
+          <span class="hidden sm:inline-flex items-center gap-1 ml-1" :title="t('header.layer_hint')">
+            <span class="text-sm opacity-70">{{ t('header.layer') }}:</span>
+            <select class="select select-xs" data-testid="header-layer" :disabled="!corpus"
+                    :aria-label="t('header.layer')" :value="layer || ''"
+                    @change="session.setLayer($event.target.value || null)">
+              <option value="">{{ t('header.no_layer') }}</option>
+              <option v-for="l in layers" :key="l.tool" :value="l.tool">{{ l.tool }}</option>
+            </select>
           </span>
         </div>
         <RouterLink v-if="unsaved" to="/arquivo" class="badge badge-warning gap-1" data-testid="header-unsaved"

@@ -11,7 +11,8 @@ export const useSession = defineStore('session', {
     project: null,          // /api/project/info
     corpora: [],            // /api/corpora
     corpus: null,           // corpus ativo
-    layer: null,            // ferramenta da camada ativa (null = formas)
+    layer: null,            // ferramenta da camada ativa (null = automática, ver `loadLayers`)
+    layers: [],             // camadas do corpus ativo (/api/corpora/{c}/layers)
     opening: null,          // progresso ao abrir um arquivo compactado ou antigo
     unsaved: false,         // arquivo compactado com alterações ainda não gravadas
   }),
@@ -29,6 +30,7 @@ export const useSession = defineStore('session', {
         // caminho estável (`display_path`) antes de tentar restaurar o corpus salvo.
         await this.refresh()
         this.restoreSaved()
+        await this.loadLayers()
       }
     },
     async refresh() {
@@ -58,7 +60,14 @@ export const useSession = defineStore('session', {
       this.layer = null
       await this.refresh()
       if (!this.restoreSaved() && this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
+      await this.loadLayers()
       this.save()
+    },
+    /** Camadas do corpus ativo (para o seletor no cabeçalho e na tela Etiquetagem);
+     * esquece a camada escolhida se ela não existir mais (corpus trocado, camada removida). */
+    async loadLayers() {
+      this.layers = this.corpus ? (await api.corpora.layers(this.corpus)).layers : []
+      if (this.layer && !this.layers.some((l) => l.tool === this.layer)) this.layer = null
     },
     /** Corpus/camada guardados para este mesmo projeto (por `display_path`), se ainda existirem. */
     restoreSaved() {
@@ -94,6 +103,7 @@ export const useSession = defineStore('session', {
       this.corpus = corpus
       this.layer = null
       this.save()
+      this.loadLayers()
     },
     setLayer(layer) {
       this.layer = layer

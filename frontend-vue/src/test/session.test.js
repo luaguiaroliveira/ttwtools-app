@@ -6,7 +6,7 @@ vi.mock('../api/index.js', () => ({
     version: vi.fn(),
     health: vi.fn(),
     project: { info: vi.fn(), open: vi.fn(), unsaved: vi.fn() },
-    corpora: { list: vi.fn() },
+    corpora: { list: vi.fn(), layers: vi.fn() },
     jobs: { get: vi.fn() },
   },
 }))
@@ -29,6 +29,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   api.version.mockResolvedValue({ app: '0.4.0' })
   api.corpora.list.mockResolvedValue({ corpora: CORPORA })
+  api.corpora.layers.mockResolvedValue({ layers: [] })
 })
 
 describe('useSession — corpus ativo em projeto compactado', () => {
@@ -66,5 +67,32 @@ describe('useSession — corpus ativo em projeto compactado', () => {
     const s2 = useSession()
     await s2.load()
     expect(s2.corpus).toBeNull()
+  })
+})
+
+describe('useSession — camadas do corpus ativo', () => {
+  it('carrega as camadas ao trocar de corpus, para o seletor do cabeçalho', async () => {
+    api.health.mockResolvedValue({ project: '/tmp/ttw_work_aaa/meu.ttwa' })
+    api.project.info.mockResolvedValue(infoFor('/tmp/ttw_work_aaa/meu.ttwa'))
+    api.corpora.layers.mockResolvedValue({ layers: [{ tool: 'spacy' }, { tool: 'stanza' }] })
+    const s = useSession()
+    await s.load()
+    s.setCorpus('b')
+    await s.loadLayers()   // aguarda a chamada disparada por setCorpus
+    expect(s.layers.map((l) => l.tool)).toEqual(['spacy', 'stanza'])
+  })
+
+  it('esquece a camada escolhida se ela deixar de existir (corpus trocado ou camada removida)', async () => {
+    api.health.mockResolvedValue({ project: '/tmp/ttw_work_aaa/meu.ttwa' })
+    api.project.info.mockResolvedValue(infoFor('/tmp/ttw_work_aaa/meu.ttwa'))
+    api.corpora.layers.mockResolvedValue({ layers: [{ tool: 'spacy' }] })
+    const s = useSession()
+    await s.load()
+    s.setCorpus('b')
+    await s.loadLayers()
+    s.setLayer('spacy')
+    api.corpora.layers.mockResolvedValue({ layers: [{ tool: 'stanza' }] })   // "spacy" saiu
+    await s.loadLayers()
+    expect(s.layer).toBeNull()
   })
 })

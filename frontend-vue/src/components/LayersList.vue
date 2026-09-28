@@ -1,20 +1,18 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { api } from '../api/index.js'
 import { useSession } from '../stores/session.js'
 import { download } from '../utils/export.js'
 import { post } from '../api/client.js'
 const props = defineProps({ corpus: { type: String, required: true }, title: { type: String, default: null } })
 const { t } = useI18n()
 const session = useSession()
-const layers = ref([])
+const { layers } = storeToRefs(session)   // camada ativa do mesmo corpus (ver `header.layer`)
 async function exportLayer(tool, format) {
   const r = await post(`/api/corpora/${encodeURIComponent(props.corpus)}/export`, { format, layer: tool })
   download(`${props.corpus}_${tool}.${format}`, r.content)
 }
-watch(() => props.corpus, async (c) => { layers.value = (await api.corpora.layers(c)).layers }, { immediate: true })
-defineExpose({ reload: async () => { layers.value = (await api.corpora.layers(props.corpus)).layers } })
+defineExpose({ reload: () => session.loadLayers() })
 </script>
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('layers.title')">
