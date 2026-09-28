@@ -200,9 +200,12 @@ em Python + CLI.
 
 ## 7. Roadmap por fases
 
-- **Fase A (curta):** perfil de **construções** (n-gramas de POS/tag) + **z-score de
-  traços Biber** + diversidade lexical (MTLD/HD-D) e legibilidade. Sem novas dependências
-  pesadas. Alto valor pedagógico e reusa tudo o que já existe.
+- **Fase A (curta) — FEITA em 2026-09-28:** perfil de **construções** (n-gramas de
+  UPOS/XPOS) no pacote (`constructions.py`), com FDR, log ratio, dispersão e **z-score**
+  descritivo vs documentos da referência; CLI `ttwtools patterns`; rota
+  `/api/writing/patterns`; aba **Construções (classes)** na tela Escrita, com explicação
+  para o aluno. Falta ainda desta fase: z-score dos traços **Biber** (registro) e
+  diversidade lexical/legibilidade (MTLD/HD-D com código próprio, sem dependência nova).
 - **Fase B (média):** **colocados por palavra-chave** (comparação de perfis) e
   **distinctive collexemes** entre construções alternativas; rede de colocação.
 - **Fase C (média):** **bundles** e covarying collexemes; dispersão fina e bootstrap por

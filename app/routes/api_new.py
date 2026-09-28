@@ -470,6 +470,37 @@ def writing_analyze(req: WritingRequest):
                      correction=req.correction, top=req.top, lang=req.lang)
 
 
+class PatternsRequest(BaseModel):
+    filename: str
+    content_b64: str
+    reference: str
+    field: Literal["upos", "xpos"] = "upos"
+    n: int = 3
+    measure: Literal["ll", "log_ratio", "pct_diff", "log_odds"] = "log_ratio"
+    min_freq: int = 2
+    correction: Literal["bonferroni", "fdr", "none"] = "fdr"
+    top: int | None = 60
+    lang: str | None = None
+
+
+@router.post("/writing/patterns", tags=["writing"])
+def writing_patterns(req: PatternsRequest):
+    """Escrita: perfil de construções (n-gramas de classes/etiquetas) do texto."""
+    import base64
+    import binascii
+
+    import ttwtools
+    try:
+        blob = base64.b64decode(req.content_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="conteúdo do arquivo inválido (base64)") from exc
+    text = ttwtools.extract_text(blob, req.filename)
+    with _project() as proj:
+        return _call(ttwtools.analyze_patterns, proj, text, req.reference, field=req.field, n=req.n,
+                     measure=req.measure, min_freq=req.min_freq, correction=req.correction, top=req.top,
+                     lang=req.lang, text_name=req.filename, filename=req.filename)
+
+
 class KfaRequest(BaseModel):
     corpus1: str
     corpus2: str
