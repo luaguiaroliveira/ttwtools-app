@@ -501,6 +501,36 @@ def writing_patterns(req: PatternsRequest):
                      lang=req.lang, text_name=req.filename, filename=req.filename)
 
 
+class CollocationsWritingRequest(BaseModel):
+    filename: str
+    content_b64: str
+    reference: str
+    node: str
+    left: int = 5
+    right: int = 5
+    min_freq: int = 2
+    top: int = 30
+    lang: str | None = None
+
+
+@router.post("/writing/collocates", tags=["writing"])
+def writing_collocates(req: CollocationsWritingRequest):
+    """Escrita: colocados de uma palavra no texto, comparados com a referência."""
+    import base64
+    import binascii
+
+    import ttwtools
+    try:
+        blob = base64.b64decode(req.content_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="conteúdo do arquivo inválido (base64)") from exc
+    text = ttwtools.extract_text(blob, req.filename)
+    with _project() as proj:
+        return _call(ttwtools.collocate_profile, proj, text, req.node, req.reference,
+                     window=(req.left, req.right), top=req.top, min_freq=req.min_freq,
+                     lang=req.lang, text_name=req.filename)
+
+
 class KfaRequest(BaseModel):
     corpus1: str
     corpus2: str

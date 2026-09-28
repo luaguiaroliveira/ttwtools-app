@@ -27,6 +27,9 @@ const f = ref({ unit: 'form', n: 2, measure: 'log_ratio', min_freq: 2, correctio
 const data = ref(null)
 const error = ref(null)
 const busy = ref(false)
+const source = ref(null)               // último texto enviado (para os colocados)
+const colloc = ref(null)               // perfil de colocação da palavra clicada
+const collocBusy = ref(false)
 
 const refs = computed(() => [
   ...corpora.value.map((c) => ({ value: c.name, label: `${c.name} (${t('writing.ref_project')})` })),
@@ -62,21 +65,31 @@ const canRun = computed(() => (text.value.trim() || file.value) && reference.val
 async function run() {
   error.value = null
   data.value = null
+  colloc.value = null
   if (!text.value.trim() && !file.value) { error.value = t('writing.need_text'); return }
   if (!reference.value) { error.value = t('writing.need_reference'); return }
   busy.value = true
   try {
-    const src = file.value
+    source.value = file.value
       ? { filename: file.value.name, content_b64: file.value.content_b64 }
       : { filename: 'texto_colado.txt', content_b64: b64encode(text.value) }
     data.value = mode.value === 'patterns'
-      ? await api.writing.patterns({ ...src, reference: reference.value, lang: locale.value,
+      ? await api.writing.patterns({ ...source.value, reference: reference.value, lang: locale.value,
           field: f.value.field, n: f.value.pn, measure: f.value.measure, min_freq: f.value.min_freq,
           correction: f.value.correction, top: f.value.top })
-      : await api.writing.analyze({ ...src, reference: reference.value, lang: locale.value,
+      : await api.writing.analyze({ ...source.value, reference: reference.value, lang: locale.value,
           unit: f.value.unit, n: f.value.n, measure: f.value.measure, min_freq: f.value.min_freq,
           correction: f.value.correction, top: f.value.top })
   } catch (err) { error.value = err.message } finally { busy.value = false }
+}
+
+async function showCollocates(node) {
+  if (!source.value) return
+  collocBusy.value = true
+  error.value = null
+  try {
+    colloc.value = await api.writing.collocates({ ...source.value, reference: reference.value, node })
+  } catch (err) { error.value = err.message } finally { collocBusy.value = false }
 }
 
 const fmt = (v, d = 2) => (v === null || v === undefined ? '—' : Number(v).toFixed(d))
@@ -197,7 +210,8 @@ const OVER = { '+': 'text-success', '-': 'text-error' }
                 <th scope="col">{{ t('writing.reliability') }}</th>
               </tr></thead>
               <tbody><tr v-for="r in data.rows" :key="r.item + r.direction">
-                <td class="font-medium">{{ r.item }}</td>
+                <td><button type="button" class="link font-medium text-left" :title="t('writing.collocates_hint')"
+                            :aria-label="t('writing.collocates_title', { node: r.item })" @click="showCollocates(r.item)">{{ r.item }}</button></td>
                 <td :class="OVER[r.direction]">{{ r.direction === '+' ? t('writing.over') : t('writing.under') }}</td>
                 <td class="text-right tabular-nums">{{ r.freq_target }}</td>
                 <td class="text-right tabular-nums">{{ fmt(r.per_1000_target, 1) }}</td>
@@ -210,6 +224,34 @@ const OVER = { '+': 'text-success', '-': 'text-error' }
               </tr></tbody>
             </table>
           </div>
+          <p class="field-help">{{ t('writing.collocates_hint') }}</p>
+
+          <!-- colocados da palavra clicada -->
+          <section v-if="colloc" class="panel flex flex-col gap-2" data-testid="writing-collocates" aria-live="polite">
+            <h3 class="section-title flex flex-wrap items-center gap-2">{{ t('writing.collocates_title', { node: colloc.node }) }}
+              <span class="badge badge-outline badge-sm">{{ t('writing.node_freq', { n: colloc.node_freq_text, m: colloc.node_freq_reference }) }}</span>
+              <button class="btn btn-xs btn-ghost ml-auto" :aria-label="t('common.cancel')" @click="colloc = null">×</button>
+            </h3>
+            <p class="text-sm prose-read">{{ t('writing.collocates_what') }}</p>
+            <p v-if="!colloc.rows.length" class="opacity-70">{{ t('writing.collocates_empty') }}</p>
+            <div v-else class="overflow-x-auto">
+              <table class="table table-xs">
+                <thead><tr><th scope="col">{{ t('writing.col_collocate') }}</th>
+                  <th scope="col" class="text-right">{{ t('explore.freq') }} ({{ t('writing.text_short') }})</th>
+                  <th scope="col" class="text-right">{{ t('explore.freq') }} (ref.)</th>
+                  <th scope="col" class="text-right whitespace-nowrap">log ratio <HelpTip term="log_ratio" /></th>
+                  <th scope="col">{{ t('writing.reliability') }}</th></tr></thead>
+                <tbody><tr v-for="c in colloc.rows" :key="c.collocate">
+                  <td class="font-medium">{{ c.collocate }}</td>
+                  <td class="text-right tabular-nums">{{ c.freq_text }}</td>
+                  <td class="text-right tabular-nums">{{ c.freq_reference }}</td>
+                  <td class="text-right tabular-nums">{{ fmt(c.log_ratio) }}</td>
+                  <td><span v-if="c.only_in_text" class="badge badge-warning badge-xs mr-1">{{ t('writing.colloc_flag.only_in_text') }}</span>
+                      <span v-if="c.typical_reference" class="badge badge-ghost badge-xs">{{ t('writing.colloc_flag.typical_reference') }}</span></td>
+                </tr></tbody>
+              </table>
+            </div>
+          </section>
         </template>
 
         <!-- resultado: construções -->
