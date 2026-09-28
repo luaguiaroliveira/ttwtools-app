@@ -30,8 +30,9 @@ relatório):
   citavam ajustados.
 - **C:** o seletor de corpus do cabeçalho mostra o número de camadas; o cartão do corpus
   ganhou selo "etiquetado".
-- **D:** vazios de Explorar/Comparar trazem o próprio seletor de corpus; Explorar ganhou uma
-  faixa "Próximo passo".
+- **D:** vazios de Explorar/Comparar trazem o próprio seletor de corpus. A faixa "Próximo
+  passo" chegou a ser feita e foi **removida a pedido**: usar a ferramenta para explorar um
+  corpus individual é legítimo, e sugerir "comparar" confundia.
 - **E2:** `ParCoords` corrigido (só traço, sem preenchimento), com legenda e rolagem
   horizontal.
 - **F:** Frequência com "Mostrar N" (25–500), rolagem vertical própria (`overflow-auto` +
@@ -174,8 +175,9 @@ Casos concretos observados:
 ### D. Fluxo de trabalho e "próximo passo" (P1)
 
 - Ao concluir uma etapa, oferecer a **próxima ação** com botão: importou → "Etiquetar
-  agora"; etiquetou → "Explorar"; achou um resultado → "Comparar"/"Exportar". Hoje o
-  `corpora.go_tagging` faz isso parcialmente; falta o encadeamento em Explorar/Comparar.
+  agora"; etiquetou → "Explorar". Hoje o `corpora.go_tagging` faz isso parcialmente.
+  **Cuidado:** não sugerir "Comparar" dentro de Explorar — explorar um corpus individual é
+  uso legítimo, e a faixa de "próximo passo" foi removida por confundir (ver §0).
 - Estado vazio deve ser **acionável**, não só explicativo: cada tela com `need_corpus`
   deve trazer o seletor ou um botão, não um link para outra tela.
 - Barra de tarefas persistente: a tela Etiquetagem tem bom progresso; replicar um resumo
@@ -314,7 +316,7 @@ a mesma escala e paleta, sem repetir valores.
 |-------|---------|-------|-----------|
 | 1 | Tooltips de jargão no ponto de uso | A (componente `<Help>` + glossário) | P0 |
 | 2 | Nomes de menu/aba e comandos; ordem do fluxo | B | P0 |
-| 3 | Encadeamento "próximo passo" e vazios acionáveis | C, D | P1 |
+| 3 | Vazios acionáveis (sem sugerir "comparar" em Explorar) | C, D | P1 |
 | 4 | Corrigir coordenadas paralelas e legenda/zoom dos gráficos | E2, tokens | P1 |
 | 5 | Tokens + hierarquia + paleta de gráficos | E, tokens | P1 |
 | 6 | Tabelas (rolagem/zoom da frequência, tooltips, ordenação, i18n) | F, H | P1 |

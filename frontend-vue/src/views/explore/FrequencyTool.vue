@@ -13,6 +13,7 @@ const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const { activeCorpus } = storeToRefs(useSession())
 const f = ref({ unit: 'form', n: 2, by: 'corpus', top: 50, hide_stopwords: false })
+const barH = ref(20)   // altura de cada barra (px): menor = mais palavras visíveis de uma vez
 const data = ref(null)
 const error = ref(null)
 const TOP = [25, 50, 100, 200, 500]
@@ -35,6 +36,11 @@ async function run() {
       <label class="form-control w-28"><span class="label-text">{{ t('explore.show_top') }}</span>
         <select v-model.number="f.top" class="select select-sm" data-testid="freq-top"><option v-for="n in TOP" :key="n" :value="n">{{ n }}</option></select></label>
       <label class="flex items-center gap-2 text-sm"><input v-model="f.hide_stopwords" type="checkbox" class="checkbox checkbox-sm" />{{ t('overview.hide_stopwords') }}<HelpTip term="stopwords" /></label>
+      <label v-if="f.by === 'corpus'" class="form-control w-44">
+        <span class="label-text flex items-center justify-between gap-2">{{ t('chart.bar_height') }}<span class="opacity-60">{{ barH }}px</span></span>
+        <input v-model.number="barH" type="range" min="6" max="40" step="2" class="range range-xs range-primary"
+               data-testid="freq-bar-height" />
+      </label>
       <button class="btn btn-sm btn-primary" data-testid="freq-go">{{ t('explore.go') }}</button>
     </form>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
@@ -42,7 +48,7 @@ async function run() {
       <div class="flex gap-1"><CopyCode analysis="frequency" :params="{ corpus, layer, unit: f.unit, n: f.unit === 'ngram' ? f.n : null, by: f.by, top: f.top }" />
         <ExportMenu :name="`frequencia_${f.unit}`" :rows="data.rows" :svg-root="f.by === 'corpus' ? chart : null" /></div>
       <div v-if="f.by === 'corpus'" class="max-h-96 overflow-auto">
-        <BarChart ref="chart" :title="t(`explore.unit.${data.unit}`)" :items="data.rows.map((r) => ({ label: r.item, value: r.freq }))" value-label="freq" :max="f.top" />
+        <BarChart ref="chart" :title="t(`explore.unit.${data.unit}`)" :items="data.rows.map((r) => ({ label: r.item, value: r.freq }))" value-label="freq" :max="f.top" :bar-height="barH" />
       </div>
       <div class="table-scroll overflow-x-auto">
         <table class="table table-xs"><thead><tr><th v-if="f.by !== 'corpus'">{{ t('explore.by') }}</th><th>{{ t('explore.item') }}</th><th class="text-right">{{ t('explore.freq') }}</th>

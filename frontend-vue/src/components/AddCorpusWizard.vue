@@ -133,7 +133,7 @@ async function doImport() {
           </template>
 
           <details class="border-t border-base-300 pt-2">
-            <summary class="cursor-pointer text-sm font-medium">{{ t('wizard.csv_title') }}</summary>
+            <summary class="cursor-pointer text-sm font-medium py-1">{{ t('wizard.csv_title') }}</summary>
             <div class="flex flex-col gap-2 mt-2">
               <p class="text-sm">{{ t('wizard.csv_intro') }}</p>
               <div class="flex flex-wrap gap-2">
@@ -141,7 +141,7 @@ async function doImport() {
                 <button type="button" class="btn btn-sm" @click="chooseCsv">{{ t('wizard.choose_csv') }}</button>
               </div>
               <details class="text-xs">
-                <summary class="cursor-pointer opacity-80">{{ t('wizard.csv_help_title') }}</summary>
+                <summary class="cursor-pointer opacity-80 py-1">{{ t('wizard.csv_help_title') }}</summary>
                 <p class="mt-1">{{ t('wizard.csv_help') }}</p>
                 <pre class="bg-base-100 rounded p-2 mt-1">filename,nivel,ano
 ana_B1_2024.txt,B1,2024

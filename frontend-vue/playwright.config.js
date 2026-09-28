@@ -8,7 +8,9 @@ export default defineConfig({
   timeout: 180_000,
   workers: 1,                    // um servidor e um projeto aberto por vez
   reporter: [['list']],
-  use: { baseURL: `http://127.0.0.1:${PORT}`, channel: 'chrome', headless: true, trace: 'retain-on-failure' },
+  // reducedMotion: desliga as transições (o CSS respeita prefers-reduced-motion), evitando
+  // que a checagem de acessibilidade rode no meio da animação de um painel recolhível.
+  use: { baseURL: `http://127.0.0.1:${PORT}`, channel: 'chrome', headless: true, trace: 'retain-on-failure', reducedMotion: 'reduce' },
   projects: [
     { name: 'celular-390', use: { viewport: { width: 390, height: 844 } } },
     { name: 'tablet-768', use: { viewport: { width: 768, height: 1024 } } },

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineAsyncComponent } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useSession } from '../stores/session.js'
@@ -15,7 +15,6 @@ const TOOLS = {
 }
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
 const session = useSession()
 const { corpus, layer, corpora } = storeToRefs(session)
 const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwic'))
@@ -38,10 +37,6 @@ const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwi
                     :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`explore.tool.${id}`) }}</RouterLink>
       </div>
       <KeepAlive><component :is="TOOLS[tool]" :key="tool + corpus + (layer || '')" :corpus="corpus" :layer="layer" /></KeepAlive>
-      <p class="text-sm opacity-70 flex flex-wrap items-center gap-2 border-t border-base-300 pt-3">
-        {{ t('explore.next_step') }}
-        <RouterLink to="/comparar" class="btn btn-xs">{{ t('nav.compare') }}</RouterLink>
-      </p>
     </template>
   </div>
 </template>
