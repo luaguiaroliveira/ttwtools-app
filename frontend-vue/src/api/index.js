@@ -70,6 +70,7 @@ export const api = {
     analyze: (body) => post('/api/writing/analyze', body),
     patterns: (body) => post('/api/writing/patterns', body),
     collocates: (body) => post('/api/writing/collocates', body),
+    examples: (body) => post('/api/writing/examples', body),
   },
   help: {
     topics: (lang, q) => get('/api/help', { lang, q }),

@@ -531,6 +531,34 @@ def writing_collocates(req: CollocationsWritingRequest):
                      lang=req.lang, text_name=req.filename)
 
 
+class ExamplesRequest(BaseModel):
+    filename: str
+    content_b64: str
+    item: str
+    reference: str
+    kind: Literal["word", "pattern"] = "word"
+    field: Literal["upos", "xpos"] = "upos"
+    n: int = 3
+    lang: str | None = None
+
+
+@router.post("/writing/examples", tags=["writing"])
+def writing_examples(req: ExamplesRequest):
+    """Escrita: exemplos do item no texto e na referência, com classes marcadas."""
+    import base64
+    import binascii
+
+    import ttwtools
+    try:
+        blob = base64.b64decode(req.content_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="conteúdo do arquivo inválido (base64)") from exc
+    text = ttwtools.extract_text(blob, req.filename)
+    with _project() as proj:
+        return _call(ttwtools.writing_examples, proj, text, req.item, req.reference, kind=req.kind,
+                     field=req.field, n=req.n, lang=req.lang, text_name=req.filename)
+
+
 class KfaRequest(BaseModel):
     corpus1: str
     corpus2: str
