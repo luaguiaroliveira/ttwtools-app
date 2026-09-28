@@ -7,16 +7,20 @@
 // Ver novodesenho/plano_escrita.md e novodesenho/ferramentaescrita.md.
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useSession } from '../stores/session.js'
 import { api } from '../api/index.js'
 import Collapsible from '../components/Collapsible.vue'
 import HelpTip from '../components/HelpTip.vue'
 import ExportMenu from '../components/ExportMenu.vue'
+import NavIcon from '../components/NavIcon.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
+const router = useRouter()
 const { corpora, hasProject } = storeToRefs(session)
+const projectRefs = computed(() => new Set(corpora.value.map((c) => c.name)))
 const mode = ref('words')                 // words | patterns
 const text = ref('')
 const file = ref(null)                    // {name, content_b64}
@@ -94,6 +98,12 @@ async function showCollocates(node) {
 
 const fmt = (v, d = 2) => (v === null || v === undefined ? '—' : Number(v).toFixed(d))
 const OVER = { '+': 'text-success', '-': 'text-error' }
+// DDL: abrir as concordâncias de um item no corpus de referência (só se for um corpus do projeto)
+function seeInCorpus(item) {
+  if (!projectRefs.value.has(reference.value)) return
+  session.setCorpus(reference.value)
+  router.push({ path: '/explorar/kwic', query: { q: item } })
+}
 </script>
 <template>
   <div class="page max-w-6xl">
@@ -192,6 +202,25 @@ const OVER = { '+': 'text-success', '-': 'text-error' }
         <div v-for="w in data.warnings" :key="w.code" role="alert" class="alert py-1 text-sm"
              :class="{ 'alert-warning': w.severity === 'warning', 'alert-error': w.severity === 'error', 'alert-info': w.severity === 'info' }">{{ w.message }}</div>
 
+        <!-- riqueza lexical e frases (só no modo léxico) -->
+        <div v-if="data.lexis" class="flex flex-col gap-1">
+          <div class="flex flex-wrap gap-2">
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_ttr') }}</span>
+              <span class="font-bold tabular-nums">{{ fmt(data.lexis.ttr, 3) }}</span></div>
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_guiraud') }}</span>
+              <span class="font-bold tabular-nums">{{ fmt(data.lexis.guiraud, 2) }}</span></div>
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_mtld') }}</span>
+              <span class="font-bold tabular-nums">{{ data.lexis.mtld === null ? '—' : fmt(data.lexis.mtld, 1) }}</span></div>
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_sent') }}</span>
+              <span class="font-bold tabular-nums">{{ fmt(data.lexis.mean_sentence_len, 1) }}</span></div>
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_long') }}</span>
+              <span class="font-bold tabular-nums">{{ fmt(data.lexis.long_pct, 0) }}%</span></div>
+            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.col_item') }}</span>
+              <span class="font-bold tabular-nums">{{ t('writing.lexis_words', { types: data.lexis.types, words: data.lexis.words }) }}</span></div>
+          </div>
+          <p class="field-help">{{ t('writing.lexis_what') }}</p>
+        </div>
+
         <p v-if="data.kind === 'patterns'" class="panel text-sm prose-read">{{ t('writing.patterns_what') }}</p>
 
         <!-- resultado: léxico -->
@@ -210,8 +239,14 @@ const OVER = { '+': 'text-success', '-': 'text-error' }
                 <th scope="col">{{ t('writing.reliability') }}</th>
               </tr></thead>
               <tbody><tr v-for="r in data.rows" :key="r.item + r.direction">
-                <td><button type="button" class="link font-medium text-left" :title="t('writing.collocates_hint')"
-                            :aria-label="t('writing.collocates_title', { node: r.item })" @click="showCollocates(r.item)">{{ r.item }}</button></td>
+                <td class="whitespace-nowrap">
+                  <button type="button" class="link font-medium text-left" :title="t('writing.collocates_hint')"
+                          :aria-label="t('writing.collocates_title', { node: r.item })" @click="showCollocates(r.item)">{{ r.item }}</button>
+                  <button v-if="projectRefs.has(reference)" type="button" class="btn btn-ghost btn-xs" :title="t('writing.see_in_corpus')"
+                          :aria-label="`${t('writing.see_in_corpus')}: ${r.item}`" @click="seeInCorpus(r.item)">
+                    <NavIcon d="M10 4a6 6 0 104.47 10.03l4.25 4.25 1.41-1.41-4.25-4.25A6 6 0 0010 4z" class="w-3.5 h-3.5" />
+                  </button>
+                </td>
                 <td :class="OVER[r.direction]">{{ r.direction === '+' ? t('writing.over') : t('writing.under') }}</td>
                 <td class="text-right tabular-nums">{{ r.freq_target }}</td>
                 <td class="text-right tabular-nums">{{ fmt(r.per_1000_target, 1) }}</td>
@@ -224,7 +259,7 @@ const OVER = { '+': 'text-success', '-': 'text-error' }
               </tr></tbody>
             </table>
           </div>
-          <p class="field-help">{{ t('writing.collocates_hint') }}</p>
+          <p class="field-help">{{ t('writing.collocates_hint') }} {{ t('writing.ddl_note') }}</p>
 
           <!-- colocados da palavra clicada -->
           <section v-if="colloc" class="panel flex flex-col gap-2" data-testid="writing-collocates" aria-live="polite">

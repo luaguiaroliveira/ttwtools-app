@@ -206,13 +206,18 @@ em Python + CLI.
   `/api/writing/patterns`; aba **Construções (classes)** na tela Escrita, com explicação
   para o aluno. Falta ainda desta fase: z-score dos traços **Biber** (registro) e
   diversidade lexical/legibilidade (MTLD/HD-D com código próprio, sem dependência nova).
-- **Fase B (média):** **colocados por palavra-chave** (comparação de perfis) e
-  **distinctive collexemes** entre construções alternativas; rede de colocação.
-- **Fase C (média):** **bundles** e covarying collexemes; dispersão fina e bootstrap por
-  texto; "textos modelo" do mesmo gênero.
-- **Fase D (longa):** camada DDL completa (exercícios, *noticing* guiado, banco de
-  fórmulas por função retórica à la PhraseBank); integração **opcional** com LanguageTool;
-  pacotes de sala de aula.
+- **Fase B (média) — FEITA em 2026-09-28 (parcial):** **colocados por palavra-chave**
+  (`collocations.py`, CLI `collocates-text`, rota `/api/writing/collocates`, painel na tela
+  ao clicar numa palavra). Falta: *distinctive collexemes* entre construções alternativas e
+  rede de colocação.
+- **Fase C (média) — FEITA em 2026-09-28 (parcial):** **bundles** já saem pela unidade
+  `ngram` do modo léxico; **riqueza lexical** (`sophistication.py`: TTR, Guiraud, MTLD,
+  palavras longas) e palavras por frase, mostradas em cartões. Falta: covarying collexemes,
+  dispersão fina, **bootstrap por texto** e "textos modelo" do mesmo gênero.
+- **Fase D (longa) — FEITA em 2026-09-28 (núcleo):** **DDL "ver no corpus"**: botão que
+  troca o corpus ativo para a referência e abre o KWIC do item, com dica de *noticing*.
+  Faltam: exercícios guiados, banco de fórmulas por função retórica (PhraseBank),
+  integração opcional com LanguageTool (exige Java) e pacotes de sala de aula.
 
 ## 8. Perguntas abertas / decisões
 
