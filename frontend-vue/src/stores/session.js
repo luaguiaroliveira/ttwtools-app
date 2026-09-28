@@ -23,19 +23,20 @@ export const useSession = defineStore('session', {
     async load() {
       const [version, health] = await Promise.all([api.version(), api.health()])
       this.version = version
-      this.projectPath = health.project
-      try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE) || '{}')
-        if (saved.projectPath === this.projectPath) { this.corpus = saved.corpus; this.layer = saved.layer }
-      } catch { /* */ }
-      if (this.projectPath) await this.refresh()
+      if (health.project) {
+        // `health.project` é a cópia de trabalho (arquivo compactado): muda a cada
+        // abertura, então não serve para identificar o projeto. `refresh()` traz o
+        // caminho estável (`display_path`) antes de tentar restaurar o corpus salvo.
+        await this.refresh()
+        this.restoreSaved()
+      }
     },
     async refresh() {
       const info = await api.project.info()
       this.project = info.open ? info : null
       this.unsaved = Boolean(info.unsaved)
       this.watchUnsaved()
-      this.projectPath = info.open ? info.path : null
+      this.projectPath = info.open ? info.display_path : null
       this.corpora = info.open ? (await api.corpora.list()).corpora : []
       if (this.corpus && !this.corpora.some((c) => c.name === this.corpus)) this.setCorpus(null)
     },
@@ -56,8 +57,21 @@ export const useSession = defineStore('session', {
       this.corpus = null
       this.layer = null
       await this.refresh()
-      if (this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
+      if (!this.restoreSaved() && this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
       this.save()
+    },
+    /** Corpus/camada guardados para este mesmo projeto (por `display_path`), se ainda existirem. */
+    restoreSaved() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE) || '{}')
+        if (saved.projectPath === this.projectPath && saved.corpus
+            && this.corpora.some((c) => c.name === saved.corpus)) {
+          this.corpus = saved.corpus
+          this.layer = saved.layer
+          return true
+        }
+      } catch { /* */ }
+      return false
     },
     async createProject(path, overwrite = false) {
       await api.project.create(path, overwrite)
