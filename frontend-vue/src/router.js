@@ -7,6 +7,7 @@ export const NAV = [
   { name: 'tagging', path: '/etiquetagem', label: 'nav.tagging', icon: 'M5 4h14v2H5zm0 5h9v2H5zm0 5h14v2H5zm0 5h9v2H5zm12-10l3 3-3 3z' },
   { name: 'explore', path: '/explorar', label: 'nav.explore', icon: 'M10 4a6 6 0 104.47 10.03l4.25 4.25 1.41-1.41-4.25-4.25A6 6 0 0010 4z' },
   { name: 'compare', path: '/comparar', label: 'nav.compare', icon: 'M5 4h4v16H5zm10 6h4v10h-4z' },
+  { name: 'writing', path: '/escrita', label: 'nav.writing', icon: 'M4 20h4L18.5 9.5l-4-4L4 16zm12.7-12.7l1.6-1.6a1 1 0 011.4 0l1.6 1.6a1 1 0 010 1.4l-1.6 1.6z' },
   { name: 'modules', path: '/modulos', label: 'nav.modules', icon: 'M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z' },
   { name: 'learn', path: '/aprender', label: 'nav.learn', icon: 'M12 3L2 8l10 5 8-4v6h2V8z' },
 ]
@@ -20,6 +21,7 @@ export const router = createRouter({
     { path: '/etiquetagem', name: 'tagging', component: () => import('./views/TaggingView.vue') },
     { path: '/explorar/:tool?', name: 'explore', component: () => import('./views/ExploreView.vue') },
     { path: '/comparar', name: 'compare', component: () => import('./views/CompareView.vue') },
+    { path: '/escrita', name: 'writing', component: () => import('./views/WritingView.vue') },
     { path: '/modulos', name: 'modules', component: () => import('./views/ModulesView.vue') },
     { path: '/aprender/:topic?', name: 'learn', component: () => import('./views/LearnView.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/' },

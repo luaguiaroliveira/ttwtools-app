@@ -7,6 +7,8 @@ export function errorText(status, detail) {
   const t = i18n.global.t
   const msg = typeof detail === 'string' ? detail : detail ? JSON.stringify(detail) : ''
   if (status === 0) return t('api.error.network')
+  if (msg === 'pdf_unavailable') return t('writing.error.pdf_unavailable')
+  if (msg.startsWith('unsupported_format')) return t('writing.error.unsupported_format')
   if (/Nenhum projeto aberto|no project open/i.test(msg)) return t('api.error.no_project')
   if (/já existe|already exists/i.test(msg)) return t('api.error.exists')
   if (/não encontrad|not found/i.test(msg)) return t('api.error.not_found')

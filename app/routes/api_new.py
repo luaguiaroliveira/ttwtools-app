@@ -438,6 +438,38 @@ def compare_keywords(req: KeywordsRequest):
                      correction=req.correction, top=req.top, lang=req.lang)
 
 
+class WritingRequest(BaseModel):
+    filename: str
+    content_b64: str
+    reference: str
+    unit: Literal["form", "ngram"] = "form"
+    measure: Literal["ll", "log_ratio", "pct_diff", "log_odds"] = "log_ratio"
+    n: int = 2
+    min_freq: int = 2
+    min_range: int = 1
+    correction: Literal["bonferroni", "fdr", "none"] = "fdr"
+    top: int | None = 100
+    lang: str | None = None
+
+
+@router.post("/writing/analyze", tags=["writing"])
+def writing_analyze(req: WritingRequest):
+    """Escrita (experimental): compara um texto individual (n=1) com uma referência.
+    O arquivo chega em base64 (txt/md/docx/odt/pdf), sem `multipart`."""
+    import base64
+    import binascii
+
+    import ttwtools
+    try:
+        blob = base64.b64decode(req.content_b64, validate=True)
+    except (binascii.Error, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="conteúdo do arquivo inválido (base64)") from exc
+    with _project() as proj:
+        return _call(ttwtools.analyze_file, proj, blob, req.filename, req.reference, unit=req.unit, n=req.n,
+                     measure=req.measure, min_freq=req.min_freq, min_range=req.min_range,
+                     correction=req.correction, top=req.top, lang=req.lang)
+
+
 class KfaRequest(BaseModel):
     corpus1: str
     corpus2: str

@@ -66,6 +66,9 @@ export const api = {
   lab: {
     compare: (body) => post('/api/lab/compare', body),
   },
+  writing: {
+    analyze: (body) => post('/api/writing/analyze', body),
+  },
   help: {
     topics: (lang, q) => get('/api/help', { lang, q }),
     topic: (id, lang) => get(`/api/help/${id}`, { lang }),
