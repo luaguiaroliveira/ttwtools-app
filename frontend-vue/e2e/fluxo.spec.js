@@ -55,7 +55,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   // 2. etiquetagem: escolher camadas (nada roda ainda) e executar numa etapa só
   await page.getByTestId('wizard-tag').click()
   await expect(page).toHaveURL(/etiquetagem/)
-  await expect(page.getByTestId('active-corpus')).toHaveText('bawe')
+  await expect(page.getByTestId('active-corpus')).toHaveValue('bawe')
   await page.getByTestId('add-stats').click()
   await page.getByTestId('preset-spacy-rapido').click()
   await page.getByTestId('add-spacy').click()

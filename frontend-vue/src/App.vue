@@ -12,7 +12,7 @@ import ExplainOverlay from './components/ExplainOverlay.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
-const { corpus, layer, layers, projectPath, unsaved } = storeToRefs(session)
+const { corpus, layer, layers, corpora, project, projectPath, unsaved } = storeToRefs(session)
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
@@ -44,12 +44,16 @@ const changeLang = (value) => setLang(value)
 
     <div class="flex-1 flex flex-col min-w-0">
       <header class="navbar border-b border-base-300 gap-2 px-3 min-h-14">
-        <div class="flex-1 min-w-0">
+        <div class="flex-1 min-w-0 flex items-center gap-1 flex-wrap">
           <span class="md:hidden font-bold mr-3">{{ t('app.title') }}</span>
           <span class="text-sm opacity-70 hidden sm:inline">{{ t('header.active_corpus') }}:</span>
-          <span class="badge badge-outline ml-1 max-w-48 truncate" data-testid="active-corpus">
-            {{ corpus || t('header.no_corpus') }}
-          </span>
+          <select v-if="project" class="select select-xs max-w-[10rem] sm:max-w-48" data-testid="active-corpus"
+                  :disabled="!corpora.length" :aria-label="t('header.active_corpus')" :value="corpus || ''"
+                  @change="session.setCorpus($event.target.value || null)">
+            <option value="">{{ t('header.select_corpus') }}</option>
+            <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}</option>
+          </select>
+          <span v-else class="badge badge-outline ml-1 max-w-48 truncate">{{ t('header.no_corpus') }}</span>
           <span class="hidden sm:inline-flex items-center gap-1 ml-1" :title="t('header.layer_hint')">
             <span class="text-sm opacity-70">{{ t('header.layer') }}:</span>
             <select class="select select-xs" data-testid="header-layer" :disabled="!corpus"
