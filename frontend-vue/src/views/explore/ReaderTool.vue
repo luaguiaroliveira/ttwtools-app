@@ -1,12 +1,13 @@
 <script setup>
 // Leitor de texto com etiquetas: texto à esquerda e, à direita, a coluna de etiquetas
 // (classes UPOS/XPOS ou primeira tag) com seleção múltipla; cada etiqueta marcada é
-// sublinhada no texto com rough-notation (traço à mão, animado ao selecionar). Clicar num
+// marcada no texto com traço à mão (roughjs, o motor do rough-notation), no estilo escolhido
+// ao lado de cada etiqueta e animada ao selecionar. Clicar num
 // token mostra etiquetas, lema, traços e a definição do tagset.
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { annotate } from 'rough-notation'
+import rough from 'roughjs/bundled/rough.esm.js'
 import { api } from '../../api/index.js'
 
 const props = defineProps({ corpus: String, layer: String })
@@ -79,37 +80,72 @@ function step(dir) {
   document.querySelector(`[data-idx="${selected.value.idx}"]`)?.scrollIntoView({ block: 'center' })
 }
 
-// --- rough-notation ---------------------------------------------------------------
-// Uma anotação por token marcado. Ao marcar uma etiqueta nova, só ela anima (em cascata,
-// começando pelos tokens visíveis); as demais e os redesenhos (redimensionar, trocar
-// documento) aparecem sem animação. Respeita prefers-reduced-motion.
-let annotations = []
+// --- marcações à mão ---------------------------------------------------------------
+// Cada token marcado ganha um <svg> DENTRO do próprio span, posicionado em relação a ele:
+// as marcas acompanham o texto em qualquer reflow (tela, impressão, PDF), sem coordenadas
+// absolutas da página. Só o tamanho do token é medido. Ao marcar uma etiqueta nova, só ela
+// anima (em cascata, começando pelos tokens visíveis). Respeita prefers-reduced-motion.
+const KINDS = ['underline', 'highlight', 'box', 'circle', 'strike', 'cross']
+const kinds = ref({})   // etiqueta → estilo (padrão: sublinhado)
+const kindOf = (c) => kinds.value[c] || 'underline'
+const SVG_NS = 'http://www.w3.org/2000/svg'
+const PAD = 4
 const reduceMotion = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-function clearAnnotations() { annotations.forEach((a) => a.remove()); annotations = [] }
+function clearAnnotations() { article.value?.querySelectorAll('svg.rn').forEach((n) => n.remove()) }
+function shapes(rc, kind, w, h, o) {
+  const x0 = PAD, x1 = PAD + w, y0 = PAD, y1 = PAD + h
+  switch (kind) {
+    case 'highlight': return [rc.line(x0 - 2, (y0 + y1) / 2, x1 + 2, (y0 + y1) / 2, { ...o, strokeWidth: h * 0.95, roughness: 1.6 })]
+    case 'box': return [rc.rectangle(x0 - 2, y0, w + 4, h, o)]
+    case 'circle': return [rc.ellipse((x0 + x1) / 2, (y0 + y1) / 2, w + 12, h + 6, o)]
+    case 'strike': return [rc.line(x0 - 1, (y0 + y1) / 2, x1 + 1, (y0 + y1) / 2, o)]
+    case 'cross': return [rc.line(x0, y0, x1, y1, o), rc.line(x0, y1, x1, y0, o)]
+    default: return [rc.line(x0 - 1, y1 + 1, x1 + 1, y1 + 1, o)]
+  }
+}
+function mark(el, c, animate, delay) {
+  const w = el.offsetWidth, h = el.offsetHeight
+  if (!w || !h) return
+  const svg = document.createElementNS(SVG_NS, 'svg')
+  svg.setAttribute('class', `rn${animate ? ' rn-anim' : ''}`)
+  svg.setAttribute('aria-hidden', 'true')
+  svg.setAttribute('viewBox', `0 0 ${w + 2 * PAD} ${h + 2 * PAD}`)
+  svg.setAttribute('width', w + 2 * PAD); svg.setAttribute('height', h + 2 * PAD)
+  const kind = kindOf(c)
+  const rc = rough.svg(svg)
+  const g = document.createElementNS(SVG_NS, 'g')
+  if (kind === 'highlight') g.setAttribute('opacity', '0.35')
+  for (const n of shapes(rc, kind, w, h, { stroke: color.value[c], strokeWidth: 2, roughness: 1.2, seed: Number(el.dataset.idx) + 1 })) g.appendChild(n)
+  svg.appendChild(g)
+  if (animate) {
+    g.querySelectorAll('path').forEach((p) => p.setAttribute('pathLength', '1'))
+    svg.style.setProperty('--rn-delay', `${delay}ms`)
+  }
+  el.appendChild(svg)
+}
 function draw() {
   clearAnnotations()
   const root = article.value
   if (!root || !chosen.value.size) { justAdded = null; return }
   const box = root.getBoundingClientRect()
   const still = reduceMotion()
-  let order = 0
+  let order = 0, count = 0
   for (const el of root.querySelectorAll('[data-idx]')) {
-    if (annotations.length >= MAX_ANNOTATIONS) break
+    if (count >= MAX_ANNOTATIONS) break
     const c = el.dataset.cls
     if (!chosen.value.has(c)) continue
     const r = el.getBoundingClientRect()
-    const visible = r.bottom > box.top && r.top < box.bottom
+    const visible = r.bottom > 0 && r.top < (globalThis.innerHeight || box.bottom)
     const animate = !still && c === justAdded && visible && order < 60
-    const a = annotate(el, { type: 'underline', color: color.value[c], strokeWidth: 2, padding: 1, iterations: 1,
-      animate, animationDuration: 350, multiline: false })
-    annotations.push(a)
-    if (animate) setTimeout(() => a.show(), order++ * STAGGER_MS); else a.show()
+    mark(el, c, animate, order * STAGGER_MS)
+    if (animate) order++
+    count++
   }
   justAdded = null
 }
 let raf = 0
 const redraw = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw) }
-watch([chosen, classes, pieces, colorBy], async () => { await nextTick(); redraw() }, { flush: 'post' })
+watch([chosen, classes, pieces, colorBy, kinds], async () => { await nextTick(); redraw() }, { flush: 'post' })
 // Na impressão o layout é o mesmo da tela; redesenha sem animação por garantia.
 const beforePrint = () => { justAdded = null; draw() }
 let ro
@@ -159,11 +195,15 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <button v-if="chosen.size" class="btn btn-xs btn-ghost ml-auto" @click="chosen = new Set()">{{ t('reader.clear') }}</button>
           </div>
           <p class="text-xs opacity-70">{{ t('reader.tags_hint') }}</p>
-          <div class="flex flex-wrap gap-1.5 max-h-72 overflow-auto">
-            <button v-for="[c, n] in classes" :key="c" type="button" class="badge gap-1 cursor-pointer transition-colors"
-                    :aria-pressed="chosen.has(c)" :class="{ 'badge-outline': !chosen.has(c) }"
-                    :style="{ borderColor: color[c], color: chosen.has(c) ? '#fff' : color[c], background: chosen.has(c) ? color[c] : '' }"
-                    :title="tagset[c]" @click="toggle(c)">{{ c }} <span class="opacity-70">{{ n }}</span></button>
+          <div class="flex flex-wrap gap-x-2 gap-y-1.5 max-h-80 overflow-auto">
+            <span v-for="[c, n] in classes" :key="c" class="inline-flex items-center gap-1">
+              <button type="button" class="badge gap-1 cursor-pointer transition-colors"
+                      :aria-pressed="chosen.has(c)" :class="{ 'badge-outline': !chosen.has(c) }"
+                      :style="{ borderColor: color[c], color: chosen.has(c) ? '#fff' : color[c], background: chosen.has(c) ? color[c] : '' }"
+                      :title="tagset[c]" @click="toggle(c)">{{ c }} <span class="opacity-70">{{ n }}</span></button>
+              <select v-if="chosen.has(c)" class="select select-xs w-auto pe-6" :value="kindOf(c)" @change="kinds = { ...kinds, [c]: $event.target.value }" :aria-label="`${t('reader.mark')}: ${c}`">
+                <option v-for="k in KINDS" :key="k" :value="k">{{ t(`reader.mark.${k}`) }}</option></select>
+            </span>
           </div>
           <div v-if="chosen.size" class="flex gap-2">
             <button class="btn btn-xs" @click="step(-1)">{{ t('reader.prev') }}</button>

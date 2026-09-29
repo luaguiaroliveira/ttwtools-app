@@ -123,7 +123,11 @@
 .reader-sheet-head h2 { font-size: 13pt; font-weight: 700; word-break: break-all; }
 .reader-sheet-head p { font-size: 9pt; color: #555; }
 .reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; }
-.reader-tok { cursor: pointer; border-radius: 2px; }
+.reader-tok { cursor: pointer; border-radius: 2px; position: relative; }
+.reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }
+.reader-tok svg.rn path { stroke-linecap: round; }
+.rn-anim path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rn-draw .4s ease-out var(--rn-delay, 0ms) forwards; }
+@keyframes rn-draw { to { stroke-dashoffset: 0; } }
 .reader-tok.is-selected { outline: 2px solid #4f46e5; }
 .reader-tok.is-hit { background: #fde68a; }
 .reader-legend { display: flex; flex-wrap: wrap; gap: .2cm .6cm; margin-top: 1cm; padding-top: .3cm; border-top: 1px solid #ccc;
