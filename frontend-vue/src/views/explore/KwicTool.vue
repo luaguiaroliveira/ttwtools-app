@@ -34,7 +34,8 @@ onMounted(() => { if (route.query.q) submit(String(route.query.q)) })
 function page(d) { offset.value = Math.max(0, offset.value + d * limit.value); load() }
 function open(line) { router.push({ path: '/explorar/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
 // Cor da classe gramatical (tokens em style.css); UPOS e tags do Penn começam com a mesma letra
-const posBucket = (p = '') => {
+const posBucket = (p) => {
+  p = p || ''   // camadas sem UPOS/XPOS trazem null
   const c = p[0]
   return c === 'N' ? 'noun' : c === 'V' ? 'verb' : (c === 'J' || p.startsWith('ADJ')) ? 'adj' : (c === 'R' || p.startsWith('ADV')) ? 'adv' : 'other'
 }
@@ -66,7 +67,7 @@ const posBucket = (p = '') => {
               <td class="text-right whitespace-nowrap overflow-hidden max-w-[20rem]" style="direction: rtl"><bdi>{{ l.left }}</bdi></td>
               <td class="font-bold text-primary whitespace-nowrap">{{ l.match }}</td>
               <td class="whitespace-nowrap overflow-hidden max-w-[20rem]">{{ l.right }}</td>
-              <td class="text-xs"><span class="pos-tag" :data-bucket="posBucket(l.pos)">{{ l.pos }}</span></td>
+              <td class="text-xs"><span v-if="l.pos" class="pos-tag" :data-bucket="posBucket(l.pos)">{{ l.pos }}</span></td>
               <td class="text-xs text-text-muted whitespace-nowrap">{{ l.filename }}:{{ l.start_char }}</td>
             </tr>
           </tbody>
@@ -77,7 +78,7 @@ const posBucket = (p = '') => {
         <li v-for="(l, i) in data.lines" :key="i">
           <button class="card bg-base-200 p-2 text-left w-full" @click="open(l)">
             <span class="text-sm">{{ l.left }} <b class="text-primary">{{ l.match }}</b> {{ l.right }}</span>
-            <span class="text-xs text-text-muted">{{ l.filename }} · {{ l.pos }}</span>
+            <span class="text-xs text-text-muted">{{ l.filename }}<template v-if="l.pos"> · {{ l.pos }}</template></span>
           </button>
         </li>
       </ul>
