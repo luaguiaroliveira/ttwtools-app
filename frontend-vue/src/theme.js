@@ -16,3 +16,22 @@ export function applyTheme(theme) {
   else root.setAttribute('data-theme', theme)
   try { localStorage.setItem(STORAGE, theme) } catch { /* */ }
 }
+
+// Densidade da interface: "comfortable" (padrão) ou "compact" (mais linhas por tela).
+export const DENSITIES = ['comfortable', 'compact']
+const DENSITY_STORAGE = 'ttw.density'
+
+export function initialDensity() {
+  try {
+    const saved = localStorage.getItem(DENSITY_STORAGE)
+    if (DENSITIES.includes(saved)) return saved
+  } catch { /* */ }
+  return 'comfortable'
+}
+
+export function applyDensity(density) {
+  const root = document.documentElement
+  if (density === 'compact') root.setAttribute('data-density', 'compact')
+  else root.removeAttribute('data-density')
+  try { localStorage.setItem(DENSITY_STORAGE, density) } catch { /* */ }
+}

@@ -6,7 +6,7 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 
 | Etapa | Situação |
 |---|---|
-| 1. Tokens e temas | **em andamento** (ver "Andamento da etapa 1") |
+| 1. Tokens e temas | **feita, aguardando revisão visual do usuário** (ver "Andamento da etapa 1") |
 | 2. Componentes base próprios | pendente |
 | 3. Layout | pendente |
 | 4. Telas de resultado + gráficos | pendente |
@@ -17,12 +17,12 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 ### Andamento da etapa 1
 - [x] Contrastes dos 3 temas conferidos com `frontend-vue/scripts/contrast.py` (todos os valores das tabelas abaixo batem).
 - [x] `@fontsource-variable/inter` instalado (npm). Importar só `latin-wght.css` e `latin-ext-wght.css` (menos arquivos no pacote).
-- [ ] `style.css`: trocar `@plugin "daisyui" { themes: light --default, dark --prefersdark }` por `themes: false` e definir `light` (default), `dark` (prefersdark) e `contrast` com `@plugin "daisyui/theme"`; variáveis `--ttw-orange-text`, `--ttw-border-strong`, `--ttw-text-muted` por tema (inclusive `@media (prefers-color-scheme: dark)` para o modo "do sistema", que remove `data-theme`) e `@theme inline` com `--color-orange-text`, `--color-border-strong`, `--color-text-muted`.
-- [ ] Atalho de compatibilidade: `.text-primary, .link-primary { color: var(--ttw-orange-text) }` (primary nunca é texto); substituir o bloco antigo `.text-primary` do tema escuro. Foco: `outline` com `--ttw-orange-text`.
-- [ ] Campos com borda forte: `--input-color: var(--ttw-border-strong)` em `.input, .select, .textarea` (conferir checkbox/toggle no navegador).
-- [ ] Tipografia: `--font-sans` (Inter Variable) e `--font-mono` (pilha do sistema) em `@theme`; `body` 15 px; `tabular-nums` em `.table td/th`; `text-wrap: balance` só em `h1,h2`.
-- [ ] Densidade `confortável`/`compacto` por `data-density` no `<html>` (variáveis `--size-field`, `--size-selector`, `--ttw-gap`, padding de `.table`); opção na engrenagem (App.vue) guardada em `localStorage` (`ttw.density`) via `theme.js`; chaves i18n novas (`density.label`, `density.comfortable`, `density.compact`) em `libs/ttwtools/ttwtools/data/i18n/ui.{pt,en}.json` (submódulo: commit+push lá primeiro).
-- [ ] `npm run build`, `npm test`, e2e (axe) nos 3 temas; capturas antes/depois; commit `[ui 1] ...`; **parar e pedir revisão**.
+- [x] Temas `light`/`dark`/`contrast` em `style.css` (`themes: false` + `daisyui/theme`), variáveis `--ttw-orange-text/-border-strong/-text-muted` (com `prefers-color-scheme` para o modo "sistema") e `@theme inline`.
+- [x] Atalhos de compatibilidade: `.text-primary/.link-primary` → orange-text; foco em orange-text; `--input-color` = border-strong em campos; `.opacity-60/.opacity-70` clareados (0,75/0,8), cabeçalho de tabela, `.stat-title/.stat-desc/.label` em text-muted. **Dívida para a etapa 2:** migrar esses usos para `text-text-muted` e apagar os atalhos.
+- [x] Tipografia: Inter variável empacotada (só latin + latin-ext, +133 kB no pacote), mono do sistema, corpo 15 px, `tabular-nums` em tabelas, `text-wrap: balance` em h1/h2.
+- [x] Densidade compacta: `data-density="compact"` no `<html>`, caixa "Densidade compacta" na engrenagem (`theme.js`: `initialDensity/applyDensity`, chave `ttw.density`; i18n `density.label`).
+- [x] Build, `npm test` e e2e (axe) passam nos 3 tamanhos. **Só o tema padrão (sistema/claro) foi exercitado pelo e2e** com dados reais; o teste "acessibilidade das demais telas, tema escuro e alto contraste" também passou.
+- [ ] Pendente na etapa 1: capturas antes/depois (claro e escuro) e revisão do usuário. Verificar a olho: bordas de checkbox/toggle (`--input-color`), botões `btn-outline btn-primary` (texto ainda usa a cor `primary`, 3,06:1 no claro → tratar na etapa 2).
 - Fora da etapa 1: `--chart-*`, `--pos-*`, `--layer-*` ficam para a etapa 4 (o índigo antigo dos gráficos continua até lá).
 
 ## Contexto (não mudar)

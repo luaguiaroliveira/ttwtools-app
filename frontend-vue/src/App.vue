@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
 import { setLang } from './i18n.js'
-import { applyTheme, initialTheme } from './theme.js'
+import { applyDensity, applyTheme, initialDensity, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
@@ -26,6 +26,8 @@ onMounted(async () => {
 const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
 const isDark = computed(() => theme.value === 'dark' || theme.value === 'contrast' || (theme.value === 'system' && prefersDark))
 const changeTheme = (value) => { theme.value = value; applyTheme(value) }
+const compact = ref(initialDensity() === 'compact')
+const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
 const changeLang = (value) => setLang(value)
 </script>
 
@@ -92,6 +94,10 @@ const changeLang = (value) => setLang(value)
             <label class="flex items-center gap-2 text-xs cursor-pointer">
               <input type="checkbox" class="checkbox checkbox-xs" data-testid="contrast-toggle" :checked="theme === 'contrast'"
                      @change="changeTheme($event.target.checked ? 'contrast' : (prefersDark ? 'dark' : 'light'))" />{{ t('theme.contrast') }}
+            </label>
+            <label class="flex items-center gap-2 text-xs cursor-pointer">
+              <input type="checkbox" class="checkbox checkbox-xs" data-testid="density-toggle" :checked="compact"
+                     @change="changeDensity($event.target.checked)" />{{ t('density.label') }}
             </label>
             <p class="text-xs opacity-60 truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
           </div>

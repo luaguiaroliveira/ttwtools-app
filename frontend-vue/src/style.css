@@ -1,12 +1,78 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
+  themes: false;
+}
+
+/* Inter variável, empacotada (offline): só os subconjuntos latin e latin-ext (cobrem pt e en) */
+@font-face { font-family: "Inter Variable"; font-style: normal; font-display: swap; font-weight: 100 900;
+  src: url(../node_modules/@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2) format("woff2-variations");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Inter Variable"; font-style: normal; font-display: swap; font-weight: 100 900;
+  src: url(../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+/* Temas (plano: novodesenho/plano_redesign_ui.md). Valores e contrastes conferidos com
+   frontend-vue/scripts/contrast.py: rode-o ao mudar qualquer cor. */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  color-scheme: light;
+  --color-base-100: #FFFFFF; --color-base-200: #F5F4F2; --color-base-300: #E3E1DD; --color-base-content: #1C1B1A;
+  --color-primary: #F26A1B; --color-primary-content: #1A1208;
+  --color-secondary: #3B3936; --color-secondary-content: #F5F4F2;
+  --color-accent: #3B3936; --color-accent-content: #F5F4F2;
+  --color-neutral: #1C1B1A; --color-neutral-content: #F5F4F2;
+  --color-info: #2F5F8F; --color-info-content: #FFFFFF; --color-success: #1F7A45; --color-success-content: #FFFFFF;
+  --color-warning: #8A5A00; --color-warning-content: #FFFFFF; --color-error: #B3261E; --color-error-content: #FFFFFF;
+  --radius-selector: 0.5rem; --radius-field: 0.375rem; --radius-box: 0.625rem; --border: 1px; --depth: 0; --noise: 0;
+}
+@plugin "daisyui/theme" {
+  name: "dark";
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #131211; --color-base-200: #1C1B19; --color-base-300: #2B2926; --color-base-content: #ECEAE6;
+  --color-primary: #FF8533; --color-primary-content: #170D03;
+  --color-secondary: #3B3936; --color-secondary-content: #ECEAE6;
+  --color-accent: #3B3936; --color-accent-content: #ECEAE6;
+  --color-neutral: #ECEAE6; --color-neutral-content: #131211;
+  --color-info: #78A9DC; --color-info-content: #0A1622; --color-success: #4CC180; --color-success-content: #0B1A11;
+  --color-warning: #E8B03A; --color-warning-content: #1A1203; --color-error: #FF7B72; --color-error-content: #1F0906;
+  --radius-selector: 0.5rem; --radius-field: 0.375rem; --radius-box: 0.625rem; --border: 1px; --depth: 0; --noise: 0;
+}
+/* Alto contraste: fundo preto, texto branco, laranja vivo */
+@plugin "daisyui/theme" {
+  name: "contrast";
+  color-scheme: dark;
+  --color-base-100: #000000; --color-base-200: #0D0D0D; --color-base-300: #1A1A1A; --color-base-content: #FFFFFF;
+  --color-primary: #FF8A2B; --color-primary-content: #000000;
+  --color-secondary: #FFFFFF; --color-secondary-content: #000000;
+  --color-accent: #FFFFFF; --color-accent-content: #000000;
+  --color-neutral: #FFFFFF; --color-neutral-content: #000000;
+  --color-info: #8CC4FF; --color-info-content: #000000; --color-success: #5FE39A; --color-success-content: #000000;
+  --color-warning: #FFD34D; --color-warning-content: #000000; --color-error: #FF8A80; --color-error-content: #000000;
+  --radius-selector: 0.5rem; --radius-field: 0.375rem; --radius-box: 0.625rem; --border: 2px; --depth: 0; --noise: 0;
+}
+
+/* Tokens próprios por tema. `primary` é preenchimento: texto/link laranja usa orange-text;
+   bordas de campos usam border-strong (≥3:1); `text-muted` é o texto secundário. */
+:root { --ttw-orange-text: #B8460A; --ttw-border-strong: #8A8580; --ttw-text-muted: #5E5B57; }
+:root[data-theme="dark"] { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C; }
+:root[data-theme="contrast"] { --ttw-orange-text: #FFA35C; --ttw-border-strong: #9A9A9A; --ttw-text-muted: #D6D6D6; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C; }
+}
+@theme inline {
+  --color-orange-text: var(--ttw-orange-text);
+  --color-border-strong: var(--ttw-border-strong);
+  --color-text-muted: var(--ttw-text-muted);
 }
 
 /* Tokens do TTWtools (ver novodesenho/relatorio_usabilidade.md §4).
    Paleta de dados, cores de POS/etiquetador e medidas ficam num só lugar para
    telas, tabelas e gráficos usarem os mesmos valores. */
 @theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --ttw-page-max: 72rem;
   --ttw-reading: 68ch;
   --ttw-gap: 1rem;
@@ -27,31 +93,8 @@
   --layer-mfte: #f59e0b; --layer-biberplus: #10b981;
 }
 
-/* Alto contraste: fundo preto, texto branco, foco amarelo bem visível */
-@plugin "daisyui/theme" {
-  name: "contrast";
-  color-scheme: dark;
-  --color-base-100: #000000;
-  --color-base-200: #0a0a0a;
-  --color-base-300: #1a1a1a;
-  --color-base-content: #ffffff;
-  --color-primary: #ffd400;
-  --color-primary-content: #000000;
-  --color-secondary: #00e5ff;
-  --color-secondary-content: #000000;
-  --color-accent: #ffffff;
-  --color-accent-content: #000000;
-  --color-neutral: #ffffff;
-  --color-neutral-content: #000000;
-  --color-error: #ff6b6b;
-  --color-error-content: #000000;
-  --color-warning: #ffd400;
-  --color-warning-content: #000000;
-  --border: 2px;
-}
-
 :focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--ttw-orange-text);
   outline-offset: 2px;
 }
 
@@ -64,11 +107,9 @@
   color: color-mix(in oklab, var(--color-base-content) 82%, var(--color-base-100));
 }
 
-/* Tema escuro: texto na cor primária precisa ser mais claro para ter 4,5:1 */
-:root[data-theme="dark"] .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .text-primary { color: color-mix(in oklab, var(--color-primary) 55%, white); }
-}
+/* `primary` é cor de preenchimento (3,06:1 sobre branco): quando usada como texto ou link, vira orange-text */
+.text-primary, .link-primary { color: var(--ttw-orange-text); }
+.input, .select, .textarea, .checkbox, .toggle { --input-color: var(--ttw-border-strong); }
 
 /* Impressão (leitor de texto): só o conteúdo, sem navegação; cores das marcas preservadas */
 @media print {
@@ -172,3 +213,22 @@
 .pbtn.btn-primary { background: var(--color-primary); color: var(--color-primary-content); }
 .pbtn { min-width: 5.5rem; font-size: .8125rem; padding: .625rem .75rem; }
 .pbtn.btn-primary svg, .pbtn:disabled svg { color: inherit; }
+
+/* Tipografia */
+body { font-family: var(--font-sans); font-size: 0.9375rem; line-height: 1.5; }
+h1, h2 { text-wrap: balance; }
+.table :where(th, td) { font-variant-numeric: tabular-nums; }
+code, kbd, pre, .font-mono { font-family: var(--font-mono); }
+
+/* Densidade: `data-density="compact"` no <html> (opção na engrenagem). O padrão é confortável. */
+:root[data-density="compact"] {
+  --size-field: 0.21875rem; --size-selector: 0.21875rem; --ttw-gap: 0.625rem;
+}
+:root[data-density="compact"] .table :where(th, td) { padding-block: 0.25rem; }
+
+/* Texto secundário com contraste AA: `opacity-60/70` (60–70 %) dava ~4,4:1 sobre base-200 e o
+   cabeçalho de tabela do daisyUI usa 60 %. Atalho até a etapa 2 migrar esses usos para `text-text-muted`. */
+.opacity-60 { opacity: 0.75; }
+.opacity-70 { opacity: 0.8; }
+.table :where(thead, tfoot) { color: var(--ttw-text-muted); }
+.stat-title, .stat-desc, .stat-figure, .label { color: var(--ttw-text-muted); opacity: 1; }
