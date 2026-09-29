@@ -12,10 +12,13 @@ const { t } = useI18n()
 const f = ref({ left: 5, right: 5, unit: 'form', min_freq: 2, sort: 'll' })
 const data = ref(null)
 const error = ref(null)
+const busy = ref(false)
 async function run(node) {
   error.value = null
+  busy.value = true
   try { data.value = await api.explore.collocates({ corpus: props.corpus, layer: props.layer, node, ...f.value }) }
   catch (err) { error.value = err.message }
+  finally { busy.value = false }
 }
 const fx = (v, d = 2) => (v === null || v === undefined ? '—' : v.toFixed(d))
 const sortBy = ref('ll')
@@ -37,15 +40,15 @@ function setSort(k) {
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <QueryBox :label="t('explore.node')" @submit="run">
-      <label class="form-control"><span class="label-text">{{ t('explore.window') }}</span>
+    <QueryBox :label="t('explore.node')" :busy="busy" @submit="run">
+      <label class="ttw-field"><span class="ttw-label">{{ t('explore.window') }}</span>
         <span class="flex gap-1"><input v-model.number="f.left" type="number" min="0" max="20" class="input input-sm w-16" :aria-label="t('explore.left')" />
           <input v-model.number="f.right" type="number" min="0" max="20" class="input input-sm w-16" :aria-label="t('explore.right')" /></span></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.unit') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('explore.unit') }}</span>
         <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'word_pos', 'pos']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
-      <label class="form-control w-24"><span class="label-text">{{ t('explore.min_freq') }}</span>
+      <label class="ttw-field w-24"><span class="ttw-label">{{ t('explore.min_freq') }}</span>
         <input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.measure') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('explore.measure') }}</span>
         <select v-model="f.sort" class="select select-sm"><option value="ll">log-likelihood</option><option value="mi">MI</option><option value="t">T-score</option><option value="freq">freq</option></select></label>
     </QueryBox>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>

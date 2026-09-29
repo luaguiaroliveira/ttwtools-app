@@ -11,22 +11,25 @@ const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const data = ref(null)
 const error = ref(null)
+const busy = ref(false)
 const asTable = ref(false)
 async function run(query) {
   error.value = null
+  busy.value = true
   try { data.value = await api.explore.dispersion({ corpus: props.corpus, layer: props.layer, query }) }
   catch (err) { error.value = err.message }
+  finally { busy.value = false }
 }
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <QueryBox @submit="run" />
+    <QueryBox :busy="busy" @submit="run" />
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="font-medium">{{ t('explore.dp', { dp: f3(data.dp), dp_norm: f3(data.dp_norm), range: data.range, documents: data.documents }) }}
         <HelpTip topic="dispersao" /></p>
-      <div class="flex gap-1"><CopyCode analysis="dispersion" :params="{ corpus, query: data.query, layer }" />
+      <div class="flex items-center gap-1"><CopyCode analysis="dispersion" :params="{ corpus, query: data.query, layer }" />
         <ExportMenu :name="`dispersao_${data.query}`" :rows="data.per_document.map(({ positions, ...r }) => r)" :svg-root="fig" /></div>
       <figure ref="fig" class="flex flex-col gap-1">
         <figcaption class="text-sm flex items-center">{{ t('explore.barcode') }}

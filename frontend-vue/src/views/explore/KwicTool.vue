@@ -45,10 +45,10 @@ const posBucket = (p = '') => {
       <template v-if="data"><CopyCode analysis="kwic" :params="{ corpus, query, layer, context, limit, offset, sort }" />
         <ExportMenu :name="`kwic_${query}`" :rows="data.lines" :columns="['filename', 'start_char', 'left', 'match', 'right', 'pos', 'lemma']" /></template>
       <HelpTip topic="kwic" /></div>
-    <QueryBox :initial="String(route.query.q || '')" @submit="submit">
-      <label class="form-control w-24"><span class="label-text">{{ t('explore.context') }}</span>
+    <QueryBox :initial="String(route.query.q || '')" :busy="loading" @submit="submit">
+      <label class="ttw-field w-24"><span class="ttw-label">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.sort') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('explore.sort') }}</span>
         <select v-model="sort" class="select select-sm" @change="query && submit(query)">
           <option v-for="s in ['position', 'left', 'right']" :key="s" :value="s">{{ t(`explore.sort.${s}`) }}</option></select></label>
     </QueryBox>

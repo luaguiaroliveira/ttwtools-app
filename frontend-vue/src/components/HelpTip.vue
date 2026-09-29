@@ -29,9 +29,9 @@ function hide() { open.value = false }
   <span class="relative inline-flex align-middle">
     <button type="button" class="btn btn-circle btn-xs btn-ghost" :aria-describedby="id"
             :aria-expanded="open" :aria-label="label || t('common.help')"
-            @click="toggle" @focus="show" @mouseenter="show" @keydown.esc="hide">{{ term ? '?' : '?' }}</button>
+            @click="toggle" @focus="show" @mouseenter="show" @keydown.esc="hide">?</button>
     <span :id="id" role="tooltip"
-          :class="open ? 'absolute z-30 left-6 top-0 block w-64 p-2 rounded-box bg-base-300 text-sm shadow' : 'sr-only'">
+          :class="open ? 'absolute z-50 left-0 top-full mt-1 block w-64 max-w-[80vw] p-2 rounded-box bg-base-300 text-sm shadow-lg' : 'sr-only'">
       {{ text || t('common.loading') }}
       <CohenDVisual v-if="topic === 'cohens_d'" compact class="mt-2" />
       <RouterLink v-if="topic" :to="`/aprender/${topic}`" class="link block mt-1">{{ t('common.help') }} →</RouterLink>
