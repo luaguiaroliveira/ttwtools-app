@@ -10,9 +10,15 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 | 2. Componentes base próprios | **feita, aguardando revisão visual** (ver "Etapa 2") |
 | 3. Layout | **feita, aguardando revisão visual** (ver "Etapa 3") |
 | 4. Telas de resultado + gráficos | **feita, aguardando revisão visual** (ver "Etapa 4") |
-| 5. Vue Bits (só se passar o checklist) | pendente |
+| 5. Vue Bits (só se passar o checklist) | **parcial** (ver "Etapa 5"; `docs/ui-componentes.md`) |
 | 6. Responsivo | pendente |
 | 7. Verificação final | pendente |
+
+### Etapa 5 (parcial) e ajustes pós-revisão
+- [x] Vue Bits em `components/vb/` (SpotlightCard, CountUp, ShinyText, GradientText), sem dependência nova; registro em `docs/ui-componentes.md`.
+- [x] Cabeçalho refeito no estilo antigo: "TTWtools" (ShinyText) à esquerda com a seção atual e seu ícone; à direita chips de camada e corpus (ícone + seletor); menu lateral abaixo, com ícone grande e nome embaixo, item ativo com fundo e barra laranja. Ícones do menu redesenhados (duotone, detalhe laranja, animações com mola).
+- [x] Leitor: "colorir por" começa sempre em `tags` (cai para UPOS só se a camada não tiver tags); marcação incremental e sem animação (só redesenha o que mudou); botão direito na etiqueta ou no token abre o menu de estilo, que ganhou o botão de cor (paleta, cor livre, restaurar). Título de Explorar → "Explorar corpus".
+- [ ] Não feito: rota `/lab`, BorderGlow/GlareHover/Reveal em lista; medição de CPU; capturas.
 
 ### Etapa 4 (feita)
 - [x] Paleta `--chart-1..8` por tema (valores do plano; escuro e contraste compartilham), `--pos-*` com texto próprio (`--pos-fg-*`, ≥4,5:1 conferido), `--layer-*` derivados da paleta, `--chart-pos/--chart-neg` para o divergente. Classes `fill-chart-N`/`stroke-chart-N` (`@theme inline`); `SIDE_CLASS` usa a paleta. Antes o lado 2 (`secondary`, #3B3936) quase sumia no escuro.

@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import { api } from '../api/index.js'
 import OptionsForm from './OptionsForm.vue'
 import TagsetDrawer from './TagsetDrawer.vue'
+import SpotlightCard from './vb/SpotlightCard.vue'
 import Collapsible from './Collapsible.vue'
 
 const props = defineProps({
@@ -51,7 +52,7 @@ const already = computed(() => props.queued.some((s) => s.kind === 'tag' && s.ta
 </script>
 
 <template>
-  <li class="bg-base-100 rounded-box p-3 flex flex-col gap-2" :data-testid="`tagger-card-${tagger.id}`">
+  <SpotlightCard tag="li" class="ttw-rise bg-base-100 rounded-box p-3 flex flex-col gap-2" :data-testid="`tagger-card-${tagger.id}`">
     <div class="flex flex-wrap items-center gap-2">
       <h4 class="font-bold">{{ descriptor?.name ?? tagger.id }}</h4>
       <span v-if="!tagger.disponivel" class="badge badge-warning badge-sm">{{ t('tag.unavailable') }}</span>
@@ -82,5 +83,5 @@ const already = computed(() => props.queued.some((s) => s.kind === 'tag' && s.ta
       </Collapsible>
     </template>
     <TagsetDrawer :open="showTags" :tagger="tagger.id" @close="showTags = false" />
-  </li>
+  </SpotlightCard>
 </template>

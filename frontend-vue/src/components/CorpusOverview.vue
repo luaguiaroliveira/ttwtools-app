@@ -22,6 +22,7 @@ async function load() {
 }
 watch(() => [props.corpus, props.layer, hideStop.value], load, { immediate: true })
 
+const fmtN = (d = 0) => (v) => Number(v).toLocaleString(locale.value === 'pt' ? 'pt-BR' : 'en', { minimumFractionDigits: d, maximumFractionDigits: d })
 const n = (v, d = 0) => (v === null || v === undefined ? '—' : Number(v).toLocaleString(locale.value === 'pt' ? 'pt-BR' : 'en', { maximumFractionDigits: d }))
 </script>
 
@@ -38,15 +39,15 @@ const n = (v, d = 0) => (v === null || v === undefined ? '—' : Number(v).toLoc
         <ExportMenu :name="`visao_geral_${corpus}`" :rows="data.text.per_document" /></div>
       <p class="text-sm text-text-muted">{{ t('overview.estimates') }}</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2" data-testid="overview-stats">
-        <StatCard :label="t('overview.documents')" :value="n(data.text.documents)" />
-        <StatCard :label="t('overview.tokens')" :value="n(data.text.tokens)" help="normalizacao_por_mil" />
-        <StatCard :label="t('overview.types')" :value="n(data.text.types)" />
-        <StatCard :label="t('overview.hapax')" :value="n(data.text.hapax)" />
-        <StatCard :label="t('overview.ttr')" :value="n(data.text.ttr, 3)" />
-        <StatCard :label="t('overview.sttr')" :value="n(data.text.sttr, 3)" />
-        <StatCard :label="t('overview.mattr')" :value="n(data.text.mattr, 3)" />
-        <StatCard :label="t('overview.word_length')" :value="n(data.text.mean_word_length, 2)" />
-        <StatCard :label="t('overview.sentences')" :value="n(data.text.sentences)" />
+        <StatCard :label="t('overview.documents')" :value="n(data.text.documents)" :count="data.text.documents" :format="fmtN(0)" />
+        <StatCard :label="t('overview.tokens')" :value="n(data.text.tokens)" :count="data.text.tokens" :format="fmtN(0)" help="normalizacao_por_mil" />
+        <StatCard :label="t('overview.types')" :value="n(data.text.types)" :count="data.text.types" :format="fmtN(0)" />
+        <StatCard :label="t('overview.hapax')" :value="n(data.text.hapax)" :count="data.text.hapax" :format="fmtN(0)" />
+        <StatCard :label="t('overview.ttr')" :value="n(data.text.ttr, 3)" :count="data.text.ttr" :format="fmtN(3)" />
+        <StatCard :label="t('overview.sttr')" :value="n(data.text.sttr, 3)" :count="data.text.sttr" :format="fmtN(3)" />
+        <StatCard :label="t('overview.mattr')" :value="n(data.text.mattr, 3)" :count="data.text.mattr" :format="fmtN(3)" />
+        <StatCard :label="t('overview.word_length')" :value="n(data.text.mean_word_length, 2)" :count="data.text.mean_word_length" :format="fmtN(2)" />
+        <StatCard :label="t('overview.sentences')" :value="n(data.text.sentences)" :count="data.text.sentences" :format="fmtN(0)" />
       </div>
       <p class="text-sm">{{ t('overview.doc_sizes') }}: {{ n(data.text.document_tokens.min) }} · {{ n(data.text.document_tokens.median) }} · {{ n(data.text.document_tokens.max) }}</p>
       <BarChart :title="t('overview.top_words')" :items="data.text.top_words.map((w) => ({ label: w.word, value: w.freq }))" value-label="freq" />

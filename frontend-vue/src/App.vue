@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import { useRoute } from 'vue-router'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
 import { setLang } from './i18n.js'
 import { applyDensity, applyTheme, initialDensity, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
+import ShinyText from './components/vb/ShinyText.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
 import AboutDialog from './components/AboutDialog.vue'
@@ -14,6 +16,8 @@ import AboutDialog from './components/AboutDialog.vue'
 const { t, locale } = useI18n()
 const session = useSession()
 const { corpus, layer, layers, corpora, project, projectPath, unsaved } = storeToRefs(session)
+const route = useRoute()
+const section = computed(() => NAV.find((n) => n.name === route.name) ?? (route.name === 'home' ? { icon: 'learn', label: 'nav.info' } : null))
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
@@ -29,64 +33,37 @@ const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
 const changeLang = (value) => setLang(value)
-// Menu lateral: rótulos visíveis só em telas largas (≥1440 px, ver style.css); a escolha fica guardada.
-const NAV_KEY = 'ttw.nav'
-const navWide = ref((() => { try { return localStorage.getItem(NAV_KEY) === 'wide' } catch { return false } })())
-const toggleNav = () => { navWide.value = !navWide.value; try { localStorage.setItem(NAV_KEY, navWide.value ? 'wide' : 'narrow') } catch { /* */ } }
 </script>
 
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
-  <div class="min-h-dvh bg-base-100 text-base-content flex flex-col md:flex-row">
-    <!-- trilho lateral mínimo: só ícones (o nome aparece ao passar o mouse ou focar) -->
-    <nav class="ttw-rail hidden md:flex flex-col items-center gap-1 border-r border-base-300 bg-base-200 py-2 px-1.5 w-14 shrink-0 sticky top-0 self-start h-dvh"
-         :class="{ 'ttw-rail-wide': navWide }" :aria-label="t('nav.label')">
-      <button type="button" class="flex flex-col items-center leading-none py-2 mb-1 hover:text-primary" data-testid="about-open"
-              :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('app.title')" @click="about = true">
-        <span class="font-black text-sm tracking-tight">TTW</span><span class="text-[0.6rem] font-semibold opacity-80">tools</span>
-      </button>
-      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" :aria-label="t(item.label)"
-                  class="nav-item tooltip tooltip-right btn btn-ghost w-11 h-11 min-h-0 p-0"
-                  active-class="nav-active" :data-tip="t(item.label)">
-        <NavIcon :name="item.icon" />
-        <span class="rail-label">{{ t(item.label) }}</span>
-      </RouterLink>
-      <RouterLink to="/inicio" :aria-label="t('nav.info')" class="nav-item tooltip tooltip-right btn btn-ghost w-11 h-11 min-h-0 p-0 mt-auto"
-                  active-class="nav-active" :data-tip="t('nav.info')">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
-        <span class="rail-label">{{ t('nav.info') }}</span>
-      </RouterLink>
-      <button type="button" class="rail-toggle btn btn-ghost w-11 h-11 min-h-0 p-0" data-testid="nav-toggle"
-              :aria-label="navWide ? t('nav.collapse') : t('nav.expand')" :title="navWide ? t('nav.collapse') : t('nav.expand')"
-              :aria-pressed="navWide" @click="toggleNav">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3.500" y="4.500" width="17" height="15" rx="2" /><path d="M9 4.500v15" /><path :d="navWide ? 'M15.500 10l-2 2 2 2' : 'M13.500 10l2 2-2 2'" /></svg>
-      </button>
-    </nav>
-
-    <div class="flex-1 flex flex-col min-w-0">
-      <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-20 bg-base-100">
-        <div class="flex-1 min-w-0 flex items-center gap-1 flex-wrap">
-          <span class="md:hidden font-bold mr-3">{{ t('app.title') }}</span>
-          <span class="text-sm text-text-muted hidden sm:inline">{{ t('header.active_corpus') }}:</span>
-          <select v-if="project" class="select select-xs max-w-[10rem] sm:max-w-48" data-testid="active-corpus"
-                  :disabled="!corpora.length" :aria-label="t('header.active_corpus')" :value="corpus || ''"
+  <div class="min-h-dvh bg-base-100 text-base-content flex flex-col">
+  <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
+        <button type="button" class="ttw-wordmark shrink-0 font-black text-lg tracking-tight px-1" data-testid="about-open"
+                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><ShinyText>TTWtools</ShinyText></button>
+        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
+          <NavIcon :name="section.icon" :size="20" />{{ t(section.label) }}</span>
+        <div class="flex-1" />
+        <!-- camada ativa e corpus ativo, como chips com ícone; o seletor fica dentro do chip -->
+        <label class="ttw-chip hidden sm:inline-flex" :title="t('header.layer_hint')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3.500 12.500V4.500a1 1 0 0 1 1-1h8l8 8a1.500 1.500 0 0 1 0 2.100l-6.300 6.300a1.500 1.500 0 0 1-2.100 0z" /><circle cx="8" cy="8" r="1.300" /></svg>
+          <select class="ttw-chip-select" data-testid="header-layer" :disabled="!corpus" :aria-label="t('header.layer')" :value="layer || ''"
+                  @change="session.setLayer($event.target.value || null)">
+            <option value="">{{ t('header.no_layer') }}</option>
+            <option v-for="l in layers" :key="l.tool" :value="l.tool">{{ l.tool }}</option>
+          </select>
+        </label>
+        <label v-if="project" class="ttw-chip">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4" /></svg>
+          <select class="ttw-chip-select max-w-[9rem] sm:max-w-56" data-testid="active-corpus" :disabled="!corpora.length" :aria-label="t('header.active_corpus')" :value="corpus || ''"
                   @change="session.setCorpus($event.target.value || null)">
             <option value="">{{ t('header.select_corpus') }}</option>
             <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}{{ c.layers?.length ? ` · ${t('header.corpus_layers', { n: c.layers.length })}` : '' }}</option>
           </select>
-          <span v-else class="badge badge-outline ml-1 max-w-48 truncate">{{ t('header.no_corpus') }}</span>
-          <span class="hidden sm:inline-flex items-center gap-1 ml-1" :title="t('header.layer_hint')">
-            <span class="text-sm text-text-muted">{{ t('header.layer') }}:</span>
-            <select class="select select-xs" data-testid="header-layer" :disabled="!corpus"
-                    :aria-label="t('header.layer')" :value="layer || ''"
-                    @change="session.setLayer($event.target.value || null)">
-              <option value="">{{ t('header.no_layer') }}</option>
-              <option v-for="l in layers" :key="l.tool" :value="l.tool">{{ l.tool }}</option>
-            </select>
-          </span>
-        </div>
+        </label>
+        <span v-else class="badge badge-outline max-w-48 truncate">{{ t('header.no_corpus') }}</span>
         <RouterLink v-if="unsaved" to="/arquivo" class="badge badge-warning gap-1" data-testid="header-unsaved"
                     :title="t('project.unsaved_text')">● {{ t('project.unsaved_badge') }}</RouterLink>
         <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
@@ -114,7 +91,23 @@ const toggleNav = () => { navWide.value = !navWide.value; try { localStorage.set
             <p class="text-xs text-text-muted truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
           </div>
         </details>
-      </header>
+  </header>
+    <div class="flex flex-1 flex-col md:flex-row min-w-0">
+    <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
+    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-24 shrink-0 sticky top-12 self-start h-[calc(100dvh-3rem)] overflow-y-auto"
+         :aria-label="t('nav.label')">
+      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active">
+        <NavIcon :name="item.icon" :size="30" />
+        <span class="rail-label">{{ t(item.label) }}</span>
+      </RouterLink>
+      <RouterLink to="/inicio" class="nav-item rail-item mt-auto" active-class="nav-active">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
+        <span class="rail-label">{{ t('nav.info') }}</span>
+      </RouterLink>
+    </nav>
+
+    <div class="flex-1 flex flex-col min-w-0">
 
       <main id="main" class="flex-1 p-4 pb-24 md:pb-4" tabindex="-1">
         <div v-if="loadError" role="alert" class="alert alert-error mb-4">{{ t('api.error.network') }}</div>
@@ -122,6 +115,7 @@ const toggleNav = () => { navWide.value = !navWide.value; try { localStorage.set
       </main>
     </div>
 
+    </div>
     <AboutDialog :open="about" @close="about = false" />
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />

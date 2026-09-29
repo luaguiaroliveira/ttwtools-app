@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
+import GradientText from '../components/vb/GradientText.vue'
 import { useSession } from '../stores/session.js'
 const TOOLS = {
   'palavras-chave': defineAsyncComponent(() => import('./compare/KeywordsTool.vue')),
@@ -18,7 +19,7 @@ const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palav
 </script>
 <template>
   <div class="flex flex-col gap-3 max-w-[96rem]">
-    <h1 class="text-xl font-bold">{{ t('compare.title') }}</h1>
+    <h1 class="text-xl font-bold"><GradientText>{{ t('compare.title') }}</GradientText></h1>
     <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
       <span>{{ t('compare.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="compare-corpus" :value="corpus || ''"

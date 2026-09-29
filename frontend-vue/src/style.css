@@ -159,8 +159,6 @@
 .reader-tok { cursor: pointer; border-radius: 2px; position: relative; }
 .reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }
 .reader-tok svg.rn path { stroke-linecap: round; }
-.rn-anim path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rn-draw .4s ease-out var(--rn-delay, 0ms) forwards; }
-@keyframes rn-draw { to { stroke-dashoffset: 0; } }
 .reader-tok.is-selected { outline: 2px solid #B8460A; }
 .reader-tok.is-hit { background: #fde68a; }
 .reader-legend { display: flex; flex-wrap: wrap; gap: .2cm .6cm; margin-top: 1cm; padding-top: .3cm; border-top: 1px solid #ccc;
@@ -175,25 +173,30 @@
 }
 
 /* Menu lateral: item ativo e animações dos ícones (só ao passar o mouse/focar ou no item ativo) */
-.nav-item.nav-active { background: color-mix(in oklab, var(--color-primary) 18%, transparent); color: var(--color-primary); }
+.nav-item.nav-active { background: color-mix(in oklab, var(--color-primary) 16%, transparent); color: var(--color-base-content); box-shadow: inset 3px 0 0 var(--ttw-orange-text); }
+.nav-ico { overflow: visible; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
 .nav-ico * { transform-box: fill-box; transform-origin: center; }
-.nav-ico .a-swing { transform-origin: 30% 30%; }
-.nav-item:hover .a-swing, .nav-item:focus-visible .a-swing { animation: ico-swing .7s ease-in-out; }
+.nav-ico .duo { fill: currentColor; fill-opacity: .13; stroke: none; }
+.nav-ico .duo-acc { fill: var(--ttw-orange-text); fill-opacity: .22; stroke: none; }
+.nav-ico .acc { stroke: var(--ttw-orange-text); }
+.nav-ico .a-dot { fill: var(--ttw-orange-text); fill-opacity: .35; }
+.nav-item:hover .nav-ico, .nav-item:focus-visible .nav-ico { transform: translateY(-2px) scale(1.12); }
+.nav-item.nav-active .nav-ico { transform: scale(1.06); }
+.nav-item.nav-active .nav-ico .duo { fill-opacity: .2; }
+.nav-item:hover .a-swing, .nav-item:focus-visible .a-swing { animation: ico-swing .8s ease-in-out; transform-origin: 30% 30%; }
 .nav-item:hover .a-flap, .nav-item:focus-visible .a-flap { animation: ico-flap .5s ease-out; }
-.nav-item:hover .a-back1, .nav-item:focus-visible .a-back1 { animation: ico-shift1 .5s ease-out forwards; }
-.nav-item:hover .a-back2, .nav-item:focus-visible .a-back2 { animation: ico-shift2 .5s ease-out forwards; }
+.nav-item:hover .a-lens, .nav-item:focus-visible .a-lens { animation: ico-lens 1s ease-in-out; }
 .nav-item:hover .a-arrows, .nav-item:focus-visible .a-arrows { animation: ico-arrows .7s ease-in-out; }
 .nav-item:hover .a-pencil, .nav-item:focus-visible .a-pencil { animation: ico-write .8s ease-in-out; }
-.nav-item:hover .a-q1, .nav-item:hover .a-q2, .nav-item:hover .a-q3, .nav-item:hover .a-q4 { animation: ico-pop .5s ease-out; }
+.nav-item:hover .a-q1, .nav-item:hover .a-q2, .nav-item:hover .a-q3, .nav-item:hover .a-q4 { animation: ico-pop .55s cubic-bezier(.34, 1.56, .64, 1); }
 .nav-item:hover .a-q2 { animation-delay: .06s; } .nav-item:hover .a-q3 { animation-delay: .12s; } .nav-item:hover .a-q4 { animation-delay: .18s; }
 .nav-item:hover .a-tassel, .nav-item:focus-visible .a-tassel { animation: ico-swing .8s ease-in-out; }
-@keyframes ico-swing { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-18deg) } 60% { transform: rotate(12deg) } }
-@keyframes ico-flap { 0%,100% { transform: translate(0,0) } 40% { transform: translate(1.500px,-1.500px) } }
-@keyframes ico-shift1 { to { transform: translate(-1.500px, 1px) } }
-@keyframes ico-shift2 { to { transform: translate(1.500px, -1px) } }
-@keyframes ico-arrows { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-1.500px) } 70% { transform: translateX(1.500px) } }
-@keyframes ico-write { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-2px,1.500px) } 50% { transform: translate(0,0) } 75% { transform: translate(-1.500px,2px) } }
-@keyframes ico-pop { 0%,100% { transform: scale(1) } 50% { transform: scale(.78) } }
+@keyframes ico-swing { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-20deg) } 60% { transform: rotate(14deg) } }
+@keyframes ico-flap { 0%,100% { transform: translate(0,0) } 40% { transform: translate(2px,-2px) } }
+@keyframes ico-lens { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-3px,-3px) } 50% { transform: translate(-4px,0) } 75% { transform: translate(-1px,-4px) } }
+@keyframes ico-arrows { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-2px) } 70% { transform: translateX(2px) } }
+@keyframes ico-write { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-2px,2px) } 50% { transform: translate(0,0) } 75% { transform: translate(-2px,2.500px) } }
+@keyframes ico-pop { 0%,100% { transform: scale(1) } 45% { transform: scale(.72) } }
 
 /* Botões da barra de arquivo (Novo, Abrir, Recentes, Salvar...) */
 .pbtn { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; min-width: 4.75rem;
@@ -251,22 +254,17 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 .ttw-sticky-form { position: sticky; top: 3rem; z-index: 10; background: var(--color-base-100); padding-block: .5rem; margin-block: -.5rem;
   border-bottom: 1px solid var(--color-base-300); }
 @media (max-height: 640px) { .ttw-sticky-form { position: static; } }
-/* Menu lateral: 56 px; com rótulos (176 px) só em telas ≥1440 px, por escolha da pessoa */
-.rail-label { display: none; }
-.rail-toggle { display: none; }
-@media (min-width: 1440px) {
-  .rail-toggle { display: inline-flex; align-items: center; justify-content: center; }
-  .ttw-rail-wide { width: 11rem; align-items: stretch; }
-  .ttw-rail-wide .nav-item, .ttw-rail-wide .rail-toggle { width: 100%; justify-content: flex-start; gap: .625rem; padding-inline: .6rem; }
-  .ttw-rail-wide .rail-label { display: inline; font-size: .8125rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ttw-rail-wide .tooltip::before, .ttw-rail-wide .tooltip::after { display: none; }
-}
+/* Menu lateral: ícone grande com o nome embaixo; ativo com fundo laranja suave e texto em orange-text */
+.rail-item { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .625rem .25rem; border-radius: var(--radius-box);
+  text-align: center; transition: background-color .15s; }
+.rail-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+.rail-label { font-size: .75rem; line-height: 1.15; font-weight: 600; overflow-wrap: anywhere; }
 /* Tabelas paginadas: cabeçalho fixo dentro da área rolável e números à direita */
 .ttw-scroll { overflow: auto; max-height: min(70dvh, 46rem); }
 .ttw-scroll .table :where(thead th) { position: sticky; top: 0; z-index: 1; background: var(--color-base-200); }
 .ttw-scroll .table :where(tbody th:first-child, tbody td:first-child) { position: sticky; left: 0; background: var(--color-base-100); }
 /* Foco/âncoras não ficam sob a barra de contexto fixa nem sob a barra inferior (WCAG 2.4.11) */
-html { scroll-padding-top: 6.5rem; scroll-padding-bottom: 5rem; }
+html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 
 /* ---- Cores de gráficos (etapa 4): categórica, classes gramaticais e camadas, por tema ----
    Marcas ≥3:1 sobre o fundo; rótulos de POS ≥4,5:1 (conferir com scripts/contrast.py).
@@ -298,3 +296,16 @@ html { scroll-padding-top: 6.5rem; scroll-padding-bottom: 5rem; }
   --layer-stats: var(--chart-8); --layer-spacy: var(--chart-3); --layer-stanza: var(--chart-4);
   --layer-mfte: var(--chart-6); --layer-biberplus: var(--chart-5);
 }
+
+/* Entrada suave de cartões (só opacidade e deslocamento curto; desligada com prefers-reduced-motion) */
+.ttw-rise { animation: ttw-rise .45s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes ttw-rise { from { opacity: 0; transform: translateY(8px); } }
+
+/* Cabeçalho: chips de camada e corpus (ícone + seletor sem moldura) */
+.ttw-chip { display: inline-flex; align-items: center; gap: .375rem; padding: .25rem .625rem; border-radius: 999px; font-size: .875rem; font-weight: 600;
+  background: var(--color-base-100); border: 1px solid var(--ttw-border-strong); transition: border-color .15s, box-shadow .15s; }
+.ttw-chip:hover, .ttw-chip:focus-within { border-color: var(--ttw-orange-text); box-shadow: 0 0 0 3px color-mix(in oklab, var(--ttw-orange-text) 18%, transparent); }
+.ttw-chip-select { appearance: none; -webkit-appearance: none; background: transparent; border: 0; outline: 0; font: inherit; color: inherit; cursor: pointer;
+  text-overflow: ellipsis; padding-right: .25rem; }
+.ttw-chip-select:disabled { cursor: not-allowed; opacity: .6; }
+.ttw-chip:has(:focus-visible) { outline: 3px solid var(--ttw-orange-text); outline-offset: 2px; }
