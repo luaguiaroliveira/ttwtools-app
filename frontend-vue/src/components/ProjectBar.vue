@@ -9,6 +9,7 @@ import { useSession } from '../stores/session.js'
 import { api } from '../api/index.js'
 import { useJob } from '../composables/useJob.js'
 import JobProgress from './JobProgress.vue'
+import BusyModal from './BusyModal.vue'
 import Collapsible from './Collapsible.vue'
 import FileIcon from './FileIcon.vue'
 import RecentList from './RecentList.vue'
@@ -153,11 +154,6 @@ const exportAll = () => act(async () => {
       <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
       <span class="text-text-muted truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
     </div>
-    <!-- sem projeto aberto: se há recentes, ficam à vista (só a lista, sem texto explicativo) -->
-    <div v-else-if="recent.length" class="flex flex-col gap-1">
-      <h2 class="text-sm font-bold">{{ t('project.recent') }}</h2>
-      <RecentList :files="recent" :disabled="busy || saving" @open="openRecent" @remove="removeRecent" @clear="removeRecent(null)" />
-    </div>
     <fieldset v-if="project" class="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" data-testid="save-options"
               data-explain="explain.corpora.save_options">
       <legend class="sr-only">{{ t('project.options_title') }}</legend>
@@ -200,9 +196,11 @@ const exportAll = () => act(async () => {
        class="alert alert-warning w-full text-sm py-1">
       {{ t('project.corpus_missing', { missing: project.corpus_status.missing, changed: project.corpus_status.changed }) }}
     </p>
-    <JobProgress v-if="opening" :job="opening" @cancel="api.jobs.cancel(opening.id)" />
-    <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted">{{ t('project.migrate_hint') }}</p>
-    <JobProgress v-if="saving || saveJob.job.value?.status === 'error'" :job="saveJob.job.value" @cancel="saveJob.cancel" />
+    <BusyModal :open="Boolean(opening)" :title="t('project.opening_title')" :job="opening" @cancel="api.jobs.cancel(opening.id)">
+      <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted mt-2">{{ t('project.migrate_hint') }}</p>
+    </BusyModal>
+    <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" @cancel="saveJob.cancel" />
+    <JobProgress v-if="saveJob.job.value?.status === 'error'" :job="saveJob.job.value" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1" data-testid="file-done"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <Collapsible v-if="project" :title="t('project.more')">

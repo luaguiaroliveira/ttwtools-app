@@ -1,5 +1,6 @@
 // Testes de ponta a ponta nas três larguras, com o Chrome instalado (sem baixar navegadores).
 // O servidor Python sobe sozinho servindo ../frontend (rode `npm run build` antes).
+import { tmpdir } from 'node:os'
 import { defineConfig } from '@playwright/test'
 
 const PORT = 8792
@@ -21,6 +22,8 @@ export default defineConfig({
     cwd: '..',
     url: `http://127.0.0.1:${PORT}/api/health`,
     reuseExistingServer: false,
+    // lista de recentes própria dos testes: não suja a do usuário
+    env: { ...process.env, TTWTOOLS_HOME: `${tmpdir()}/ttw-e2e-home` },
     timeout: 120_000,
   },
 })
