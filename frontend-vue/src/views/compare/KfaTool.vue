@@ -67,9 +67,9 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
         <div class="flex flex-wrap items-end gap-2 pt-2">
           <label class="form-control"><span class="label-text">{{ t('kfa.layer') }}</span>
             <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-          <label class="form-control"><span class="label-text flex items-center gap-1">{{ t('kfa.metric') }}<HelpTip term="kfa" /></span>
+          <label class="form-control"><span class="label-text flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
             <select v-model="f.metric" class="select select-sm"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
-          <label class="form-control w-24"><span class="label-text flex items-center gap-1">{{ t('kfa.min_effect') }}<HelpTip term="cohens_d" /></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
+          <label class="form-control w-24"><span class="label-text flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
         </div>
       </Collapsible>
     </div>

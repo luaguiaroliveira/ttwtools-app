@@ -207,11 +207,11 @@ function seeInCorpus(item) {
               <th scope="col">{{ t('writing.direction') }}</th>
               <th scope="col" class="text-right">{{ t('explore.freq') }}</th>
               <th scope="col" class="text-right">{{ t('explore.per_1000') }}</th>
-              <th scope="col" class="text-right whitespace-nowrap">LL <HelpTip term="ll" /></th>
+              <th scope="col" class="text-right whitespace-nowrap"><HelpTip term="ll">LL</HelpTip></th>
               <th scope="col" class="text-right whitespace-nowrap">p corr.</th>
-              <th scope="col" class="text-right whitespace-nowrap">log ratio <HelpTip term="log_ratio" /></th>
-              <th v-if="!isPatterns" scope="col" class="text-right whitespace-nowrap">%DIFF <HelpTip term="percent_diff" /></th>
-              <th scope="col" class="text-right whitespace-nowrap">{{ t('writing.col_z') }} <HelpTip term="z_score" /></th>
+              <th scope="col" class="text-right whitespace-nowrap"><HelpTip term="log_ratio">log ratio</HelpTip></th>
+              <th v-if="!isPatterns" scope="col" class="text-right whitespace-nowrap"><HelpTip term="percent_diff">%DIFF</HelpTip></th>
+              <th scope="col" class="text-right whitespace-nowrap"><HelpTip term="z_score">{{ t('writing.col_z') }}</HelpTip></th>
               <th scope="col" class="text-right whitespace-nowrap">{{ t('writing.dispersion') }}</th>
               <th scope="col">{{ t('writing.reliability') }}</th>
             </tr></thead>
@@ -249,7 +249,7 @@ function seeInCorpus(item) {
               <thead><tr><th scope="col">{{ t('writing.col_collocate') }}</th>
                 <th scope="col" class="text-right">{{ t('explore.freq') }} ({{ t('writing.text_short') }})</th>
                 <th scope="col" class="text-right">{{ t('explore.freq') }} (ref.)</th>
-                <th scope="col" class="text-right whitespace-nowrap">log ratio <HelpTip term="log_ratio" /></th>
+                <th scope="col" class="text-right whitespace-nowrap"><HelpTip term="log_ratio">log ratio</HelpTip></th>
                 <th scope="col">{{ t('writing.reliability') }}</th></tr></thead>
               <tbody><tr v-for="c in colloc.rows" :key="c.collocate">
                 <td class="font-medium">{{ c.collocate }}</td>

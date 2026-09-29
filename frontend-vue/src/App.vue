@@ -1,11 +1,11 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
-import { LANGS, setLang } from './i18n.js'
-import { THEMES, applyTheme, initialTheme } from './theme.js'
+import { setLang } from './i18n.js'
+import { applyTheme, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
@@ -21,6 +21,8 @@ onMounted(async () => {
   try { await session.load(); await session.checkPendingOpen() } catch (err) { loadError.value = err }
   window.addEventListener('focus', () => session.checkPendingOpen().catch(() => {}))
 })
+const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+const isDark = computed(() => theme.value === 'dark' || theme.value === 'contrast' || (theme.value === 'system' && prefersDark))
 const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const changeLang = (value) => setLang(value)
 </script>
@@ -69,22 +71,22 @@ const changeLang = (value) => setLang(value)
         <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
         <details class="dropdown dropdown-end">
           <summary class="btn btn-ghost btn-sm" :aria-label="t('menu.settings')">⚙︎</summary>
-          <div class="dropdown-content z-20 menu bg-base-200 rounded-box w-64 p-3 shadow gap-3">
-            <p class="text-xs opacity-70 truncate">{{ projectPath || t('header.no_project') }}</p>
-            <label class="form-control">
-              <span class="label-text">{{ t('theme.label') }}</span>
-              <select class="select select-sm" :value="theme" data-testid="theme-select"
-                      @change="changeTheme($event.target.value)">
-                <option v-for="th in THEMES" :key="th" :value="th">{{ t(`theme.${th}`) }}</option>
-              </select>
+          <div class="dropdown-content z-20 bg-base-200 rounded-box w-64 p-3 shadow flex flex-col gap-2">
+            <div class="flex items-center gap-2">
+              <button type="button" class="btn btn-sm flex-1 font-bold" data-testid="lang-toggle"
+                      :title="t('lang.label')" :aria-label="t('lang.label')" @click="changeLang(locale === 'pt' ? 'en' : 'pt')">{{ locale.toUpperCase() }}</button>
+              <button type="button" class="btn btn-sm flex-1" data-testid="theme-toggle" :title="t('theme.label')" :aria-label="t('theme.label')"
+                      :aria-pressed="!isDark" @click="changeTheme(isDark ? 'light' : 'dark')">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                     :fill="isDark ? 'none' : 'currentColor'" :fill-opacity="isDark ? 0 : 0.35">
+                  <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.500 10.900c.6.5 1 1.200 1 2.100h5c0-.9.4-1.600 1-2.100A6 6 0 0 0 12 3z" /></svg>
+              </button>
+            </div>
+            <label class="flex items-center gap-2 text-xs cursor-pointer">
+              <input type="checkbox" class="checkbox checkbox-xs" data-testid="contrast-toggle" :checked="theme === 'contrast'"
+                     @change="changeTheme($event.target.checked ? 'contrast' : (prefersDark ? 'dark' : 'light'))" />{{ t('theme.contrast') }}
             </label>
-            <label class="form-control">
-              <span class="label-text">{{ t('lang.label') }}</span>
-              <select class="select select-sm" :value="locale" data-testid="lang-select"
-                      @change="changeLang($event.target.value)">
-                <option v-for="l in LANGS" :key="l" :value="l">{{ l === 'pt' ? 'Português' : 'English' }}</option>
-              </select>
-            </label>
+            <p class="text-xs opacity-60 truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
           </div>
         </details>
       </header>
