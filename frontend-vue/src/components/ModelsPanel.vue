@@ -53,11 +53,11 @@ function download(id) {
           <details class="text-xs">
             <summary class="cursor-pointer opacity-80">{{ t('modules.details') }}</summary>
             <dl class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 mt-1">
-              <dt class="opacity-70">{{ t('modules.id') }}</dt><dd><code>{{ m.id }}</code></dd>
-              <dt class="opacity-70">{{ t('catalog.source') }}</dt><dd><a class="link" :href="m.source_url" target="_blank" rel="noopener">{{ m.source }}</a></dd>
-              <dt class="opacity-70">{{ t('modules.download_from') }}</dt><dd>{{ m.download_from }}</dd>
-              <dt class="opacity-70">{{ t('catalog.license') }}</dt><dd><a class="link" :href="m.license_url" target="_blank" rel="noopener">{{ m.license }}</a></dd>
-              <dt class="opacity-70">{{ t('modules.trained_on') }}</dt><dd>{{ m.trained_on.join(' · ') }}</dd>
+              <dt class="text-text-muted">{{ t('modules.id') }}</dt><dd><code>{{ m.id }}</code></dd>
+              <dt class="text-text-muted">{{ t('catalog.source') }}</dt><dd><a class="link" :href="m.source_url" target="_blank" rel="noopener">{{ m.source }}</a></dd>
+              <dt class="text-text-muted">{{ t('modules.download_from') }}</dt><dd>{{ m.download_from }}</dd>
+              <dt class="text-text-muted">{{ t('catalog.license') }}</dt><dd><a class="link" :href="m.license_url" target="_blank" rel="noopener">{{ m.license }}</a></dd>
+              <dt class="text-text-muted">{{ t('modules.trained_on') }}</dt><dd>{{ m.trained_on.join(' · ') }}</dd>
             </dl>
           </details>
         </li>

@@ -226,9 +226,29 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 }
 :root[data-density="compact"] .table :where(th, td) { padding-block: 0.25rem; }
 
-/* Texto secundário com contraste AA: `opacity-60/70` (60–70 %) dava ~4,4:1 sobre base-200 e o
-   cabeçalho de tabela do daisyUI usa 60 %. Atalho até a etapa 2 migrar esses usos para `text-text-muted`. */
-.opacity-60 { opacity: 0.75; }
-.opacity-70 { opacity: 0.8; }
+/* Texto secundário: usar `text-text-muted` (AA). O cabeçalho de tabela e os rótulos do daisyUI usam 60 % de opacidade. */
 .table :where(thead, tfoot) { color: var(--ttw-text-muted); }
 .stat-title, .stat-desc, .stat-figure, .label { color: var(--ttw-text-muted); opacity: 1; }
+
+/* ---- Componentes base (etapa 2): um só sistema de botões, campos, abas, superfícies e tabelas ---- */
+/* Botões: um único `btn-primary` por região; contorno e fantasma em laranja de texto (AA) */
+.btn { font-weight: 500; }
+.btn-outline.btn-primary, .btn-ghost.btn-primary { color: var(--ttw-orange-text); border-color: var(--ttw-orange-text); }
+.btn-outline.btn-primary:hover { background: var(--ttw-orange-text); color: var(--color-base-100); }
+.btn:not(.btn-primary):not(.btn-ghost):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-info) { border-color: var(--ttw-border-strong); }
+/* Campos: borda forte (3:1) e realce ao focar */
+.input:focus, .input:focus-within, .select:focus, .textarea:focus { border-color: var(--ttw-orange-text); }
+.checkbox:checked, .toggle:checked { --input-color: var(--color-primary); }
+/* Abas: aba ativa marcada por sublinhado laranja além do fundo (não só por cor) */
+.tabs-box .tab-active { background: var(--color-base-100); box-shadow: inset 0 -2px 0 var(--ttw-orange-text), var(--ttw-shadow-card); }
+/* Superfícies: cartões e painéis com borda fina e a mesma sombra discreta */
+.card.bg-base-200, .stat, .modal-box, .collapse { border: 1px solid var(--color-base-300); }
+.card.bg-base-200, .stat { box-shadow: var(--ttw-shadow-card); }
+.modal-box { border-radius: var(--radius-box); }
+/* Tabelas: linha de cabeçalho marcada, zebra leve e destaque ao passar o mouse */
+.table :where(thead tr) { border-bottom: 1px solid var(--ttw-border-strong); }
+.table :where(tbody tr:nth-child(even)) { background: color-mix(in oklab, var(--color-base-200) 55%, transparent); }
+.table :where(tbody tr:hover) { background: color-mix(in oklab, var(--color-primary) 10%, transparent); }
+.table :where(th) { font-weight: 600; }
+/* Etiquetas de estado */
+.badge { font-weight: 500; }

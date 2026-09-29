@@ -21,5 +21,5 @@ onMounted(async () => {
 onBeforeUnmount(() => { if (Plotly && el.value) Plotly.purge(el.value) })
 </script>
 <template>
-  <div><p v-if="loading" class="text-sm opacity-70">{{ t('gallery.loading') }}</p><div ref="el" class="w-full" :aria-label="t('gallery.pca3d')" role="img" /></div>
+  <div><p v-if="loading" class="text-sm text-text-muted">{{ t('gallery.loading') }}</p><div ref="el" class="w-full" :aria-label="t('gallery.pca3d')" role="img" /></div>
 </template>

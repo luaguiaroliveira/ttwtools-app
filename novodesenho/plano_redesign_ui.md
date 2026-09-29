@@ -7,12 +7,18 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 | Etapa | Situação |
 |---|---|
 | 1. Tokens e temas | **feita, aguardando revisão visual do usuário** (ver "Andamento da etapa 1") |
-| 2. Componentes base próprios | pendente |
+| 2. Componentes base próprios | **feita, aguardando revisão visual** (ver "Etapa 2") |
 | 3. Layout | pendente |
 | 4. Telas de resultado + gráficos | pendente |
 | 5. Vue Bits (só se passar o checklist) | pendente |
 | 6. Responsivo | pendente |
 | 7. Verificação final | pendente |
+
+### Etapa 2 (feita)
+- [x] Migrados `form-control`/`label-text` → `.ttw-field/.ttw-label` e `opacity-60/70` → `text-text-muted` em todos os `.vue`; atalhos de opacidade removidos (restam só cabeçalho de tabela e `.stat-*`/`.label` em muted).
+- [x] Bloco "Componentes base" no fim de `style.css`: botões (contorno/fantasma em orange-text, borda forte), campos (foco laranja), abas (ativa com sublinhado laranja), superfícies (cartão/stat/modal/collapse com borda + sombra), tabelas (cabeçalho marcado, zebra leve, hover), badges. `Collapsible` mais compacto. Na barra de arquivo só **Novo** é primário quando não há projeto.
+- [x] Build, `npm test` e e2e (axe, 3 tamanhos, 12 testes) passam.
+- [ ] Não feito nesta etapa (fica para as etapas 3/4): reescrever cada componente como `.vue` próprio (hoje o "sistema" é CSS sobre o daisyUI); revisar `HelpTip`/diálogo além das cores; capturas antes/depois.
 
 ### Andamento da etapa 1
 - [x] Contrastes dos 3 temas conferidos com `frontend-vue/scripts/contrast.py` (todos os valores das tabelas abaixo batem).

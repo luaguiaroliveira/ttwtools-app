@@ -36,7 +36,7 @@ const n = (v, d = 0) => (v === null || v === undefined ? '—' : Number(v).toLoc
     <template v-if="data">
       <div class="flex gap-1"><CopyCode analysis="describe" :params="{ corpus, layer, hide_stopwords: hideStop || null }" />
         <ExportMenu :name="`visao_geral_${corpus}`" :rows="data.text.per_document" /></div>
-      <p class="text-sm opacity-70">{{ t('overview.estimates') }}</p>
+      <p class="text-sm text-text-muted">{{ t('overview.estimates') }}</p>
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2" data-testid="overview-stats">
         <StatCard :label="t('overview.documents')" :value="n(data.text.documents)" />
         <StatCard :label="t('overview.tokens')" :value="n(data.text.tokens)" help="normalizacao_por_mil" />

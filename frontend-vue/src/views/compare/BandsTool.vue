@@ -40,16 +40,16 @@ async function run() {
   <section class="flex flex-col gap-3">
     <p class="text-sm opacity-80">{{ t('bands.intro') }}</p>
     <form class="flex flex-wrap items-end gap-2" @submit.prevent="run">
-      <label class="form-control"><span class="label-text">{{ t('compare.reference') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('compare.reference') }}</span>
         <select v-model="f.reference" class="select select-sm" data-testid="bands-ref">
           <option v-for="o in options" :key="o.value" :value="o.value">{{ o.label }}</option></select></label>
-      <label class="form-control"><span class="label-text">{{ t('explore.unit') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('explore.unit') }}</span>
         <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'word_pos']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
-      <label class="form-control w-56"><span class="label-text">{{ t('bands.limits') }}</span><input v-model="f.limits" class="input input-sm" /></label>
+      <label class="ttw-field w-56"><span class="ttw-label">{{ t('bands.limits') }}</span><input v-model="f.limits" class="input input-sm" /></label>
       <button class="btn btn-sm btn-primary" :disabled="!f.reference" data-testid="bands-run">{{ t('compare.run') }}</button>
       <HelpTip topic="faixas_frequencia" />
     </form>
-    <p v-if="!refs.length" class="text-sm opacity-70">{{ t('compare.ref.none_installed') }}</p>
+    <p v-if="!refs.length" class="text-sm text-text-muted">{{ t('compare.ref.none_installed') }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p class="text-sm font-medium">{{ t('bands.summary', { tokens: data.tokens, types: data.types, target: data.target, reference: data.reference, rw: data.reference_words }) }}</p>

@@ -47,11 +47,11 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('gallery.title')">
     <div class="flex flex-wrap items-end gap-2">
-      <label class="form-control"><span class="label-text">{{ t('gallery.choose') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('gallery.choose') }}</span>
         <select v-model="kind" class="select select-sm" data-testid="gallery-kind"><option v-for="k in KINDS" :key="k" :value="k">{{ t(`gallery.${k}`) }}</option></select></label>
-      <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="form-control w-24"><span class="label-text">{{ t('gallery.features_n') }}</span>
+      <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="ttw-field w-24"><span class="ttw-label">{{ t('gallery.features_n') }}</span>
         <input v-model.number="nFeatures" type="number" min="2" max="40" class="input input-sm" /></label>
-      <label v-if="kind === 'reduction'" class="form-control"><span class="label-text">{{ t('gallery.method') }}</span>
+      <label v-if="kind === 'reduction'" class="ttw-field"><span class="ttw-label">{{ t('gallery.method') }}</span>
         <select v-model="method" class="select select-sm"><option value="pca2d">PCA</option><option value="tsne">t-SNE</option><option value="umap">UMAP</option><option value="mds">MDS</option></select></label>
       <ExportMenu v-if="kind !== 'pca3d'" :name="`kfa_${kind}`" :svg-root="box" class="ml-auto" />
     </div>
@@ -70,7 +70,7 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
         <ReductionChart v-else-if="kind === 'reduction'" :data="data" :sides="labels" />
         <Pca3D v-else-if="kind === 'pca3d'" :data="data" :sides="labels" />
       </template>
-      <p v-else-if="needs[kind] && !error" class="text-sm opacity-70">{{ t('gallery.loading') }}</p>
+      <p v-else-if="needs[kind] && !error" class="text-sm text-text-muted">{{ t('gallery.loading') }}</p>
     </div>
   </section>
 </template>

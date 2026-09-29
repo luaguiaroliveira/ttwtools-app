@@ -55,7 +55,7 @@ const counter = (s) => (s.status === 'running' && s.total
           <span class="font-medium flex items-center gap-1">
             <span v-if="job.status === 'done'" class="badge badge-success badge-sm" aria-hidden="true">✓</span>
             <span v-else-if="job.status === 'error'" class="badge badge-error badge-sm" aria-hidden="true">✕</span>{{ t(headline) }}</span>
-          <span class="text-xs opacity-70 tabular-nums">
+          <span class="text-xs text-text-muted tabular-nums">
             {{ t('pipeline.step_of', { n: current, total: steps.length }) }} · {{ t('pipeline.elapsed', { t: fmt(elapsed) }) }}<template
               v-if="remaining !== null"> · {{ t('pipeline.remaining', { t: fmt(remaining) }) }}</template></span>
         </div>
@@ -82,7 +82,7 @@ const counter = (s) => (s.status === 'running' && s.total
         </span>
         <div class="flex flex-wrap items-baseline gap-x-2 min-w-0">
           <span class="font-medium">{{ name(s) }}</span>
-          <span class="text-xs opacity-70">{{ counter(s) }}</span>
+          <span class="text-xs text-text-muted">{{ counter(s) }}</span>
           <span class="ml-auto text-sm font-medium tabular-nums">{{ stepPct(s) }}%</span>
         </div>
         <span />
@@ -92,7 +92,7 @@ const counter = (s) => (s.status === 'running' && s.total
             <div class="h-full rounded-full transition-[width] duration-300 ease-out"
                  :class="s.status === 'error' ? 'bg-error' : s.status === 'done' ? 'bg-success' : 'bg-primary'" :style="{ width: `${stepPct(s)}%` }" />
           </div>
-          <span v-if="s.status === 'running' && s.item" class="text-xs opacity-60 truncate" :title="s.item">{{ s.item }}</span>
+          <span v-if="s.status === 'running' && s.item" class="text-xs text-text-muted truncate" :title="s.item">{{ s.item }}</span>
         </div>
       </li>
     </ol>

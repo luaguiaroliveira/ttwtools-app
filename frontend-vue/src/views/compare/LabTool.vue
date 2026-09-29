@@ -65,23 +65,23 @@ const exportRows = computed(() => {
 <template>
   <section class="flex flex-col gap-3">
     <div role="note" class="alert alert-warning py-2 text-sm">{{ t('lab.intro') }}</div>
-    <p v-if="!layers.length" class="opacity-70">{{ t('lab.no_layer') }}</p>
+    <p v-if="!layers.length" class="text-text-muted">{{ t('lab.no_layer') }}</p>
     <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
-      <label class="form-control"><span class="label-text">{{ t('lab.groups') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('lab.groups') }}</span>
         <select v-model="f.mode" class="select select-sm"><option value="metadata" :disabled="!activeCorpus?.metadata_keys.length">{{ t('lab.groups.metadata') }}</option>
           <option value="corpora" :disabled="corpora.length < 2">{{ t('lab.groups.corpora') }}</option></select></label>
-      <label v-if="f.mode === 'metadata'" class="form-control"><span class="label-text">{{ t('lab.groups.key') }}</span>
+      <label v-if="f.mode === 'metadata'" class="ttw-field"><span class="ttw-label">{{ t('lab.groups.key') }}</span>
         <select v-model="f.key" class="select select-sm" data-testid="lab-key"><option v-for="k in activeCorpus.metadata_keys" :key="k">{{ k }}</option></select></label>
-      <fieldset v-else class="form-control"><legend class="label-text">{{ t('lab.groups.pick') }}</legend>
+      <fieldset v-else class="ttw-field"><legend class="ttw-label">{{ t('lab.groups.pick') }}</legend>
         <div class="flex flex-wrap gap-2"><label v-for="c in corpora" :key="c.name" class="label cursor-pointer gap-1 text-sm">
           <input v-model="f.picked" type="checkbox" class="checkbox checkbox-xs" :value="c.name" />{{ c.name }}</label></div></fieldset>
-      <label class="form-control"><span class="label-text">{{ t('lab.layer') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('lab.layer') }}</span>
         <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-      <label class="form-control"><span class="label-text">{{ t('lab.feature') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('lab.feature') }}</span>
         <select v-model="f.feature" class="select select-sm"><option value="">—</option><option>tags</option><option>upos</option><option>xpos</option></select></label>
-      <label class="form-control"><span class="label-text">{{ t('lab.method') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('lab.method') }}</span>
         <select v-model="f.method" class="select select-sm" data-testid="lab-method"><option v-for="m in METHODS" :key="m" :value="m">{{ t(`lab.method.${m}`) }}</option></select></label>
-      <label v-if="['one_vs_rest', 'pairwise'].includes(f.method)" class="form-control"><span class="label-text">{{ t('kfa.metric') }}</span>
+      <label v-if="['one_vs_rest', 'pairwise'].includes(f.method)" class="ttw-field"><span class="ttw-label">{{ t('kfa.metric') }}</span>
         <select v-model="f.metric" class="select select-sm"><option>kfa</option><option>kfa2</option></select></label>
       <button class="btn btn-sm btn-primary" :disabled="!ready || busy" data-testid="lab-run">{{ t('compare.run') }}</button>
       <HelpTip topic="laboratorio" />

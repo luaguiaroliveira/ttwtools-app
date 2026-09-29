@@ -42,7 +42,7 @@ defineExpose({ reload: load })
   <div class="flex flex-col gap-2">
     <div class="overflow-x-auto">
       <table class="table table-sm table-zebra" :aria-busy="loading">
-        <caption v-if="caption" class="text-left text-sm opacity-70">{{ caption }}</caption>
+        <caption v-if="caption" class="text-left text-sm text-text-muted">{{ caption }}</caption>
         <thead><tr><th v-for="c in columns" :key="c.key" scope="col" :class="{ 'text-right': c.numeric }">{{ c.label }}</th></tr></thead>
         <tbody>
           <tr v-for="(row, i) in rows" :key="i">
@@ -50,7 +50,7 @@ defineExpose({ reload: load })
               <slot :name="`cell-${c.key}`" :row="row">{{ row[c.key] }}</slot>
             </td>
           </tr>
-          <tr v-if="!loading && !rows.length"><td :colspan="columns.length" class="opacity-70">{{ t('table.empty') }}</td></tr>
+          <tr v-if="!loading && !rows.length"><td :colspan="columns.length" class="text-text-muted">{{ t('table.empty') }}</td></tr>
         </tbody>
       </table>
     </div>

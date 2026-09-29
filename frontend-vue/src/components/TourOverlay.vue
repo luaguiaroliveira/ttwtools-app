@@ -50,7 +50,7 @@ const balloon = computed(() => {
          :style="{ left: `${rect.x}px`, top: `${rect.y}px`, width: `${rect.w}px`, height: `${rect.h}px`, boxShadow: '0 0 0 9999px rgba(0,0,0,.55)', outline: '3px solid var(--color-primary)' }" />
     <div v-else class="absolute inset-0 bg-black/55" />
     <div class="absolute w-80 bg-base-100 text-base-content rounded-box shadow-xl p-4 flex flex-col gap-2" :style="balloon" data-testid="tour-balloon">
-      <span class="text-xs opacity-60">{{ t('tour.step', { n: tour.index + 1, total: tour.data.steps.length }) }}</span>
+      <span class="text-xs text-text-muted">{{ t('tour.step', { n: tour.index + 1, total: tour.data.steps.length }) }}</span>
       <h2 class="font-bold">{{ step.title }}</h2>
       <p class="text-sm">{{ step.text }}</p>
       <RouterLink :to="`/aprender/${step.topic}`" class="link text-xs" @click="stopTour">{{ t('tour.more') }}</RouterLink>

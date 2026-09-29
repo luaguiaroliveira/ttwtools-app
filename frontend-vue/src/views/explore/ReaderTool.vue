@@ -176,7 +176,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
       <span v-if="doc?.layer" class="badge badge-ghost h-8">{{ doc.layer.tool }} · {{ doc.layer.model }}</span>
       <button class="btn btn-sm ml-auto" @click="window.print()">{{ t('reader.print') }}</button>
     </div>
-    <p v-if="doc && !doc.layer" class="text-sm opacity-70 print:hidden">{{ t('reader.no_layer') }}</p>
+    <p v-if="doc && !doc.layer" class="text-sm text-text-muted print:hidden">{{ t('reader.no_layer') }}</p>
     <p v-if="doc && doc.text === null" role="alert" class="alert alert-warning text-sm">{{ t('reader.no_text') }}</p>
     <div class="grid lg:grid-cols-[minmax(0,1fr)_18rem] gap-4 items-start print:block">
       <!-- A folha: mesma largura, tipografia e quebras de linha na tela e na impressão (A4, margens de 2 cm) -->
@@ -205,13 +205,13 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <h3 class="font-bold text-sm">{{ t('reader.tags_title') }}</h3>
             <button v-if="chosen.size" class="btn btn-xs btn-ghost ml-auto" @click="chosen = new Set()">{{ t('reader.clear') }}</button>
           </div>
-          <p class="text-xs opacity-70">{{ t('reader.tags_hint') }}</p>
+          <p class="text-xs text-text-muted">{{ t('reader.tags_hint') }}</p>
           <div class="flex flex-wrap gap-1.5">
             <span v-for="[c, n] in classes" :key="c" class="relative inline-flex" data-mark-menu>
               <span class="badge badge-lg p-0 gap-0 overflow-visible" :class="{ 'badge-outline': !chosen.has(c) }"
                     :style="{ borderColor: color[c], color: chosen.has(c) ? '#fff' : color[c], background: chosen.has(c) ? color[c] : '' }">
                 <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer" :aria-pressed="chosen.has(c)" :title="tagset[c]" @click="toggle(c)">
-                  {{ c }} <span class="opacity-70">{{ n }}</span></button>
+                  {{ c }} <span class="text-text-muted">{{ n }}</span></button>
                 <button type="button" class="pr-2 pl-1 h-full cursor-pointer border-l border-current/30" :aria-label="`${t('reader.mark')}: ${c}`"
                         :aria-expanded="menu === c" :title="t('reader.mark')" @click.stop="menu = menu === c ? null : c">
                   <MarkIcon :kind="chosen.has(c) ? kindOf(c) : 'off'" /></button>

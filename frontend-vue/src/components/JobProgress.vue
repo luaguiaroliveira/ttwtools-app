@@ -17,7 +17,7 @@ const active = computed(() => ['queued', 'running'].includes(props.job?.status))
       <span v-if="job.total && !job.stage" class="text-sm">{{ t('job.progress', { done: job.done ?? 0, total: job.total }) }}</span>
       <span v-if="job.stage && job.stage !== 'done'" class="text-sm font-medium">{{ t(`job.stage.${job.stage}`) }}</span>
       <span v-if="pct !== null && active" class="text-sm tabular-nums">{{ pct }}%</span>
-      <span class="text-sm opacity-70 truncate">{{ job.message }}</span>
+      <span class="text-sm text-text-muted truncate">{{ job.message }}</span>
       <button v-if="active" class="btn btn-sm btn-outline ml-auto" data-testid="job-cancel" @click="emit('cancel')">
         {{ t('job.cancel') }}
       </button>

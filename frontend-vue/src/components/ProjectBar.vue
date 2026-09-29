@@ -136,7 +136,7 @@ const exportAll = () => act(async () => {
     <!-- barra de ações, como num aplicativo comum: sempre visível, à esquerda -->
     <div class="flex flex-wrap items-stretch gap-1 bg-base-100 border border-base-300 rounded-box p-1.5 w-fit max-w-full shadow-sm" role="toolbar" :aria-label="t('nav.corpora')">
       <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-new" @click="newProject"><FileIcon name="new" />{{ t('project.new') }}</button>
-      <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
+      <button class="pbtn" :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
       <details ref="recentMenu" class="dropdown">
         <summary class="pbtn" data-testid="project-recent"><FileIcon name="recent" />{{ t('project.recent') }}</summary>
         <div class="dropdown-content z-30 bg-base-200 border border-base-300 rounded-box shadow-lg p-2 w-96 max-w-[90vw] mt-1">
@@ -151,7 +151,7 @@ const exportAll = () => act(async () => {
       <span class="font-medium">{{ project.name }}</span>
       <span class="badge badge-outline" data-testid="project-kind">{{ t(`project.ext.${ext}`) }}</span>
       <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
-      <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
+      <span class="text-text-muted truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
     </div>
     <!-- sem projeto aberto: se há recentes, ficam à vista (só a lista, sem texto explicativo) -->
     <div v-else-if="recent.length" class="flex flex-col gap-1">
@@ -165,12 +165,12 @@ const exportAll = () => act(async () => {
       <label class="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" class="toggle toggle-sm toggle-primary" :checked="opts.compress" data-testid="opt-compress"
                @change="setOption('compress', $event.target.checked)" />
-        <span>{{ t('project.opt_compress') }} <span class="text-xs opacity-70">— {{ opts.compress ? t('project.opt_compress_on') : t('project.opt_compress_off') }}</span></span>
+        <span>{{ t('project.opt_compress') }} <span class="text-xs text-text-muted">— {{ opts.compress ? t('project.opt_compress_on') : t('project.opt_compress_off') }}</span></span>
       </label>
       <label class="flex items-center gap-2 cursor-pointer">
         <input type="checkbox" class="toggle toggle-sm toggle-primary" :checked="opts.search_tables" data-testid="opt-search-tables"
                @change="setOption('search_tables', $event.target.checked)" />
-        <span>{{ t('project.opt_search_tables') }} <span class="text-xs opacity-70">— {{ opts.search_tables ? t('project.opt_search_on') : t('project.opt_search_off') }}</span></span>
+        <span>{{ t('project.opt_search_tables') }} <span class="text-xs text-text-muted">— {{ opts.search_tables ? t('project.opt_search_on') : t('project.opt_search_off') }}</span></span>
       </label>
       <details class="text-xs w-full">
         <summary class="cursor-pointer opacity-80">{{ t('project.options_more') }}</summary>
@@ -182,7 +182,7 @@ const exportAll = () => act(async () => {
       </details>
       <p v-if="optsNote" role="status" class="text-xs text-warning w-full">{{ optsNote }}</p>
     </fieldset>
-    <p v-if="project && !fromTtwt" class="text-xs opacity-70 flex items-center gap-1" data-testid="autosave-note">
+    <p v-if="project && !fromTtwt" class="text-xs text-text-muted flex items-center gap-1" data-testid="autosave-note">
       <span class="badge badge-success badge-xs" aria-hidden="true">✓</span>{{ t('project.autosave') }}</p>
     <p v-if="fromTtwt" class="text-xs opacity-80 flex flex-wrap items-center gap-1" data-testid="ttwt-note">
       <span v-if="project.unsaved" class="badge badge-warning badge-xs" data-testid="unsaved-badge">{{ t('project.unsaved_badge') }}</span>
@@ -201,14 +201,14 @@ const exportAll = () => act(async () => {
       {{ t('project.corpus_missing', { missing: project.corpus_status.missing, changed: project.corpus_status.changed }) }}
     </p>
     <JobProgress v-if="opening" :job="opening" @cancel="api.jobs.cancel(opening.id)" />
-    <p v-if="opening?.stage === 'migrate'" class="text-xs opacity-70">{{ t('project.migrate_hint') }}</p>
+    <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted">{{ t('project.migrate_hint') }}</p>
     <JobProgress v-if="saving || saveJob.job.value?.status === 'error'" :job="saveJob.job.value" @cancel="saveJob.cancel" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1" data-testid="file-done"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <Collapsible v-if="project" :title="t('project.more')">
       <div class="flex flex-col gap-3">
         <form class="flex flex-col gap-1" @submit.prevent="openTyped">
-          <label class="label-text" for="project-path">{{ t('project.type_path') }}</label>
+          <label class="ttw-label" for="project-path">{{ t('project.type_path') }}</label>
           <div class="flex flex-wrap gap-2">
             <input id="project-path" v-model="path" class="input input-sm flex-1 min-w-48" :placeholder="t('project.path')" data-testid="project-path" />
             <button type="submit" class="btn btn-sm" :disabled="busy || !path" data-testid="project-open">{{ t('project.open') }}</button>
@@ -216,17 +216,17 @@ const exportAll = () => act(async () => {
           </div>
           <p v-if="exists" role="alert" class="text-sm text-warning flex flex-wrap items-center gap-2">{{ t('project.exists') }}
             <button type="button" class="btn btn-xs btn-warning" data-testid="project-overwrite" @click="createTyped(true)">{{ t('project.overwrite') }}</button></p>
-          <span class="text-xs opacity-70">{{ t('project.type_path_hint') }}</span>
+          <span class="text-xs text-text-muted">{{ t('project.type_path_hint') }}</span>
         </form>
         <template v-if="project">
           <div class="flex flex-wrap items-end gap-2">
-            <label class="flex flex-col gap-1"><span class="label-text">{{ t('project.save_corpus') }}</span>
+            <label class="flex flex-col gap-1"><span class="ttw-label">{{ t('project.save_corpus') }}</span>
               <select v-model="oneCorpus" class="select select-sm" :disabled="!corpora.length" data-testid="save-corpus-select">
                 <option value="">{{ corpora[0]?.name ?? '—' }}</option>
                 <option v-for="c in corpora.slice(1)" :key="c.name" :value="c.name">{{ c.name }}</option></select></label>
             <button class="btn btn-sm" :disabled="busy || saving || !corpora.length" data-testid="save-corpus" @click="saveCorpus">{{ t('project.save_corpus_button') }}</button>
           </div>
-          <p class="text-xs opacity-70">{{ t('project.save_corpus_hint') }}</p>
+          <p class="text-xs text-text-muted">{{ t('project.save_corpus_hint') }}</p>
           <p class="text-xs opacity-80">{{ t('project.formats_hint') }}</p>
           <div class="flex flex-wrap gap-1">
             <button v-if="project.kind === 'ttwa'" class="btn btn-xs" :disabled="busy" @click="convert('ttwl')">{{ t('project.to_ttwl') }}</button>
@@ -234,7 +234,7 @@ const exportAll = () => act(async () => {
             <button class="btn btn-xs" :disabled="busy" @click="exportCorpus">{{ t('project.export_corpus') }}</button>
           </div>
           <form class="flex flex-wrap gap-2 items-end" @submit.prevent="exportAll">
-            <label class="form-control flex-1 min-w-48"><span class="label-text">{{ t('project.export_dest') }}</span>
+            <label class="ttw-field flex-1 min-w-48"><span class="ttw-label">{{ t('project.export_dest') }}</span>
               <input v-model="exportDest" class="input input-sm" /></label>
             <button class="btn btn-sm" :disabled="busy">{{ t('project.export_all') }}</button>
           </form>

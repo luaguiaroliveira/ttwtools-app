@@ -47,17 +47,17 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <p v-if="!layers.length" class="opacity-70">{{ t('kfa.no_layer') }}</p>
+    <p v-if="!layers.length" class="text-text-muted">{{ t('kfa.no_layer') }}</p>
     <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
-      <label class="form-control"><span class="label-text">{{ t('kfa.corpus2') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('kfa.corpus2') }}</span>
         <select v-model="f.corpus2" class="select select-sm" data-testid="kfa-corpus2">
           <option v-for="c in corpora.filter((c) => c.name !== corpus)" :key="c.name" :value="c.name">{{ c.name }}</option>
           <option value="__groups__" :disabled="!activeCorpus?.metadata_keys.length">{{ t('kfa.same_corpus_groups') }}</option></select></label>
       <template v-if="sameCorpus">
-        <label class="form-control"><span class="label-text">{{ t('compare.group_key') }}</span>
+        <label class="ttw-field"><span class="ttw-label">{{ t('compare.group_key') }}</span>
           <select v-model="f.groupKey" class="select select-sm" @change="loadGroups"><option v-for="k in activeCorpus.metadata_keys" :key="k">{{ k }}</option></select></label>
-        <label class="form-control"><span class="label-text">{{ t('kfa.group1') }}</span><select v-model="f.group1" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
-        <label class="form-control"><span class="label-text">{{ t('kfa.group2') }}</span><select v-model="f.group2" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
+        <label class="ttw-field"><span class="ttw-label">{{ t('kfa.group1') }}</span><select v-model="f.group1" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
+        <label class="ttw-field"><span class="ttw-label">{{ t('kfa.group2') }}</span><select v-model="f.group2" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
       </template>
       <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
       <HelpTip term="kfa" />
@@ -65,11 +65,11 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
     <div class="w-full">
       <Collapsible :title="t('compare.advanced')">
         <div class="flex flex-wrap items-end gap-2 pt-2">
-          <label class="form-control"><span class="label-text">{{ t('kfa.layer') }}</span>
+          <label class="ttw-field"><span class="ttw-label">{{ t('kfa.layer') }}</span>
             <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-          <label class="form-control"><span class="label-text flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
+          <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
             <select v-model="f.metric" class="select select-sm"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
-          <label class="form-control w-24"><span class="label-text flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
+          <label class="ttw-field w-24"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
         </div>
       </Collapsible>
     </div>
@@ -81,7 +81,7 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
-        <p class="text-xs opacity-70">{{ t('kfa.detail_hint') }}</p>
+        <p class="text-xs text-text-muted">{{ t('kfa.detail_hint') }}</p>
         <svg viewBox="0 0 600 70" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
           <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 32 + 6})`">
             <text x="0" y="14" class="fill-current text-[10px]">{{ t(i ? 'kfa.side2' : 'kfa.side1') }}</text>

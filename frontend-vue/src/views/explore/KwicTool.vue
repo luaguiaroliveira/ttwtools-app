@@ -67,7 +67,7 @@ const posBucket = (p = '') => {
               <td class="font-bold text-primary whitespace-nowrap">{{ l.match }}</td>
               <td class="whitespace-nowrap overflow-hidden max-w-[20rem]">{{ l.right }}</td>
               <td class="text-xs"><span class="pos-tag" :data-bucket="posBucket(l.pos)">{{ l.pos }}</span></td>
-              <td class="text-xs opacity-70 whitespace-nowrap">{{ l.filename }}:{{ l.start_char }}</td>
+              <td class="text-xs text-text-muted whitespace-nowrap">{{ l.filename }}:{{ l.start_char }}</td>
             </tr>
           </tbody>
         </table>
@@ -77,7 +77,7 @@ const posBucket = (p = '') => {
         <li v-for="(l, i) in data.lines" :key="i">
           <button class="card bg-base-200 p-2 text-left w-full" @click="open(l)">
             <span class="text-sm">{{ l.left }} <b class="text-primary">{{ l.match }}</b> {{ l.right }}</span>
-            <span class="text-xs opacity-60">{{ l.filename }} · {{ l.pos }}</span>
+            <span class="text-xs text-text-muted">{{ l.filename }} · {{ l.pos }}</span>
           </button>
         </li>
       </ul>

@@ -37,7 +37,7 @@ const shown = (v) => (Array.isArray(v) ? v.join(', ') : String(v))
           <span class="badge badge-xs" :class="o.afeta_resultado ? 'badge-primary' : 'badge-ghost'">
             {{ t(o.afeta_resultado ? 'tagger.affects.yes' : 'tagger.affects.no') }}
           </span>
-          <span class="text-xs opacity-60">{{ t('tag.default', { value: shown(o.padrao) }) }}</span>
+          <span class="text-xs text-text-muted">{{ t('tag.default', { value: shown(o.padrao) }) }}</span>
         </div>
         <select v-if="o.tipo === 'escolha'" :id="`opt-${o.id}`" class="select select-sm w-fit" :value="modelValue[o.id] ?? o.padrao"
                 @change="set(o.id, $event.target.value)">
@@ -58,7 +58,7 @@ const shown = (v) => (Array.isArray(v) ? v.join(', ') : String(v))
         <input v-else :id="`opt-${o.id}`" class="input input-sm" :value="modelValue[o.id] ?? o.padrao"
                @change="set(o.id, $event.target.value)" />
         <p class="text-xs opacity-80">{{ o.explicacao }}</p>
-        <p v-if="o.impacto" class="text-xs opacity-60">
+        <p v-if="o.impacto" class="text-xs text-text-muted">
           {{ t('tag.impact') }}: <span v-for="(v, k) in o.impacto" :key="k" class="mr-2">{{ t(`tagger.impact_kind.${k}`) }} {{ t(`tagger.impact.${v}`) }}</span>
         </p>
       </div>

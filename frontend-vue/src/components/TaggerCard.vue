@@ -68,7 +68,7 @@ const already = computed(() => props.queued.some((s) => s.kind === 'tag' && s.ta
                   :class="{ 'btn-active': preset === p }" :aria-pressed="preset === p" :data-testid="`preset-${tagger.id}-${p}`"
                   @click="applyPreset(p)">{{ t(`tagger.preset.${p}`) }}</button>
         </div>
-        <span class="text-xs opacity-70" data-testid="tag-summary">{{ summary }}</span>
+        <span class="text-xs text-text-muted" data-testid="tag-summary">{{ summary }}</span>
       </fieldset>
       <Collapsible :title="t('pipeline.options')">
         <div class="flex flex-col gap-3">

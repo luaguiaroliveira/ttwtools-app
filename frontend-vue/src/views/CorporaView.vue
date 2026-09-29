@@ -40,14 +40,14 @@ function startAdd() { wizardKey.value++; adding.value = true }
       </div>
       <AddCorpusWizard v-if="adding" :key="wizardKey" @done="afterImport" @overview="showOverview"
                        @tag="tagNow" />
-      <p v-if="!corpora.length && !adding" class="opacity-70">{{ t('corpora.none') }}</p>
-      <p v-if="session.project?.single_corpus && corpora.length" class="text-xs opacity-70">{{ t('corpora.single_hint') }}</p>
+      <p v-if="!corpora.length && !adding" class="text-text-muted">{{ t('corpora.none') }}</p>
+      <p v-if="session.project?.single_corpus && corpora.length" class="text-xs text-text-muted">{{ t('corpora.single_hint') }}</p>
       <ul class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" data-testid="corpus-list">
         <li v-for="c in corpora" :key="c.name">
           <button class="card bg-base-200 w-full text-left p-3 hover:bg-base-300" :class="{ 'ring-2 ring-primary': c.name === corpus }"
                   :aria-pressed="c.name === corpus" @click="session.setCorpus(c.name)">
             <span class="font-medium">{{ c.name }}</span>
-            <span class="text-sm opacity-70">{{ t('corpora.documents', { n: c.documents }) }} · {{ c.layers.length }} {{ t('layers.title').toLowerCase() }}</span>
+            <span class="text-sm text-text-muted">{{ t('corpora.documents', { n: c.documents }) }} · {{ c.layers.length }} {{ t('layers.title').toLowerCase() }}</span>
             <span v-if="c.layers.length" class="badge badge-success badge-sm mt-1">{{ t('corpora.tagged') }}</span>
             <span v-if="c.name === corpus" class="badge badge-primary badge-sm mt-1">{{ t('corpora.active') }}</span>
           </button>

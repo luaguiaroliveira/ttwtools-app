@@ -95,30 +95,30 @@ async function doImport() {
       <p v-if="name" class="text-sm" data-testid="wizard-final-name">{{ t('wizard.will_be_called') }} <strong>{{ name }}</strong></p>
 
       <Collapsible :title="t('wizard.rename_title')" data-testid="wizard-rename">
-        <label class="flex flex-col gap-1 max-w-md"><span class="label-text">{{ t('wizard.name') }}</span>
+        <label class="flex flex-col gap-1 max-w-md"><span class="ttw-label">{{ t('wizard.name') }}</span>
           <input v-model="form.customName" class="input input-sm w-full" :placeholder="defaultName" data-testid="wizard-name" />
-          <span class="text-xs opacity-70">{{ t('wizard.rename_hint') }}</span></label>
+          <span class="text-xs text-text-muted">{{ t('wizard.rename_hint') }}</span></label>
       </Collapsible>
 
       <Collapsible v-if="usesNames" :title="t('wizard.meta_title')" data-testid="wizard-meta">
         <div class="flex flex-col gap-3">
           <p class="text-sm">{{ t('wizard.meta_intro') }}</p>
-          <p v-if="!form.path" class="text-sm opacity-70">{{ t('wizard.pick_folder_first') }}</p>
+          <p v-if="!form.path" class="text-sm text-text-muted">{{ t('wizard.pick_folder_first') }}</p>
           <p v-else-if="preview && !preview.total" class="text-sm text-warning">{{ t('wizard.no_files') }}</p>
           <template v-else-if="example">
-            <label class="flex flex-col gap-1 w-fit"><span class="label-text">{{ t('wizard.separator') }}</span>
+            <label class="flex flex-col gap-1 w-fit"><span class="ttw-label">{{ t('wizard.separator') }}</span>
               <select v-model="form.delimiter" class="select select-sm">
                 <option v-for="[v, k] in SEPARATORS" :key="k" :value="v">{{ t(`wizard.sep.${k}`) }}</option></select></label>
             <fieldset class="flex flex-col gap-1">
               <legend class="text-sm font-medium">{{ t('wizard.pieces', { file: example.file }) }}</legend>
               <div class="flex flex-wrap gap-2">
                 <label v-for="(part, i) in example.parts" :key="i" class="flex flex-col gap-1 w-40">
-                  <span class="label-text-alt"><code>{{ part }}</code></span>
+                  <span class="ttw-label"><code>{{ part }}</code></span>
                   <input v-model="form.pieces[i]" class="input input-sm" :placeholder="t('wizard.piece_placeholder')"
                          :aria-label="t('wizard.piece', { n: i + 1, value: part })" :data-testid="`wizard-piece-${i}`" />
                 </label>
               </div>
-              <span class="text-xs opacity-70">{{ t('wizard.pieces_hint') }}</span>
+              <span class="text-xs text-text-muted">{{ t('wizard.pieces_hint') }}</span>
             </fieldset>
             <div v-if="fields" class="overflow-x-auto">
               <table class="table table-xs w-fit">

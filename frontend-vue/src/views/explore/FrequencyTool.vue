@@ -42,7 +42,7 @@ onBeforeUnmount(() => clearTimeout(timer))
     <form class="flex flex-col gap-2" @submit.prevent="!busy && run()"><div class="ttw-form">
       <label class="ttw-field"><span class="ttw-label"><HelpTip term="lemma">{{ t('explore.unit') }}</HelpTip></span>
         <select v-model="f.unit" class="select select-sm" data-testid="freq-unit"><option v-for="u in ['form', 'lemma', 'word_pos', 'pos', 'ngram']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
-      <label v-if="f.unit === 'ngram'" class="form-control w-16"><span class="label-text flex items-center gap-1"><HelpTip term="ngram">{{ t('explore.n') }}</HelpTip></span>
+      <label v-if="f.unit === 'ngram'" class="ttw-field w-16"><span class="ttw-label flex items-center gap-1"><HelpTip term="ngram">{{ t('explore.n') }}</HelpTip></span>
         <input v-model.number="f.n" type="number" min="2" max="6" class="input input-sm" /></label>
       <label class="ttw-field"><span class="ttw-label">{{ t('explore.by') }}</span>
         <select v-model="f.by" class="select select-sm"><option value="corpus">{{ t('explore.by.corpus') }}</option><option value="document">{{ t('explore.by_document') }}</option>
@@ -50,8 +50,8 @@ onBeforeUnmount(() => clearTimeout(timer))
       <label class="ttw-field w-28"><span class="ttw-label">{{ t('explore.show_top') }}</span>
         <select v-model.number="f.top" class="select select-sm" data-testid="freq-top"><option v-for="n in TOP" :key="n" :value="n">{{ n }}</option></select></label>
       <label class="ttw-check"><input v-model="f.hide_stopwords" type="checkbox" class="checkbox checkbox-sm" /><HelpTip term="stopwords">{{ t('overview.hide_stopwords') }}</HelpTip></label>
-      <label v-if="f.by === 'corpus'" class="form-control w-44">
-        <span class="ttw-label justify-between">{{ t('chart.bar_height') }}<span class="opacity-60">{{ barH }}px</span></span>
+      <label v-if="f.by === 'corpus'" class="ttw-field w-44">
+        <span class="ttw-label justify-between">{{ t('chart.bar_height') }}<span class="text-text-muted">{{ barH }}px</span></span>
         <span class="flex items-center min-h-8"><input v-model.number="barH" type="range" min="6" max="40" step="2" class="range range-xs range-primary"
                data-testid="freq-bar-height" /></span>
       </label>

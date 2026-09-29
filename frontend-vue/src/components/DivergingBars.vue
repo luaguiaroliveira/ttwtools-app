@@ -21,7 +21,7 @@ const x = (v) => 300 + (v / top.value) * 180
          role="button" :aria-label="`${r.label} ${r.value.toFixed(2)}`" @click="emit('select', r.label)" @keydown.enter="emit('select', r.label)">
         <rect :x="Math.min(300, x(r.value))" y="2" :width="Math.abs(x(r.value) - 300)" height="12" :class="r.value >= 0 ? 'fill-primary' : 'fill-secondary'" />
         <text :x="r.value >= 0 ? 294 : 306" y="12" :text-anchor="r.value >= 0 ? 'end' : 'start'" class="fill-current text-[10px]">{{ r.label }}</text>
-        <text :x="r.value >= 0 ? x(r.value) + 4 : x(r.value) - 4" y="12" :text-anchor="r.value >= 0 ? 'start' : 'end'" class="fill-current text-[9px] opacity-70">{{ r.value.toFixed(2) }}</text>
+        <text :x="r.value >= 0 ? x(r.value) + 4 : x(r.value) - 4" y="12" :text-anchor="r.value >= 0 ? 'start' : 'end'" class="fill-current text-[9px] text-text-muted">{{ r.value.toFixed(2) }}</text>
       </g>
     </svg>
   </figure>

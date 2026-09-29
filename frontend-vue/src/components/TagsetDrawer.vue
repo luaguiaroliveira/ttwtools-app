@@ -33,11 +33,11 @@ const tags = computed(() => (data.value?.tags ?? []).filter((tg) => (!group.valu
           <option v-for="g in data?.groups ?? []" :key="g.id" :value="g.id">{{ g.label }}</option>
         </select>
       </div>
-      <p class="text-xs opacity-60">{{ t('tagset.count', { n: tags.length }) }}</p>
+      <p class="text-xs text-text-muted">{{ t('tagset.count', { n: tags.length }) }}</p>
       <dl class="flex flex-col gap-2">
         <div v-for="tg in tags" :key="tg.tag" class="bg-base-200 rounded p-2">
-          <dt class="font-mono font-bold">{{ tg.tag }} <span class="font-sans font-normal text-xs opacity-60">{{ groups[tg.group] }}</span></dt>
-          <dd class="text-sm">{{ tg.definition }}<span v-if="tg.example" class="block text-xs opacity-70 italic">{{ tg.example }}</span></dd>
+          <dt class="font-mono font-bold">{{ tg.tag }} <span class="font-sans font-normal text-xs text-text-muted">{{ groups[tg.group] }}</span></dt>
+          <dd class="text-sm">{{ tg.definition }}<span v-if="tg.example" class="block text-xs text-text-muted italic">{{ tg.example }}</span></dd>
         </div>
       </dl>
     </aside>

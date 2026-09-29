@@ -10,7 +10,7 @@ const sy = computed(() => linear(extent(props.data.coords.map((c) => c.y)), [H -
 </script>
 <template>
   <div class="flex flex-col gap-1">
-    <p v-if="data.explained_variance" class="text-xs opacity-70">{{ t('gallery.explained', { v: data.explained_variance.map((v) => (v * 100).toFixed(1) + '%').join(' · ') }) }}</p>
+    <p v-if="data.explained_variance" class="text-xs text-text-muted">{{ t('gallery.explained', { v: data.explained_variance.map((v) => (v * 100).toFixed(1) + '%').join(' · ') }) }}</p>
     <svg :viewBox="`0 0 ${W} ${H}`" class="w-full max-w-2xl" role="group" :aria-label="t('gallery.reduction')">
       <circle v-for="c in data.coords" :key="c.filename + c.side" :cx="sx(c.x)" :cy="sy(c.y)" r="4" :class="SIDE_CLASS[Math.max(0, sides.indexOf(c.side))]" opacity="0.7"><title>{{ c.side }} · {{ c.filename }}</title></circle>
     </svg>

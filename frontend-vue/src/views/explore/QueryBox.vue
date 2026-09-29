@@ -31,7 +31,7 @@ function insert(value) {
       </button>
     </div>
     <div class="flex flex-wrap items-center gap-1 text-xs" :aria-label="t('explore.examples')">
-      <span class="opacity-60 mr-1">{{ t('explore.examples') }}:</span>
+      <span class="text-text-muted mr-1">{{ t('explore.examples') }}:</span>
       <button v-for="e in examples" :key="e.shown" type="button" class="badge badge-ghost font-mono cursor-pointer hover:badge-primary"
               @click="insert(e.value)">{{ e.shown }}</button>
     </div>

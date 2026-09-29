@@ -33,7 +33,7 @@ const fontSize = computed(() => Math.max(7, Math.min(11, rowH.value - 4)))
       <g v-for="(r, i) in rows" :key="r.label" :transform="`translate(0 ${i * rowH + 2})`">
         <text x="110" :y="rowH / 2 + 3.5" text-anchor="end" class="fill-current" :style="{ fontSize: fontSize + 'px' }">{{ r.label }}</text>
         <rect x="116" :y="(rowH - barH) / 2" :width="Math.max(1, (r.value / top) * 240)" :height="barH" rx="2" :style="{ fill: 'var(--chart-1)' }" />
-        <text :x="120 + (r.value / top) * 240" :y="rowH / 2 + 3.5" class="fill-current opacity-70" :style="{ fontSize: (fontSize - 1) + 'px' }">{{ fmt(r.value) }}</text>
+        <text :x="120 + (r.value / top) * 240" :y="rowH / 2 + 3.5" class="fill-current text-text-muted" :style="{ fontSize: (fontSize - 1) + 'px' }">{{ fmt(r.value) }}</text>
       </g>
     </svg>
   </figure>

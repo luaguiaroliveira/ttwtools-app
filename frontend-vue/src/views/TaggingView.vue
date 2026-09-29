@@ -55,10 +55,10 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
       <h1 class="text-2xl font-bold">{{ t('pipeline.title') }}</h1>
       <p class="opacity-80">{{ t('pipeline.intro') }}</p>
     </div>
-    <p v-if="!hasProject || !corpora.length" class="opacity-70">{{ t('pipeline.need_corpus') }}
+    <p v-if="!hasProject || !corpora.length" class="text-text-muted">{{ t('pipeline.need_corpus') }}
       <RouterLink to="/arquivo" class="link">{{ t('nav.corpora') }}</RouterLink></p>
     <template v-else>
-      <label class="flex flex-col gap-1 w-fit"><span class="label-text">{{ t('pipeline.corpus') }}</span>
+      <label class="flex flex-col gap-1 w-fit"><span class="ttw-label">{{ t('pipeline.corpus') }}</span>
         <select class="select select-sm" :value="corpus" data-testid="pipeline-corpus" @change="session.setCorpus($event.target.value)">
           <option v-if="!corpus" value="" disabled>—</option>
           <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}</option></select></label>
@@ -100,16 +100,16 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
                  data-testid="pipeline-queue" data-explain="explain.pipeline.queue">
           <h2 class="text-xl font-bold">{{ t('pipeline.queue_title') }} ({{ steps.length }})</h2>
           <p class="text-sm opacity-80">{{ t('pipeline.queue_intro') }}</p>
-          <p v-if="!steps.length" class="text-sm opacity-70">{{ t('pipeline.queue_empty') }}</p>
+          <p v-if="!steps.length" class="text-sm text-text-muted">{{ t('pipeline.queue_empty') }}</p>
           <!-- durante a execução, a lista vira o painel de andamento -->
           <PipelineProgress v-if="job.job.value?.steps" :job="job.job.value" @cancel="job.cancel" />
           <ol v-if="!running" class="flex flex-col gap-2">
             <li data-testid="queue-item" v-for="(s, i) in steps" :key="i" class="bg-base-100 rounded-box p-2 flex flex-wrap items-center gap-2">
               <span class="badge badge-neutral badge-sm" aria-hidden="true">{{ i + 1 }}</span>
               <span class="font-medium">{{ s.kind === 'stats' ? t('pipeline.stats_title') : tagName(s.tagger) }}</span>
-              <span v-if="s.kind === 'tag' && optionsText(s.options)" class="text-xs opacity-70">{{ optionsText(s.options) }}</span>
+              <span v-if="s.kind === 'tag' && optionsText(s.options)" class="text-xs text-text-muted">{{ optionsText(s.options) }}</span>
               <span v-if="s.plan" class="text-xs">{{ s.plan.to_tag || s.plan.clonable ? t('pipeline.to_process', { n: s.plan.to_tag + (s.plan.clonable || 0), total: s.plan.documents }) : t('pipeline.already') }}</span>
-              <span v-if="s.kind === 'stats'" class="text-xs opacity-70">{{ t('pipeline.stats_last') }}</span>
+              <span v-if="s.kind === 'stats'" class="text-xs text-text-muted">{{ t('pipeline.stats_last') }}</span>
               <span v-if="s.error" class="text-xs text-warning">{{ s.error }}</span>
               <button class="btn btn-xs btn-ghost ml-auto" :disabled="running" :aria-label="t('pipeline.remove') + ' ' + (i + 1)" @click="remove(i)">{{ t('pipeline.remove') }}</button>
             </li>

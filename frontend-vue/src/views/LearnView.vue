@@ -41,7 +41,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
         <h2 class="font-bold mb-2">{{ t(`learn.area.${area}`) }}</h2>
         <ul class="grid sm:grid-cols-2 gap-2">
           <li v-for="x in items" :key="x.id"><RouterLink :to="`/aprender/${x.id}`" class="card bg-base-200 p-3 hover:bg-base-300 block">
-            <span class="font-medium">{{ x.title }}</span><span class="block text-sm opacity-70">{{ x.summary }}</span></RouterLink></li>
+            <span class="font-medium">{{ x.title }}</span><span class="block text-sm text-text-muted">{{ x.summary }}</span></RouterLink></li>
         </ul>
       </section>
     </template>

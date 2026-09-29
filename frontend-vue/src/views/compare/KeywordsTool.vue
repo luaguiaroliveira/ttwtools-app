@@ -45,20 +45,20 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
 <template>
   <section class="flex flex-col gap-3">
     <form id="palavras-chave" class="flex flex-wrap items-end gap-2" @submit.prevent="run">
-      <label class="form-control"><span class="label-text">{{ t('compare.reference') }}</span>
+      <label class="ttw-field"><span class="ttw-label">{{ t('compare.reference') }}</span>
         <select v-model="f.refKind" class="select select-sm"><option value="corpus">{{ t('compare.ref.corpus') }}</option>
           <option value="rest" :disabled="!activeCorpus?.metadata_keys.length">{{ t('compare.ref.rest') }}</option><option value="catalog" :disabled="!catalogRefs.length">{{ t('compare.ref.catalog') }}</option><option value="list">{{ t('compare.ref.list') }}</option></select></label>
-      <label v-if="f.refKind === 'catalog'" class="form-control"><span class="label-text">{{ t('compare.ref.catalog') }}</span>
+      <label v-if="f.refKind === 'catalog'" class="ttw-field"><span class="ttw-label">{{ t('compare.ref.catalog') }}</span>
         <select v-model="f.catalogRef" class="select select-sm" data-testid="kw-catalog"><option v-for="r in catalogRefs" :key="r.ref" :value="r.ref">{{ r.name }} · {{ r.version }}</option></select></label>
-      <label v-if="f.refKind === 'corpus'" class="form-control"><span class="label-text">{{ t('compare.ref.corpus') }}</span>
+      <label v-if="f.refKind === 'corpus'" class="ttw-field"><span class="ttw-label">{{ t('compare.ref.corpus') }}</span>
         <select v-model="f.refCorpus" class="select select-sm" data-testid="kw-ref"><option v-for="c in others" :key="c.name">{{ c.name }}</option></select></label>
       <template v-if="f.refKind === 'rest'">
-        <label class="form-control"><span class="label-text">{{ t('compare.group_key') }}</span>
+        <label class="ttw-field"><span class="ttw-label">{{ t('compare.group_key') }}</span>
           <select v-model="f.groupKey" class="select select-sm" @change="loadGroups"><option v-for="k in activeCorpus.metadata_keys" :key="k">{{ k }}</option></select></label>
-        <label class="form-control"><span class="label-text">{{ t('compare.group_value') }}</span>
+        <label class="ttw-field"><span class="ttw-label">{{ t('compare.group_value') }}</span>
           <select v-model="f.groupValue" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
       </template>
-      <label v-if="f.refKind === 'list'" class="form-control flex-1 min-w-48"><span class="label-text">{{ t('compare.list_path') }}</span>
+      <label v-if="f.refKind === 'list'" class="ttw-field flex-1 min-w-48"><span class="ttw-label">{{ t('compare.list_path') }}</span>
         <input v-model="f.listPath" class="input input-sm" /></label>
       <button class="btn btn-sm btn-primary" data-testid="kw-run">{{ t('compare.run') }}</button>
       <HelpTip term="keyness" />
@@ -66,13 +66,13 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
     <div class="w-full">
       <Collapsible :title="t('compare.advanced')">
         <div class="flex flex-wrap items-end gap-2 pt-2">
-          <label class="form-control"><span class="label-text flex items-center gap-1"><HelpTip term="lemma">{{ t('explore.unit') }}</HelpTip></span>
+          <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="lemma">{{ t('explore.unit') }}</HelpTip></span>
             <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'pos', 'word_pos', 'ngram']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
-          <label class="form-control"><span class="label-text flex items-center gap-1"><HelpTip term="ll">{{ t('explore.measure') }}</HelpTip></span>
+          <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="ll">{{ t('explore.measure') }}</HelpTip></span>
             <select v-model="f.measure" class="select select-sm"><option value="ll">log-likelihood</option><option value="log_ratio">log ratio</option><option value="pct_diff">%DIFF</option><option value="log_odds">log-odds</option></select></label>
-          <label class="form-control w-20"><span class="label-text">{{ t('explore.min_freq') }}</span><input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
-          <label class="form-control w-20"><span class="label-text">{{ t('compare.min_range') }}</span><input v-model.number="f.min_range" type="number" min="1" class="input input-sm" /></label>
-          <label class="form-control"><span class="label-text">{{ t('compare.correction') }}</span>
+          <label class="ttw-field w-20"><span class="ttw-label">{{ t('explore.min_freq') }}</span><input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
+          <label class="ttw-field w-20"><span class="ttw-label">{{ t('compare.min_range') }}</span><input v-model.number="f.min_range" type="number" min="1" class="input input-sm" /></label>
+          <label class="ttw-field"><span class="ttw-label">{{ t('compare.correction') }}</span>
             <select v-model="f.correction" class="select select-sm"><option>bonferroni</option><option>fdr</option><option>none</option></select></label>
         </div>
       </Collapsible>

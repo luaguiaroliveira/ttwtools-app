@@ -57,7 +57,7 @@ const changeLang = (value) => setLang(value)
       <header class="navbar border-b border-base-300 gap-2 px-3 min-h-14">
         <div class="flex-1 min-w-0 flex items-center gap-1 flex-wrap">
           <span class="md:hidden font-bold mr-3">{{ t('app.title') }}</span>
-          <span class="text-sm opacity-70 hidden sm:inline">{{ t('header.active_corpus') }}:</span>
+          <span class="text-sm text-text-muted hidden sm:inline">{{ t('header.active_corpus') }}:</span>
           <select v-if="project" class="select select-xs max-w-[10rem] sm:max-w-48" data-testid="active-corpus"
                   :disabled="!corpora.length" :aria-label="t('header.active_corpus')" :value="corpus || ''"
                   @change="session.setCorpus($event.target.value || null)">
@@ -66,7 +66,7 @@ const changeLang = (value) => setLang(value)
           </select>
           <span v-else class="badge badge-outline ml-1 max-w-48 truncate">{{ t('header.no_corpus') }}</span>
           <span class="hidden sm:inline-flex items-center gap-1 ml-1" :title="t('header.layer_hint')">
-            <span class="text-sm opacity-70">{{ t('header.layer') }}:</span>
+            <span class="text-sm text-text-muted">{{ t('header.layer') }}:</span>
             <select class="select select-xs" data-testid="header-layer" :disabled="!corpus"
                     :aria-label="t('header.layer')" :value="layer || ''"
                     @change="session.setLayer($event.target.value || null)">
@@ -99,7 +99,7 @@ const changeLang = (value) => setLang(value)
               <input type="checkbox" class="checkbox checkbox-xs" data-testid="density-toggle" :checked="compact"
                      @change="changeDensity($event.target.checked)" />{{ t('density.label') }}
             </label>
-            <p class="text-xs opacity-60 truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
+            <p class="text-xs text-text-muted truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
           </div>
         </details>
       </header>

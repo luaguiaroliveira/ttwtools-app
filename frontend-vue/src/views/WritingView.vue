@@ -106,7 +106,7 @@ function seeInCorpus(item) {
 
       <div class="grid gap-4 lg:grid-cols-2">
         <section class="panel flex flex-col gap-2">
-          <label class="label-text font-medium" for="writing-text">{{ t('writing.paste') }}</label>
+          <label class="ttw-label font-medium" for="writing-text">{{ t('writing.paste') }}</label>
           <textarea id="writing-text" v-model="text" rows="10" class="textarea textarea-bordered w-full"
                     :placeholder="t('writing.placeholder')" data-testid="writing-text" @input="onText" />
           <div class="flex flex-wrap items-center gap-2">
@@ -121,33 +121,33 @@ function seeInCorpus(item) {
         <section class="panel flex flex-col gap-3">
           <p v-if="!refs.length" class="opacity-80">{{ t('writing.ref_none') }}
             <RouterLink to="/modulos" class="link">{{ t('nav.modules') }}</RouterLink></p>
-          <label v-else class="form-control"><span class="label-text">{{ t('writing.reference') }}</span>
+          <label v-else class="ttw-field"><span class="ttw-label">{{ t('writing.reference') }}</span>
             <select v-model="reference" class="select select-sm" data-testid="writing-reference">
               <option v-for="r in refs" :key="r.value" :value="r.value">{{ r.label }}</option>
             </select></label>
           <Collapsible :title="t('writing.advanced')">
             <div class="flex flex-wrap items-end gap-2 pt-2">
               <template v-if="mode === 'words'">
-                <label class="form-control"><span class="label-text">{{ t('explore.unit') }}</span>
+                <label class="ttw-field"><span class="ttw-label">{{ t('explore.unit') }}</span>
                   <select v-model="f.unit" class="select select-sm"><option value="form">{{ t('explore.unit.form') }}</option>
                     <option value="ngram">{{ t('explore.unit.ngram') }}</option></select></label>
-                <label v-if="f.unit === 'ngram'" class="form-control w-16"><span class="label-text">{{ t('explore.n') }}</span>
+                <label v-if="f.unit === 'ngram'" class="ttw-field w-16"><span class="ttw-label">{{ t('explore.n') }}</span>
                   <input v-model.number="f.n" type="number" min="2" max="6" class="input input-sm" /></label>
               </template>
               <template v-else>
-                <label class="form-control"><span class="label-text">{{ t('writing.field') }}</span>
+                <label class="ttw-field"><span class="ttw-label">{{ t('writing.field') }}</span>
                   <select v-model="f.field" class="select select-sm" data-testid="writing-field">
                     <option value="upos">{{ t('writing.field.upos') }}</option><option value="xpos">{{ t('writing.field.xpos') }}</option></select></label>
-                <label class="form-control w-28"><span class="label-text">{{ t('writing.pattern_n') }}</span>
+                <label class="ttw-field w-28"><span class="ttw-label">{{ t('writing.pattern_n') }}</span>
                   <input v-model.number="f.pn" type="number" min="2" max="5" class="input input-sm" data-testid="writing-pattern-n" /></label>
               </template>
-              <label class="form-control"><span class="label-text">{{ t('explore.measure') }}</span>
+              <label class="ttw-field"><span class="ttw-label">{{ t('explore.measure') }}</span>
                 <select v-model="f.measure" class="select select-sm"><option value="ll">log-likelihood</option>
                   <option value="log_ratio">log ratio</option><option value="pct_diff">%DIFF</option><option value="log_odds">log-odds</option></select></label>
-              <label class="form-control"><span class="label-text">{{ t('compare.correction') }}</span>
+              <label class="ttw-field"><span class="ttw-label">{{ t('compare.correction') }}</span>
                 <select v-model="f.correction" class="select select-sm"><option value="fdr">FDR (BH)</option>
                   <option value="bonferroni">Bonferroni</option><option value="none">—</option></select></label>
-              <label class="form-control w-20"><span class="label-text">{{ t('explore.min_freq') }}</span>
+              <label class="ttw-field w-20"><span class="ttw-label">{{ t('explore.min_freq') }}</span>
                 <input v-model.number="f.min_freq" type="number" min="1" class="input input-sm" /></label>
             </div>
           </Collapsible>
@@ -164,7 +164,7 @@ function seeInCorpus(item) {
       <template v-if="data">
         <div class="flex flex-wrap items-center gap-2 text-sm">
           <span class="font-medium">{{ t('writing.text_words', { n: data.target_words }) }}</span>
-          <span class="opacity-70">{{ t('writing.ref_words', { name: data.reference, n: data.reference_words }) }}</span>
+          <span class="text-text-muted">{{ t('writing.ref_words', { name: data.reference, n: data.reference_words }) }}</span>
           <span class="badge badge-outline badge-sm">{{ isPatterns ? data.field : data.unit }}</span>
           <span v-for="code in data.reliability" :key="code" class="badge badge-warning badge-sm">{{ t(`writing.flag.${code}`) }}</span>
         </div>
@@ -180,17 +180,17 @@ function seeInCorpus(item) {
         <!-- riqueza lexical (modo léxico) -->
         <div v-if="data.lexis" class="flex flex-col gap-1">
           <div class="flex flex-wrap gap-2">
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_ttr') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.lexis_ttr') }}</span>
               <span class="font-bold tabular-nums">{{ fmt(data.lexis.ttr, 3) }}</span></div>
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_guiraud') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.lexis_guiraud') }}</span>
               <span class="font-bold tabular-nums">{{ fmt(data.lexis.guiraud, 2) }}</span></div>
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_mtld') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.lexis_mtld') }}</span>
               <span class="font-bold tabular-nums">{{ data.lexis.mtld === null ? '—' : fmt(data.lexis.mtld, 1) }}</span></div>
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_sent') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.lexis_sent') }}</span>
               <span class="font-bold tabular-nums">{{ fmt(data.lexis.mean_sentence_len, 1) }}</span></div>
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.lexis_long') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.lexis_long') }}</span>
               <span class="font-bold tabular-nums">{{ fmt(data.lexis.long_pct, 0) }}%</span></div>
-            <div class="panel px-3 py-2"><span class="block text-xs opacity-70">{{ t('writing.col_item') }}</span>
+            <div class="panel px-3 py-2"><span class="block text-xs text-text-muted">{{ t('writing.col_item') }}</span>
               <span class="font-bold tabular-nums">{{ t('writing.lexis_words', { types: data.lexis.types, words: data.lexis.words }) }}</span></div>
           </div>
           <p class="field-help">{{ t('writing.lexis_what') }}</p>
@@ -199,7 +199,7 @@ function seeInCorpus(item) {
         <p v-if="isPatterns" class="panel text-sm prose-read">{{ t('writing.patterns_what') }}</p>
 
         <!-- tabelas -->
-        <p v-if="!data.rows.length" class="opacity-70">{{ isPatterns ? t('writing.patterns_no_results') : t('writing.no_results') }}</p>
+        <p v-if="!data.rows.length" class="text-text-muted">{{ isPatterns ? t('writing.patterns_no_results') : t('writing.no_results') }}</p>
         <div v-else class="table-scroll overflow-x-auto">
           <table class="table table-xs" :data-testid="isPatterns ? 'writing-patterns-table' : 'writing-table'">
             <thead><tr>
@@ -243,7 +243,7 @@ function seeInCorpus(item) {
             <span class="badge badge-outline badge-sm">{{ t('writing.node_freq', { n: colloc.node_freq_text, m: colloc.node_freq_reference }) }}</span>
             <button class="btn btn-xs btn-ghost ml-auto" :aria-label="t('common.cancel')" @click="colloc = null">×</button></h3>
           <p class="text-sm prose-read">{{ t('writing.collocates_what') }}</p>
-          <p v-if="!colloc.rows.length" class="opacity-70">{{ t('writing.collocates_empty') }}</p>
+          <p v-if="!colloc.rows.length" class="text-text-muted">{{ t('writing.collocates_empty') }}</p>
           <div v-else class="overflow-x-auto">
             <table class="table table-xs">
               <thead><tr><th scope="col">{{ t('writing.col_collocate') }}</th>
@@ -271,7 +271,7 @@ function seeInCorpus(item) {
           <div class="grid gap-3 lg:grid-cols-2">
             <div class="flex flex-col gap-1">
               <span class="text-xs font-medium opacity-80">{{ t('writing.examples_text') }}</span>
-              <p v-if="!examples.text.length" class="opacity-70 text-sm">{{ t('writing.examples_none') }}</p>
+              <p v-if="!examples.text.length" class="text-text-muted text-sm">{{ t('writing.examples_none') }}</p>
               <ul v-else class="flex flex-col gap-2 text-sm leading-7">
                 <li v-for="(ex, i) in examples.text" :key="i" class="bg-base-200 rounded-box p-2">
                   <span v-for="(tk, j) in ex.tokens" :key="j" class="rounded px-px"
@@ -283,10 +283,10 @@ function seeInCorpus(item) {
             </div>
             <div class="flex flex-col gap-1">
               <span class="text-xs font-medium opacity-80">{{ t('writing.examples_corpus') }}</span>
-              <p v-if="!examples.corpus.length" class="opacity-70 text-sm">{{ t('writing.reference_not_corpus') }}</p>
+              <p v-if="!examples.corpus.length" class="text-text-muted text-sm">{{ t('writing.reference_not_corpus') }}</p>
               <ul v-else class="flex flex-col gap-2 text-sm leading-7">
                 <li v-for="(ex, i) in examples.corpus" :key="i" class="bg-base-200 rounded-box p-2">
-                  <span class="text-xs opacity-60 block">{{ ex.filename }}</span>
+                  <span class="text-xs text-text-muted block">{{ ex.filename }}</span>
                   <span v-for="(tk, j) in ex.tokens" :key="j" class="rounded px-px"
                         :class="{ 'bg-warning/50 font-bold': tk.hit }"
                         :style="tk.cls ? { borderBottom: `3px solid ${clsColor(tk.cls)}` } : {}"
@@ -306,7 +306,7 @@ function seeInCorpus(item) {
           <li>{{ t('writing.limit_sig') }}</li>
           <li>{{ t('writing.limit_disp') }}</li>
         </ul>
-        <p class="text-xs opacity-70 mt-2">{{ t('writing.references') }}</p>
+        <p class="text-xs text-text-muted mt-2">{{ t('writing.references') }}</p>
       </Collapsible>
     </template>
   </div>
