@@ -75,7 +75,9 @@ const MAX_ANNOTATIONS = 2500   // acima disso o SVG pesa: marca só as primeiras
 onMounted(async () => {
   files.value = (await api.corpora.documents(props.corpus, { limit: 1000 })).rows.map((r) => r.filename)
   if (!file.value) file.value = files.value[0]
+  else if (!files.value.includes(file.value)) files.value = [file.value, ...files.value]   // a lista traz só os primeiros 1000
 })
+watch(() => route.query.file, (f) => { if (f) file.value = String(f) })   // a Dispersão abre um texto aqui
 watch(() => [file.value, props.layer], async () => {
   if (!file.value) return
   doc.value = await api.corpora.text(props.corpus, file.value, props.layer)

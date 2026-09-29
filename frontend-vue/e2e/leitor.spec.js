@@ -72,3 +72,22 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
   expect(r.violations.filter((v) => ['serious', 'critical'].includes(v.impact)).map((v) => `${v.id}: ${v.nodes.slice(0, 3).map((n) => n.target).join(' | ')}`)).toEqual([])
   expect(errors).toEqual([])
 })
+
+test('dispersão: linhas compactas e clique abre o leitor', async ({ page, request }, info) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
+  expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
+  await request.post('/api/corpora/import', { data: { corpus_name: 'corifa', source: { kind: 'folder', path: path.join(CORPORA, 'CorIFAessaysNE_5') } } })
+  await page.goto('/#/explorar/dispersao')
+  await page.getByTestId('explore-corpus').selectOption('corifa')
+  await page.getByTestId('query-input').fill('the')
+  await page.getByTestId('query-go').click()
+  const rows = page.getByTestId('disp-rows').locator('button')
+  await expect(rows.first()).toBeVisible({ timeout: 30_000 })
+  const h0 = (await rows.first().boundingBox()).height
+  await page.getByTestId('disp-row-height').fill('8')
+  await expect.poll(async () => (await rows.first().boundingBox()).height).toBeLessThan(h0)
+  const name = (await rows.first().getAttribute('title')).split(':')[0]
+  await rows.first().click()
+  await expect(page).toHaveURL(/explorar\/leitor/)
+  await expect(page.getByTestId('reader-file')).toHaveValue(name, { timeout: 30_000 })
+})
