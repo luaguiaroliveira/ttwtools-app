@@ -30,6 +30,7 @@ export const api = {
     summary: () => get('/api/project/summary'),
   },
   utils: {
+    openUrl: (url) => post('/api/utils/open-url', { url }),
     pickFolder: (default_location) => get('/api/utils/pick-folder', { default_location }),
     pickFile: (default_location, kind) => get('/api/utils/pick-file', { default_location, kind }),
     pickSave: (suggested, default_location) => get('/api/utils/pick-save', { suggested, default_location }),

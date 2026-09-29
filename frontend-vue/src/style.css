@@ -170,3 +170,5 @@
 .pbtn:hover:not(:disabled) { background: color-mix(in oklab, var(--color-base-content) 10%, transparent); }
 .pbtn:disabled { opacity: .4; cursor: not-allowed; }
 .pbtn.btn-primary { background: var(--color-primary); color: var(--color-primary-content); }
+.pbtn { min-width: 5.5rem; font-size: .8125rem; padding: .625rem .75rem; }
+.pbtn.btn-primary svg, .pbtn:disabled svg { color: inherit; }

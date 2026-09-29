@@ -66,6 +66,17 @@ def _commit() -> str | None:
         return None
 
 
+def _date() -> str | None:
+    """Data de publicação (AAAA-MM-DD): a do build ou, no código-fonte, a do último commit."""
+    if _build_info is not None:
+        return getattr(_build_info, "DATE", None)
+    try:
+        out = subprocess.run(["git", "log", "-1", "--format=%cs"], cwd=_ROOT, capture_output=True, text=True, timeout=2)
+        return out.stdout.strip() or None if out.returncode == 0 else None
+    except Exception:
+        return None
+
+
 def semver(pep440: str) -> str:
     """Converte a versão PEP 440 do pyproject na forma SemVer usada nas tags.
 
@@ -100,4 +111,5 @@ def version_info() -> dict:
         "app_semver": semver(__version__),
         "ttwtools": ttwtools_version,
         "commit": _commit(),
+        "date": _date(),
     }

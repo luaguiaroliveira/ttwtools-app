@@ -9,6 +9,7 @@ import { applyTheme, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
+import AboutDialog from './components/AboutDialog.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
@@ -16,6 +17,7 @@ const { corpus, layer, layers, corpora, project, projectPath, unsaved } = storeT
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
+const about = ref(false)
 
 onMounted(async () => {
   try { await session.load(); await session.checkPendingOpen() } catch (err) { loadError.value = err }
@@ -33,11 +35,19 @@ const changeLang = (value) => setLang(value)
     <!-- trilho lateral mínimo: só ícones (o nome aparece ao passar o mouse ou focar) -->
     <nav class="hidden md:flex flex-col items-center gap-1 border-r border-base-300 bg-base-200 py-2 px-1.5 w-14 shrink-0"
          :aria-label="t('nav.label')">
-      <RouterLink to="/" class="font-black text-sm tracking-tight py-2 hover:text-primary" :aria-label="t('app.title')" :title="t('app.title')">TTW</RouterLink>
+      <button type="button" class="flex flex-col items-center leading-none py-2 mb-1 hover:text-primary" data-testid="about-open"
+              :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('app.title')" @click="about = true">
+        <span class="font-black text-sm tracking-tight">TTW</span><span class="text-[0.6rem] font-semibold opacity-80">tools</span>
+      </button>
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" :aria-label="t(item.label)"
                   class="nav-item tooltip tooltip-right btn btn-ghost btn-square w-11 h-11 min-h-0 p-0"
                   active-class="nav-active" :data-tip="t(item.label)">
         <NavIcon :name="item.icon" />
+      </RouterLink>
+      <RouterLink to="/inicio" :aria-label="t('nav.info')" class="nav-item tooltip tooltip-right btn btn-ghost btn-square w-11 h-11 min-h-0 p-0 mt-auto"
+                  active-class="nav-active" :data-tip="t('nav.info')">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
       </RouterLink>
     </nav>
 
@@ -94,6 +104,7 @@ const changeLang = (value) => setLang(value)
       </main>
     </div>
 
+    <AboutDialog :open="about" @close="about = false" />
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />
     <!-- barra inferior (celular) -->

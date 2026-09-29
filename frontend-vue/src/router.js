@@ -15,7 +15,8 @@ export const NAV = [
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', name: 'home', component: () => import('./views/HomeView.vue') },
+    { path: '/', redirect: '/arquivo' },
+    { path: '/inicio', name: 'home', component: () => import('./views/HomeView.vue') },
     { path: '/arquivo', name: 'corpora', component: () => import('./views/CorporaView.vue') },
     { path: '/corpora', redirect: '/arquivo' },
     { path: '/etiquetagem', name: 'tagging', component: () => import('./views/TaggingView.vue') },

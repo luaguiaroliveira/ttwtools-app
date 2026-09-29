@@ -30,7 +30,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
 
 <template>
   <div class="flex flex-col gap-4 max-w-5xl">
-    <h1 class="text-2xl font-bold">{{ t('corpora.title') }}</h1>
+    <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
     <ProjectBar />
     <template v-if="hasProject">
       <div class="flex items-center gap-2" data-explain="explain.corpora.library">
@@ -61,7 +61,5 @@ function startAdd() { wizardKey.value++; adding.value = true }
         <CorpusOverview :corpus="corpus" :layer="layer" />
       </template>
     </template>
-    <p class="text-sm opacity-80 flex flex-wrap items-center gap-2">{{ t('corpora.modules_hint') }}
-      <RouterLink to="/modulos" class="btn btn-xs" data-testid="go-modules">{{ t('corpora.go_modules') }}</RouterLink></p>
   </div>
 </template>

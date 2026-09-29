@@ -125,6 +125,17 @@ def pick_save(suggested: str = "projeto.ttwa", default_location: str = ""):
     return _answer(pick)
 
 
+@router.post("/open-url")
+def open_url(body: dict):
+    """Abre um link do projeto no navegador do sistema (só endereços do GitHub do TTWtools)."""
+    import webbrowser
+    url = str(body.get("url", ""))
+    if not url.startswith("https://github.com/luaguiaroliveira/"):
+        return JSONResponse({"detail": "endereço não permitido"}, status_code=400)
+    webbrowser.open(url)
+    return {"ok": True}
+
+
 @router.post("/quit")
 def quit_app():
     """Encerra o servidor e o processo."""

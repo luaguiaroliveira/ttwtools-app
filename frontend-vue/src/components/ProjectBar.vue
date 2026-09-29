@@ -134,7 +134,7 @@ const exportAll = () => act(async () => {
 <template>
   <section class="flex flex-col gap-2 bg-base-200 rounded-box p-3" data-explain="explain.corpora.project">
     <!-- barra de ações, como num aplicativo comum: sempre visível, à esquerda -->
-    <div class="flex flex-wrap items-stretch gap-1" role="toolbar" :aria-label="t('nav.corpora')">
+    <div class="flex flex-wrap items-stretch gap-1 bg-base-100 border border-base-300 rounded-box p-1.5 w-fit max-w-full shadow-sm" role="toolbar" :aria-label="t('nav.corpora')">
       <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-new" @click="newProject"><FileIcon name="new" />{{ t('project.new') }}</button>
       <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
       <details ref="recentMenu" class="dropdown">
@@ -153,15 +153,11 @@ const exportAll = () => act(async () => {
       <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
       <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
     </div>
-    <!-- sem projeto aberto: os recentes ficam à vista, como na tela inicial de um aplicativo -->
-    <div v-else class="flex flex-col gap-1">
+    <!-- sem projeto aberto: se há recentes, ficam à vista (só a lista, sem texto explicativo) -->
+    <div v-else-if="recent.length" class="flex flex-col gap-1">
       <h2 class="text-sm font-bold">{{ t('project.recent') }}</h2>
       <RecentList :files="recent" :disabled="busy || saving" @open="openRecent" @remove="removeRecent" @clear="removeRecent(null)" />
     </div>
-    <details class="text-xs opacity-70">
-      <summary class="cursor-pointer w-fit">{{ t('project.what_is') }}</summary>
-      <p class="mt-1 max-w-prose">{{ t('project.intro') }}</p>
-    </details>
     <fieldset v-if="project" class="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" data-testid="save-options"
               data-explain="explain.corpora.save_options">
       <legend class="sr-only">{{ t('project.options_title') }}</legend>
@@ -209,7 +205,7 @@ const exportAll = () => act(async () => {
     <JobProgress v-if="saving || saveJob.job.value?.status === 'error'" :job="saveJob.job.value" @cancel="saveJob.cancel" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1" data-testid="file-done"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
-    <Collapsible :title="project ? t('project.more') : t('project.type_path')">
+    <Collapsible v-if="project" :title="t('project.more')">
       <div class="flex flex-col gap-3">
         <form class="flex flex-col gap-1" @submit.prevent="openTyped">
           <label class="label-text" for="project-path">{{ t('project.type_path') }}</label>

@@ -23,6 +23,7 @@ Etapas:
 from __future__ import annotations
 
 import argparse
+import datetime
 import os
 import platform
 import re
@@ -339,7 +340,7 @@ def main() -> int:
     work_dir = BUILD / "_work" / target.name
     build_info = ROOT / "app" / "_build_info.py"
     ttwtools_version = tomllib.loads((ROOT / "libs" / "ttwtools" / "pyproject.toml").read_text())["project"]["version"]
-    build_info.write_text(f'VERSION = {version!r}\nCOMMIT = {git_commit()!r}\nTTWTOOLS_VERSION = {ttwtools_version!r}\n',
+    build_info.write_text(f'VERSION = {version!r}\nCOMMIT = {git_commit()!r}\nTTWTOOLS_VERSION = {ttwtools_version!r}\nDATE = {datetime.date.today().isoformat()!r}\n',
                           encoding="utf-8")
     try:
         run_pyinstaller(target, frontend_out, dist_dir, work_dir)
