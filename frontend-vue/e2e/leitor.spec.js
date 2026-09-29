@@ -70,6 +70,11 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
 
   const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
   expect(r.violations.filter((v) => ['serious', 'critical'].includes(v.impact)).map((v) => `${v.id}: ${v.nodes.slice(0, 3).map((n) => n.target).join(' | ')}`)).toEqual([])
+  // tag= cai para a classe em camadas sem tags (spaCy)
+  await page.goto('/#/explorar/kwic')
+  await page.getByTestId('query-input').fill('tag=NOUN')
+  await page.getByTestId('query-go').click()
+  await expect(page.getByTestId('kwic-total')).not.toContainText(/de 0$/, { timeout: 30_000 })
   expect(errors).toEqual([])
 })
 
@@ -108,6 +113,11 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/1\s*[–-]/, { timeout: 30_000 })
   await expect(page.locator('.pos-tag').first()).toBeAttached()   // no celular a tabela fica escondida (cartões)
+  if ((page.viewportSize()?.width ?? 0) >= 640) {   // dica global com a descrição da etiqueta
+    await page.locator('.pos-tag').first().hover()
+    await expect(page.getByTestId('tag-tip')).toBeVisible()
+    await expect(page.getByTestId('tag-tip')).not.toHaveText(/^\s*$/)
+  }
   await page.goto('/#/explorar/frequencia')
   await page.getByTestId('freq-go').click()
   await expect(page.locator('table.table').first()).toBeVisible({ timeout: 30_000 })

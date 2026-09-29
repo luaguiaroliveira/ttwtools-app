@@ -12,6 +12,7 @@ import { api } from '../../api/index.js'
 import MarkIcon from '../../components/MarkIcon.vue'
 import ColorPicker from '../../components/ColorPicker.vue'
 import TagDoc from '../../components/TagDoc.vue'
+import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
 
 const props = defineProps({ corpus: String, layer: String })
 const { t, locale } = useI18n()
@@ -92,25 +93,25 @@ watch(() => [file.value, props.layer], async () => {
 // Repertório que explica as etiquetas mostradas: UPOS → universal; XPOS → Penn Treebank;
 // tags → o do etiquetador da camada (BiberPlus, MFTE) ou Penn Treebank (spaCy/Stanza).
 const tagsetInfo = ref({ name: '', about: '' })
-const tagsetId = () => {
-  const tool = doc.value?.layer?.tool
-  if (colorBy.value === 'upos') return 'upos'
-  if (colorBy.value === 'xpos') return 'ptb'
-  return tool === 'biberplus' ? 'biber' : tool === 'mfte' ? 'mfte' : 'ptb'
-}
+const tagDefs = ref({})   // etiqueta → { text, source } (repertórios da camada, do mais específico ao mais geral)
 async function loadTagset() {
   if (!doc.value) return
   try {
-    const r = await api.taggers.tagset(tagsetId(), locale.value)
-    tagset.value = Object.fromEntries(r.tags.map((x) => [x.tag, x.definition]))
+    const ids = tagsetIdsFor(doc.value.layer?.tool, colorBy.value)
+    const sets = (await Promise.all(ids.map((id) => loadTagsetData(id, locale.value).catch(() => null)))).filter(Boolean)
+    const r = sets[0] ?? {}
+    tagDefs.value = mergeTagsets(sets)
+    tagset.value = Object.fromEntries(Object.entries(tagDefs.value).map(([k, v]) => [k, v.text]))
     tagsetInfo.value = { name: r.name ?? '', about: r.about ?? '' }
-    tagGroup.value = Object.fromEntries(r.tags.filter((x) => x.group).map((x) => [x.tag, x.group]))
-    tagDoc.value = Object.fromEntries(r.tags.filter((x) => x.doc).map((x) => [x.tag, x.doc]))
-    docVersion.value = r.doc_version ?? ''
+    tagGroup.value = Object.fromEntries((r.tags ?? []).filter((x) => x.group).map((x) => [x.tag, x.group]))
+    tagDoc.value = Object.fromEntries(sets.flatMap((st) => (st.tags ?? []).filter((x) => x.doc).map((x) => [x.tag, x.doc])))
+    docVersion.value = sets.find((st) => st.doc_version)?.doc_version ?? ''
     groups.value = (r.groups ?? []).map((g) => ({ id: g.id, label: g.label }))
-  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' }; tagGroup.value = {}; tagDoc.value = {}; groups.value = [] }
+  } catch { tagDefs.value = {}; tagset.value = {}; tagsetInfo.value = { name: '', about: '' }; tagGroup.value = {}; tagDoc.value = {}; groups.value = [] }
   loadCounts()
 }
+// descrição de uma etiqueta (própria ou inferida) — { text, source, inferred } ou null
+const info = (tag) => describeTag(tag, tagDefs.value, t)
 watch([colorBy, locale], loadTagset)
 watch(() => props.corpus, () => { countsKey = ''; corpusCounts.value = {} })
 const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
@@ -306,7 +307,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </article>
           <footer v-if="chosen.size" class="reader-legend">
             <span v-for="[c, n] in classes.filter(([c]) => chosen.has(c))" :key="c">
-              <b :style="{ borderBottom: `2px solid ${color[c]}` }">{{ c }}</b> {{ tagset[c] }} ({{ n }})
+              <b :style="{ borderBottom: `2px solid ${color[c]}` }">{{ c }}</b> {{ info(c)?.text }} ({{ n }})
             </span>
           </footer>
         </div>
@@ -364,9 +365,9 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           <h3 class="font-bold mb-1">{{ t('reader.token') }}</h3>
           <dl v-if="selected" class="grid grid-cols-[auto_1fr] gap-x-2">
             <dt>word</dt><dd class="font-bold">{{ selected.word }}</dd>
-            <template v-for="k in ['lemma', 'upos', 'xpos', 'feats']" :key="k"><template v-if="selected[k]"><dt>{{ k }}</dt><dd class="break-all">{{ selected[k] }}</dd></template></template>
+            <template v-for="k in ['lemma', 'upos', 'xpos', 'feats']" :key="k"><template v-if="selected[k]"><dt>{{ k }}</dt><dd class="break-all" :data-tag="k === 'upos' || k === 'xpos' ? selected[k] : null">{{ selected[k] }}</dd></template></template>
             <template v-if="selected.tags?.length"><dt>tags</dt><dd>{{ selected.tags.join(' ') }}</dd></template>
-            <dt>def.</dt><dd>{{ tagset[label(selected)] || '—' }}</dd>
+            <dt>def.</dt><dd>{{ info(label(selected))?.text || '—' }}<span v-if="info(label(selected))?.inferred" class="block text-xs text-text-muted italic">{{ t('taginfo.inferred') }}</span></dd>
           </dl>
           <TagDoc v-if="selected" :doc="tagDoc[label(selected)]" :version="docVersion" />
         </div>
@@ -374,8 +375,9 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
       <!-- dica da etiqueta (passar o mouse ou focar): definição segundo o repertório do etiquetador -->
       <div v-if="tip" id="reader-tip" role="tooltip" class="fixed z-50 w-72 max-w-[calc(100vw-1rem)] p-2.5 rounded-box bg-neutral text-neutral-content text-xs shadow-lg pointer-events-none"
            :style="{ left: `${tip.x}px`, top: `${tip.y}px` }">
-        <p class="font-bold text-sm">{{ tip.c }}<span v-if="tagsetInfo.name" class="font-normal opacity-80"> · {{ tagsetInfo.name }}</span></p>
-        <p>{{ tagset[tip.c] || t('reader.no_definition') }}</p>
+        <p class="font-bold text-sm">{{ tip.c }}<span v-if="info(tip.c)?.source || tagsetInfo.name" class="font-normal opacity-80"> · {{ info(tip.c)?.source || tagsetInfo.name }}</span></p>
+        <p>{{ info(tip.c)?.text || t('reader.no_definition') }}</p>
+        <p v-if="info(tip.c)?.inferred" class="opacity-70 italic">{{ t('taginfo.inferred') }}</p>
         <template v-if="tagDoc[tip.c]">
           <p class="mt-1"><span class="opacity-70">{{ t('tagdoc.feature') }}:</span> {{ tagDoc[tip.c].feature }}</p>
           <p v-if="tagDoc[tip.c].examples" class="italic opacity-90 line-clamp-2">“{{ tagDoc[tip.c].examples }}”</p>

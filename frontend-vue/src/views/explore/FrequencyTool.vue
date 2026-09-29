@@ -69,7 +69,7 @@ onBeforeUnmount(() => clearTimeout(timer))
       <div class="ttw-scroll">
         <table class="table table-xs"><thead><tr><th v-if="f.by !== 'corpus'">{{ t('explore.by') }}</th><th>{{ t('explore.item') }}</th><th class="text-right">{{ t('explore.freq') }}</th>
           <th class="text-right whitespace-nowrap"><HelpTip term="per_1000">{{ t('explore.per_1000') }}</HelpTip></th></tr></thead>
-          <tbody><tr v-for="(r, i) in data.rows" :key="i"><td v-if="f.by !== 'corpus'">{{ r.group }}</td><td>{{ r.item }}</td>
+          <tbody><tr v-for="(r, i) in data.rows" :key="i"><td v-if="f.by !== 'corpus'">{{ r.group }}</td><td :data-tag="data.unit === 'pos' ? r.item : null">{{ r.item }}</td>
             <td class="text-right tabular-nums">{{ r.freq }}</td><td class="text-right tabular-nums">{{ r.per_1000?.toFixed(2) }}</td></tr></tbody></table>
       </div>
     </template>

@@ -10,6 +10,7 @@ import { applyDensity, applyTheme, initialDensity, initialTheme } from './theme.
 import NavIcon from './components/NavIcon.vue'
 import TextType from './components/vb/TextType.vue'
 import MenuButton from './components/MenuButton.vue'
+import TagTip from './components/TagTip.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
 import AboutDialog from './components/AboutDialog.vue'
@@ -127,6 +128,7 @@ const changeLang = (value) => setLang(value)
 
     </div>
     <AboutDialog :open="about" @close="about = false" />
+    <TagTip />
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />
     <!-- barra inferior (celular) -->
