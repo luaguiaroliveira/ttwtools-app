@@ -1,7 +1,7 @@
 <script setup>
 // Módulos: recursos opcionais baixados sob demanda (modelos de etiquetagem e corpora do catálogo).
 import { useI18n } from 'vue-i18n'
-import GradientText from '../components/vb/GradientText.vue'
+import TextType from '../components/vb/TextType.vue'
 import ModelsPanel from '../components/ModelsPanel.vue'
 import CatalogPanel from '../components/CatalogPanel.vue'
 
@@ -11,7 +11,7 @@ const { t } = useI18n()
 <template>
   <div class="flex flex-col gap-6 max-w-5xl" data-explain="explain.modules">
     <div>
-      <h1 class="text-2xl font-bold"><GradientText>{{ t('modules.title') }}</GradientText></h1>
+      <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('modules.title'), class: '' }]" /></h1>
       <p class="opacity-80">{{ t('modules.intro') }}</p>
     </div>
     <section class="flex flex-col gap-2" data-testid="modules-models">

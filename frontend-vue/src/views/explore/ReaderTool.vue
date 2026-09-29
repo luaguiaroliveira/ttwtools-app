@@ -23,7 +23,47 @@ const chosen = ref(new Set(route.query.highlight ? [route.query.highlight] : [])
 const selected = ref(null)
 const tagset = ref({})
 const window = globalThis
-const tagsOpen = ref(globalThis.matchMedia?.('(min-width: 1024px)').matches ?? true)   // em telas estreitas a lista de etiquetas começa recolhida
+// Telas estreitas ou baixas: o painel de etiquetas vira uma gaveta à direita, por cima do texto, aberta por uma alça
+const mq = globalThis.matchMedia?.('(max-width: 1023px), (max-height: 700px)')
+const overlay = ref(mq?.matches ?? false)
+const panelOpen = ref(false)
+const onMq = (e) => { overlay.value = e.matches; if (!e.matches) panelOpen.value = false }
+const pref = (() => { try { return JSON.parse(localStorage.getItem('ttw.reader.prefs') || '{}') } catch { return {} } })()
+const sortBy = ref(['text', 'corpus', 'alpha', 'group'].includes(pref.sort) ? pref.sort : 'text')
+// folha: zoom (largura, margens e fonte juntos), tamanho da fonte (pt) e justificação
+const zoom = ref(Number(pref.zoom) >= 0.5 && Number(pref.zoom) <= 2 ? Number(pref.zoom) : 1)
+const fontPt = ref(Number(pref.font) >= 8 && Number(pref.font) <= 20 ? Number(pref.font) : 12)
+const justify = ref(Boolean(pref.justify))
+const ZOOMS = [0.5, 0.75, 0.9, 1, 1.1, 1.25, 1.5, 2]
+const stepZoom = (d) => { const i = ZOOMS.findIndex((z) => z >= zoom.value - 1e-6); zoom.value = ZOOMS[Math.max(0, Math.min(ZOOMS.length - 1, (i < 0 ? ZOOMS.length - 1 : i) + d))] }
+watch([sortBy, zoom, fontPt, justify], () => {
+  try { localStorage.setItem('ttw.reader.prefs', JSON.stringify({ sort: sortBy.value, zoom: zoom.value, font: fontPt.value, justify: justify.value })) } catch { /* */ }
+})
+const corpusCounts = ref({})   // ocorrências de cada etiqueta no corpus todo (calculadas no servidor)
+let countsKey = ''
+async function loadCounts() {
+  const key = `${props.corpus}|${doc.value?.layer?.tool ?? ''}|${colorBy.value}`
+  if (!doc.value?.layer || key === countsKey) return
+  countsKey = key
+  try { corpusCounts.value = (await api.corpora.tagCounts(props.corpus, doc.value.layer.tool, colorBy.value)).counts } catch { corpusCounts.value = {}; countsKey = '' }
+}
+const tagGroup = ref({})     // etiqueta → id do grupo
+const groups = ref([])       // [{ id, label }] na ordem do repertório
+const hasGroups = computed(() => groups.value.length > 0 && Object.keys(tagGroup.value).length > 0)
+watch(hasGroups, (v) => { if (!v && sortBy.value === 'group') sortBy.value = 'text' })
+const sortedClasses = computed(() => {
+  const arr = [...classes.value]
+  const alpha = (a, b) => a[0].localeCompare(b[0], undefined, { numeric: true })
+  const by = { text: (a, b) => b[1] - a[1] || alpha(a, b), corpus: (a, b) => (corpusCounts.value[b[0]] ?? 0) - (corpusCounts.value[a[0]] ?? 0) || b[1] - a[1] || alpha(a, b), alpha }
+  if (sortBy.value === 'group') {
+    const order = Object.fromEntries(groups.value.map((g, i) => [g.id, i]))
+    const gi = (c) => order[tagGroup.value[c]] ?? groups.value.length
+    return arr.sort((a, b) => gi(a[0]) - gi(b[0]) || b[1] - a[1] || alpha(a, b))
+  }
+  return arr.sort(by[sortBy.value])
+})
+const groupLabel = (c) => groups.value.find((g) => g.id === tagGroup.value[c])?.label ?? t('reader.group_other')
+const fmtN = (n) => (n ?? 0).toLocaleString(locale.value === 'pt' ? 'pt-BR' : 'en')
 const article = ref(null)
 const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22',
   '#393b79', '#637939', '#8c6d31', '#843c39', '#7b4173', '#3182bd', '#e6550d']
@@ -59,9 +99,13 @@ async function loadTagset() {
     const r = await api.taggers.tagset(tagsetId(), locale.value)
     tagset.value = Object.fromEntries(r.tags.map((x) => [x.tag, x.definition]))
     tagsetInfo.value = { name: r.name ?? '', about: r.about ?? '' }
-  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' } }
+    tagGroup.value = Object.fromEntries(r.tags.filter((x) => x.group).map((x) => [x.tag, x.group]))
+    groups.value = (r.groups ?? []).map((g) => ({ id: g.id, label: g.label }))
+  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' }; tagGroup.value = {}; groups.value = [] }
+  loadCounts()
 }
 watch([colorBy, locale], loadTagset)
+watch(() => props.corpus, () => { countsKey = ''; corpusCounts.value = {} })
 const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
 const classes = computed(() => {
   const counts = {}
@@ -143,6 +187,7 @@ function pick(c, k) {   // 'off' = olho fechado: tira a marcação
   else { kinds.value = { ...kinds.value, [c]: k }; next.add(c) }
   chosen.value = next
 }
+const onKey = (e) => { if (e.key === 'Escape' && panelOpen.value) panelOpen.value = false }
 const closeMenu = (e) => { if (!e.target.closest?.('[data-mark-menu]')) menu.value = null }
 const PALETTES = [
   { id: 'default', colors: PALETTE.slice(0, 12) },
@@ -202,15 +247,17 @@ function draw() {
 }
 let raf = 0
 const redraw = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw) }
-watch([chosen, classes, pieces, colorBy, kinds, custom], async () => { await nextTick(); redraw() }, { flush: 'post' })
+watch([chosen, classes, pieces, colorBy, kinds, custom, zoom, fontPt, justify], async () => { await nextTick(); redraw() }, { flush: 'post' })
 // Na impressão o layout é o mesmo da tela; redesenha por garantia.
 const beforePrint = () => draw()
 let ro
 onMounted(() => {
   globalThis.addEventListener?.('beforeprint', beforePrint)
+  globalThis.addEventListener?.('keydown', onKey)
+  mq?.addEventListener?.('change', onMq)
   globalThis.addEventListener?.('click', closeMenu)
   if (globalThis.ResizeObserver && article.value) { ro = new ResizeObserver(redraw); ro.observe(article.value) } })
-onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePrint); globalThis.removeEventListener?.('click', closeMenu); ro?.disconnect(); cancelAnimationFrame(raf); clearAnnotations() })
+onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePrint); globalThis.removeEventListener?.('keydown', onKey); mq?.removeEventListener?.('change', onMq); globalThis.removeEventListener?.('click', closeMenu); ro?.disconnect(); cancelAnimationFrame(raf); clearAnnotations() })
 </script>
 
 <template>
@@ -221,19 +268,30 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.color_by') }}</span>
         <select v-model="colorBy" class="select select-sm" @change="chosen = new Set()"><option value="upos">UPOS</option><option value="xpos">XPOS</option><option value="tags">tags</option></select></label>
       <span v-if="doc?.layer" class="badge badge-ghost h-8">{{ doc.layer.tool }} · {{ doc.layer.model }}</span>
+      <div class="ttw-field" role="group" :aria-label="t('reader.sheet')"><span class="ttw-label">{{ t('reader.sheet') }}</span>
+        <div class="flex items-center gap-1">
+          <button type="button" class="btn btn-sm btn-square" :aria-label="t('reader.zoom_out')" :title="t('reader.zoom_out')" :disabled="zoom <= ZOOMS[0]" data-testid="reader-zoom-out" @click="stepZoom(-1)">−</button>
+          <select v-model.number="zoom" class="select select-sm w-24" :aria-label="t('reader.zoom')" data-testid="reader-zoom">
+            <option v-for="z in ZOOMS" :key="z" :value="z">{{ Math.round(z * 100) }}%</option></select>
+          <button type="button" class="btn btn-sm btn-square" :aria-label="t('reader.zoom_in')" :title="t('reader.zoom_in')" :disabled="zoom >= ZOOMS[ZOOMS.length - 1]" data-testid="reader-zoom-in" @click="stepZoom(1)">+</button>
+          <select v-model.number="fontPt" class="select select-sm w-20" :aria-label="t('reader.font_size')" :title="t('reader.font_size')" data-testid="reader-font">
+            <option v-for="n in [9, 10, 11, 12, 13, 14, 16, 18]" :key="n" :value="n">{{ n }} pt</option></select>
+          <button type="button" class="btn btn-sm btn-square" :class="{ 'btn-active': justify }" :aria-pressed="justify" :aria-label="t('reader.justify')" :title="t('reader.justify')" data-testid="reader-justify" @click="justify = !justify">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 3.500h12M2 6.500h12M2 9.500h12M2 12.500h12" /></svg></button>
+        </div></div>
       <button class="btn btn-sm ml-auto" @click="window.print()">{{ t('reader.print') }}</button>
     </div>
     <p v-if="doc && !doc.layer" class="text-sm text-text-muted print:hidden">{{ t('reader.no_layer') }}</p>
     <p v-if="doc && doc.text === null" role="alert" class="alert alert-warning text-sm">{{ t('reader.no_text') }}</p>
-    <div class="grid lg:grid-cols-[minmax(0,1fr)_18rem] gap-4 items-start print:block">
+    <div class="grid gap-4 items-start print:block" :class="overlay ? '' : 'grid-cols-[minmax(0,1fr)_20rem]'">
       <!-- A folha: mesma largura, tipografia e quebras de linha na tela e na impressão (A4, margens de 2 cm) -->
-      <div class="reader-stage print:overflow-visible">
-        <div class="reader-paper" data-testid="reader-paper">
+      <div class="reader-stage print:overflow-visible" tabindex="0" role="region" :aria-label="t('reader.sheet')">
+        <div class="reader-paper" data-testid="reader-paper" :style="{ '--z': zoom, '--fs': `${fontPt}pt` }">
           <header class="reader-sheet-head">
             <h2>{{ file }}</h2>
             <p v-if="doc?.layer">{{ doc.layer.tool }} · {{ doc.layer.model }} · {{ colorBy.toUpperCase() }}</p>
           </header>
-          <article ref="article" class="reader-text ttw-annot" data-testid="reader-text">
+          <article ref="article" class="reader-text ttw-annot" :class="{ 'is-justified': justify }" data-testid="reader-text">
             <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
                 :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
                 :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok) }"
@@ -246,35 +304,53 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </footer>
         </div>
       </div>
-      <aside class="flex flex-col gap-3 lg:sticky lg:top-16 lg:max-h-[calc(100dvh-5rem)] print:hidden" aria-live="polite">
-        <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2 min-h-0 lg:flex-1" role="group" :aria-label="t('reader.tags_title')">
+      <button v-if="overlay && classes.length" type="button" class="ttw-tag-handle print:hidden" :aria-expanded="panelOpen" aria-controls="reader-aside"
+              data-testid="reader-panel-toggle" @click="panelOpen = !panelOpen">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3.500 12.500V4.500a1 1 0 0 1 1-1h8l8 8a1.500 1.500 0 0 1 0 2.100l-6.300 6.300a1.500 1.500 0 0 1-2.100 0z" /><circle cx="8" cy="8" r="1.300" /></svg>
+        <span>{{ panelOpen ? t('reader.collapse') : t('reader.tags_title') }}</span>
+      </button>
+      <aside id="reader-aside" class="flex flex-col gap-3 print:hidden" aria-live="polite"
+             :class="overlay ? ['ttw-tag-drawer', panelOpen ? 'is-open' : ''] : 'sticky top-16 max-h-[calc(100dvh-5rem)]'" :inert="overlay && !panelOpen">
+        <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2 min-h-0 flex-1" role="group" :aria-label="t('reader.tags_title')">
           <div class="flex items-center gap-2">
             <h3 class="font-bold text-sm">{{ t('reader.tags_title') }}</h3>
             <button v-if="chosen.size" class="btn btn-xs btn-ghost ml-auto" @click="chosen = new Set()">{{ t('reader.clear') }}</button>
-            <button type="button" class="btn btn-xs btn-ghost lg:hidden" :class="{ 'ml-auto': !chosen.size }" :aria-expanded="tagsOpen" data-testid="reader-tags-toggle"
-                    @click="tagsOpen = !tagsOpen">{{ tagsOpen ? t('reader.collapse') : t('reader.expand') }} ({{ classes.length }})</button>
           </div>
-          <div class="flex-col gap-2 min-h-0 flex-1" :class="tagsOpen ? 'flex' : 'hidden lg:flex'">
-            <p class="text-xs text-text-muted">{{ t('reader.tags_hint') }}</p>
-            <div class="ttw-tag-scroll flex flex-wrap content-start gap-1.5 overflow-y-auto min-h-0 max-h-72 lg:max-h-none lg:flex-1 pr-1" data-testid="reader-tag-list"
-                 @scroll.passive="hideTip(); menu = null">
-              <span v-for="[c, n] in classes" :key="c" class="relative inline-flex" data-mark-menu :data-badge="c">
-                <span class="badge badge-lg p-0 gap-0 overflow-visible" :class="{ 'badge-outline': !chosen.has(c) }"
-                      :style="{ borderColor: color[c], color: chosen.has(c) ? fg(color[c]) : color[c], background: chosen.has(c) ? color[c] : '' }"
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-text-muted" for="reader-sort">{{ t('reader.sort') }}</label>
+            <select id="reader-sort" v-model="sortBy" class="select select-xs flex-1" data-testid="reader-sort">
+              <option value="text">{{ t('reader.sort.text') }}</option>
+              <option value="corpus">{{ t('reader.sort.corpus') }}</option>
+              <option value="alpha">{{ t('reader.sort.alpha') }}</option>
+              <option v-if="hasGroups" value="group">{{ t('reader.sort.group') }}</option>
+            </select>
+          </div>
+          <p class="text-xs text-text-muted">{{ t('reader.tags_hint') }}</p>
+          <div class="flex items-center gap-2 text-[0.7rem] text-text-muted px-1" aria-hidden="true">
+            <span class="flex-1">{{ t('reader.col.tag') }}</span><span class="w-12 text-right">{{ t('reader.col.text') }}</span><span class="w-14 text-right">{{ t('reader.col.corpus') }}</span>
+          </div>
+          <ul class="flex flex-col gap-1 overflow-y-auto min-h-0 flex-1 pr-1 max-h-[60dvh]" :class="{ 'lg:max-h-none': !overlay }" data-testid="reader-tag-list" @scroll.passive="hideTip(); menu = null">
+            <template v-for="([c, n], i) in sortedClasses" :key="c">
+              <li v-if="sortBy === 'group' && (i === 0 || groupLabel(sortedClasses[i - 1][0]) !== groupLabel(c))" class="text-xs font-bold text-text-muted pt-2 sticky top-0 bg-base-200">{{ groupLabel(c) }}</li>
+              <li class="flex items-center gap-2" data-mark-menu :data-badge="c">
+                <span class="badge badge-lg p-0 gap-0 overflow-visible flex-1 justify-between min-w-0" :class="{ 'badge-outline': !chosen.has(c) }"
+                      :style="{ borderColor: color[c], borderWidth: '2px', color: chosen.has(c) ? fg(color[c]) : 'var(--color-base-content)', background: chosen.has(c) ? color[c] : '' }"
                       @contextmenu.prevent="openMenu(c, $event.currentTarget, true)">
-                  <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer" :aria-pressed="chosen.has(c)" :aria-describedby="tip?.c === c ? 'reader-tip' : undefined"
-                          @click="toggle(c)" @mouseenter="showTip(c, $event.currentTarget)" @mouseleave="hideTip" @focus="showTip(c, $event.currentTarget)" @blur="hideTip">
-                    {{ c }} <span class="text-text-muted">{{ n }}</span></button>
+                  <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer flex-1 text-left truncate" :aria-pressed="chosen.has(c)" :aria-describedby="tip?.c === c ? 'reader-tip' : undefined"
+                          @click="toggle(c)" @mouseenter="showTip(c, $event.currentTarget)" @mouseleave="hideTip" @focus="showTip(c, $event.currentTarget)" @blur="hideTip"><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 align-middle border" :style="{ background: color[c], borderColor: chosen.has(c) ? fg(color[c]) : color[c] }" aria-hidden="true" />{{ c }}</button>
                   <button type="button" class="pr-2 pl-1 h-full cursor-pointer border-l border-current/30" :aria-label="`${t('reader.mark')}: ${c}`"
                           :aria-expanded="menu === c" :title="t('reader.mark')" @click.stop="menu === c ? (menu = null) : openMenu(c, $event.currentTarget.parentElement)">
                     <MarkIcon :kind="chosen.has(c) ? kindOf(c) : 'off'" /></button>
                 </span>
-              </span>
-            </div>
-            <div v-if="chosen.size" class="flex gap-2">
-              <button class="btn btn-xs" @click="step(-1)">{{ t('reader.prev') }}</button>
-              <button class="btn btn-xs" @click="step(1)">{{ t('reader.next') }}</button>
-            </div>
+                <span class="w-12 text-right text-sm tabular-nums" :title="t('reader.col.text')">{{ fmtN(n) }}</span>
+                <span class="w-14 text-right text-sm tabular-nums text-text-muted" :title="t('reader.col.corpus')">{{ corpusCounts[c] !== undefined ? fmtN(corpusCounts[c]) : '…' }}</span>
+              </li>
+            </template>
+          </ul>
+          <div v-if="chosen.size" class="flex gap-2">
+            <button class="btn btn-xs" @click="step(-1)">{{ t('reader.prev') }}</button>
+            <button class="btn btn-xs" @click="step(1)">{{ t('reader.next') }}</button>
           </div>
         </div>
         <div class="bg-base-200 rounded-box p-3 text-sm max-h-60 overflow-y-auto shrink-0">

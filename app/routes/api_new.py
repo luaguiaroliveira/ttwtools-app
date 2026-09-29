@@ -203,6 +203,14 @@ def corpus_text(corpus: str, filename: str, layer: str | None = None):
             raise HTTPException(status_code=404, detail=exc.args[0]) from exc
 
 
+@router.get("/corpora/{corpus}/tag-counts", tags=["corpora"])
+def corpus_tag_counts(corpus: str, layer: str | None = None, field: Literal["upos", "xpos", "tags"] = "tags"):
+    """Ocorrências de cada etiqueta no corpus todo (leitor: ordenar por ocorrências no corpus)."""
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.tag_counts, proj, corpus, layer, field)
+
+
 class ExportRequest(BaseModel):
     format: Literal["conllu", "vrt", "csv"]
     layer: str | None = None

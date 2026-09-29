@@ -150,12 +150,13 @@
 
 /* Leitor: folha A4 (21 cm, margens de 2 cm). A tela mostra exatamente o que a impressão traz. */
 .reader-stage { overflow-x: auto; padding: 1rem; border-radius: var(--radius-box); background: var(--color-base-200); }
-.reader-paper { width: 21cm; margin: 0 auto; padding: 2cm; box-sizing: border-box; background: #fff; color: #111;
-  box-shadow: var(--ttw-shadow-pop); font-family: Georgia, "Times New Roman", serif; font-size: 12pt; }
-.reader-sheet-head { border-bottom: 1px solid #ccc; margin-bottom: 1cm; padding-bottom: .3cm; }
-.reader-sheet-head h2 { font-size: 13pt; font-weight: 700; word-break: break-all; }
-.reader-sheet-head p { font-size: 9pt; color: #555; }
+.reader-paper { --z: 1; --fs: 12pt; width: calc(21cm * var(--z)); margin: 0 auto; padding: calc(2cm * var(--z)); box-sizing: border-box; background: #fff; color: #111;
+  box-shadow: var(--ttw-shadow-pop); font-family: Georgia, "Times New Roman", serif; font-size: calc(var(--fs) * var(--z)); }
+.reader-sheet-head { border-bottom: 1px solid #ccc; margin-bottom: calc(1cm * var(--z)); padding-bottom: calc(.3cm * var(--z)); }
+.reader-sheet-head h2 { font-size: calc(13pt * var(--z)); font-weight: 700; word-break: break-all; }
+.reader-sheet-head p { font-size: calc(9pt * var(--z)); color: #555; }
 .reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; }
+.reader-text.is-justified { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 .reader-tok { cursor: pointer; border-radius: 2px; position: relative; }
 .reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }
 .reader-tok svg.rn path { stroke-linecap: round; }
@@ -168,7 +169,7 @@
   @page { size: A4; margin: 2cm; }
   html, body, #app { height: auto !important; overflow: visible !important; background: #fff !important; }
   .reader-stage { padding: 0; background: none; overflow: visible; }
-  .reader-paper { width: auto; padding: 0; margin: 0; box-shadow: none; }
+  .reader-paper { --z: 1 !important; width: auto; padding: 0; margin: 0; box-shadow: none; }
   .ttw-annot svg { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
 
@@ -320,3 +321,15 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
   font-size: .875rem; text-align: left; white-space: nowrap; }
 .ttw-menu-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
 .ttw-wordmark { min-width: 6.5rem; text-align: left; }
+
+/* Leitor: gaveta de etiquetas (telas estreitas ou baixas), aberta por uma alça na borda direita, por cima do texto */
+.ttw-tag-drawer { position: fixed; top: 3rem; bottom: 0; right: 0; z-index: 40; width: 21rem; max-width: 88vw; padding: .75rem; overflow-y: auto;
+  background: var(--color-base-100); border-left: 1px solid var(--ttw-border-strong); box-shadow: var(--ttw-shadow-pop);
+  transform: translateX(105%); visibility: hidden; transition: transform .28s cubic-bezier(.2, .8, .2, 1), visibility 0s .28s; }
+.ttw-tag-drawer.is-open { transform: none; visibility: visible; transition-delay: 0s; }
+.ttw-tag-handle { position: fixed; right: 0; top: 40%; z-index: 41; display: flex; flex-direction: column; align-items: center; gap: .5rem; padding: .75rem .4rem;
+  border-radius: var(--radius-box) 0 0 var(--radius-box); background: var(--color-neutral); color: var(--color-neutral-content); font-size: .75rem; font-weight: 600;
+  box-shadow: var(--ttw-shadow-pop); cursor: pointer; }
+.ttw-tag-handle span { writing-mode: vertical-rl; }
+.ttw-tag-handle[aria-expanded="true"] { right: min(21rem, 88vw); }
+@media (prefers-reduced-motion: reduce) { .ttw-tag-drawer { transition: none; } }

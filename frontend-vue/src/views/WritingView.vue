@@ -1,4 +1,5 @@
 <script setup>
+import TextType from '../components/vb/TextType.vue'
 // Escrita (experimental): compara UM texto com um corpus de referência. Duas lentes:
 //  - "Palavras (léxico)": palavras que se distanciam do padrão (com z-score descritivo);
 //  - "Construções (classes)": moldes de classes gramaticais (n-gramas de POS).
@@ -83,7 +84,7 @@ function seeInCorpus(item) {
 </script>
 <template>
   <div class="page max-w-6xl">
-    <h1 class="page-title flex items-center gap-2">{{ t('writing.title') }}
+    <h1 class="page-title flex items-center gap-2"><TextType :parts="[{ text: t('writing.title'), class: '' }]" />
       <span class="badge badge-warning badge-sm">{{ t('writing.experimental') }}</span>
       <HelpTip topic="keyness" />
     </h1>

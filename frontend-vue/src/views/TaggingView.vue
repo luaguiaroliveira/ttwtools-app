@@ -1,4 +1,5 @@
 <script setup>
+import TextType from '../components/vb/TextType.vue'
 // Etiquetagem: acrescentar camadas de informação ao corpus ativo. Escolhe-se agora (lista
 // "a executar", guardada no projeto) e calcula-se depois, em "Executar análise e etiquetagem".
 import { computed, onMounted, ref, watch } from 'vue'
@@ -52,7 +53,7 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
 <template>
   <div class="flex flex-col gap-6 max-w-5xl">
     <div>
-      <h1 class="text-2xl font-bold">{{ t('pipeline.title') }}</h1>
+      <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('pipeline.title'), class: '' }]" /></h1>
       <p class="opacity-80">{{ t('pipeline.intro') }}</p>
     </div>
     <p v-if="!hasProject || !corpora.length" class="text-text-muted">{{ t('pipeline.need_corpus') }}

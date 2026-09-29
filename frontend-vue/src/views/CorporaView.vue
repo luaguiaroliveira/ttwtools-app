@@ -1,4 +1,5 @@
 <script setup>
+import TextType from '../components/vb/TextType.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -30,7 +31,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
 
 <template>
   <div class="flex flex-col gap-4 max-w-5xl">
-    <h1 class="text-2xl font-bold">{{ t('app.title') }}</h1>
+    <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('app.title'), class: '' }]" /></h1>
     <ProjectBar />
     <template v-if="hasProject">
       <div class="flex items-center gap-2" data-explain="explain.corpora.library">

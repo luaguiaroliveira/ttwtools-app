@@ -39,6 +39,7 @@ export const api = {
     list: () => get('/api/corpora'),
     documents: (corpus, params) => get(`/api/corpora/${encodeURIComponent(corpus)}/documents`, { ...params, where: where(params?.where) }),
     layers: (corpus) => get(`/api/corpora/${encodeURIComponent(corpus)}/layers`),
+    tagCounts: (corpus, layer, field) => get(`/api/corpora/${encodeURIComponent(corpus)}/tag-counts`, { layer, field }),
     text: (corpus, filename, layer) => get(`/api/corpora/${encodeURIComponent(corpus)}/text/${encodeURIComponent(filename)}`, { layer }),
     import: (body) => post('/api/corpora/import', body),
     previewNames: (path, delimiter, fields) => get('/api/corpora/preview-names', { path, delimiter, fields }),

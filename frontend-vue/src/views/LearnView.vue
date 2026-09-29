@@ -1,4 +1,5 @@
 <script setup>
+import TextType from '../components/vb/TextType.vue'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -20,7 +21,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 </script>
 <template>
   <div class="flex flex-col gap-4 max-w-4xl">
-    <h1 class="text-2xl font-bold">{{ t('learn.title') }}</h1>
+    <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
     <article v-if="topic" class="flex flex-col gap-3" data-testid="help-topic">
       <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
       <h2 class="text-xl font-bold">{{ topic.title }}</h2>

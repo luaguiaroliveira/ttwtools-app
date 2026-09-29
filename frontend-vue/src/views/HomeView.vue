@@ -6,7 +6,7 @@ import { useSession } from '../stores/session.js'
 import { useJob } from '../composables/useJob.js'
 import { post } from '../api/client.js'
 import Collapsible from '../components/Collapsible.vue'
-import GradientText from '../components/vb/GradientText.vue'
+import TextType from '../components/vb/TextType.vue'
 import JobProgress from '../components/JobProgress.vue'
 
 const { t } = useI18n()
@@ -18,7 +18,7 @@ const runDemo = () => demo.start(() => post('/api/jobs/demo', undefined, { steps
 
 <template>
   <section class="flex flex-col gap-4 max-w-3xl">
-    <h1 class="text-3xl font-black"><GradientText>{{ t('home.welcome') }}</GradientText></h1>
+    <h1 class="text-3xl font-black"><TextType :parts="[{ text: t('home.welcome'), class: '' }]" /></h1>
     <p v-if="version" data-testid="version">{{ t('home.version', { app: version.app, ttwtools: version.ttwtools }) }}</p>
     <p v-else>{{ t('common.loading') }}</p>
     <Collapsible :title="t('home.diagnostics')">

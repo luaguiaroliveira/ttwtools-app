@@ -2,7 +2,7 @@
 // Inspirado em Vue Bits (TextType; o original usa gsap): digitação letra a letra, UMA vez ao aparecer,
 // com cursor piscando só enquanto digita. Texto completo em aria-label; sem animação com
 // prefers-reduced-motion. `parts` = [{ text, class }] permite cores diferentes por trecho.
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 const props = defineProps({ parts: { type: Array, required: true }, speed: { type: Number, default: 90 }, delay: { type: Number, default: 250 } })
 const full = computed(() => props.parts.map((p) => p.text).join(''))
 const count = ref(0)
@@ -16,6 +16,8 @@ onMounted(() => {
     timer = setTimeout(step, props.speed)
   }, props.delay)
 })
+// troca de idioma: o texto novo aparece inteiro (a digitação é só na primeira aparição)
+watch(full, (v) => { if (!typing.value) count.value = v.length })
 onBeforeUnmount(() => clearTimeout(timer))
 const shown = computed(() => {
   let left = count.value
