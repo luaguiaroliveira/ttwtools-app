@@ -56,19 +56,19 @@ const posBucket = (p) => {
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="text-sm" data-testid="kwic-total">{{ t('table.range', { from: data.total ? offset + 1 : 0, to: Math.min(offset + limit, data.total), total: data.total }) }}</p>
-      <!-- computador e tablet: tabela alinhada no centro -->
+      <!-- computador e tablet: tabela alinhada no centro. A frase inteira (title) fica em todas as células menos a Classe, que tem a própria dica -->
       <div class="hidden sm:block ttw-scroll">
         <table class="table table-xs" :aria-busy="loading">
           <thead><tr><th scope="col" class="text-right">{{ t('explore.left') }}</th><th scope="col">{{ t('explore.match') }}</th>
             <th scope="col">{{ t('explore.right') }}</th><th scope="col">{{ t('explore.pos') }}</th><th scope="col">{{ t('explore.file') }}</th></tr></thead>
           <tbody>
-            <tr v-for="(l, i) in data.lines" :key="i" class="hover cursor-pointer" tabindex="0" :title="l.sentence"
+            <tr v-for="(l, i) in data.lines" :key="i" class="hover cursor-pointer" tabindex="0"
                 @click="open(l)" @keydown.enter="open(l)">
-              <td class="text-right whitespace-nowrap overflow-hidden max-w-[20rem]" style="direction: rtl"><bdi>{{ l.left }}</bdi></td>
-              <td class="font-bold text-primary whitespace-nowrap">{{ l.match }}</td>
-              <td class="whitespace-nowrap overflow-hidden max-w-[20rem]">{{ l.right }}</td>
+              <td class="text-right whitespace-nowrap overflow-hidden max-w-[20rem]" style="direction: rtl" :title="l.sentence"><bdi>{{ l.left }}</bdi></td>
+              <td class="font-bold text-primary whitespace-nowrap" :title="l.sentence">{{ l.match }}</td>
+              <td class="whitespace-nowrap overflow-hidden max-w-[20rem]" :title="l.sentence">{{ l.right }}</td>
               <td class="text-xs"><span v-if="l.pos" class="pos-tag" :data-bucket="posBucket(l.pos)">{{ l.pos }}</span></td>
-              <td class="text-xs text-text-muted whitespace-nowrap">{{ l.filename }}:{{ l.start_char }}</td>
+              <td class="text-xs text-text-muted whitespace-nowrap" :title="l.sentence">{{ l.filename }}:{{ l.start_char }}</td>
             </tr>
           </tbody>
         </table>
