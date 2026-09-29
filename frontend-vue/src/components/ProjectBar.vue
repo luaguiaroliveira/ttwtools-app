@@ -10,6 +10,7 @@ import { api } from '../api/index.js'
 import { useJob } from '../composables/useJob.js'
 import JobProgress from './JobProgress.vue'
 import Collapsible from './Collapsible.vue'
+import FileIcon from './FileIcon.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -132,13 +133,16 @@ const exportAll = () => act(async () => {
         <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
       </div>
       <p v-else class="text-sm flex-1 min-w-48">{{ t('project.intro') }}</p>
-      <div class="flex flex-wrap gap-1" role="toolbar" :aria-label="t('nav.corpora')">
-        <button class="btn btn-sm" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-new" @click="newProject">{{ t('project.new') }}</button>
-        <button class="btn btn-sm" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject">{{ t('project.open_dialog') }}</button>
+      <div class="flex flex-wrap gap-2" role="toolbar" :aria-label="t('nav.corpora')">
+        <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': !project }"
+                :disabled="busy || saving" data-testid="project-new" @click="newProject"><FileIcon name="new" />{{ t('project.new') }}</button>
+        <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': !project }"
+                :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
         <template v-if="project">
-          <button class="btn btn-sm" :class="{ 'btn-primary': fromTtwt }" :disabled="busy || saving" data-testid="project-save"
-                  @click="save">{{ t('project.save') }}</button>
-          <button class="btn btn-sm" :disabled="busy || saving" data-testid="project-save-as" @click="saveAs">{{ t('project.save_as') }}</button>
+          <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': fromTtwt }"
+                  :disabled="busy || saving" data-testid="project-save" @click="save"><FileIcon name="save" />{{ t('project.save') }}</button>
+          <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium"
+                  :disabled="busy || saving" data-testid="project-save-as" @click="saveAs"><FileIcon name="saveas" />{{ t('project.save_as') }}</button>
         </template>
       </div>
     </div>

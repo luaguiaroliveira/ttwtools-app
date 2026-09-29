@@ -3,13 +3,13 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export const NAV = [
-  { name: 'corpora', path: '/arquivo', label: 'nav.corpora', icon: 'M6 2h8l5 5v15H6zm8 1.5V8h4.5' },
-  { name: 'tagging', path: '/etiquetagem', label: 'nav.tagging', icon: 'M5 4h14v2H5zm0 5h9v2H5zm0 5h14v2H5zm0 5h9v2H5zm12-10l3 3-3 3z' },
-  { name: 'explore', path: '/explorar', label: 'nav.explore', icon: 'M10 4a6 6 0 104.47 10.03l4.25 4.25 1.41-1.41-4.25-4.25A6 6 0 0010 4z' },
-  { name: 'compare', path: '/comparar', label: 'nav.compare', icon: 'M5 4h4v16H5zm10 6h4v10h-4z' },
-  { name: 'writing', path: '/escrita', label: 'nav.writing', icon: 'M4 20h4L18.5 9.5l-4-4L4 16zm12.7-12.7l1.6-1.6a1 1 0 011.4 0l1.6 1.6a1 1 0 010 1.4l-1.6 1.6z' },
-  { name: 'modules', path: '/modulos', label: 'nav.modules', icon: 'M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z' },
-  { name: 'learn', path: '/aprender', label: 'nav.learn', icon: 'M12 3L2 8l10 5 8-4v6h2V8z' },
+  { name: 'corpora', path: '/arquivo', label: 'nav.corpora', icon: 'file' },
+  { name: 'tagging', path: '/etiquetagem', label: 'nav.tagging', icon: 'tagging' },
+  { name: 'explore', path: '/explorar', label: 'nav.explore', icon: 'explore' },
+  { name: 'compare', path: '/comparar', label: 'nav.compare', icon: 'compare' },
+  { name: 'writing', path: '/escrita', label: 'nav.writing', icon: 'writing' },
+  { name: 'modules', path: '/modulos', label: 'nav.modules', icon: 'modules' },
+  { name: 'learn', path: '/aprender', label: 'nav.learn', icon: 'learn' },
 ]
 
 export const router = createRouter({

@@ -140,3 +140,24 @@
   .reader-paper { width: auto; padding: 0; margin: 0; box-shadow: none; }
   .ttw-annot svg { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
+
+/* Menu lateral: item ativo e animações dos ícones (só ao passar o mouse/focar ou no item ativo) */
+.nav-item.nav-active { background: color-mix(in oklab, var(--color-primary) 18%, transparent); color: var(--color-primary); }
+.nav-ico * { transform-box: fill-box; transform-origin: center; }
+.nav-ico .a-swing { transform-origin: 30% 30%; }
+.nav-item:hover .a-swing, .nav-item:focus-visible .a-swing { animation: ico-swing .7s ease-in-out; }
+.nav-item:hover .a-flap, .nav-item:focus-visible .a-flap { animation: ico-flap .5s ease-out; }
+.nav-item:hover .a-back1, .nav-item:focus-visible .a-back1 { animation: ico-shift1 .5s ease-out forwards; }
+.nav-item:hover .a-back2, .nav-item:focus-visible .a-back2 { animation: ico-shift2 .5s ease-out forwards; }
+.nav-item:hover .a-arrows, .nav-item:focus-visible .a-arrows { animation: ico-arrows .7s ease-in-out; }
+.nav-item:hover .a-pencil, .nav-item:focus-visible .a-pencil { animation: ico-write .8s ease-in-out; }
+.nav-item:hover .a-q1, .nav-item:hover .a-q2, .nav-item:hover .a-q3, .nav-item:hover .a-q4 { animation: ico-pop .5s ease-out; }
+.nav-item:hover .a-q2 { animation-delay: .06s; } .nav-item:hover .a-q3 { animation-delay: .12s; } .nav-item:hover .a-q4 { animation-delay: .18s; }
+.nav-item:hover .a-tassel, .nav-item:focus-visible .a-tassel { animation: ico-swing .8s ease-in-out; }
+@keyframes ico-swing { 0%,100% { transform: rotate(0) } 25% { transform: rotate(-18deg) } 60% { transform: rotate(12deg) } }
+@keyframes ico-flap { 0%,100% { transform: translate(0,0) } 40% { transform: translate(1.500px,-1.500px) } }
+@keyframes ico-shift1 { to { transform: translate(-1.500px, 1px) } }
+@keyframes ico-shift2 { to { transform: translate(1.500px, -1px) } }
+@keyframes ico-arrows { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-1.500px) } 70% { transform: translateX(1.500px) } }
+@keyframes ico-write { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-2px,1.500px) } 50% { transform: translate(0,0) } 75% { transform: translate(-1.500px,2px) } }
+@keyframes ico-pop { 0%,100% { transform: scale(1) } 50% { transform: scale(.78) } }

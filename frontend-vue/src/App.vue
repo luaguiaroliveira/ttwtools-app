@@ -30,17 +30,14 @@ const changeLang = (value) => setLang(value)
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
   <div class="min-h-dvh bg-base-100 text-base-content flex flex-col md:flex-row">
-    <!-- trilho (tablet) e barra lateral (computador) -->
-    <nav class="hidden md:flex flex-col gap-1 border-r border-base-300 bg-base-200 p-2 lg:w-56 md:w-20 shrink-0"
+    <!-- trilho lateral mínimo: só ícones (o nome aparece ao passar o mouse ou focar) -->
+    <nav class="hidden md:flex flex-col items-center gap-1 border-r border-base-300 bg-base-200 py-2 px-1.5 w-14 shrink-0"
          :aria-label="t('nav.label')">
-      <RouterLink to="/" class="font-bold text-lg px-2 py-3" :aria-label="t('app.title')">
-        <span class="hidden lg:inline">{{ t('app.title') }}</span><span class="lg:hidden">TTW</span>
-      </RouterLink>
-      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path"
-                  class="btn btn-ghost justify-start gap-3 lg:px-3 md:flex-col lg:flex-row md:h-auto md:py-2"
-                  active-class="btn-active">
-        <NavIcon :d="item.icon" />
-        <span class="text-xs lg:text-sm">{{ t(item.label) }}</span>
+      <RouterLink to="/" class="font-black text-sm tracking-tight py-2 hover:text-primary" :aria-label="t('app.title')" :title="t('app.title')">TTW</RouterLink>
+      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" :aria-label="t(item.label)"
+                  class="nav-item tooltip tooltip-right btn btn-ghost btn-square w-11 h-11 min-h-0 p-0"
+                  active-class="nav-active" :data-tip="t(item.label)">
+        <NavIcon :name="item.icon" />
       </RouterLink>
     </nav>
 
@@ -103,8 +100,8 @@ const changeLang = (value) => setLang(value)
     <nav class="md:hidden fixed bottom-0 inset-x-0 border-t border-base-300 bg-base-200 grid grid-cols-7 z-10"
          :aria-label="t('nav.label')">
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path"
-                  class="flex flex-col items-center py-2 text-[0.65rem] leading-tight gap-1 min-w-0 px-0.5" active-class="text-primary font-bold">
-        <NavIcon :d="item.icon" />
+                  class="nav-item flex flex-col items-center py-2 text-[0.65rem] leading-tight gap-1 min-w-0 px-0.5" active-class="text-primary font-bold">
+        <NavIcon :name="item.icon" :size="22" />
         <span class="max-w-full truncate">{{ t(item.label) }}</span>
       </RouterLink>
     </nav>
