@@ -11,6 +11,7 @@ import rough from 'roughjs/bundled/rough.esm.js'
 import { api } from '../../api/index.js'
 import MarkIcon from '../../components/MarkIcon.vue'
 import ColorPicker from '../../components/ColorPicker.vue'
+import TagDoc from '../../components/TagDoc.vue'
 
 const props = defineProps({ corpus: String, layer: String })
 const { t, locale } = useI18n()
@@ -48,6 +49,8 @@ async function loadCounts() {
   try { corpusCounts.value = (await api.corpora.tagCounts(props.corpus, doc.value.layer.tool, colorBy.value)).counts } catch { corpusCounts.value = {}; countsKey = '' }
 }
 const tagGroup = ref({})     // etiqueta → id do grupo
+const tagDoc = ref({})       // etiqueta → documentação oficial (MFTE)
+const docVersion = ref('')
 const groups = ref([])       // [{ id, label }] na ordem do repertório
 const hasGroups = computed(() => groups.value.length > 0 && Object.keys(tagGroup.value).length > 0)
 watch(hasGroups, (v) => { if (!v && sortBy.value === 'group') sortBy.value = 'text' })
@@ -100,8 +103,10 @@ async function loadTagset() {
     tagset.value = Object.fromEntries(r.tags.map((x) => [x.tag, x.definition]))
     tagsetInfo.value = { name: r.name ?? '', about: r.about ?? '' }
     tagGroup.value = Object.fromEntries(r.tags.filter((x) => x.group).map((x) => [x.tag, x.group]))
+    tagDoc.value = Object.fromEntries(r.tags.filter((x) => x.doc).map((x) => [x.tag, x.doc]))
+    docVersion.value = r.doc_version ?? ''
     groups.value = (r.groups ?? []).map((g) => ({ id: g.id, label: g.label }))
-  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' }; tagGroup.value = {}; groups.value = [] }
+  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' }; tagGroup.value = {}; tagDoc.value = {}; groups.value = [] }
   loadCounts()
 }
 watch([colorBy, locale], loadTagset)
@@ -361,6 +366,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <template v-if="selected.tags?.length"><dt>tags</dt><dd>{{ selected.tags.join(' ') }}</dd></template>
             <dt>def.</dt><dd>{{ tagset[label(selected)] || '—' }}</dd>
           </dl>
+          <TagDoc v-if="selected" :doc="tagDoc[label(selected)]" :version="docVersion" />
         </div>
       </aside>
       <!-- dica da etiqueta (passar o mouse ou focar): definição segundo o repertório do etiquetador -->
@@ -368,6 +374,11 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
            :style="{ left: `${tip.x}px`, top: `${tip.y}px` }">
         <p class="font-bold text-sm">{{ tip.c }}<span v-if="tagsetInfo.name" class="font-normal opacity-80"> · {{ tagsetInfo.name }}</span></p>
         <p>{{ tagset[tip.c] || t('reader.no_definition') }}</p>
+        <template v-if="tagDoc[tip.c]">
+          <p class="mt-1"><span class="opacity-70">{{ t('tagdoc.feature') }}:</span> {{ tagDoc[tip.c].feature }}</p>
+          <p v-if="tagDoc[tip.c].examples" class="italic opacity-90 line-clamp-2">“{{ tagDoc[tip.c].examples }}”</p>
+          <p v-if="tagDoc[tip.c].unit && tagDoc[tip.c].unit !== 'NA'" class="opacity-70">{{ t('tagdoc.unit') }}: {{ tagDoc[tip.c].unit }}</p>
+        </template>
         <p v-if="doc?.layer" class="opacity-70 mt-1">{{ t('reader.tip_from', { tool: doc.layer.tool }) }}</p>
       </div>
       <!-- menu da etiqueta: estilo e cor (botão direito na etiqueta ou no token abre já com o seletor) -->

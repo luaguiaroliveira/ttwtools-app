@@ -28,6 +28,7 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
 
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
+  page.on('console', (m) => { if (m.type() === 'error' && /TypeError|ReferenceError/.test(m.text())) errors.push(m.text().slice(0, 200)) })   // erros de renderização do Vue
   await page.goto('/#/explorar/leitor')
   await page.getByTestId('explore-corpus').selectOption('corifa')
   await expect(page.getByTestId('reader-tag-list').locator('li').first()).toBeAttached({ timeout: 30_000 })

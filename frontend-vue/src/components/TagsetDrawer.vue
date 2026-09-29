@@ -3,6 +3,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api/index.js'
+import TagDoc from './TagDoc.vue'
 const props = defineProps({ open: Boolean, tagger: { type: String, required: true } })
 const emit = defineEmits(['close'])
 const { t, locale } = useI18n()
@@ -14,7 +15,7 @@ watch(() => [props.open, props.tagger, locale.value], async ([open]) => {
 }, { immediate: true })
 const groups = computed(() => Object.fromEntries((data.value?.groups ?? []).map((g) => [g.id, g.label])))
 const tags = computed(() => (data.value?.tags ?? []).filter((tg) => (!group.value || tg.group === group.value)
-  && (!q.value || `${tg.tag} ${tg.definition} ${tg.example}`.toLowerCase().includes(q.value.toLowerCase()))))
+  && (!q.value || `${tg.tag} ${tg.definition} ${tg.example} ${tg.doc?.feature ?? ''}`.toLowerCase().includes(q.value.toLowerCase()))))
 </script>
 <template>
   <div v-if="open" class="fixed inset-0 z-40 flex justify-end" role="dialog" aria-modal="true" :aria-label="data?.name"
@@ -37,7 +38,8 @@ const tags = computed(() => (data.value?.tags ?? []).filter((tg) => (!group.valu
       <dl class="flex flex-col gap-2">
         <div v-for="tg in tags" :key="tg.tag" class="bg-base-200 rounded p-2">
           <dt class="font-mono font-bold">{{ tg.tag }} <span class="font-sans font-normal text-xs text-text-muted">{{ groups[tg.group] }}</span></dt>
-          <dd class="text-sm">{{ tg.definition }}<span v-if="tg.example" class="block text-xs text-text-muted italic">{{ tg.example }}</span></dd>
+          <dd class="text-sm">{{ tg.definition }}<span v-if="tg.example" class="block text-xs text-text-muted italic">{{ tg.example }}</span>
+            <TagDoc :doc="tg.doc" :version="data?.doc_version" /></dd>
         </div>
       </dl>
     </aside>
