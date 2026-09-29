@@ -22,6 +22,7 @@ const section = computed(() => NAV.find((n) => n.name === route.name) ?? (route.
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
+globalThis.addEventListener?.('ttw:explain', () => { explaining.value = true })
 const about = ref(false)
 
 onMounted(async () => {
@@ -68,7 +69,7 @@ const changeLang = (value) => setLang(value)
         <span v-else class="badge badge-outline max-w-48 truncate">{{ t('header.no_corpus') }}</span>
         <RouterLink v-if="unsaved" to="/arquivo" class="badge badge-warning gap-1" data-testid="header-unsaved"
                     :title="t('project.unsaved_text')">● {{ t('project.unsaved_badge') }}</RouterLink>
-        <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
+        <!-- "Explicar esta tela" fica fora do cabeçalho por ora; o recurso segue ativo e será usado pelos guias de Aprender (evento `ttw:explain` na janela) -->
         <MenuButton :label="t('lang.label')">
           <template #button>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
