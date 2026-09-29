@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
@@ -26,6 +26,16 @@ async function run() {
   catch (err) { error.value = err.message }
   finally { busy.value = false }
 }
+// Depois da primeira busca, mudar qualquer opção refaz a busca sozinho (com pequena espera
+// para não disparar a cada tecla); o controle de altura das barras só redesenha.
+let timer
+watch(() => ({ ...f.value }), () => {
+  if (!data.value) return
+  clearTimeout(timer)
+  const go = () => { busy.value ? (timer = setTimeout(go, 250)) : run() }
+  timer = setTimeout(go, 250)
+})
+onBeforeUnmount(() => clearTimeout(timer))
 </script>
 <template>
   <section class="flex flex-col gap-3">
@@ -41,9 +51,9 @@ async function run() {
         <select v-model.number="f.top" class="select select-sm" data-testid="freq-top"><option v-for="n in TOP" :key="n" :value="n">{{ n }}</option></select></label>
       <label class="ttw-check"><input v-model="f.hide_stopwords" type="checkbox" class="checkbox checkbox-sm" />{{ t('overview.hide_stopwords') }}<HelpTip term="stopwords" /></label>
       <label v-if="f.by === 'corpus'" class="form-control w-44">
-        <span class="label-text flex items-center justify-between gap-2">{{ t('chart.bar_height') }}<span class="opacity-60">{{ barH }}px</span></span>
-        <input v-model.number="barH" type="range" min="6" max="40" step="2" class="range range-xs range-primary h-8"
-               data-testid="freq-bar-height" />
+        <span class="ttw-label justify-between">{{ t('chart.bar_height') }}<span class="opacity-60">{{ barH }}px</span></span>
+        <span class="flex items-center min-h-8"><input v-model.number="barH" type="range" min="6" max="40" step="2" class="range range-xs range-primary"
+               data-testid="freq-bar-height" /></span>
       </label>
       <button class="btn btn-sm btn-primary" data-testid="freq-go" :disabled="busy"><span v-if="busy" class="loading loading-spinner loading-xs" aria-hidden="true" />{{ t('explore.go') }}</button>
     </div>
