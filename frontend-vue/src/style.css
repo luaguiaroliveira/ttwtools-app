@@ -161,3 +161,12 @@
 @keyframes ico-arrows { 0%,100% { transform: translateX(0) } 30% { transform: translateX(-1.500px) } 70% { transform: translateX(1.500px) } }
 @keyframes ico-write { 0%,100% { transform: translate(0,0) } 25% { transform: translate(-2px,1.500px) } 50% { transform: translate(0,0) } 75% { transform: translate(-1.500px,2px) } }
 @keyframes ico-pop { 0%,100% { transform: scale(1) } 50% { transform: scale(.78) } }
+
+/* Botões da barra de arquivo (Novo, Abrir, Recentes, Salvar...) */
+.pbtn { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; min-width: 4.75rem;
+  padding: .5rem .75rem; border-radius: var(--radius-field); font-size: .75rem; font-weight: 500; cursor: pointer; list-style: none;
+  border: 1px solid transparent; background: transparent; color: inherit; transition: background-color .15s; }
+.pbtn::-webkit-details-marker { display: none; }
+.pbtn:hover:not(:disabled) { background: color-mix(in oklab, var(--color-base-content) 10%, transparent); }
+.pbtn:disabled { opacity: .4; cursor: not-allowed; }
+.pbtn.btn-primary { background: var(--color-primary); color: var(--color-primary-content); }

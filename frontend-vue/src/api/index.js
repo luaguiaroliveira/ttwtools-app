@@ -24,6 +24,8 @@ export const api = {
     save: () => post('/api/project/save'),
     unsaved: () => get('/api/project/unsaved'),
     setSaveOptions: (opts) => post('/api/project/save-options', opts),
+    recent: () => get('/api/project/recent'),
+    recentRemove: (path) => post('/api/project/recent/remove', { path: path || null }),
     pendingOpen: () => get('/api/project/pending-open'),
     summary: () => get('/api/project/summary'),
   },

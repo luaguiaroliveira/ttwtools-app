@@ -98,12 +98,32 @@ def create_project(req: CreateProjectRequest):
     return {"status": "created", "path": str(dest), "compressed": req.compress}
 
 
+class RecentRequest(BaseModel):
+    path: Optional[str] = None      # vazio = esvazia a lista
+
+
+@router.get("/recent")
+def recent_files():
+    """Arquivos abertos recentemente (mais novo primeiro)."""
+    from ttwtools import recent
+    return {"files": recent.listing()}
+
+
+@router.post("/recent/remove")
+def recent_remove(req: RecentRequest):
+    from ttwtools import recent
+    recent.remove(req.path) if req.path else recent.clear()
+    return {"files": recent.listing()}
+
+
 @router.post("/open")
 def open_project(req: OpenProjectRequest):
     """Abre um arquivo .ttwa (direto) ou .ttwt (inicia descompressão em background)."""
     p = Path(req.path).expanduser().resolve()
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"Arquivo não encontrado: {p}")
+    from ttwtools import recent as _recent
+    _recent.add(p)
 
     from ttwtools.project import TTWAProject, SCHEMA_VERSION_LEGACY, compression_of, needs_migration
     if compression_of(p):

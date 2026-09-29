@@ -11,6 +11,7 @@ import { useJob } from '../composables/useJob.js'
 import JobProgress from './JobProgress.vue'
 import Collapsible from './Collapsible.vue'
 import FileIcon from './FileIcon.vue'
+import RecentList from './RecentList.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -59,6 +60,13 @@ async function guard(action) {
   if (project.value?.unsaved) pending.value = action; else action()
 }
 const newProject = () => guard(doNew)
+// recentes: lista guardada pelo servidor (a mesma da linha de comando: `ttwtools recent`)
+const recent = ref([])
+const recentMenu = ref(null)
+const loadRecent = async () => { try { recent.value = (await api.project.recent()).files } catch { recent.value = [] } }
+const removeRecent = async (p) => { recent.value = (await api.project.recentRemove(p)).files }
+const openRecent = (p) => { if (recentMenu.value) recentMenu.value.open = false; guard(() => act(() => session.openProject(p))) }
+watch(() => [project.value?.path, project.value?.display_path], loadRecent, { immediate: true })
 const openProject = () => guard(doOpen)
 async function resolvePending(saveFirst) {
   const action = pending.value
@@ -125,27 +133,35 @@ const exportAll = () => act(async () => {
 
 <template>
   <section class="flex flex-col gap-2 bg-base-200 rounded-box p-3" data-explain="explain.corpora.project">
-    <div class="flex flex-wrap items-center gap-2">
-      <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm min-w-0 flex-1">
-        <span class="font-medium">{{ project.name }}</span>
-        <span class="badge badge-outline" data-testid="project-kind">{{ t(`project.ext.${ext}`) }}</span>
-        <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
-        <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
-      </div>
-      <p v-else class="text-sm flex-1 min-w-48">{{ t('project.intro') }}</p>
-      <div class="flex flex-wrap gap-2" role="toolbar" :aria-label="t('nav.corpora')">
-        <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': !project }"
-                :disabled="busy || saving" data-testid="project-new" @click="newProject"><FileIcon name="new" />{{ t('project.new') }}</button>
-        <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': !project }"
-                :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
-        <template v-if="project">
-          <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium" :class="{ 'btn-primary': fromTtwt }"
-                  :disabled="busy || saving" data-testid="project-save" @click="save"><FileIcon name="save" />{{ t('project.save') }}</button>
-          <button class="btn btn-ghost border border-base-300 h-auto min-w-20 flex-col gap-1 py-2 px-3 text-xs font-medium"
-                  :disabled="busy || saving" data-testid="project-save-as" @click="saveAs"><FileIcon name="saveas" />{{ t('project.save_as') }}</button>
-        </template>
-      </div>
+    <!-- barra de ações, como num aplicativo comum: sempre visível, à esquerda -->
+    <div class="flex flex-wrap items-stretch gap-1" role="toolbar" :aria-label="t('nav.corpora')">
+      <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-new" @click="newProject"><FileIcon name="new" />{{ t('project.new') }}</button>
+      <button class="pbtn" :class="{ 'btn-primary': !project }" :disabled="busy || saving" data-testid="project-open-dialog" @click="openProject"><FileIcon name="open" />{{ t('project.open_dialog') }}</button>
+      <details ref="recentMenu" class="dropdown">
+        <summary class="pbtn" data-testid="project-recent"><FileIcon name="recent" />{{ t('project.recent') }}</summary>
+        <div class="dropdown-content z-30 bg-base-200 border border-base-300 rounded-box shadow-lg p-2 w-96 max-w-[90vw] mt-1">
+          <RecentList :files="recent" :disabled="busy || saving" @open="openRecent" @remove="removeRecent" @clear="removeRecent(null)" />
+        </div>
+      </details>
+      <span class="w-px bg-base-300 mx-1 self-stretch" aria-hidden="true" />
+      <button class="pbtn" :class="{ 'btn-primary': fromTtwt }" :disabled="!project || busy || saving" data-testid="project-save" @click="save"><FileIcon name="save" />{{ t('project.save') }}</button>
+      <button class="pbtn" :disabled="!project || busy || saving" data-testid="project-save-as" @click="saveAs"><FileIcon name="saveas" />{{ t('project.save_as') }}</button>
     </div>
+    <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm min-w-0">
+      <span class="font-medium">{{ project.name }}</span>
+      <span class="badge badge-outline" data-testid="project-kind">{{ t(`project.ext.${ext}`) }}</span>
+      <span v-if="fromTtwt" class="badge badge-ghost">{{ t('project.compressed') }}</span>
+      <span class="opacity-60 truncate max-w-full" data-testid="project-current-path">{{ shown }}</span>
+    </div>
+    <!-- sem projeto aberto: os recentes ficam à vista, como na tela inicial de um aplicativo -->
+    <div v-else class="flex flex-col gap-1">
+      <h2 class="text-sm font-bold">{{ t('project.recent') }}</h2>
+      <RecentList :files="recent" :disabled="busy || saving" @open="openRecent" @remove="removeRecent" @clear="removeRecent(null)" />
+    </div>
+    <details class="text-xs opacity-70">
+      <summary class="cursor-pointer w-fit">{{ t('project.what_is') }}</summary>
+      <p class="mt-1 max-w-prose">{{ t('project.intro') }}</p>
+    </details>
     <fieldset v-if="project" class="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm" data-testid="save-options"
               data-explain="explain.corpora.save_options">
       <legend class="sr-only">{{ t('project.options_title') }}</legend>
