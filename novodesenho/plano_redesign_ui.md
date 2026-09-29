@@ -8,11 +8,20 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 |---|---|
 | 1. Tokens e temas | **feita, aguardando revisão visual do usuário** (ver "Andamento da etapa 1") |
 | 2. Componentes base próprios | **feita, aguardando revisão visual** (ver "Etapa 2") |
-| 3. Layout | pendente |
+| 3. Layout | **feita, aguardando revisão visual** (ver "Etapa 3") |
 | 4. Telas de resultado + gráficos | pendente |
 | 5. Vue Bits (só se passar o checklist) | pendente |
 | 6. Responsivo | pendente |
 | 7. Verificação final | pendente |
+
+### Etapa 3 (feita)
+- [x] Barra de contexto (`header`) fixa no alto (`sticky`, borda forte); título de Explorar/Comparar menor (`text-xl`); `main` sem `overflow-auto` (necessário para o `sticky`); `scroll-padding` no `html` para o foco não ficar sob as barras fixas.
+- [x] Formulário de consulta (`QueryBox`) fixo logo abaixo da barra (`.ttw-sticky-form`; estático se a janela tiver menos de 640 px de altura).
+- [x] Largura: Explorar e Comparar até 96 rem (antes 72). Tabelas paginadas com cabeçalho fixo, 1ª coluna fixa e rolagem interna (`.ttw-scroll`).
+- [x] Menu lateral fixo (sticky, altura da janela) com botão de expandir rótulos, só em ≥1440 px; escolha em `localStorage` (`ttw.nav`); chaves `nav.expand/nav.collapse` (pt/en) no submódulo.
+- [x] Dispersão: rótulos só com o trecho que difere (`utils/labels.js`), meio truncado, nome completo em `title`, área rolável, barras menores. Comparar/médias: margem direita, rótulo vira à esquerda perto da borda, gráfico maior.
+- [x] Build, `npm test` e e2e (12) passam.
+- [ ] Não feito: painel lateral com divisor redimensionável (opcional no plano), barra de ações à direita do título, sombra/`backdrop-filter`; capturas antes/depois; olhar a olho o menu expandido (≥1440 px) e o formulário fixo em telas baixas.
 
 ### Etapa 2 (feita)
 - [x] Migrados `form-control`/`label-text` → `.ttw-field/.ttw-label` e `opacity-60/70` → `text-text-muted` em todos os `.vue`; atalhos de opacidade removidos (restam só cabeçalho de tabela e `.stat-*`/`.label` em muted).

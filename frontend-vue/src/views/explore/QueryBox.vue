@@ -19,7 +19,7 @@ function insert(value) {
 }
 </script>
 <template>
-  <form class="flex flex-col gap-2" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
+  <form class="ttw-sticky-form flex flex-col gap-2" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
     <div class="ttw-form">
       <label class="ttw-field flex-1 min-w-56 max-w-xl">
         <span class="ttw-label"><HelpTip term="query">{{ label || t('explore.query') }}</HelpTip></span>

@@ -29,32 +29,44 @@ const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
 const changeLang = (value) => setLang(value)
+// Menu lateral: rótulos visíveis só em telas largas (≥1440 px, ver style.css); a escolha fica guardada.
+const NAV_KEY = 'ttw.nav'
+const navWide = ref((() => { try { return localStorage.getItem(NAV_KEY) === 'wide' } catch { return false } })())
+const toggleNav = () => { navWide.value = !navWide.value; try { localStorage.setItem(NAV_KEY, navWide.value ? 'wide' : 'narrow') } catch { /* */ } }
 </script>
 
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
   <div class="min-h-dvh bg-base-100 text-base-content flex flex-col md:flex-row">
     <!-- trilho lateral mínimo: só ícones (o nome aparece ao passar o mouse ou focar) -->
-    <nav class="hidden md:flex flex-col items-center gap-1 border-r border-base-300 bg-base-200 py-2 px-1.5 w-14 shrink-0"
-         :aria-label="t('nav.label')">
+    <nav class="ttw-rail hidden md:flex flex-col items-center gap-1 border-r border-base-300 bg-base-200 py-2 px-1.5 w-14 shrink-0 sticky top-0 self-start h-dvh"
+         :class="{ 'ttw-rail-wide': navWide }" :aria-label="t('nav.label')">
       <button type="button" class="flex flex-col items-center leading-none py-2 mb-1 hover:text-primary" data-testid="about-open"
               :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('app.title')" @click="about = true">
         <span class="font-black text-sm tracking-tight">TTW</span><span class="text-[0.6rem] font-semibold opacity-80">tools</span>
       </button>
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" :aria-label="t(item.label)"
-                  class="nav-item tooltip tooltip-right btn btn-ghost btn-square w-11 h-11 min-h-0 p-0"
+                  class="nav-item tooltip tooltip-right btn btn-ghost w-11 h-11 min-h-0 p-0"
                   active-class="nav-active" :data-tip="t(item.label)">
         <NavIcon :name="item.icon" />
+        <span class="rail-label">{{ t(item.label) }}</span>
       </RouterLink>
-      <RouterLink to="/inicio" :aria-label="t('nav.info')" class="nav-item tooltip tooltip-right btn btn-ghost btn-square w-11 h-11 min-h-0 p-0 mt-auto"
+      <RouterLink to="/inicio" :aria-label="t('nav.info')" class="nav-item tooltip tooltip-right btn btn-ghost w-11 h-11 min-h-0 p-0 mt-auto"
                   active-class="nav-active" :data-tip="t('nav.info')">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
+        <span class="rail-label">{{ t('nav.info') }}</span>
       </RouterLink>
+      <button type="button" class="rail-toggle btn btn-ghost w-11 h-11 min-h-0 p-0" data-testid="nav-toggle"
+              :aria-label="navWide ? t('nav.collapse') : t('nav.expand')" :title="navWide ? t('nav.collapse') : t('nav.expand')"
+              :aria-pressed="navWide" @click="toggleNav">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3.500" y="4.500" width="17" height="15" rx="2" /><path d="M9 4.500v15" /><path :d="navWide ? 'M15.500 10l-2 2 2 2' : 'M13.500 10l2 2-2 2'" /></svg>
+      </button>
     </nav>
 
     <div class="flex-1 flex flex-col min-w-0">
-      <header class="navbar border-b border-base-300 gap-2 px-3 min-h-14">
+      <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-20 bg-base-100">
         <div class="flex-1 min-w-0 flex items-center gap-1 flex-wrap">
           <span class="md:hidden font-bold mr-3">{{ t('app.title') }}</span>
           <span class="text-sm text-text-muted hidden sm:inline">{{ t('header.active_corpus') }}:</span>
@@ -104,7 +116,7 @@ const changeLang = (value) => setLang(value)
         </details>
       </header>
 
-      <main id="main" class="flex-1 p-4 pb-24 md:pb-4 overflow-auto" tabindex="-1">
+      <main id="main" class="flex-1 p-4 pb-24 md:pb-4" tabindex="-1">
         <div v-if="loadError" role="alert" class="alert alert-error mb-4">{{ t('api.error.network') }}</div>
         <RouterView />
       </main>

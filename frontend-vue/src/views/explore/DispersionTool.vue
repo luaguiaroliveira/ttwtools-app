@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
+import { distinctLabels } from '../../utils/labels.js'
 const fig = ref(null)
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
@@ -13,6 +14,7 @@ const data = ref(null)
 const error = ref(null)
 const busy = ref(false)
 const asTable = ref(false)
+const labels = computed(() => distinctLabels(data.value?.per_document.map((d) => d.filename) ?? [], 26))
 async function run(query) {
   error.value = null
   busy.value = true
@@ -20,6 +22,7 @@ async function run(query) {
   catch (err) { error.value = err.message }
   finally { busy.value = false }
 }
+const ROW = 13
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 </script>
 <template>
@@ -36,14 +39,16 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
           <button class="btn btn-xs btn-ghost ml-auto" @click="asTable = !asTable">{{ asTable ? t('chart.as_chart') : t('chart.as_table') }}</button></figcaption>
         <table v-if="asTable" class="table table-xs"><thead><tr><th>{{ t('explore.file') }}</th><th class="text-right">{{ t('explore.freq') }}</th><th class="text-right">tokens</th></tr></thead>
           <tbody><tr v-for="d in data.per_document" :key="d.filename"><td>{{ d.filename }}</td><td class="text-right">{{ d.freq }}</td><td class="text-right">{{ d.size }}</td></tr></tbody></table>
-        <svg v-else :viewBox="`0 0 600 ${data.per_document.length * 14 + 4}`" class="w-full" role="img" :aria-label="t('explore.barcode')">
-          <g v-for="(d, i) in data.per_document" :key="d.filename" :transform="`translate(0 ${i * 14 + 2})`">
-            <title>{{ d.filename }}: {{ d.freq }}</title>
-            <text x="175" y="10" text-anchor="end" class="fill-current text-[9px]">{{ d.filename.slice(0, 32) }}</text>
-            <rect x="180" y="1" width="410" height="11" class="fill-base-200" />
-            <rect v-for="(p, j) in d.positions" :key="j" :x="180 + p * 410" y="1" width="1.5" height="11" class="fill-primary" />
-          </g>
-        </svg>
+        <div v-else class="ttw-scroll rounded-box border border-base-300 p-2">
+          <svg :viewBox="`0 0 640 ${data.per_document.length * ROW + 4}`" class="w-full" role="img" :aria-label="t('explore.barcode')">
+            <g v-for="(d, i) in data.per_document" :key="d.filename" :transform="`translate(0 ${i * ROW + 2})`">
+              <title>{{ d.filename }}: {{ d.freq }}</title>
+              <text x="200" :y="ROW - 4" text-anchor="end" class="fill-current text-[10px]">{{ labels[i] }}</text>
+              <rect x="208" y="1" width="424" :height="ROW - 3" class="fill-base-200" />
+              <rect v-for="(p, j) in d.positions" :key="j" :x="208 + p * 424" y="1" width="1.500" :height="ROW - 3" class="fill-orange-text" />
+            </g>
+          </svg>
+        </div>
       </figure>
     </template>
   </section>

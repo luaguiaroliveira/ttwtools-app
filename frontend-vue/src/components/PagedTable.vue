@@ -40,7 +40,7 @@ defineExpose({ reload: load })
 </script>
 <template>
   <div class="flex flex-col gap-2">
-    <div class="overflow-x-auto">
+    <div class="ttw-scroll">
       <table class="table table-sm table-zebra" :aria-busy="loading">
         <caption v-if="caption" class="text-left text-sm text-text-muted">{{ caption }}</caption>
         <thead><tr><th v-for="c in columns" :key="c.key" scope="col" :class="{ 'text-right': c.numeric }">{{ c.label }}</th></tr></thead>

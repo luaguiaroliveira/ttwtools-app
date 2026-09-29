@@ -252,3 +252,26 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 .table :where(th) { font-weight: 600; }
 /* Etiquetas de estado */
 .badge { font-weight: 500; }
+
+/* ---- Layout (etapa 3) ---- */
+/* Barra de contexto fixa no alto; o formulário de consulta fica logo abaixo dela ao rolar o resultado */
+.ttw-context { border-bottom-color: var(--ttw-border-strong); }
+.ttw-sticky-form { position: sticky; top: 3rem; z-index: 10; background: var(--color-base-100); padding-block: .5rem; margin-block: -.5rem;
+  border-bottom: 1px solid var(--color-base-300); }
+@media (max-height: 640px) { .ttw-sticky-form { position: static; } }
+/* Menu lateral: 56 px; com rótulos (176 px) só em telas ≥1440 px, por escolha da pessoa */
+.rail-label { display: none; }
+.rail-toggle { display: none; }
+@media (min-width: 1440px) {
+  .rail-toggle { display: inline-flex; align-items: center; justify-content: center; }
+  .ttw-rail-wide { width: 11rem; align-items: stretch; }
+  .ttw-rail-wide .nav-item, .ttw-rail-wide .rail-toggle { width: 100%; justify-content: flex-start; gap: .625rem; padding-inline: .6rem; }
+  .ttw-rail-wide .rail-label { display: inline; font-size: .8125rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ttw-rail-wide .tooltip::before, .ttw-rail-wide .tooltip::after { display: none; }
+}
+/* Tabelas paginadas: cabeçalho fixo dentro da área rolável e números à direita */
+.ttw-scroll { overflow: auto; max-height: min(70dvh, 46rem); }
+.ttw-scroll .table :where(thead th) { position: sticky; top: 0; z-index: 1; background: var(--color-base-200); }
+.ttw-scroll .table :where(tbody th:first-child, tbody td:first-child) { position: sticky; left: 0; background: var(--color-base-100); }
+/* Foco/âncoras não ficam sob a barra de contexto fixa nem sob a barra inferior (WCAG 2.4.11) */
+html { scroll-padding-top: 6.5rem; scroll-padding-bottom: 5rem; }

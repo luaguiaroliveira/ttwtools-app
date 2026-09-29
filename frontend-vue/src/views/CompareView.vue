@@ -17,8 +17,8 @@ const { corpus, corpora } = storeToRefs(session)
 const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palavras-chave'))
 </script>
 <template>
-  <div class="flex flex-col gap-3 max-w-6xl">
-    <h1 class="text-2xl font-bold">{{ t('compare.title') }}</h1>
+  <div class="flex flex-col gap-3 max-w-[96rem]">
+    <h1 class="text-xl font-bold">{{ t('compare.title') }}</h1>
     <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
       <span>{{ t('compare.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="compare-corpus" :value="corpus || ''"
