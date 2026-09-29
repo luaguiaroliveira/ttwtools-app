@@ -41,8 +41,8 @@ const changeLang = (value) => setLang(value)
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
   <div class="min-h-dvh bg-base-100 text-base-content flex flex-col">
   <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
-        <button type="button" class="ttw-wordmark shrink-0 font-black text-lg tracking-tight px-1" data-testid="about-open"
-                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text' }, { text: 'tools', class: 'text-chart-2' }]" /></button>
+        <button type="button" class="ttw-wordmark shrink-0 text-lg tracking-tight px-1" data-testid="about-open"
+                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
         <span v-if="section" class="hidden sm:inline-flex items-center gap-2 font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
           <NavIcon :name="section.icon" :size="20" />{{ t(section.label) }}</span>
         <div class="flex-1" />
@@ -103,16 +103,16 @@ const changeLang = (value) => setLang(value)
   </header>
     <div class="flex flex-1 flex-col md:flex-row min-w-0">
     <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
-    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-24 shrink-0 sticky top-12 self-start h-[calc(100dvh-3rem)] overflow-y-auto"
+    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-16 shrink-0 sticky top-12 self-start h-[calc(100dvh-3rem)] z-20"
          :aria-label="t('nav.label')">
-      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active">
+      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active" :aria-label="t(item.label)">
         <NavIcon :name="item.icon" :size="30" />
-        <span class="rail-label">{{ t(item.label) }}</span>
+        <span class="rail-tip" aria-hidden="true">{{ t(item.label) }}</span>
       </RouterLink>
-      <RouterLink to="/inicio" class="nav-item rail-item mt-auto" active-class="nav-active">
+      <RouterLink to="/inicio" class="nav-item rail-item mt-auto" active-class="nav-active" :aria-label="t('nav.info')">
         <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
-        <span class="rail-label">{{ t('nav.info') }}</span>
+        <span class="rail-tip" aria-hidden="true">{{ t('nav.info') }}</span>
       </RouterLink>
     </nav>
 

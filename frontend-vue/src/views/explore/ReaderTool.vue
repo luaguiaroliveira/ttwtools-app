@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router'
 import rough from 'roughjs/bundled/rough.esm.js'
 import { api } from '../../api/index.js'
 import MarkIcon from '../../components/MarkIcon.vue'
+import ColorPicker from '../../components/ColorPicker.vue'
 
 const props = defineProps({ corpus: String, layer: String })
 const { t, locale } = useI18n()
@@ -22,6 +23,7 @@ const chosen = ref(new Set(route.query.highlight ? [route.query.highlight] : [])
 const selected = ref(null)
 const tagset = ref({})
 const window = globalThis
+const tagsOpen = ref(globalThis.matchMedia?.('(min-width: 1024px)').matches ?? true)   // em telas estreitas a lista de etiquetas começa recolhida
 const article = ref(null)
 const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22',
   '#393b79', '#637939', '#8c6d31', '#843c39', '#7b4173', '#3182bd', '#e6550d']
@@ -37,13 +39,29 @@ watch(() => [file.value, props.layer], async () => {
   selected.value = null
   // camada sem `tags` (ex.: só UPOS): cai para UPOS para a lista não ficar vazia
   if (!route.query.color && colorBy.value === 'tags' && !doc.value.tokens.some((x) => x.tags?.length)) colorBy.value = 'upos'
-  const tool = doc.value.layer?.tool
-  const id = tool === 'biberplus' ? 'biberplus' : tool === 'mfte' ? 'mfte' : 'upos'
-  try { tagset.value = Object.fromEntries((await api.taggers.tagset(id, locale.value)).tags.map((x) => [x.tag, x.definition])) } catch { tagset.value = {} }
+  await loadTagset()
   await nextTick()
   if (route.query.pos) document.querySelector(`[data-start="${route.query.pos}"]`)?.scrollIntoView({ block: 'center' })
 }, { immediate: true })
 
+// Repertório que explica as etiquetas mostradas: UPOS → universal; XPOS → Penn Treebank;
+// tags → o do etiquetador da camada (BiberPlus, MFTE) ou Penn Treebank (spaCy/Stanza).
+const tagsetInfo = ref({ name: '', about: '' })
+const tagsetId = () => {
+  const tool = doc.value?.layer?.tool
+  if (colorBy.value === 'upos') return 'upos'
+  if (colorBy.value === 'xpos') return 'ptb'
+  return tool === 'biberplus' ? 'biber' : tool === 'mfte' ? 'mfte' : 'ptb'
+}
+async function loadTagset() {
+  if (!doc.value) return
+  try {
+    const r = await api.taggers.tagset(tagsetId(), locale.value)
+    tagset.value = Object.fromEntries(r.tags.map((x) => [x.tag, x.definition]))
+    tagsetInfo.value = { name: r.name ?? '', about: r.about ?? '' }
+  } catch { tagset.value = {}; tagsetInfo.value = { name: '', about: '' } }
+}
+watch([colorBy, locale], loadTagset)
 const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
 const classes = computed(() => {
   const counts = {}
@@ -59,10 +77,27 @@ const fg = (hex) => {
   const L = 0.2126 * lin(n >> 16) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
   return L > 0.4 ? '#111' : '#fff'
 }
-const palette = ref(false)   // menu de cores aberto dentro do menu da etiqueta
+const palette = ref(false)   // seletor de cor aberto dentro do menu da etiqueta
+const menuPos = ref({ x: 0, y: 0 })   // menu e dica são `fixed`: a lista de etiquetas rola sem cortá-los
+const tip = ref(null)
+let tipTimer
+function anchor(el, w) {
+  const r = el.getBoundingClientRect()
+  return { x: Math.max(8, Math.min(r.left, globalThis.innerWidth - w - 8)), y: r.bottom + 4 }
+}
+function showTip(c, el) {
+  clearTimeout(tipTimer)
+  tipTimer = setTimeout(() => { if (!menu.value) tip.value = { c, ...anchor(el, 288) } }, 200)
+}
+const hideTip = () => { clearTimeout(tipTimer); tip.value = null }
 function setColor(c, hex) { custom.value = { ...custom.value, [c]: hex } }
 function resetColor(c) { const { [c]: _, ...rest } = custom.value; custom.value = rest }
-function openMenu(c) { palette.value = false; menu.value = c }
+function openMenu(c, el, withColor = false) {
+  hideTip()
+  palette.value = withColor
+  menuPos.value = anchor(el ?? document.querySelector(`[data-badge="${CSS.escape(c)}"]`) ?? document.body, 232)
+  menu.value = c
+}
 // texto em pedaços: entre tokens (texto puro) e tokens (spans)
 const pieces = computed(() => {
   const text = doc.value?.text
@@ -109,6 +144,11 @@ function pick(c, k) {   // 'off' = olho fechado: tira a marcação
   chosen.value = next
 }
 const closeMenu = (e) => { if (!e.target.closest?.('[data-mark-menu]')) menu.value = null }
+const PALETTES = [
+  { id: 'default', colors: PALETTE.slice(0, 12) },
+  { id: 'safe', colors: ['#000000', '#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#D55E00', '#CC79A7'] },   // Okabe-Ito
+  { id: 'gray', colors: ['#111111', '#3B3936', '#5E5B57', '#8A8580', '#B5B0A9', '#D9D5CF', '#F2F0EC', '#FFFFFF'] },
+]
 const SVG_NS = 'http://www.w3.org/2000/svg'
 const PAD = 4
 function clearAnnotations() { article.value?.querySelectorAll('svg.rn').forEach((n) => n.remove()) }
@@ -197,7 +237,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
                 :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
                 :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok) }"
-                @click="selected = p.tok" @contextmenu="label(p.tok) && ($event.preventDefault(), selected = p.tok, openMenu(label(p.tok)))">{{ p.text }}</span></template>
+                @click="selected = p.tok" @contextmenu="label(p.tok) && ($event.preventDefault(), selected = p.tok, openMenu(label(p.tok), null, true))">{{ p.text }}</span></template>
           </article>
           <footer v-if="chosen.size" class="reader-legend">
             <span v-for="[c, n] in classes.filter(([c]) => chosen.has(c))" :key="c">
@@ -206,52 +246,38 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </footer>
         </div>
       </div>
-      <aside class="flex flex-col gap-3 lg:sticky lg:top-2 print:hidden" aria-live="polite">
-        <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" role="group" :aria-label="t('reader.tags_title')">
+      <aside class="flex flex-col gap-3 lg:sticky lg:top-16 lg:max-h-[calc(100dvh-5rem)] print:hidden" aria-live="polite">
+        <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2 min-h-0 lg:flex-1" role="group" :aria-label="t('reader.tags_title')">
           <div class="flex items-center gap-2">
             <h3 class="font-bold text-sm">{{ t('reader.tags_title') }}</h3>
             <button v-if="chosen.size" class="btn btn-xs btn-ghost ml-auto" @click="chosen = new Set()">{{ t('reader.clear') }}</button>
+            <button type="button" class="btn btn-xs btn-ghost lg:hidden" :class="{ 'ml-auto': !chosen.size }" :aria-expanded="tagsOpen" data-testid="reader-tags-toggle"
+                    @click="tagsOpen = !tagsOpen">{{ tagsOpen ? t('reader.collapse') : t('reader.expand') }} ({{ classes.length }})</button>
           </div>
-          <p class="text-xs text-text-muted">{{ t('reader.tags_hint') }}</p>
-          <div class="flex flex-wrap gap-1.5">
-            <span v-for="[c, n] in classes" :key="c" class="relative inline-flex" data-mark-menu>
-              <span class="badge badge-lg p-0 gap-0 overflow-visible" :class="{ 'badge-outline': !chosen.has(c) }"
-                    :style="{ borderColor: color[c], color: chosen.has(c) ? fg(color[c]) : color[c], background: chosen.has(c) ? color[c] : '' }"
-                    @contextmenu.prevent="openMenu(c)">
-                <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer" :aria-pressed="chosen.has(c)" :title="tagset[c]" @click="toggle(c)">
-                  {{ c }} <span class="text-text-muted">{{ n }}</span></button>
-                <button type="button" class="pr-2 pl-1 h-full cursor-pointer border-l border-current/30" :aria-label="`${t('reader.mark')}: ${c}`"
-                        :aria-expanded="menu === c" :title="t('reader.mark')" @click.stop="menu === c ? (menu = null) : openMenu(c)">
-                  <MarkIcon :kind="chosen.has(c) ? kindOf(c) : 'off'" /></button>
-              </span>
-              <span v-if="menu === c" role="menu" class="absolute z-40 left-0 top-full mt-1 flex gap-0.5 p-1 rounded-box bg-base-100 border border-base-300 shadow-lg text-base-content">
-                <button v-for="k in ['off', ...KINDS]" :key="k" type="button" role="menuitem" class="btn btn-square btn-xs"
-                        :class="{ 'btn-active': (chosen.has(c) ? kindOf(c) : 'off') === k }" :title="t(`reader.mark.${k}`)"
-                        :aria-label="t(`reader.mark.${k}`)" @click="pick(c, k)"><MarkIcon :kind="k" /></button>
-                <button type="button" role="menuitem" class="btn btn-square btn-xs" :class="{ 'btn-active': palette }" :title="t('reader.color')"
-                        :aria-label="t('reader.color')" :aria-expanded="palette" data-testid="reader-color-btn" @click.stop="palette = !palette">
-                  <span class="block w-3.5 h-3.5 rounded-full border border-base-content/40" :style="{ background: color[c] }" /></button>
-                <span v-if="palette" class="absolute left-0 top-full mt-1 z-50 grid grid-cols-6 gap-1 p-2 rounded-box bg-base-100 border border-base-300 shadow-lg w-max" @click.stop>
-                  <button v-for="p in PALETTE" :key="p" type="button" class="w-6 h-6 rounded-full border-2 cursor-pointer"
-                          :class="color[c] === p ? 'border-base-content' : 'border-transparent'" :style="{ background: p }"
-                          :aria-label="p" @click="setColor(c, p)" />
-                  <label class="col-span-3 flex items-center gap-1 text-xs cursor-pointer">
-                    <input type="color" class="w-6 h-6 p-0 border-0 bg-transparent cursor-pointer" :value="color[c]" :aria-label="t('reader.color_custom')"
-                           @input="setColor(c, $event.target.value)" />{{ t('reader.color_custom') }}</label>
-                  <button type="button" class="btn btn-xs btn-ghost col-span-3" :disabled="!custom[c]" @click="resetColor(c)">{{ t('reader.color_reset') }}</button>
+          <div class="flex-col gap-2 min-h-0 flex-1" :class="tagsOpen ? 'flex' : 'hidden lg:flex'">
+            <p class="text-xs text-text-muted">{{ t('reader.tags_hint') }}</p>
+            <div class="ttw-tag-scroll flex flex-wrap content-start gap-1.5 overflow-y-auto min-h-0 max-h-72 lg:max-h-none lg:flex-1 pr-1" data-testid="reader-tag-list"
+                 @scroll.passive="hideTip(); menu = null">
+              <span v-for="[c, n] in classes" :key="c" class="relative inline-flex" data-mark-menu :data-badge="c">
+                <span class="badge badge-lg p-0 gap-0 overflow-visible" :class="{ 'badge-outline': !chosen.has(c) }"
+                      :style="{ borderColor: color[c], color: chosen.has(c) ? fg(color[c]) : color[c], background: chosen.has(c) ? color[c] : '' }"
+                      @contextmenu.prevent="openMenu(c, $event.currentTarget, true)">
+                  <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer" :aria-pressed="chosen.has(c)" :aria-describedby="tip?.c === c ? 'reader-tip' : undefined"
+                          @click="toggle(c)" @mouseenter="showTip(c, $event.currentTarget)" @mouseleave="hideTip" @focus="showTip(c, $event.currentTarget)" @blur="hideTip">
+                    {{ c }} <span class="text-text-muted">{{ n }}</span></button>
+                  <button type="button" class="pr-2 pl-1 h-full cursor-pointer border-l border-current/30" :aria-label="`${t('reader.mark')}: ${c}`"
+                          :aria-expanded="menu === c" :title="t('reader.mark')" @click.stop="menu === c ? (menu = null) : openMenu(c, $event.currentTarget.parentElement)">
+                    <MarkIcon :kind="chosen.has(c) ? kindOf(c) : 'off'" /></button>
                 </span>
               </span>
-            </span>
+            </div>
+            <div v-if="chosen.size" class="flex gap-2">
+              <button class="btn btn-xs" @click="step(-1)">{{ t('reader.prev') }}</button>
+              <button class="btn btn-xs" @click="step(1)">{{ t('reader.next') }}</button>
+            </div>
           </div>
-          <div v-if="chosen.size" class="flex gap-2">
-            <button class="btn btn-xs" @click="step(-1)">{{ t('reader.prev') }}</button>
-            <button class="btn btn-xs" @click="step(1)">{{ t('reader.next') }}</button>
-          </div>
-          <ul v-if="chosen.size" class="text-xs opacity-80 flex flex-col gap-0.5">
-            <li v-for="c in chosen" :key="c"><span class="font-bold" :style="{ color: color[c] }">{{ c }}</span> {{ tagset[c] }}</li>
-          </ul>
         </div>
-        <div class="bg-base-200 rounded-box p-3 text-sm">
+        <div class="bg-base-200 rounded-box p-3 text-sm max-h-60 overflow-y-auto shrink-0">
           <h3 class="font-bold mb-1">{{ t('reader.token') }}</h3>
           <dl v-if="selected" class="grid grid-cols-[auto_1fr] gap-x-2">
             <dt>word</dt><dd class="font-bold">{{ selected.word }}</dd>
@@ -261,6 +287,28 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </dl>
         </div>
       </aside>
+      <!-- dica da etiqueta (passar o mouse ou focar): definição segundo o repertório do etiquetador -->
+      <div v-if="tip" id="reader-tip" role="tooltip" class="fixed z-50 w-72 max-w-[calc(100vw-1rem)] p-2.5 rounded-box bg-neutral text-neutral-content text-xs shadow-lg pointer-events-none"
+           :style="{ left: `${tip.x}px`, top: `${tip.y}px` }">
+        <p class="font-bold text-sm">{{ tip.c }}<span v-if="tagsetInfo.name" class="font-normal opacity-80"> · {{ tagsetInfo.name }}</span></p>
+        <p>{{ tagset[tip.c] || t('reader.no_definition') }}</p>
+        <p v-if="doc?.layer" class="opacity-70 mt-1">{{ t('reader.tip_from', { tool: doc.layer.tool }) }}</p>
+      </div>
+      <!-- menu da etiqueta: estilo e cor (botão direito na etiqueta ou no token abre já com o seletor) -->
+      <div v-if="menu" role="menu" data-mark-menu class="fixed z-50 flex flex-col gap-2 p-2 rounded-box bg-base-100 border border-base-300 shadow-lg text-base-content overflow-y-auto"
+           :style="{ left: `${menuPos.x}px`, top: `${menuPos.y}px`, maxHeight: `calc(100dvh - ${menuPos.y}px - 8px)` }" data-testid="reader-mark-menu">
+        <div class="flex gap-0.5 items-center">
+          <button v-for="k in ['off', ...KINDS]" :key="k" type="button" role="menuitem" class="btn btn-square btn-xs"
+                  :class="{ 'btn-active': (chosen.has(menu) ? kindOf(menu) : 'off') === k }" :title="t(`reader.mark.${k}`)"
+                  :aria-label="t(`reader.mark.${k}`)" @click="pick(menu, k)"><MarkIcon :kind="k" /></button>
+          <button type="button" role="menuitem" class="btn btn-square btn-xs" :class="{ 'btn-active': palette }" :title="t('reader.color')"
+                  :aria-label="t('reader.color')" :aria-expanded="palette" data-testid="reader-color-btn" @click.stop="palette = !palette">
+            <span class="block w-3.5 h-3.5 rounded-full border border-base-content/40" :style="{ background: color[menu] }" /></button>
+        </div>
+        <ColorPicker v-if="palette" :model-value="color[menu]" :palettes="PALETTES" @update:model-value="setColor(menu, $event)">
+          <button type="button" class="btn btn-xs btn-ghost ml-auto" :disabled="!custom[menu]" @click="resetColor(menu)">{{ t('reader.color_reset') }}</button>
+        </ColorPicker>
+      </div>
     </div>
   </section>
 </template>

@@ -255,10 +255,15 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
   border-bottom: 1px solid var(--color-base-300); }
 @media (max-height: 640px) { .ttw-sticky-form { position: static; } }
 /* Menu lateral: ícone grande com o nome embaixo; ativo com fundo laranja suave e texto em orange-text */
-.rail-item { display: flex; flex-direction: column; align-items: center; gap: .25rem; padding: .625rem .25rem; border-radius: var(--radius-box);
-  text-align: center; transition: background-color .15s; }
+.rail-item { position: relative; display: flex; align-items: center; justify-content: center; padding: .625rem .25rem; border-radius: var(--radius-box);
+  transition: background-color .15s; }
 .rail-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
-.rail-label { font-size: .75rem; line-height: 1.15; font-weight: 600; overflow-wrap: anywhere; }
+/* Dica do item: pílula que "salta" ao lado do ícone ao passar o mouse ou focar (mola, como nos componentes do Vue Bits) */
+.rail-tip { position: absolute; left: calc(100% + .5rem); top: 50%; z-index: 50; padding: .3rem .7rem; border-radius: 999px; white-space: nowrap; pointer-events: none;
+  font-size: .8125rem; font-weight: 600; background: var(--color-neutral); color: var(--color-neutral-content); box-shadow: var(--ttw-shadow-pop);
+  opacity: 0; transform: translate(-.5rem, -50%) scale(.85); transform-origin: left center;
+  transition: opacity .12s, transform .3s cubic-bezier(.34, 1.56, .64, 1); }
+.rail-item:hover .rail-tip, .rail-item:focus-visible .rail-tip { opacity: 1; transform: translate(0, -50%) scale(1); }
 /* Tabelas paginadas: cabeçalho fixo dentro da área rolável e números à direita */
 .ttw-scroll { overflow: auto; max-height: min(70dvh, 46rem); }
 .ttw-scroll .table :where(thead th) { position: sticky; top: 0; z-index: 1; background: var(--color-base-200); }
