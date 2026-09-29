@@ -66,7 +66,7 @@ onBeforeUnmount(() => clearTimeout(timer))
       <div v-if="f.by === 'corpus'" class="max-h-96 overflow-auto">
         <BarChart ref="chart" :title="t(`explore.unit.${data.unit}`)" :items="data.rows.map((r) => ({ label: r.item, value: r.freq }))" value-label="freq" :max="f.top" :bar-height="barH" />
       </div>
-      <div class="table-scroll overflow-x-auto">
+      <div class="ttw-scroll">
         <table class="table table-xs"><thead><tr><th v-if="f.by !== 'corpus'">{{ t('explore.by') }}</th><th>{{ t('explore.item') }}</th><th class="text-right">{{ t('explore.freq') }}</th>
           <th class="text-right whitespace-nowrap"><HelpTip term="per_1000">{{ t('explore.per_1000') }}</HelpTip></th></tr></thead>
           <tbody><tr v-for="(r, i) in data.rows" :key="i"><td v-if="f.by !== 'corpus'">{{ r.group }}</td><td>{{ r.item }}</td>

@@ -9,10 +9,19 @@ Documento de retomada para qualquer agente. Leia **só** "Estado atual" e a etap
 | 1. Tokens e temas | **feita, aguardando revisão visual do usuário** (ver "Andamento da etapa 1") |
 | 2. Componentes base próprios | **feita, aguardando revisão visual** (ver "Etapa 2") |
 | 3. Layout | **feita, aguardando revisão visual** (ver "Etapa 3") |
-| 4. Telas de resultado + gráficos | pendente |
+| 4. Telas de resultado + gráficos | **feita, aguardando revisão visual** (ver "Etapa 4") |
 | 5. Vue Bits (só se passar o checklist) | pendente |
 | 6. Responsivo | pendente |
 | 7. Verificação final | pendente |
+
+### Etapa 4 (feita)
+- [x] Paleta `--chart-1..8` por tema (valores do plano; escuro e contraste compartilham), `--pos-*` com texto próprio (`--pos-fg-*`, ≥4,5:1 conferido), `--layer-*` derivados da paleta, `--chart-pos/--chart-neg` para o divergente. Classes `fill-chart-N`/`stroke-chart-N` (`@theme inline`); `SIDE_CLASS` usa a paleta. Antes o lado 2 (`secondary`, #3B3936) quase sumia no escuro.
+- [x] Dois lados = laranja × cinza-escuro (Comparar, Radar, Bolhas, KFA, Cohen, barras divergentes). Divergente (`diverging`, heatmap e Laboratório) = laranja × azul-acinzentado, opacidade até 0,45 para o número na célula continuar legível.
+- [x] 2º canal: no gráfico de médias, d≥0 é círculo e d<0 é quadrado.
+- [x] Tabelas de Frequência, KWIC, Colocados, Palavras-chave, KFA e Faixas com `.ttw-scroll` (cabeçalho e 1ª coluna fixos, rolagem interna).
+- [x] Build, `npm test` e e2e (12) passam.
+- [ ] **Não verificado:** daltonismo (sem simulador; só rótulo direto/forma em alguns gráficos), contraste do texto sobre as células do divergente, aparência real dos gráficos (sem capturas). Fica para revisão visual e para a etapa 7.
+- [ ] Não feito: tornar todos os gráficos de dois lados com marcadores de forma; ordenação clicável nas tabelas; números sempre à direita em todas as tabelas; capturas antes/depois.
 
 ### Etapa 3 (feita)
 - [x] Barra de contexto (`header`) fixa no alto (`sticky`, borda forte); título de Explorar/Comparar menor (`text-xl`); `main` sem `overflow-auto` (necessário para o `sticky`); `scroll-padding` no `html` para o foco não ficar sob as barras fixas.

@@ -55,7 +55,7 @@ async function run() {
       <p class="text-sm font-medium">{{ t('bands.summary', { tokens: data.tokens, types: data.types, target: data.target, reference: data.reference, rw: data.reference_words }) }}</p>
       <div class="flex gap-1"><CopyCode analysis="bands" :params="lastParams" /><ExportMenu name="faixas" :rows="data.rows" :svg-root="chart" /></div>
       <div ref="chart"><BarChart :title="t('bands.tokens') + ' (%)'" :items="data.rows.map((r) => ({ label: label(r), value: r.pct_tokens }))" value-label="%" /></div>
-      <div class="overflow-x-auto">
+      <div class="ttw-scroll">
         <table class="table table-xs" data-testid="bands-table">
           <thead><tr><th>{{ t('bands.band') }}</th><th class="text-right">{{ t('bands.tokens') }}</th><th class="text-right">%</th>
             <th class="text-right">{{ t('bands.types') }}</th><th class="text-right">%</th><th>{{ t('bands.examples') }}</th></tr></thead>

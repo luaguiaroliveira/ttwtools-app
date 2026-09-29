@@ -83,7 +83,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
       <div class="flex gap-1"><CopyCode analysis="keywords" :params="lastParams" /><ExportMenu name="palavras-chave" :rows="data.rows" /></div>
       <div v-for="w in data.warnings" :key="w.code" role="alert" class="alert py-1 text-sm"
            :class="{ 'alert-error': w.severity === 'error', 'alert-warning': w.severity === 'warning', 'alert-info': w.severity === 'info' }">{{ w.message }}</div>
-      <div class="overflow-x-auto max-h-[60vh]">
+      <div class="ttw-scroll">
         <table class="table table-xs table-pin-rows" data-testid="kw-table">
           <thead><tr><th>{{ t('explore.item') }}</th><th>{{ t('compare.direction') }}</th><th class="text-right">{{ t('compare.target') }}</th><th class="text-right">{{ t('compare.reference') }}</th>
             <th class="text-right whitespace-nowrap"><HelpTip term="ll">LL</HelpTip></th><th class="text-right whitespace-nowrap"><HelpTip term="log_ratio">log ratio</HelpTip></th><th class="text-right whitespace-nowrap"><HelpTip term="percent_diff">%DIFF</HelpTip></th><th class="text-right">p corr.</th><th class="text-right whitespace-nowrap">range <HelpTip term="range" /></th></tr></thead>

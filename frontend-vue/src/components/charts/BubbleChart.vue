@@ -17,7 +17,7 @@ const sr = computed(() => { const s = props.rows.map((r) => Math.sqrt((r.Std_Cor
     <text x="12" :y="H / 2" :transform="`rotate(-90 12 ${H / 2})`" text-anchor="middle" class="fill-current text-[11px]">d</text>
     <g v-for="r in rows" :key="r.Feature">
       <circle :cx="sx(r.Difference)" :cy="sy(r.Effect_Size)" :r="sr(Math.sqrt((r.Std_Corpus1 ** 2 + r.Std_Corpus2 ** 2) / 2))"
-              :class="r.Effect_Size >= 0 ? 'fill-primary' : 'fill-secondary'" opacity="0.45"><title>{{ r.Feature }}: d {{ r.Effect_Size.toFixed(2) }}</title></circle>
+              :class="r.Effect_Size >= 0 ? 'fill-chart-1' : 'fill-chart-2'" opacity="0.45"><title>{{ r.Feature }}: d {{ r.Effect_Size.toFixed(2) }}</title></circle>
       <text :x="sx(r.Difference)" :y="sy(r.Effect_Size) + 3" text-anchor="middle" class="fill-current text-[9px]">{{ r.Feature }}</text>
     </g>
   </svg>

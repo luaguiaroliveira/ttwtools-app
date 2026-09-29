@@ -52,7 +52,7 @@ function setSort(k) {
         <select v-model="f.sort" class="select select-sm"><option value="ll">log-likelihood</option><option value="mi">MI</option><option value="t">T-score</option><option value="freq">freq</option></select></label>
     </QueryBox>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
-    <div v-if="data" class="overflow-x-auto">
+    <div v-if="data" class="ttw-scroll">
       <p class="text-sm mb-1 flex items-center gap-1">{{ data.node }} · {{ data.node_freq }}× <HelpTip term="collocate" />
         <span class="ml-auto flex gap-1"><CopyCode analysis="collocates" :params="{ corpus, node: data.node, layer, ...f }" />
           <ExportMenu :name="`colocados_${data.node}`" :rows="data.rows" /></span></p>

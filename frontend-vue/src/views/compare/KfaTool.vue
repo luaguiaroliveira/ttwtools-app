@@ -86,12 +86,12 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
           <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 32 + 6})`">
             <text x="0" y="14" class="fill-current text-[10px]">{{ t(i ? 'kfa.side2' : 'kfa.side1') }}</text>
             <line x1="70" x2="590" y1="10" y2="10" class="stroke-current opacity-20" />
-            <circle v-for="v in vals" :key="v.filename" :cx="70 + (v.value / maxV) * 520" cy="10" r="4" :class="i ? 'fill-secondary' : 'fill-primary'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
+            <circle v-for="v in vals" :key="v.filename" :cx="70 + (v.value / maxV) * 520" cy="10" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
           </g>
         </svg>
         <RouterLink class="link text-sm" :to="{ path: '/explorar/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
       </section>
-      <div class="overflow-x-auto max-h-80">
+      <div class="ttw-scroll">
         <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right">{{ t('kfa.side1') }}</th><th class="text-right">{{ t('kfa.side2') }}</th></tr></thead>
           <tbody><tr v-for="r in data.rows" :key="r.Feature" class="hover cursor-pointer" @click="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
             <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>

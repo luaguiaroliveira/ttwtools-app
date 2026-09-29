@@ -19,7 +19,7 @@ const x = (v) => 300 + (v / top.value) * 180
       <line x1="300" x2="300" y1="0" :y2="shown.length * 18 + 6" class="stroke-current opacity-40" />
       <g v-for="(r, i) in shown" :key="r.label" :transform="`translate(0 ${i * 18 + 3})`" class="cursor-pointer" tabindex="0"
          role="button" :aria-label="`${r.label} ${r.value.toFixed(2)}`" @click="emit('select', r.label)" @keydown.enter="emit('select', r.label)">
-        <rect :x="Math.min(300, x(r.value))" y="2" :width="Math.abs(x(r.value) - 300)" height="12" :class="r.value >= 0 ? 'fill-primary' : 'fill-secondary'" />
+        <rect :x="Math.min(300, x(r.value))" y="2" :width="Math.abs(x(r.value) - 300)" height="12" :class="r.value >= 0 ? 'fill-chart-1' : 'fill-chart-2'" />
         <text :x="r.value >= 0 ? 294 : 306" y="12" :text-anchor="r.value >= 0 ? 'end' : 'start'" class="fill-current text-[10px]">{{ r.label }}</text>
         <text :x="r.value >= 0 ? x(r.value) + 4 : x(r.value) - 4" y="12" :text-anchor="r.value >= 0 ? 'start' : 'end'" class="fill-current text-[9px] text-text-muted">{{ r.value.toFixed(2) }}</text>
       </g>

@@ -56,7 +56,7 @@ const posBucket = (p = '') => {
     <template v-if="data">
       <p role="status" class="text-sm" data-testid="kwic-total">{{ t('table.range', { from: data.total ? offset + 1 : 0, to: Math.min(offset + limit, data.total), total: data.total }) }}</p>
       <!-- computador e tablet: tabela alinhada no centro -->
-      <div class="hidden sm:block overflow-x-auto">
+      <div class="hidden sm:block ttw-scroll">
         <table class="table table-xs" :aria-busy="loading">
           <thead><tr><th scope="col" class="text-right">{{ t('explore.left') }}</th><th scope="col">{{ t('explore.match') }}</th>
             <th scope="col">{{ t('explore.right') }}</th><th scope="col">{{ t('explore.pos') }}</th><th scope="col">{{ t('explore.file') }}</th></tr></thead>

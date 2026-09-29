@@ -62,6 +62,8 @@
   :root:not([data-theme]) { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C; }
 }
 @theme inline {
+  --color-chart-1: var(--chart-1); --color-chart-2: var(--chart-2); --color-chart-3: var(--chart-3); --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5); --color-chart-6: var(--chart-6); --color-chart-7: var(--chart-7); --color-chart-8: var(--chart-8);
   --color-orange-text: var(--ttw-orange-text);
   --color-border-strong: var(--ttw-border-strong);
   --color-text-muted: var(--ttw-text-muted);
@@ -80,17 +82,7 @@
   --ttw-shadow-card: 0 1px 2px rgb(0 0 0 / .06), 0 1px 3px rgb(0 0 0 / .10);
   --ttw-shadow-pop: 0 10px 30px rgb(0 0 0 / .15);
 
-  /* paleta categórica (grupos, lados, traços) */
-  --chart-1: #4f46e5; --chart-2: #0ea5e9; --chart-3: #10b981; --chart-4: #f59e0b;
-  --chart-5: #ef4444; --chart-6: #8b5cf6; --chart-7: #14b8a6; --chart-8: #64748b;
-
-  /* classes gramaticais (POS/UPOS) */
-  --pos-noun: #2563eb; --pos-verb: #16a34a; --pos-adj: #d97706;
-  --pos-adv: #7c3aed; --pos-other: #6b7280;
-
-  /* etiquetadores e camadas */
-  --layer-stats: #64748b; --layer-spacy: #0ea5e9; --layer-stanza: #8b5cf6;
-  --layer-mfte: #f59e0b; --layer-biberplus: #10b981;
+  /* paleta categórica (grupos, lados, traços): valores por tema mais abaixo */
 }
 
 :focus-visible {
@@ -131,11 +123,11 @@
 
   /* Marcas de classe gramatical: mesma cor em tabela, gráfico e leitor */
   .pos-tag { display: inline-block; padding: 0 0.35rem; border-radius: 0.35rem; font-size: 0.7rem; line-height: 1.5;
-    font-weight: 600; color: #fff; background: var(--pos-other); }
-  .pos-tag[data-bucket="noun"] { background: var(--pos-noun); }
-  .pos-tag[data-bucket="verb"] { background: var(--pos-verb); }
-  .pos-tag[data-bucket="adj"] { background: var(--pos-adj); }
-  .pos-tag[data-bucket="adv"] { background: var(--pos-adv); }
+    font-weight: 600; color: var(--pos-fg-other); background: var(--pos-other); }
+  .pos-tag[data-bucket="noun"] { background: var(--pos-noun); color: var(--pos-fg-noun); }
+  .pos-tag[data-bucket="verb"] { background: var(--pos-verb); color: var(--pos-fg-verb); }
+  .pos-tag[data-bucket="adj"] { background: var(--pos-adj); color: var(--pos-fg-adj); }
+  .pos-tag[data-bucket="adv"] { background: var(--pos-adv); color: var(--pos-fg-adv); }
 
   /* Cor por etiquetador/camada, para a lista de camadas */
   .layer-dot { display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 999px; background: var(--layer-stats); }
@@ -169,7 +161,7 @@
 .reader-tok svg.rn path { stroke-linecap: round; }
 .rn-anim path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rn-draw .4s ease-out var(--rn-delay, 0ms) forwards; }
 @keyframes rn-draw { to { stroke-dashoffset: 0; } }
-.reader-tok.is-selected { outline: 2px solid #4f46e5; }
+.reader-tok.is-selected { outline: 2px solid #B8460A; }
 .reader-tok.is-hit { background: #fde68a; }
 .reader-legend { display: flex; flex-wrap: wrap; gap: .2cm .6cm; margin-top: 1cm; padding-top: .3cm; border-top: 1px solid #ccc;
   font-family: system-ui, sans-serif; font-size: 8.5pt; color: #333; }
@@ -275,3 +267,34 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 .ttw-scroll .table :where(tbody th:first-child, tbody td:first-child) { position: sticky; left: 0; background: var(--color-base-100); }
 /* Foco/âncoras não ficam sob a barra de contexto fixa nem sob a barra inferior (WCAG 2.4.11) */
 html { scroll-padding-top: 6.5rem; scroll-padding-bottom: 5rem; }
+
+/* ---- Cores de gráficos (etapa 4): categórica, classes gramaticais e camadas, por tema ----
+   Marcas ≥3:1 sobre o fundo; rótulos de POS ≥4,5:1 (conferir com scripts/contrast.py).
+   Daltonismo NÃO foi verificado com simulador: os gráficos mantêm rótulo direto ou forma como 2º canal. */
+:root {
+  --chart-1: #C2500C; --chart-2: #3B3936; --chart-3: #2F6F9F; --chart-4: #7A5C99;
+  --chart-5: #2E8B57; --chart-6: #B08900; --chart-7: #A63D6B; --chart-8: #8A8580;
+  --pos-noun: #2F5F8F; --pos-verb: #1F7A45; --pos-adj: #8A5A00; --pos-adv: #6B4C8A; --pos-other: #5E5B57;
+  --pos-fg-noun: #fff; --pos-fg-verb: #fff; --pos-fg-adj: #fff; --pos-fg-adv: #fff; --pos-fg-other: #fff;
+  --chart-pos: 242 106 27; --chart-neg: 47 111 159;
+}
+:root[data-theme="dark"], :root[data-theme="contrast"] {
+  --chart-1: #FF8A3D; --chart-2: #C9C4BC; --chart-3: #6FA8DC; --chart-4: #B79AD6;
+  --chart-5: #5FC28A; --chart-6: #E3B93C; --chart-7: #E07AA5; --chart-8: #8F8A83;
+  --pos-noun: #78A9DC; --pos-verb: #4CC180; --pos-adj: #E8B03A; --pos-adv: #B79AD6; --pos-other: #A8A39C;
+  --pos-fg-noun: #0A1622; --pos-fg-verb: #0B1A11; --pos-fg-adj: #1A1203; --pos-fg-adv: #170F22; --pos-fg-other: #131211;
+  --chart-pos: 255 138 61; --chart-neg: 111 168 220;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --chart-1: #FF8A3D; --chart-2: #C9C4BC; --chart-3: #6FA8DC; --chart-4: #B79AD6;
+    --chart-5: #5FC28A; --chart-6: #E3B93C; --chart-7: #E07AA5; --chart-8: #8F8A83;
+    --pos-noun: #78A9DC; --pos-verb: #4CC180; --pos-adj: #E8B03A; --pos-adv: #B79AD6; --pos-other: #A8A39C;
+    --pos-fg-noun: #0A1622; --pos-fg-verb: #0B1A11; --pos-fg-adj: #1A1203; --pos-fg-adv: #170F22; --pos-fg-other: #131211;
+    --chart-pos: 255 138 61; --chart-neg: 111 168 220;
+  }
+}
+:root {
+  --layer-stats: var(--chart-8); --layer-spacy: var(--chart-3); --layer-stanza: var(--chart-4);
+  --layer-mfte: var(--chart-6); --layer-biberplus: var(--chart-5);
+}

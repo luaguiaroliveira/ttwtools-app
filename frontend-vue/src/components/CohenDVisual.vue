@@ -25,10 +25,10 @@ const curve = (mu) => {
   <figure class="flex flex-col gap-1" :class="compact ? 'text-xs' : 'text-sm'">
     <figcaption class="font-medium">{{ t('cohen.title') }}</figcaption>
     <svg :viewBox="`0 0 ${W} ${H}`" class="w-full max-w-md" role="img" :aria-label="t('cohen.value', { d: d.toFixed(1), overlap })">
-      <polyline :points="curve(0)" fill="none" class="stroke-primary" stroke-width="2" />
-      <polyline :points="curve(d)" fill="none" class="stroke-secondary" stroke-width="2" />
-      <text x="4" y="12" class="fill-primary text-[10px]">{{ t('cohen.group1') }}</text>
-      <text :x="W - 50" y="12" class="fill-secondary text-[10px]">{{ t('cohen.group2') }}</text>
+      <polyline :points="curve(0)" fill="none" class="stroke-chart-1" stroke-width="2" />
+      <polyline :points="curve(d)" fill="none" class="stroke-chart-2" stroke-width="2" />
+      <text x="4" y="12" class="fill-chart-1 text-[10px]">{{ t('cohen.group1') }}</text>
+      <text :x="W - 50" y="12" class="fill-chart-2 text-[10px]">{{ t('cohen.group2') }}</text>
     </svg>
     <label class="flex items-center gap-2">{{ t('cohen.slider') }}
       <input v-model.number="d" type="range" min="0" max="3" step="0.1" class="range range-xs flex-1" data-testid="cohen-slider" /></label>

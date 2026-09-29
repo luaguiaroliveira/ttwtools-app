@@ -16,7 +16,8 @@ const sy = computed(() => linear([0, extent(all.value)[1]], [H - P, 10]))
     <text :x="W / 2" :y="H - 8" text-anchor="middle" class="fill-current text-[11px]">{{ t('gallery.x_mean1') }}</text>
     <text x="12" :y="H / 2" :transform="`rotate(-90 12 ${H / 2})`" text-anchor="middle" class="fill-current text-[11px]">{{ t('gallery.y_mean2') }}</text>
     <g v-for="r in rows" :key="r.Feature">
-      <circle :cx="sx(r.Mean_Corpus1)" :cy="sy(r.Mean_Corpus2)" r="5" :class="r.Effect_Size >= 0 ? 'fill-primary' : 'fill-secondary'" opacity="0.75"><title>{{ r.Feature }}: {{ r.Mean_Corpus1.toFixed(2) }} × {{ r.Mean_Corpus2.toFixed(2) }} (d {{ r.Effect_Size.toFixed(2) }})</title></circle>
+      <circle v-if="r.Effect_Size >= 0" :cx="sx(r.Mean_Corpus1)" :cy="sy(r.Mean_Corpus2)" r="5" class="fill-chart-1" opacity="0.85"><title>{{ r.Feature }}: {{ r.Mean_Corpus1.toFixed(2) }} × {{ r.Mean_Corpus2.toFixed(2) }} (d {{ r.Effect_Size.toFixed(2) }})</title></circle>
+      <rect v-else :x="sx(r.Mean_Corpus1) - 4.5" :y="sy(r.Mean_Corpus2) - 4.5" width="9" height="9" class="fill-chart-2" opacity="0.85"><title>{{ r.Feature }}: {{ r.Mean_Corpus1.toFixed(2) }} × {{ r.Mean_Corpus2.toFixed(2) }} (d {{ r.Effect_Size.toFixed(2) }})</title></rect>
       <text :x="sx(r.Mean_Corpus1) + (flip(r) ? -8 : 8)" :y="sy(r.Mean_Corpus2) + 3" :text-anchor="flip(r) ? 'end' : 'start'" class="fill-current text-[10px]">{{ r.Feature }}</text>
     </g>
   </svg>
