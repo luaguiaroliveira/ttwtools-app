@@ -21,8 +21,8 @@ const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwi
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 max-w-6xl">
-    <h1 class="text-2xl font-bold">{{ t('explore.title') }}</h1>
+  <div class="flex flex-col gap-3 max-w-6xl print:max-w-none">
+    <h1 class="text-2xl font-bold print:hidden">{{ t('explore.title') }}</h1>
     <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
       <span>{{ t('explore.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="explore-corpus" :value="corpus || ''"
@@ -32,7 +32,7 @@ const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwi
       </select>
     </div>
     <template v-else>
-      <div role="tablist" :aria-label="t('explore.tools')" class="tabs tabs-box overflow-x-auto flex-nowrap" data-explain="explain.explore.tabs">
+      <div role="tablist" :aria-label="t('explore.tools')" class="tabs tabs-box overflow-x-auto flex-nowrap print:hidden" data-explain="explain.explore.tabs">
         <RouterLink v-for="(_, id) in TOOLS" :key="id" role="tab" :to="`/explorar/${id}`" class="tab whitespace-nowrap"
                     :class="{ 'tab-active': tool === id }" :aria-selected="tool === id">{{ t(`explore.tool.${id}`) }}</RouterLink>
       </div>

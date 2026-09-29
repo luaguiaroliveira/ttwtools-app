@@ -110,30 +110,48 @@ function draw() {
 let raf = 0
 const redraw = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw) }
 watch([chosen, classes, pieces, colorBy], async () => { await nextTick(); redraw() }, { flush: 'post' })
+// Na impressão o layout é o mesmo da tela; redesenha sem animação por garantia.
+const beforePrint = () => { justAdded = null; draw() }
 let ro
-onMounted(() => { if (globalThis.ResizeObserver && article.value) { ro = new ResizeObserver(redraw); ro.observe(article.value) } })
-onBeforeUnmount(() => { ro?.disconnect(); cancelAnimationFrame(raf); clearAnnotations() })
+onMounted(() => {
+  globalThis.addEventListener?.('beforeprint', beforePrint)
+  if (globalThis.ResizeObserver && article.value) { ro = new ResizeObserver(redraw); ro.observe(article.value) } })
+onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePrint); ro?.disconnect(); cancelAnimationFrame(raf); clearAnnotations() })
 </script>
 
 <template>
   <section class="flex flex-col gap-3">
-    <div class="ttw-form">
+    <div class="ttw-form print:hidden">
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.document') }}</span>
         <select v-model="file" class="select select-sm max-w-xs" data-testid="reader-file"><option v-for="f in files" :key="f">{{ f }}</option></select></label>
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.color_by') }}</span>
         <select v-model="colorBy" class="select select-sm" @change="chosen = new Set()"><option value="upos">UPOS</option><option value="xpos">XPOS</option><option value="tags">tags</option></select></label>
       <span v-if="doc?.layer" class="badge badge-ghost h-8">{{ doc.layer.tool }} · {{ doc.layer.model }}</span>
-      <button class="btn btn-sm ml-auto print:hidden" @click="window.print()">{{ t('reader.print') }}</button>
+      <button class="btn btn-sm ml-auto" @click="window.print()">{{ t('reader.print') }}</button>
     </div>
-    <p v-if="doc && !doc.layer" class="text-sm opacity-70">{{ t('reader.no_layer') }}</p>
+    <p v-if="doc && !doc.layer" class="text-sm opacity-70 print:hidden">{{ t('reader.no_layer') }}</p>
     <p v-if="doc && doc.text === null" role="alert" class="alert alert-warning text-sm">{{ t('reader.no_text') }}</p>
-    <div class="grid lg:grid-cols-[1fr_18rem] gap-4 items-start">
-      <article ref="article" class="reader-print ttw-annot bg-base-100 border border-base-300 rounded-box p-6 leading-9 whitespace-pre-wrap max-h-[75vh] overflow-auto print:max-h-none print:overflow-visible print:border-0" data-testid="reader-text">
-        <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
-            :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="cursor-pointer rounded"
-            :class="{ 'ring-2 ring-primary': selected?.idx === p.tok.idx, 'bg-warning/40': hit(p.tok) }"
-            @click="selected = p.tok">{{ p.text }}</span></template>
-      </article>
+    <div class="grid lg:grid-cols-[minmax(0,1fr)_18rem] gap-4 items-start print:block">
+      <!-- A folha: mesma largura, tipografia e quebras de linha na tela e na impressão (A4, margens de 2 cm) -->
+      <div class="reader-stage print:overflow-visible">
+        <div class="reader-paper" data-testid="reader-paper">
+          <header class="reader-sheet-head">
+            <h2>{{ file }}</h2>
+            <p v-if="doc?.layer">{{ doc.layer.tool }} · {{ doc.layer.model }} · {{ colorBy.toUpperCase() }}</p>
+          </header>
+          <article ref="article" class="reader-text ttw-annot" data-testid="reader-text">
+            <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
+                :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
+                :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok) }"
+                @click="selected = p.tok">{{ p.text }}</span></template>
+          </article>
+          <footer v-if="chosen.size" class="reader-legend">
+            <span v-for="[c, n] in classes.filter(([c]) => chosen.has(c))" :key="c">
+              <b :style="{ borderBottom: `2px solid ${color[c]}` }">{{ c }}</b> {{ tagset[c] }} ({{ n }})
+            </span>
+          </footer>
+        </div>
+      </div>
       <aside class="flex flex-col gap-3 lg:sticky lg:top-2 print:hidden" aria-live="polite">
         <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" role="group" :aria-label="t('reader.tags_title')">
           <div class="flex items-center gap-2">
