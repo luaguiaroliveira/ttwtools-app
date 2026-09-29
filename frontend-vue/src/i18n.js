@@ -5,6 +5,8 @@ import { createI18n } from 'vue-i18n'
 import { api } from './api/index.js'
 
 export const LANGS = ['pt', 'en']
+// nomes de cada idioma na própria língua (não são traduzidos); novos idiomas entram aqui e em LANGS
+export const LANG_NAMES = [{ code: 'pt', name: 'Português' }, { code: 'en', name: 'English' }]
 const STORAGE = 'ttw.lang'
 
 function compile(message) {

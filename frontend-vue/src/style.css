@@ -309,3 +309,9 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
   text-overflow: ellipsis; padding-right: .25rem; }
 .ttw-chip-select:disabled { cursor: not-allowed; opacity: .6; }
 .ttw-chip:has(:focus-visible) { outline: 3px solid var(--ttw-orange-text); outline-offset: 2px; }
+
+/* Itens de menu suspenso (idioma, tema) */
+.ttw-menu-item { display: flex; align-items: center; gap: .25rem; width: 100%; padding: .4rem .625rem; border-radius: var(--radius-field);
+  font-size: .875rem; text-align: left; white-space: nowrap; }
+.ttw-menu-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
+.ttw-wordmark { min-width: 6.5rem; text-align: left; }

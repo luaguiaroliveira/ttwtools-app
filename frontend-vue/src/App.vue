@@ -5,10 +5,11 @@ import { storeToRefs } from 'pinia'
 import { useRoute } from 'vue-router'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
-import { setLang } from './i18n.js'
+import { LANG_NAMES, setLang } from './i18n.js'
 import { applyDensity, applyTheme, initialDensity, initialTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
-import ShinyText from './components/vb/ShinyText.vue'
+import TextType from './components/vb/TextType.vue'
+import MenuButton from './components/MenuButton.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
 import AboutDialog from './components/AboutDialog.vue'
@@ -32,6 +33,7 @@ const isDark = computed(() => theme.value === 'dark' || theme.value === 'contras
 const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
+const THEME_OPTIONS = ['system', 'light', 'dark', 'contrast']
 const changeLang = (value) => setLang(value)
 </script>
 
@@ -40,7 +42,7 @@ const changeLang = (value) => setLang(value)
   <div class="min-h-dvh bg-base-100 text-base-content flex flex-col">
   <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
         <button type="button" class="ttw-wordmark shrink-0 font-black text-lg tracking-tight px-1" data-testid="about-open"
-                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><ShinyText>TTWtools</ShinyText></button>
+                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text' }, { text: 'tools', class: 'text-chart-2' }]" /></button>
         <span v-if="section" class="hidden sm:inline-flex items-center gap-2 font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
           <NavIcon :name="section.icon" :size="20" />{{ t(section.label) }}</span>
         <div class="flex-1" />
@@ -67,30 +69,37 @@ const changeLang = (value) => setLang(value)
         <RouterLink v-if="unsaved" to="/arquivo" class="badge badge-warning gap-1" data-testid="header-unsaved"
                     :title="t('project.unsaved_text')">● {{ t('project.unsaved_badge') }}</RouterLink>
         <button class="btn btn-ghost btn-sm" data-testid="explain" @click="explaining = true">{{ t('explain.button') }}</button>
-        <details class="dropdown dropdown-end">
-          <summary class="btn btn-ghost btn-sm" :aria-label="t('menu.settings')">⚙︎</summary>
-          <div class="dropdown-content z-20 bg-base-200 rounded-box w-64 p-3 shadow flex flex-col gap-2">
-            <div class="flex items-center gap-2">
-              <button type="button" class="btn btn-sm flex-1 font-bold" data-testid="lang-toggle"
-                      :title="t('lang.label')" :aria-label="t('lang.label')" @click="changeLang(locale === 'pt' ? 'en' : 'pt')">{{ locale.toUpperCase() }}</button>
-              <button type="button" class="btn btn-sm flex-1" data-testid="theme-toggle" :title="t('theme.label')" :aria-label="t('theme.label')"
-                      :aria-pressed="!isDark" @click="changeTheme(isDark ? 'light' : 'dark')">
-                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
-                     :fill="isDark ? 'none' : 'currentColor'" :fill-opacity="isDark ? 0 : 0.35">
-                  <path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.500 10.900c.6.5 1 1.200 1 2.100h5c0-.9.4-1.600 1-2.100A6 6 0 0 0 12 3z" /></svg>
-              </button>
-            </div>
-            <label class="flex items-center gap-2 text-xs cursor-pointer">
-              <input type="checkbox" class="checkbox checkbox-xs" data-testid="contrast-toggle" :checked="theme === 'contrast'"
-                     @change="changeTheme($event.target.checked ? 'contrast' : (prefersDark ? 'dark' : 'light'))" />{{ t('theme.contrast') }}
+        <MenuButton :label="t('lang.label')">
+          <template #button>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.500 2.700 3.700 5.700 3.700 9s-1.200 6.300-3.700 9c-2.500-2.700-3.700-5.700-3.700-9S9.500 5.700 12 3z" /></svg>
+            <span class="font-bold text-xs" data-testid="lang-toggle">{{ locale.toUpperCase() }}</span>
+          </template>
+          <template #default="{ close }">
+            <button v-for="l in LANG_NAMES" :key="l.code" type="button" role="menuitemradio" :aria-checked="locale === l.code" class="ttw-menu-item"
+                    :data-testid="`lang-${l.code}`" @click="changeLang(l.code); close()">
+              <span class="w-5 text-orange-text">{{ locale === l.code ? '✓' : '' }}</span>{{ l.name }}<span class="ml-auto text-xs text-text-muted pl-4">{{ l.code.toUpperCase() }}</span>
+            </button>
+          </template>
+        </MenuButton>
+        <MenuButton :label="t('theme.label')">
+          <template #button>
+            <svg v-if="isDark" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="theme-toggle">
+              <path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500z" /></svg>
+            <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="currentColor" fill-opacity=".25" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-testid="theme-toggle">
+              <circle cx="12" cy="12" r="4" /><path d="M12 2.500v2.200M12 19.300v2.200M2.500 12h2.200M19.300 12h2.200M5.300 5.300l1.500 1.500M17.200 17.200l1.500 1.500M5.300 18.700l1.500-1.500M17.200 6.800l1.500-1.500" /></svg>
+          </template>
+          <template #default="{ close }">
+            <button v-for="o in THEME_OPTIONS" :key="o" type="button" role="menuitemradio" :aria-checked="theme === o" class="ttw-menu-item"
+                    :data-testid="`theme-${o}`" @click="changeTheme(o); close()">
+              <span class="w-5 text-orange-text">{{ theme === o ? '✓' : '' }}</span>{{ t(`theme.${o}`) }}
+            </button>
+            <div class="my-1 border-t border-base-300" role="separator" />
+            <label class="ttw-menu-item cursor-pointer">
+              <input type="checkbox" class="checkbox checkbox-xs" data-testid="density-toggle" :checked="compact" @change="changeDensity($event.target.checked)" />{{ t('density.label') }}
             </label>
-            <label class="flex items-center gap-2 text-xs cursor-pointer">
-              <input type="checkbox" class="checkbox checkbox-xs" data-testid="density-toggle" :checked="compact"
-                     @change="changeDensity($event.target.checked)" />{{ t('density.label') }}
-            </label>
-            <p class="text-xs text-text-muted truncate" :title="projectPath || ''">{{ projectPath || t('header.no_project') }}</p>
-          </div>
-        </details>
+          </template>
+        </MenuButton>
   </header>
     <div class="flex flex-1 flex-col md:flex-row min-w-0">
     <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
