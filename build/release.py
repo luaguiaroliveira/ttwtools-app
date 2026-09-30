@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-release.py — Lança uma versão do TTWtools (ver RELEASING.md).
+release.py — Lança uma versão do TTWtools (ver CONTRIBUTING.md, seção Release).
 
     python build/release.py --version 0.4.0-alpha.1 --dry-run   # só mostra o que faria
     python build/release.py --version 0.4.0-alpha.1             # faz

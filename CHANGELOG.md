@@ -1,6 +1,6 @@
 # Changelog — ttwtools-app
 
-Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: [SemVer](https://semver.org/lang/pt-BR/); a regra está em `RELEASING.md`. O pacote `ttwtools` (submódulo) tem changelog próprio.
+Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: [SemVer](https://semver.org/lang/pt-BR/); a regra está em `CONTRIBUTING.md` (Versão e changelog). O pacote `ttwtools` (submódulo) tem changelog próprio.
 
 ## [Unreleased]
 
@@ -87,7 +87,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Laboratório** (experimental) em Comparar: N grupos por metadado ou corpus — um contra todos, par a par, Kruskal-Wallis, PCA, dendrograma e "meu texto contra referências"; `ttwtools compare --group-by/--group` (5.1).
 - Importadores de **TEI XML/BNC XML** e do standoff **GrAF (OANC/MASC)**, pela linha de comando (`import --format tei|graf`) e pelo assistente "Adicionar corpus"; receita `tools/corpora/masc.py` (5.2).
 - **Português**: modelos spaCy `pt_core_news_*` e Stanza em português, sugeridos automaticamente para corpora em português; idioma do corpus detectado para as palavras funcionais; UD Portuguese Bosque como referência (`tools/corpora/ud.py`) (5.3).
-- Documentação: LEIAME/README para quem usa, `CONTRIBUTING.md`, `RELEASING.md` revisto; no pacote, guia rápido e referência de todas as funções (6.1).
+- Documentação: LEIAME/README para quem usa, `CONTRIBUTING.md`, `RELEASING.md` revisto (hoje dentro do `CONTRIBUTING.md`); no pacote, guia rápido e referência de todas as funções (6.1).
 
 ### Removido
 
@@ -102,16 +102,16 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [0.4.0-alpha.1] — 2026-09-26
 
-Linha nova **0.4.0** (reformulação; plano em `novodesenho/plano_implementacao.md`).
+Linha nova **0.4.0** (reformulação; histórico em `novodesenho/memoria.md`).
 
 ### Adicionado
-- Versão única: `pyproject.toml` é a fonte; `app/_version.py` expõe `__version__`, `python -m app --version` e `GET /api/version` (app, `ttwtools`, commit). `RELEASING.md` com a regra de versão. (passo 0.2)
+- Versão única: `pyproject.toml` é a fonte; `app/_version.py` expõe `__version__`, `python -m app --version` e `GET /api/version` (app, `ttwtools`, commit). `RELEASING.md` (hoje `CONTRIBUTING.md`) com a regra de versão. (passo 0.2)
 - Build único `build/build.py` (macOS arm64/Intel, Windows, Linux) com `--selftest` no binário, `build/check_macos_min.py` e pacotes `TTWtools-<versão>-<so>-<arq>`. Mínimo: macOS 12.0 (Intel) e 12.3 (Apple Silicon). (passo 0.3)
 - CI a cada push (testes, frontend) e pipeline de release em 4 sistemas (macOS arm64 e Intel, Windows, Linux) com autoteste do binário e release em rascunho. (passo 0.4)
 - Pacote `ttwtools`: testes, linha de comando `ttwtools` (passo 1.1); esquema de projeto v0.3 com camadas, tokens e projetos leves `.ttwl` (passo 1.2). Importação de corpus com metadados por documento, filtros e tokenização simples (passo 1.3). Etiquetagem com cache de camadas: não reprocessa o que já foi feito (passo 1.4). Opções e tagsets dos taggers descritos em dados, com explicações em pt/en, predefinições e disponibilidade por sistema (passo 1.5). Formatos CoNLL-U, VRT, palavra/TAG e tabelas de tokens (passo 1.6). Estatísticas descritivas do corpus com cache (passo 1.7). Busca, KWIC, frequência, colocados e dispersão, também sem tagger (passo 1.8). Palavras-chave contra referência com avisos de comparabilidade (passo 1.9). Ajuda em pt/en no pacote e `ttwtools help` (passo 1.10).
 - Servidor: registro único de tarefas com cancelamento (`/api/jobs`), `/api/health`, importação por fonte de corpus (`/api/corpora/import`), projetos `.ttwl` nas rotas; corrigido o erro 500 com NaN nas tabelas de traços. (passo 2.1)
 - Rotas dos recursos novos (taggers, visão geral, explorar, palavras-chave, ajuda, traduções) e "copiar como código" (`/api/code`). (passo 2.2)
-- Processo de release: `build/release.py` (com `--dry-run`), `RELEASING.md` completo e `build/release_github.sh` para pacotes feitos localmente. (passo 0.5)
+- Processo de release: `build/release.py` (com `--dry-run`), `RELEASING.md` completo (hoje dentro do `CONTRIBUTING.md`) e `build/release_github.sh` para pacotes feitos localmente. (passo 0.5)
 - Interface nova em Vue 3 (`frontend-vue/`, `TTW_UI=vue`): casca responsiva com corpus ativo, tema claro/escuro/alto contraste, pt/en, tarefas com progresso e cancelamento, tela Corpora (projeto, importar com metadados, visão geral, camadas). (passos 3.1–3.4)
 - Tela de etiquetagem: escolha de tagger, "ver tags", "Personalizar" gerado do descritor, predefinições e aviso de reaproveitamento. (passo 3.5)
 - Tela Explorar: busca, KWIC (abre o texto na ocorrência), frequência, colocados, dispersão e leitor com etiquetas coloridas. (passo 3.6)

@@ -1,6 +1,6 @@
 # Mac Intel (macOS 12): o que foi testado, o que aconteceu, o que falta
 
-Único lugar dos testes na máquina de referência mais lenta. **Convenção:** *[medido]* veio do relatório ou da tela; *[hipótese]* é interpretação ainda não confirmada. Plano e pendências: `plano_armazenamento.md`. Análise de eficiência e formato: `armazenamento.md`. Cada nova rodada entra na seção 7 (registro), sem criar outro arquivo.
+Único lugar dos testes na máquina de referência mais lenta. **Convenção:** *[medido]* veio do relatório ou da tela; *[hipótese]* é interpretação ainda não confirmada. Plano e pendências: `plano.md`. Análise de eficiência e formato: `armazenamento.md`. Cada nova rodada entra na seção 7 (registro), sem criar outro arquivo.
 
 ## 1. Máquina e builds testados
 

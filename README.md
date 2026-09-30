@@ -152,9 +152,9 @@ pip install --no-deps -e libs/ttwtools -e .
 python -m app --mode desktop   # or --mode web and open http://127.0.0.1:8765
 ```
 
-On an Intel Mac with macOS 12, use Python 3.11 and `torch==2.2.2` (see [`CONTRIBUTING.md`](CONTRIBUTING.md)). Tests, package builds and releases: [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`RELEASING.md`](RELEASING.md).
+On an Intel Mac with macOS 12, use Python 3.11 and `torch==2.2.2` (see [`CONTRIBUTING.md`](CONTRIBUTING.md)). Tests, package builds and releases: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Licence, citation and contributing
 
-- Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md). The design is in [`novodesenho/novomodelo.md`](novodesenho/novomodelo.md) and progress in [`novodesenho/plano_implementacao.md`](novodesenho/plano_implementacao.md) (in Portuguese).
+- Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md). The design is in [`novodesenho/novomodelo.md`](novodesenho/novomodelo.md) and progress in [`novodesenho/plano.md`](novodesenho/plano.md) (in Portuguese).
 - Catalog corpora have their own licences, recorded in each record card; respect them when publishing results.

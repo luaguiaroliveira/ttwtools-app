@@ -1,6 +1,6 @@
 # Eficiência e formato de arquivo: análise e proposta
 
-Responde a uma pergunta: o que tornaria o TTWtools **rápido, leve em memória e robusto** do Apple Silicon ao Mac Intel de 2015, **mantendo perfis de arquivo diferentes** (maiores e prontos × compactos que podem reprocessar) e todas as funcionalidades previstas. Medições e observações do Intel: `macintel.md`. Andamento, próximos passos e decisões: `plano_armazenamento.md`. Convenção: **[medido]**, **[código]** (leitura do código), **[estimado]** (extrapolação a validar com protótipo), **[geral]** (prática de outras ferramentas, de memória, **a conferir** antes de decidir algo caro).
+Responde a uma pergunta: o que tornaria o TTWtools **rápido, leve em memória e robusto** do Apple Silicon ao Mac Intel de 2015, **mantendo perfis de arquivo diferentes** (maiores e prontos × compactos que podem reprocessar) e todas as funcionalidades previstas. Medições e observações do Intel: `macintel.md`. Andamento, próximos passos e decisões: `plano.md`. Convenção: **[medido]**, **[código]** (leitura do código), **[estimado]** (extrapolação a validar com protótipo), **[geral]** (prática de outras ferramentas, de memória, **a conferir** antes de decidir algo caro).
 
 ## 1. Situação (medida)
 

@@ -1,59 +1,51 @@
 # AGENTS.md — ttwtools-app
 
-Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek...) que trabalhe neste repositório. Vale para toda sessão. Seja breve: o detalhe está nos documentos abaixo.
+Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek...). Seja breve: o detalhe está nos documentos abaixo.
 
 ## Comece por aqui
 
-1. Leia o **cabeçalho** de `novodesenho/plano_implementacao.md` (seções "Estado atual", "Como usar", "Convenções", "Compatibilidade mínima") e **só o passo atual** (`grep -n '^### ' novodesenho/plano_implementacao.md`).
-2. O desenho está em `novodesenho/novomodelo.md`. **Não leia inteiro:** consulte apenas as seções citadas no passo.
-3. Trabalhe **um passo por vez**. Ao concluir: marque os `[x]`, preencha o **Relato**, atualize o "Estado atual" do plano, rode os testes e faça um commit começando por `[passo]` (ex.: `[1.2] esquema v3 do projeto`).
-
-**Interface (frontend-vue):** siga `novodesenho/interface.md` (estado e etapas nele), uma etapa por vez.
+1. Leia **só a seção 1 ("Retomar aqui")** de `novodesenho/plano.md`: estado, próximos passos e regras que mais se esquecem. O resto do plano é referência.
+2. Trabalhe **uma frente e um passo por vez**; ao concluir, atualize "Retomar aqui", rode os testes do que mexeu e faça um commit `[passo] mensagem curta em português`. Acrescente aprendizados e armadilhas novos a `novodesenho/memoria.md` (não precisa lê-lo inteiro).
+3. `novodesenho/novomodelo.md` é o desenho original, citado por número de seção (`§N`) em 12 módulos do pacote: **não condensar nem renumerar**; consulte só a seção citada.
 
 ## Regras permanentes
 
-- **Commits:** nunca incluir Claude nem outro agente como autor ou coautor (sem `Co-Authored-By`, sem linha de atribuição em commits ou descrições de PR). Mensagens curtas, em português.
-- **Paridade GUI e pacote Python:** a lógica vive em `libs/ttwtools/ttwtools`; a rota em `app/routes` só chama a função; a tela só apresenta. Todo recurso novo existe como função pública + subcomando de linha de comando (+ rota + tela).
-- **Escopo atual:** só o **aplicativo local** (interface Vue, tudo na máquina da pessoa). Não implementar envio de arquivos pelo navegador, política de privacidade do site, PWA nem ajuste fino para celular.
-- **Interface única, sem perfis de usuário;** opções avançadas ficam em painéis recolhidos. Todo texto de interface sai por chave de tradução (`pt` e `en`).
-- **Sem retrabalho de etiquetagem:** nada novo pode reprocessar o que já existe em camada equivalente.
-- **Compatibilidade:** o pacote precisa continuar rodando no **macOS 12** (máquina Intel, Safari 17.6), além de Windows e Linux. Build de macOS usa `MACOSX_DEPLOYMENT_TARGET=12.0`; o pacote Intel usa Python 3.11 e `torch==2.2.2`. Onde o torch não couber, Stanza e MFTE ficam indisponíveis com aviso.
-- **Submódulo `libs/ttwtools` é outro repositório** (`github.com/luaguiaroliveira/ttwtools`): faça commit e `git push` **dentro dele primeiro**, depois commite o novo ponteiro no app.
-- **Não desfaça nem reescreva histórico publicado** (nem `push --force`) sem pedido explícito do usuário. Não apague arquivos que você não criou.
+- **Commits:** nunca incluir Claude nem outro agente como autor ou coautor (sem `Co-Authored-By`, sem linha de atribuição em commits ou PRs). Mensagens curtas, em português. **Nunca `git add -A`** (projetos reais em LFS em `ttwa_files/` mudam ao abrir): adicione arquivos pelo nome.
+- **Paridade GUI e pacote Python:** a lógica vive em `libs/ttwtools/ttwtools`; a rota em `app/routes` só chama a função; a tela só apresenta. Todo recurso novo = função pública + subcomando + rota + tela.
+- **Escopo:** só o **aplicativo local**. Não implementar envio de arquivos pelo navegador, privacidade do site, PWA nem ajuste fino para celular.
+- **Interface única, sem perfis;** opções avançadas em painéis recolhidos; todo texto por chave de tradução (`pt` e `en`). Operação longa = tarefa com andamento, nunca requisição parada.
+- **Sem retrabalho de etiquetagem:** nada novo reprocessa o que já existe em camada equivalente.
+- **Compatibilidade:** o pacote roda no **macOS 12** (Intel, Safari 17.6), Windows e Linux; Intel usa Python 3.11, `torch==2.2.2`, `numpy==1.26.4`; onde o torch não couber, Stanza e MFTE ficam indisponíveis com aviso. **Formato de arquivo só com biblioteca padrão.**
+- **Submódulo `libs/ttwtools` é outro repositório** (`github.com/luaguiaroliveira/ttwtools`): commit e `git push` **nele primeiro**, depois o ponteiro no app.
+- **Não desfaça nem reescreva histórico publicado** (nem `push --force`) sem pedido explícito. **Não apague arquivos que você não criou**, salvo pedido explícito do usuário (como na fusão de `.md` de 2026-09-30). Não recompile o pacote (PyInstaller) sem pedido.
+- **Disco:** antes de abrir projeto real, `df -h /` (≥20 GB livres); trabalhe em cópias; um processo longo por vez, avisando o usuário; apague o que criar.
 
 ## Economia de contexto
 
-- **Nunca abra:** `repomix-output.xml`, `libs/repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/`, `test_corpora/full`, `frontend/` (saída de build).
-- **Arquivos grandes:** use `grep -n` e leitura por trechos (`offset`/`limit`). Em especial `libs/ttwtools/ttwtools/project.py` (1.141 linhas).
-- Rode só os testes do que mexeu, e não o conjunto inteiro, a menos que o passo peça.
+- **Nunca abra:** `repomix-output.xml`, `ttwa_files/`, `node_modules/`, `dist/`, `test_corpora/full`, `frontend/` (saída de build).
+- **Arquivos grandes:** `grep -n` e leitura por trechos (`offset`/`limit`); em especial `libs/ttwtools/ttwtools/project.py`.
+- Rode só os testes do que mexeu.
 
 ## Comandos essenciais
 
 ```
-# ambiente conda, por máquina:
-#   Mac Apple Silicon (macOS 15, desenvolvimento): ttw314 (Python 3.14, environment.yml)
-#   Mac Intel (macOS 12): ttw311 (Python 3.11, torch 2.2.2)
-conda env create -f environment.yml -n ttw314   # só na máquina Apple Silicon
-git submodule update --init --recursive     # requer git-lfs instalado (git lfs install)
-
-python -m app --mode web                    # servidor local; --mode desktop abre a janela
-pytest libs/ttwtools/tests -q               # pacote (a partir do passo 1.1)
-cd frontend-vue && npm ci && npm run build  # interface Vue (a partir do passo 3.1)
-python build/build.py                       # pacote PyInstaller (a partir do passo 0.3)
+conda env create -f environment.yml -n ttw314        # Apple Silicon (dev); Mac Intel: ttw311 (ver CONTRIBUTING.md)
+git submodule update --init --recursive              # requer git-lfs (git lfs install)
+python -m app --mode web                             # servidor local; --mode desktop abre a janela
+pytest libs/ttwtools/tests -q && pytest tests -q     # pacote e servidor
+cd frontend-vue && npm ci && npm run build && npm test
+python build/build.py                                # pacote PyInstaller; release: CONTRIBUTING.md
 ```
-
-Se um comando acima ainda não existir, é porque o passo que o cria não foi concluído: veja a tabela de andamento do plano.
 
 ## Onde está cada coisa
 
 | Onde | O quê |
 |---|---|
-| `novodesenho/plano_implementacao.md` | Plano, andamento, relatos e decisões pendentes |
-| `novodesenho/plano_armazenamento.md` | **Plano e pendências: o que foi feito, próximo passo, decisões abertas e tudo que falta no projeto** |
-| `novodesenho/armazenamento.md` | Eficiência e formato de arquivo: evidência, proposta, perfis Compacto/Pronto |
-| `novodesenho/macintel.md` | Testes na máquina lenta de referência (Mac Intel, macOS 12): números, problemas, como repetir |
-| `novodesenho/novomodelo.md` | Desenho do novo TTWtools |
-| `app/` | Servidor FastAPI local |
-| `frontend-vue/` | Interface (Vue 3); o build sai em `frontend/` (fora do git) |
-| `libs/ttwtools/` | Pacote Python (submódulo) |
-| `build/`, `.github/workflows/` | Empacotamento (PyInstaller) e releases |
+| `novodesenho/plano.md` | **Comece aqui:** retomar, regras, estado por frente, pendências |
+| `novodesenho/armazenamento.md` | Eficiência e formato de arquivo: evidência, proposta, perfis Compacto/Pronto, código nativo |
+| `novodesenho/macintel.md` | Testes na máquina lenta de referência (Mac Intel): números, problemas, como repetir |
+| `novodesenho/interface.md` · `escrita.md` · `verificacao.md` | Frentes de interface, de Escrita e roteiro de verificação manual |
+| `novodesenho/novomodelo.md` | Desenho original (citado por `§N` no código) |
+| `novodesenho/memoria.md` | Percurso e armadilhas, para a IA lembrar |
+| `CONTRIBUTING.md` | Ambiente, testes, pacotes, versão e release |
+| `app/` · `frontend-vue/` · `libs/ttwtools/` · `build/` | Servidor, interface, pacote (submódulo), empacotamento |

@@ -6,7 +6,7 @@ Uso:
     python build/release_notes.py v0.4.0-alpha.1 [--out notas.md]
 
 Falha (código 1) se a tag não for `v` + a versão do pyproject.toml em grafia
-SemVer (ver RELEASING.md) ou se o CHANGELOG.md não tiver a seção `## [<versão>]`.
+SemVer (ver CONTRIBUTING.md, seção Versão e changelog) ou se o CHANGELOG.md não tiver a seção `## [<versão>]`.
 """
 
 from __future__ import annotations
