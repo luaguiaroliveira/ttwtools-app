@@ -34,18 +34,26 @@ const labels = computed(() => props.sides.map((s) => s.label))
 const topFeatures = computed(() => props.kfa.rows.slice(0, nFeatures.value).map((r) => r.Feature))
 const needs = { strip: 'matrix', violin: 'matrix', histogram: 'matrix', parcoords: 'matrix', heatmap: 'heatmap', reduction: 'reduction', pca3d: 'reduction' }
 
+// Gráficos já calculados ficam guardados (por pedido): voltar a um gráfico, ou mexer no |d| mínimo sem mudar os
+// atributos usados, não calcula de novo.
+const memo = new Map()
 async function load() {
   data.value = null
   error.value = null
   const what = needs[kind.value]
   if (!what) return
+  const body = { sides: props.sides, layer: props.layer, feature: props.feature, features: what === 'matrix' ? topFeatures.value : null,
+    top: nFeatures.value, method: kind.value === 'pca3d' ? 'pca3d' : method.value, perplexity: 5 }
+  const key = `${what}|${JSON.stringify(body)}`
+  if (memo.has(key)) { data.value = memo.get(key); return }
   busy.value = true
   try {
-    data.value = await postJob(`/api/compare/viz/${what}`, { sides: props.sides, layer: props.layer, feature: props.feature, features: what === 'matrix' ? topFeatures.value : null,
-      top: nFeatures.value, method: kind.value === 'pca3d' ? 'pca3d' : method.value, perplexity: 5 })
+    data.value = await postJob(`/api/compare/viz/${what}`, body)
+    memo.set(key, data.value)
+    while (memo.size > 24) memo.delete(memo.keys().next().value)
   } catch (err) { error.value = err.message } finally { busy.value = false }
 }
-watch([kind, nFeatures, method, () => props.kfa], load)
+watch([kind, nFeatures, method, topFeatures, () => props.sides, () => props.layer, () => props.feature], load)
 // legenda: liga cor e forma ao corpus/grupo (o que a cor significa muda com o gráfico)
 const legend = computed(() => {
   const [a, b] = labels.value

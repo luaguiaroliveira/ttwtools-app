@@ -155,13 +155,15 @@
 .reader-sheet-head { border-bottom: 1px solid #ccc; margin-bottom: calc(1cm * var(--z)); padding-bottom: calc(.3cm * var(--z)); }
 .reader-sheet-head h2 { font-size: calc(13pt * var(--z)); font-weight: 700; word-break: break-all; }
 .reader-sheet-head p { font-size: calc(9pt * var(--z)); color: #555; }
-.reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; }
+.reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; user-select: text; -webkit-user-select: text; cursor: text; }
 .reader-text.is-justified { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
 .reader-tok { cursor: pointer; border-radius: 2px; position: relative; }
 .reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }
 .reader-tok svg.rn path { stroke-linecap: round; }
 .reader-tok.is-selected { outline: 2px solid #B8460A; }
 .reader-tok.is-hit { background: #fde68a; }
+.reader-tok.is-found { background: #fed7aa; }
+.reader-tok.is-found-now { background: #fb923c; outline: 2px solid #B8460A; }
 .reader-legend { display: flex; flex-wrap: wrap; gap: .2cm .6cm; margin-top: 1cm; padding-top: .3cm; border-top: 1px solid #ccc;
   font-family: system-ui, sans-serif; font-size: 8.5pt; color: #333; }
 .reader-legend b { padding-bottom: 1px; }

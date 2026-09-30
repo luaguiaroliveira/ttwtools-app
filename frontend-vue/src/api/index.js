@@ -1,5 +1,6 @@
 // Endpoints usados pela interface (um lugar só para os caminhos).
 import { get, post, postJob } from './client.js'
+import { memoized } from './cache.js'
 
 const where = (w) => (w ? Object.entries(w).flatMap(([k, vs]) => [].concat(vs).map((v) => `${k}=${v}`)) : undefined)
 
@@ -57,12 +58,12 @@ export const api = {
     plan: (body) => post('/api/tagging/plan', body),
   },
   explore: {
-    search: (p) => get('/api/explore/search', { ...p, where: where(p.where) }),
-    kwic: (p, signal) => get('/api/explore/kwic', { ...p, where: where(p.where) }, signal),
-    frequency: (p) => get('/api/explore/frequency', { ...p, where: where(p.where) }),
-    collocates: (p) => get('/api/explore/collocates', { ...p, where: where(p.where) }),
-    collocateExamples: (p) => get('/api/explore/collocate-examples', { ...p, where: where(p.where) }),
-    dispersion: (p) => get('/api/explore/dispersion', { ...p, where: where(p.where) }),
+    search: memoized('search', (p) => get('/api/explore/search', { ...p, where: where(p.where) })),
+    kwic: memoized('kwic', (p, signal) => get('/api/explore/kwic', { ...p, where: where(p.where) }, signal)),
+    frequency: memoized('frequency', (p) => get('/api/explore/frequency', { ...p, where: where(p.where) })),
+    collocates: memoized('collocates', (p) => get('/api/explore/collocates', { ...p, where: where(p.where) })),
+    collocateExamples: memoized('collocateExamples', (p) => get('/api/explore/collocate-examples', { ...p, where: where(p.where) })),
+    dispersion: memoized('dispersion', (p) => get('/api/explore/dispersion', { ...p, where: where(p.where) })),
   },
   compare: {
     // cálculos longos: tarefa com andamento (não uma requisição parada); `opts.onJob` recebe o andamento

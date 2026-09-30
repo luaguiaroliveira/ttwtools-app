@@ -13,6 +13,7 @@ import MarkIcon from '../../components/MarkIcon.vue'
 import ColorPicker from '../../components/ColorPicker.vue'
 import TagDoc from '../../components/TagDoc.vue'
 import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
+import { findMatches } from '../../utils/wildcard.js'
 
 const props = defineProps({ corpus: String, layer: String })
 const { t, locale } = useI18n()
@@ -185,6 +186,58 @@ function step(dir) {
   document.querySelector(`[data-idx="${selected.value.idx}"]`)?.scrollIntoView({ block: 'center' })
 }
 
+// --- buscar no texto e copiar ---------------------------------------------------------
+// `*`, `?` e /regex/; várias palavras = sequência. Destaca todas as ocorrências e percorre com Enter / Shift+Enter.
+const findQ = ref('')
+const matches = computed(() => (doc.value ? findMatches(doc.value.tokens, findQ.value) : []))
+const foundPos = ref(0)
+const tokOf = (i) => doc.value.tokens[i]
+const foundSet = computed(() => new Set(matches.value.flatMap((m) => Array.from({ length: m.end - m.start + 1 }, (_, k) => tokOf(m.start + k).idx))))
+const currentSet = computed(() => {
+  const m = matches.value[foundPos.value]
+  return new Set(m ? Array.from({ length: m.end - m.start + 1 }, (_, k) => tokOf(m.start + k).idx) : [])
+})
+function goToFound() {
+  const m = matches.value[foundPos.value]
+  if (m) nextTick(() => document.querySelector(`[data-idx="${tokOf(m.start).idx}"]`)?.scrollIntoView({ block: 'center' }))
+}
+watch(matches, () => { foundPos.value = 0; goToFound() })
+function findStep(dir) {
+  const n = matches.value.length
+  if (!n) return
+  foundPos.value = (foundPos.value + dir + n) % n
+  goToFound()
+}
+const copied = ref('')
+let copiedTimer
+async function copyToClipboard(text, what) {
+  try { await navigator.clipboard.writeText(text) }
+  catch {                                   // janela sem permissão da área de transferência: caminho antigo
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    ta.remove()
+  }
+  copied.value = what
+  clearTimeout(copiedTimer)
+  copiedTimer = setTimeout(() => { copied.value = '' }, 1500)
+}
+const selectedText = () => String(globalThis.getSelection?.() ?? '')
+const copyText = () => doc.value?.text && copyToClipboard(doc.value.text, 'text')
+const copySelection = () => { const s = selectedText(); if (s) copyToClipboard(s, 'selection') }
+// clicar num token mostra as etiquetas; arrastar para selecionar texto não deve mudar o token escolhido
+const pick1 = (tok) => { if (!selectedText()) selected.value = tok }
+function tokMenu(e, tok) {                  // botão direito: com texto selecionado, deixa o menu normal (Copiar)
+  if (selectedText() || !label(tok)) return
+  e.preventDefault()
+  selected.value = tok
+  openMenu(label(tok), null, true)
+}
+
 // --- marcações à mão ---------------------------------------------------------------
 // Cada token marcado ganha um <svg> DENTRO do próprio span, posicionado em relação a ele:
 // as marcas acompanham o texto em qualquer reflow (tela, impressão, PDF), sem coordenadas
@@ -303,6 +356,20 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           <button type="button" class="btn btn-sm btn-square" :class="{ 'btn-active': justify }" :aria-pressed="justify" :aria-label="t('reader.justify')" :title="t('reader.justify')" data-testid="reader-justify" @click="justify = !justify">
             <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 3.500h12M2 6.500h12M2 9.500h12M2 12.500h12" /></svg></button>
         </div></div>
+      <div class="ttw-field" role="search"><span class="ttw-label">{{ t('reader.find') }}</span>
+        <div class="flex items-center gap-1">
+          <input v-model="findQ" type="search" class="input input-sm w-52" :placeholder="t('reader.find_hint')" :aria-label="t('reader.find')" data-testid="reader-find"
+                 @keydown.enter.prevent="findStep($event.shiftKey ? -1 : 1)" />
+          <button type="button" class="btn btn-sm btn-square" :disabled="!matches.length" :aria-label="t('reader.find_prev')" :title="t('reader.find_prev')" data-testid="reader-find-prev" @click="findStep(-1)">↑</button>
+          <button type="button" class="btn btn-sm btn-square" :disabled="!matches.length" :aria-label="t('reader.find_next')" :title="t('reader.find_next')" data-testid="reader-find-next" @click="findStep(1)">↓</button>
+          <span v-if="findQ.trim()" class="text-sm tabular-nums whitespace-nowrap" role="status" data-testid="reader-find-count">{{ matches.length ? t('reader.find_count', { i: foundPos + 1, n: matches.length }) : t('reader.find_none') }}</span>
+        </div></div>
+      <div class="ttw-field" role="group" :aria-label="t('reader.copy')"><span class="ttw-label">{{ t('reader.copy') }}</span>
+        <div class="flex items-center gap-1">
+          <button type="button" class="btn btn-sm" :disabled="!doc?.text" data-testid="reader-copy-text" @click="copyText">{{ t('reader.copy_text') }}</button>
+          <button type="button" class="btn btn-sm" data-testid="reader-copy-selection" @mousedown.prevent @click="copySelection">{{ t('reader.copy_selection') }}</button>
+          <span v-if="copied" class="text-sm text-success" role="status">{{ t('reader.copied') }}</span>
+        </div></div>
       <button class="btn btn-sm ml-auto" @click="window.print()">{{ t('reader.print') }}</button>
     </div>
     <p v-if="doc && !doc.layer" class="text-sm text-text-muted print:hidden">{{ t('reader.no_layer') }}</p>
@@ -318,8 +385,8 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           <article ref="article" class="reader-text ttw-annot" :class="{ 'is-justified': justify }" data-testid="reader-text">
             <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
                 :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
-                :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok) }"
-                @click="selected = p.tok" @contextmenu="label(p.tok) && ($event.preventDefault(), selected = p.tok, openMenu(label(p.tok), null, true))">{{ p.text }}</span></template>
+                :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok), 'is-found': foundSet.has(p.tok.idx), 'is-found-now': currentSet.has(p.tok.idx) }"
+                @click="pick1(p.tok)" @contextmenu="tokMenu($event, p.tok)">{{ p.text }}</span></template>
           </article>
           <footer v-if="chosen.size" class="reader-legend">
             <span v-for="[c, n] in classes.filter(([c]) => chosen.has(c))" :key="c">

@@ -15,6 +15,7 @@ const error = ref(null)
 const busy = ref(false)
 const lastRun = ref(null)                     // parâmetros da busca que gerou a tabela (os exemplos usam os mesmos)
 const chosen = ref(null)                      // colocado cujos exemplos estão abertos
+const chosenNode = ref('')                    // forma do nó mostrada na linha escolhida
 const ex = ref(null)
 const exBusy = ref(false)
 const PAGE = 8
@@ -28,9 +29,10 @@ async function run(node) {
   } catch (err) { error.value = err.message }
   finally { busy.value = false }
 }
-async function openExamples(collocate, offset = 0) {
+async function openExamples(collocate, offset = 0, node = chosenNode.value) {
   if (!lastRun.value) return
   chosen.value = collocate
+  chosenNode.value = node
   exBusy.value = true
   try { ex.value = await api.explore.collocateExamples({ ...lastRun.value, collocate, limit: PAGE, offset }) }
   catch (err) { error.value = err.message }
@@ -39,6 +41,8 @@ async function openExamples(collocate, offset = 0) {
 function closeExamples() { chosen.value = null; ex.value = null }
 const exFrom = computed(() => (ex.value?.total ? ex.value.offset + 1 : 0))
 const exTo = computed(() => Math.min(ex.value?.total ?? 0, (ex.value?.offset ?? 0) + PAGE))
+// com curingas ou regex no nó, mostra a forma real mais frequente com aquele colocado (ex.: making decisions), não a consulta
+const nodeOf = (r) => r.node_form || data.value.node
 const fx = (v, d = 2) => (v === null || v === undefined ? '—' : v.toFixed(d))
 const sortBy = ref('ll')
 const dir = ref(-1)
@@ -74,7 +78,7 @@ function setSort(k) {
     <section v-if="chosen !== null" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite" data-testid="coll-examples">
       <div class="flex flex-wrap items-center gap-2">
         <h3 class="font-bold">{{ t('explore.examples_title') }}
-          <span class="font-normal">{{ chosen }} <span class="text-primary font-semibold">{{ data.node }}</span></span></h3>
+          <span class="font-normal">{{ chosen }} <span class="text-primary font-semibold">{{ chosenNode || data.node }}</span></span></h3>
         <span v-if="ex" class="text-sm text-text-muted tabular-nums" data-testid="coll-examples-range">{{ t('explore.examples_range', { from: exFrom, to: exTo, total: ex.total }) }}</span>
         <span class="ml-auto flex gap-1">
           <button type="button" class="btn btn-sm" :disabled="!ex || ex.offset === 0 || exBusy" data-testid="coll-prev" @click="openExamples(chosen, Math.max(0, ex.offset - PAGE))">‹ {{ t('explore.prev') }}</button>
@@ -104,10 +108,11 @@ function setSort(k) {
         <th class="text-right whitespace-nowrap" :aria-sort="ariaSort('t_score')"><button type="button" class="inline-flex items-center gap-1" @click="setSort('t_score')"><HelpTip term="t_score">T</HelpTip> <span aria-hidden="true">{{ sortBy === 't_score' ? (dir < 0 ? '▾' : '▴') : '↕' }}</span></button></th>
         <th>{{ t('explore.position') }}</th></tr></thead>
         <tbody><tr v-for="r in sortedRows" :key="r.collocate" class="hover cursor-pointer" :class="{ 'bg-primary/10': chosen === r.collocate }" tabindex="0"
-          :aria-label="t('explore.examples_open', { collocate: r.collocate })" data-testid="coll-row" @click="openExamples(r.collocate)" @keydown.enter="openExamples(r.collocate)">
-          <td class="whitespace-nowrap"><template v-if="r.position === 'R'"><span class="text-primary font-semibold">{{ data.node }}</span> {{ r.collocate }}</template>
-            <template v-else-if="r.position === 'L'">{{ r.collocate }} <span class="text-primary font-semibold">{{ data.node }}</span></template>
-            <template v-else>{{ r.collocate }} <span class="text-primary font-semibold">{{ data.node }}</span> {{ r.collocate }}</template></td><td class="text-right tabular-nums">{{ r.freq }}</td>
+          :aria-label="t('explore.examples_open', { collocate: r.collocate })" data-testid="coll-row" @click="openExamples(r.collocate, 0, nodeOf(r))" @keydown.enter="openExamples(r.collocate, 0, nodeOf(r))">
+          <td class="whitespace-nowrap"><template v-if="r.position === 'R'"><span class="text-primary font-semibold">{{ nodeOf(r) }}</span> {{ r.collocate }}</template>
+            <template v-else-if="r.position === 'L'">{{ r.collocate }} <span class="text-primary font-semibold">{{ nodeOf(r) }}</span></template>
+            <template v-else>{{ r.collocate }} <span class="text-primary font-semibold">{{ nodeOf(r) }}</span> {{ r.collocate }}</template>
+            <span v-if="r.node_forms > 1" class="badge badge-ghost badge-xs ml-1" :title="t('explore.node_forms', { n: r.node_forms })">+{{ r.node_forms - 1 }}</span></td><td class="text-right tabular-nums">{{ r.freq }}</td>
           <td class="text-right tabular-nums">{{ fx(r.ll) }}</td><td class="text-right tabular-nums">{{ fx(r.mi) }}</td>
           <td class="text-right tabular-nums">{{ fx(r.t_score) }}</td><td>{{ r.position }}</td></tr></tbody></table>
       <p class="text-xs text-text-muted mt-1">{{ t('explore.examples_hint') }}</p>

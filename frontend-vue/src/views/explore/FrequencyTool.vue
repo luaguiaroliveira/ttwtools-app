@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
@@ -15,15 +15,34 @@ const { t } = useI18n()
 const { activeCorpus } = storeToRefs(useSession())
 const f = ref({ unit: 'form', n: 2, by: 'corpus', top: 50, hide_stopwords: false })
 const barH = ref(20)   // altura de cada barra (px): menor = mais palavras visíveis de uma vez
-const data = ref(null)
+const raw = ref(null)          // resposta do servidor, com até `top` itens por grupo (pode ter mais do que se mostra)
 const error = ref(null)
 const busy = ref(false)
 const TOP = [25, 50, 100, 200, 500]
+// "Mostrar os N primeiros" só corta o que já veio: a lista é pedida uma vez com até 500 itens (corpus inteiro) e mudar
+// N, ou voltar a uma opção já vista, não volta ao servidor.
+const cache = new Map()
+const data = computed(() => {
+  if (!raw.value) return null
+  const seen = new Map()
+  const rows = raw.value.rows.filter((r) => { const n = (seen.get(r.group) ?? 0) + 1; seen.set(r.group, n); return n <= f.value.top })
+  return { ...raw.value, rows }
+})
 async function run() {
   error.value = null
+  const { top, ...rest } = f.value
+  const key = JSON.stringify([props.corpus, props.layer, rest])
+  const hit = cache.get(key)
+  if (hit && (hit.top >= top || hit.complete)) { raw.value = hit.resp; return }
   busy.value = true
-  try { data.value = await api.explore.frequency({ corpus: props.corpus, layer: props.layer, ...f.value }) }
-  catch (err) { error.value = err.message }
+  try {
+    const fetchTop = f.value.by === 'corpus' ? Math.max(top, 500) : top
+    const resp = await api.explore.frequency({ corpus: props.corpus, layer: props.layer, ...f.value, top: fetchTop })
+    const perGroup = new Map()
+    resp.rows.forEach((r) => perGroup.set(r.group, (perGroup.get(r.group) ?? 0) + 1))
+    cache.set(key, { top: fetchTop, resp, complete: ![...perGroup.values()].some((n) => n >= fetchTop) })
+    raw.value = resp
+  } catch (err) { error.value = err.message }
   finally { busy.value = false }
 }
 // Depois da primeira busca, mudar qualquer opção refaz a busca sozinho (com pequena espera

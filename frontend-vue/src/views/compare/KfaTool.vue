@@ -44,7 +44,7 @@ async function run() {
   busy.value = true
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
-      layer: effectiveLayer.value, feature: f.value.feature || undefined, metric: f.value.metric, min_effect: f.value.min_effect }, { onJob: (j) => { job.value = j; jobId = j.id } })
+      layer: effectiveLayer.value, feature: f.value.feature || undefined, metric: f.value.metric, min_effect: 0 }, { onJob: (j) => { job.value = j; jobId = j.id } })
   } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
 async function select(name) {
@@ -52,6 +52,10 @@ async function select(name) {
   const row = data.value.rows.find((r) => r.Feature === name)
   detail.value = { name, row, v1: a.values, v2: b.values }
 }
+const minD = computed(() => Number(f.value.min_effect) || 0)
+// o |d| mínimo só filtra o que já foi calculado (a tabela completa vem do servidor): mudar o valor não recalcula nada
+const shown = computed(() => (data.value ? { ...data.value, rows: data.value.rows.filter((r) => Math.abs(r.Effect_Size) >= minD.value) } : null))
+const copyParams = computed(() => (lastParams.value ? { ...lastParams.value, min_effect: minD.value } : null))
 const gallerySides = computed(() => [1, 2].map((n) => { const s = side(n); return { corpus: s.corpus, where: s.where, label: sameCorpus.value ? `${f.value.groupKey}=${f.value[`group${n}`]}` : s.corpus } }))
 const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(detail.value?.v2 ?? [])].map((v) => v.value)))
 </script>
@@ -85,9 +89,9 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
     </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
-      <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }} · {{ t('kfa.result_layer', { layer: lastParams?.layer }) }} · {{ t('kfa.result_feature', { feature: data.feature }) }}</p>
-      <div class="flex gap-1"><CopyCode analysis="kfa" :params="lastParams" /><ExportMenu name="kfa" :rows="data.rows" /></div>
-      <ChartGallery :kfa="data" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
+      <p role="status" class="text-sm">{{ t('kfa.results', { n: shown.rows.length, n1: data.n1, n2: data.n2 }) }} · {{ t('kfa.result_layer', { layer: lastParams?.layer }) }} · {{ t('kfa.result_feature', { feature: data.feature }) }}</p>
+      <div class="flex gap-1"><CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" /></div>
+      <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
@@ -103,7 +107,7 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
       </section>
       <div class="ttw-scroll">
         <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-          <tbody><tr v-for="r in data.rows" :key="r.Feature" class="hover cursor-pointer" @click="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+          <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" @click="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
             <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
       </div>
     </template>

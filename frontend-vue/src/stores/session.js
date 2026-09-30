@@ -1,6 +1,7 @@
 // Estado global mínimo: projeto aberto, corpus ativo, camada ativa, versão, lista de corpora.
 import { defineStore } from 'pinia'
 import { api } from '../api/index.js'
+import { clearExploreCache } from '../api/cache.js'
 
 const STORAGE = 'ttw.session'
 
@@ -34,6 +35,7 @@ export const useSession = defineStore('session', {
       }
     },
     async refresh() {
+      clearExploreCache()                 // projeto, camadas ou corpora podem ter mudado
       const info = await api.project.info()
       this.project = info.open ? info : null
       this.unsaved = Boolean(info.unsaved)
