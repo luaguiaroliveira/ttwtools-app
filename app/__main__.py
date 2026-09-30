@@ -328,6 +328,14 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
         resizable=True,
         min_size=(900, 600),
     )
+    # Linux: o ícone da janela vem do icon.png ao lado do executável (Windows/macOS usam o embutido)
+    icon = Path(sys.executable).parent / "icon.png"
+    if sys.platform.startswith("linux") and getattr(sys, "frozen", False) and icon.is_file():
+        try:
+            webview.start(debug=False, icon=str(icon))
+            return
+        except TypeError:  # pywebview antigo, sem o parâmetro icon
+            pass
     webview.start(debug=False)
 
 

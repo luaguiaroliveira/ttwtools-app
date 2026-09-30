@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ícone do TTWtools. Cores do tema (frontend-vue/src/style.css):
+     grafite #1C1B1A, laranja #F26A1B/#FF8533, creme #F5F4F2.
+     Um "T" (de tool/text) cercado por linhas de texto.
+     Gere icon.png/.ico/.icns com: python build/make_icons.py -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B2926"/>
+      <stop offset="1" stop-color="#1C1B1A"/>
+    </linearGradient>
+    <linearGradient id="or" gradientUnits="userSpaceOnUse" x1="0" y1="262" x2="0" y2="762">
+      <stop offset="0" stop-color="#FF8533"/>
+      <stop offset="1" stop-color="#F26A1B"/>
+    </linearGradient>
+  </defs>
+  <rect x="64" y="64" width="896" height="896" rx="200" ry="200" fill="url(#bg)"/>
+  <!-- T -->
+  <rect x="222" y="262" width="580" height="128" rx="30" fill="url(#or)"/>
+  <rect x="448" y="262" width="128" height="500" rx="30" fill="url(#or)"/>
+  <!-- linhas de texto à esquerda e à direita da haste -->
+  <g fill="#F5F4F2">
+    <rect x="222" y="450" width="176" height="46" rx="23"/>
+    <rect x="222" y="546" width="130" height="46" rx="23"/>
+    <rect x="222" y="642" width="176" height="46" rx="23"/>
+    <rect x="626" y="450" width="176" height="46" rx="23"/>
+    <rect x="626" y="546" width="130" height="46" rx="23" opacity=".85"/>
+    <rect x="626" y="642" width="176" height="46" rx="23"/>
+  </g>
+</svg>
