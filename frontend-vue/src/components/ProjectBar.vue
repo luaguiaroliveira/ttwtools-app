@@ -99,13 +99,13 @@ const saveAs = () => act(async () => {
 // exportar: um corpus (.ttwc/.ttwcl) ou um pacote leve com vários (.ttwal); é uma cópia, o projeto aberto não muda
 const exportTo = (opts) => act(async () => {
   exportOpen.value = false
-  const { kind, corpus, corpora: picked } = opts
+  const { kind, corpus, corpora: picked, search_tables } = opts
   const base = kind === 'ttwal' ? stem.value : corpus
   const r = await api.utils.pickSave(`${base}.${kind}`)
   if (!r?.path) return
   const path = new RegExp(`\\.${kind}$`, 'i').test(r.path) ? r.path : r.path.replace(/\.[^.\\/]+$/, '') + `.${kind}`
   lastSaved.value = path
-  saveJob.start(() => api.project.saveAs(path, kind === 'ttwal' ? { corpora: picked } : { corpus }))
+  saveJob.start(() => api.project.saveAs(path, { ...(kind === 'ttwal' ? { corpora: picked } : { corpus }), search_tables }))
 })
 watch(() => saveJob.job.value?.status, async (s) => {
   if (s === 'done') {

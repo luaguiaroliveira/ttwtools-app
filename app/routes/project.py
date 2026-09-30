@@ -388,6 +388,8 @@ def saveas_project(req: SaveAsRequest):
         opts = proj.save_options() if export else proj.set_save_options(req.compress, req.search_tables)
     compress = opts["compress"] if req.compress is None else req.compress
     tables = opts["search_tables"] if req.search_tables is None else req.search_tables
+    if export and req.search_tables is None:
+        tables = None            # exportações: o padrão do formato (.ttwc com tabelas; .ttwcl e .ttwal leves, sem elas)
 
     def work(job, source=source, dest=dest, switch=req.switch, compress=compress, tables=tables, corpus=corpus, corpora=corpora):
         from ttwtools.project import save_corpora_as, save_corpus_as, save_project_as, decompress_project_file

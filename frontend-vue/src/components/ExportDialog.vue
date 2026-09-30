@@ -11,6 +11,9 @@ const KINDS = ['ttwc', 'ttwcl', 'ttwal']
 const kind = ref('ttwc')
 const corpus = ref('')
 const picked = ref([])
+const tables = ref(false)      // guardar as tabelas de busca (arquivo maior; abre pronto para buscar)
+// o padrão de cada formato: .ttwc com tabelas; os leves (.ttwcl, .ttwal) sem elas
+watch(kind, (k) => { tables.value = k === 'ttwc' })
 watch(() => props.open, (v) => {
   if (!v) return
   corpus.value = props.corpora[0]?.name ?? ''
@@ -19,7 +22,7 @@ watch(() => props.open, (v) => {
 const multi = computed(() => kind.value === 'ttwal')
 const ready = computed(() => (multi.value ? picked.value.length > 0 : Boolean(corpus.value)))
 const toggle = (name) => { picked.value = picked.value.includes(name) ? picked.value.filter((n) => n !== name) : [...picked.value, name] }
-const go = () => emit('export', multi.value ? { kind: kind.value, corpora: picked.value } : { kind: kind.value, corpus: corpus.value })
+const go = () => emit('export', { ...(multi.value ? { kind: kind.value, corpora: picked.value } : { kind: kind.value, corpus: corpus.value }), search_tables: tables.value })
 </script>
 <template>
   <AppDialog :open="open" :title="t('export.title')" @close="emit('close')">
@@ -42,6 +45,8 @@ const go = () => emit('export', multi.value ? { kind: kind.value, corpora: picke
         <label v-for="c in corpora" :key="c.name" class="ttw-check"><input type="checkbox" class="checkbox checkbox-sm" :checked="picked.includes(c.name)"
                :data-testid="`export-pick-${c.name}`" @change="toggle(c.name)" />{{ c.name }}</label>
       </fieldset>
+      <label class="ttw-check items-start"><input v-model="tables" type="checkbox" class="checkbox checkbox-sm mt-0.5" data-testid="export-tables" />
+        <span class="flex flex-col"><span>{{ t('export.tables') }}</span><span class="text-xs text-text-muted">{{ tables ? t('export.tables_on') : t('export.tables_off') }}</span></span></label>
       <p class="text-xs text-text-muted">{{ t('export.note') }}</p>
       <button type="button" class="btn btn-primary btn-sm w-fit" :disabled="busy || !ready" data-testid="export-go" @click="go">{{ t('export.go') }}</button>
     </div>

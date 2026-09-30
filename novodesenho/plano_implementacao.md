@@ -8,7 +8,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 - **Último passo concluído:** 3.11 (2026-09-27); `v0.4.0-rc.1` publicada como rascunho; Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo:** `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`, com as correções do 6.2a ainda fora da `main`
-- **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim
+- **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim e, **com tudo reunido, `novodesenho/pendencias.md`** (prioridade: otimizar como salvamos corpora e análises: espaço temporário, lixo em pastas temporárias e formato `.ttwc`/`.ttwa` robusto ou leve)
 
 ## Como usar (leia isto primeiro, é curto)
 
@@ -1042,6 +1042,8 @@ Um subitem por problema apontado nos arquivos de `verificacao/`, com a origem (a
 ---
 
 ## Decisões pendentes
+
+> Lista completa e atual de tudo que está em aberto (inclui estas decisões): `novodesenho/pendencias.md`.
 
 | # | Decisão | Onde afeta | Situação |
 |---|---|---|---|

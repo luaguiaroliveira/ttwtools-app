@@ -49,6 +49,7 @@ Se um comando acima ainda não existir, é porque o passo que o cria não foi co
 | Onde | O quê |
 |---|---|
 | `novodesenho/plano_implementacao.md` | Plano, andamento, relatos e decisões pendentes |
+| `novodesenho/pendencias.md` | Tudo que está em aberto, reunido (salvar/recuperar corpora, decisões, verificação, UI) |
 | `novodesenho/novomodelo.md` | Desenho do novo TTWtools |
 | `app/` | Servidor FastAPI local |
 | `frontend-vue/` | Interface (Vue 3); o build sai em `frontend/` (fora do git) |
