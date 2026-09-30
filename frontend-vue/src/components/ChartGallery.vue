@@ -5,6 +5,8 @@ import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { post } from '../api/client.js'
 import ExportMenu from './ExportMenu.vue'
+import BusyModal from './BusyModal.vue'
+import SideLegend from './SideLegend.vue'
 import DivergingBars from './DivergingBars.vue'
 import MeansScatter from './charts/MeansScatter.vue'
 import BubbleChart from './charts/BubbleChart.vue'
@@ -26,6 +28,7 @@ const nFeatures = ref(10)
 const method = ref('pca2d')
 const data = ref(null)
 const error = ref(null)
+const busy = ref(false)
 const box = ref(null)
 const labels = computed(() => props.sides.map((s) => s.label))
 const topFeatures = computed(() => props.kfa.rows.slice(0, nFeatures.value).map((r) => r.Feature))
@@ -36,12 +39,23 @@ async function load() {
   error.value = null
   const what = needs[kind.value]
   if (!what) return
+  busy.value = true
   try {
     data.value = await post(`/api/compare/viz/${what}`, { sides: props.sides, layer: props.layer, features: what === 'matrix' ? topFeatures.value : null,
       top: nFeatures.value, method: kind.value === 'pca3d' ? 'pca3d' : method.value, perplexity: 5 })
-  } catch (err) { error.value = err.message }
+  } catch (err) { error.value = err.message } finally { busy.value = false }
 }
 watch([kind, nFeatures, method, () => props.kfa], load)
+// legenda: liga cor e forma ao corpus/grupo (o que a cor significa muda com o gráfico)
+const legend = computed(() => {
+  const [a, b] = labels.value
+  const hi = (side) => t('legend.higher_in', { side })
+  if (kind.value === 'bars') return [{ index: 1, shape: 'bar', text: `← ${hi(b)}` }, { index: 0, shape: 'bar', text: `${hi(a)} →` }]
+  if (kind.value === 'means') return [{ index: 0, shape: 'dot', text: hi(a) }, { index: 1, shape: 'square', text: hi(b) }]
+  if (kind.value === 'bubble') return [{ index: 0, shape: 'dot', text: hi(a) }, { index: 1, shape: 'dot', text: hi(b) }]
+  if (kind.value === 'heatmap') return [{ shape: 'heat-hi', text: t('legend.heat_hi') }, { shape: 'heat-lo', text: t('legend.heat_lo') }]
+  return labels.value.map((text, index) => ({ index, shape: 'dot', text }))
+})
 const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value: r.Effect_Size })))
 </script>
 <template>
@@ -55,6 +69,8 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
         <select v-model="method" class="select select-sm"><option value="pca2d">PCA</option><option value="tsne">t-SNE</option><option value="umap">UMAP</option><option value="mds">MDS</option></select></label>
       <ExportMenu v-if="kind !== 'pca3d'" :name="`kfa_${kind}`" :svg-root="box" class="ml-auto" />
     </div>
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
+    <SideLegend :items="legend" :label="t('legend.title')" />
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <div ref="box" data-testid="gallery-chart">
       <DivergingBars v-if="kind === 'bars'" :rows="bars" :title="t('kfa.chart')" @select="(f) => emit('select', f)" />

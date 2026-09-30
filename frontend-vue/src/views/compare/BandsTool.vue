@@ -1,4 +1,5 @@
 <script setup>
+import BusyModal from '../../components/BusyModal.vue'
 // Faixas de frequência lexical do corpus contra uma referência (lista do catálogo ou outro corpus).
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -27,17 +28,20 @@ onMounted(async () => {
   f.value.reference = options.value[0]?.value ?? ''
 })
 const label = (r) => (r.band === 'off_list' ? t('bands.off_list') : r.to ? `${r.from}–${r.to}` : t('bands.beyond', { n: r.from - 1 }))
+const busy = ref(false)
 async function run() {
   error.value = null
   const bands = f.value.limits.split(/[,;\s]+/).map(Number).filter((n) => n > 0)
   lastParams.value = { corpus: props.corpus, reference: f.value.reference, unit: f.value.unit, layer: layer.value }
+  busy.value = true
   try {
     data.value = await api.compare.bands({ ...lastParams.value, bands })
-  } catch (err) { error.value = err.message }
+  } catch (err) { error.value = err.message } finally { busy.value = false }
 }
 </script>
 <template>
   <section class="flex flex-col gap-3">
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
     <p class="text-sm opacity-80">{{ t('bands.intro') }}</p>
     <form class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('compare.reference') }}</span>

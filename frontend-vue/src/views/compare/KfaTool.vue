@@ -9,6 +9,7 @@ import Collapsible from '../../components/Collapsible.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
+import BusyModal from '../../components/BusyModal.vue'
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
@@ -18,6 +19,7 @@ const groups = ref([])
 const data = ref(null)
 const error = ref(null)
 const detail = ref(null)
+const busy = ref(false)
 const layers = computed(() => [...new Set((activeCorpus.value?.layers ?? []).map((l) => l.tool))])
 watch(layers, (ls) => { if (!f.value.layer && ls.length) f.value.layer = ls[0] }, { immediate: true })
 const sameCorpus = computed(() => f.value.corpus2 === '__groups__')
@@ -32,10 +34,11 @@ async function run() {
   const s1 = side(1), s2 = side(2)
   lastParams.value = { corpus: s1.corpus, corpus2: s2.corpus, layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect,
     where: s1.where, where2: s2.where }
+  busy.value = true
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
       layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect })
-  } catch (err) { error.value = err.message }
+  } catch (err) { error.value = err.message } finally { busy.value = false }
 }
 async function select(name) {
   const [a, b] = await Promise.all([1, 2].map((n) => { const s = side(n); return api.compare.feature({ corpus: s.corpus, where: s.where, layer: f.value.layer, name }) }))
@@ -47,6 +50,7 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
 </script>
 <template>
   <section class="flex flex-col gap-3">
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
     <p v-if="!layers.length" class="text-text-muted">{{ t('kfa.no_layer') }}</p>
     <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('kfa.corpus2') }}</span>
@@ -82,17 +86,17 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
         <p class="text-xs text-text-muted">{{ t('kfa.detail_hint') }}</p>
-        <svg viewBox="0 0 600 70" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
-          <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 32 + 6})`">
-            <text x="0" y="14" class="fill-current text-[10px]">{{ t(i ? 'kfa.side2' : 'kfa.side1') }}</text>
-            <line x1="70" x2="590" y1="10" y2="10" class="stroke-current opacity-20" />
-            <circle v-for="v in vals" :key="v.filename" :cx="70 + (v.value / maxV) * 520" cy="10" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
+        <svg viewBox="0 0 600 84" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
+          <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 40 + 4})`">
+            <text x="0" y="8" class="fill-current text-[10px]">{{ gallerySides[i].label }}</text>
+            <line x1="10" x2="590" y1="24" y2="24" class="stroke-current opacity-20" />
+            <circle v-for="v in vals" :key="v.filename" :cx="10 + (v.value / maxV) * 580" cy="24" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
           </g>
         </svg>
         <RouterLink class="link text-sm" :to="{ path: '/explorar/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
       </section>
       <div class="ttw-scroll">
-        <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right">{{ t('kfa.side1') }}</th><th class="text-right">{{ t('kfa.side2') }}</th></tr></thead>
+        <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
           <tbody><tr v-for="r in data.rows" :key="r.Feature" class="hover cursor-pointer" @click="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
             <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
       </div>

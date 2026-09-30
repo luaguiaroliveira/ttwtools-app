@@ -1,4 +1,5 @@
 <script setup>
+import BusyModal from '../../components/BusyModal.vue'
 // Laboratório (experimental): comparar N grupos — por metadado do corpus ativo ou um grupo por corpus.
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -64,6 +65,7 @@ const exportRows = computed(() => {
 </script>
 <template>
   <section class="flex flex-col gap-3">
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
     <div role="note" class="alert alert-warning py-2 text-sm">{{ t('lab.intro') }}</div>
     <p v-if="!layers.length" class="text-text-muted">{{ t('lab.no_layer') }}</p>
     <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">

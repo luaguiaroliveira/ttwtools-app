@@ -9,6 +9,7 @@ import HelpTip from '../../components/HelpTip.vue'
 import Collapsible from '../../components/Collapsible.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
+import BusyModal from '../../components/BusyModal.vue'
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
@@ -19,6 +20,7 @@ const f = ref({ refKind: 'corpus', refCorpus: '', groupKey: '', groupValue: '', 
 const groups = ref([])
 const data = ref(null)
 const error = ref(null)
+const busy = ref(false)
 const others = computed(() => corpora.value.filter((c) => c.name !== props.corpus))
 const catalogRefs = ref([])
 onMounted(async () => {
@@ -34,16 +36,18 @@ async function run() {
   const where = f.value.refKind === 'rest' ? { [f.value.groupKey]: [f.value.groupValue] } : undefined
   lastParams.value = { corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure, layer: layer.value,
     min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction }
+  busy.value = true
   try {
     data.value = await api.compare.keywords({ corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure,
       min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction, layer: layer.value, lang: locale.value })
-  } catch (err) { error.value = err.message }
+  } catch (err) { error.value = err.message } finally { busy.value = false }
 }
 const fx = (v, d = 2) => (v === null || v === undefined ? '∞' : v.toFixed(d))
 const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } })
 </script>
 <template>
   <section class="flex flex-col gap-3">
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
     <form id="palavras-chave" class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('compare.reference') }}</span>
         <select v-model="f.refKind" class="select select-sm"><option value="corpus">{{ t('compare.ref.corpus') }}</option>
