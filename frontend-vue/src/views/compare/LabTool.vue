@@ -1,5 +1,6 @@
 <script setup>
 import BusyModal from '../../components/BusyModal.vue'
+import FeatureSelect from '../../components/FeatureSelect.vue'
 // Laboratório (experimental): comparar N grupos — por metadado do corpus ativo ou um grupo por corpus.
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -13,20 +14,22 @@ import ReductionChart from '../../components/charts/ReductionChart.vue'
 import { diverging, fmt } from '../../utils/scale.js'
 const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
-const { corpora, activeCorpus } = storeToRefs(useSession())
+const { corpora, activeCorpus, layer } = storeToRefs(useSession())
 const METHODS = ['one_vs_rest', 'pairwise', 'anova', 'profile', 'dendrogram', 'nearest']
-const f = ref({ mode: 'metadata', key: '', picked: [], layer: '', feature: '', method: 'one_vs_rest', metric: 'kfa' })
+const f = ref({ mode: 'metadata', key: '', picked: [], feature: '', method: 'one_vs_rest', metric: 'kfa' })
 const data = ref(null)
 const error = ref(null)
 const busy = ref(false)
 const lastParams = ref(null)
 const layers = computed(() => [...new Set((activeCorpus.value?.layers ?? []).map((l) => l.tool))])
-watch(layers, (ls) => { if (!f.value.layer && ls.length) f.value.layer = ls[0] }, { immediate: true })
+// a camada é a do topo da tela (seletor global); "automática" cai na primeira camada do corpus
+const effectiveLayer = computed(() => (layer.value && layers.value.includes(layer.value) ? layer.value : layers.value[0] ?? ''))
+const layerFields = computed(() => activeCorpus.value?.layers?.find((l) => l.tool === effectiveLayer.value)?.fields ?? [])
 watch(() => activeCorpus.value?.metadata_keys, (ks) => { if (!f.value.key && ks?.length) f.value.key = ks[0] }, { immediate: true })
-const ready = computed(() => f.value.layer && (f.value.mode === 'metadata' ? f.value.key : f.value.picked.length >= 2))
+const ready = computed(() => effectiveLayer.value && (f.value.mode === 'metadata' ? f.value.key : f.value.picked.length >= 2))
 
 function params() {
-  const base = { layer: f.value.layer, method: f.value.method, metric: f.value.metric, feature: f.value.feature || undefined }
+  const base = { layer: effectiveLayer.value, method: f.value.method, metric: f.value.metric, feature: f.value.feature || undefined }
   return f.value.mode === 'metadata'
     ? { ...base, corpus: props.corpus, group_by: f.value.key }
     : { ...base, groups: f.value.picked.map((c) => ({ corpus: c, label: c })) }
@@ -77,15 +80,13 @@ const exportRows = computed(() => {
       <fieldset v-else class="ttw-field"><legend class="ttw-label">{{ t('lab.groups.pick') }}</legend>
         <div class="flex flex-wrap gap-2"><label v-for="c in corpora" :key="c.name" class="label cursor-pointer gap-1 text-sm">
           <input v-model="f.picked" type="checkbox" class="checkbox checkbox-xs" :value="c.name" />{{ c.name }}</label></div></fieldset>
-      <label class="ttw-field"><span class="ttw-label">{{ t('lab.layer') }}</span>
-        <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-      <label class="ttw-field"><span class="ttw-label">{{ t('lab.feature') }}</span>
-        <select v-model="f.feature" class="select select-sm"><option value="">—</option><option>tags</option><option>upos</option><option>xpos</option></select></label>
+      <FeatureSelect v-model="f.feature" :fields="layerFields" />
       <label class="ttw-field"><span class="ttw-label">{{ t('lab.method') }}</span>
         <select v-model="f.method" class="select select-sm" data-testid="lab-method"><option v-for="m in METHODS" :key="m" :value="m">{{ t(`lab.method.${m}`) }}</option></select></label>
       <label v-if="['one_vs_rest', 'pairwise'].includes(f.method)" class="ttw-field"><span class="ttw-label">{{ t('kfa.metric') }}</span>
         <select v-model="f.metric" class="select select-sm"><option>kfa</option><option>kfa2</option></select></label>
       <button class="btn btn-sm btn-primary" :disabled="!ready || busy" data-testid="lab-run">{{ t('compare.run') }}</button>
+      <span class="badge badge-outline" data-testid="lab-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
       <HelpTip topic="laboratorio" />
     </form>
     <p class="text-sm opacity-80" data-testid="lab-explain">{{ t(`lab.method.${f.method}.explain`) }}</p>
