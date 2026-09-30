@@ -7,7 +7,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 - **Passo atual:** 6.2a (correções da verificação), em andamento: o usuário testa no macOS arm64 (feedback em `verificacao/macos-arm64.md`, itens 1–3 tratados e várias mudanças pedidas na conversa; ver o Relato do 6.2a, "Retomar aqui"). Depois: gerar a `-rc.2`, rodar o roteiro nos outros sistemas (6.2) e a release 0.4.0 (6.3). Aguardam o usuário também: 4.3 (licenças e D6) e 5.2 (dados reais do OANC/MASC)
 - **Último passo concluído:** 3.11 (2026-09-27); `v0.4.0-rc.1` publicada como rascunho; Fases 0 (exceto teste no macOS 12), 1, 2, 3 e 4 (exceto publicação do catálogo) prontas
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
-- **Versão alvo:** `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`, com as correções do 6.2a ainda fora da `main`
+- **Versão alvo atual:** `0.6.0` (`pyproject.toml` em `0.6.0.dev0`; a `0.5.0` está gravada e com tag local `v0.5.0`, ainda não publicada); novo armazenamento como **beta na 0.6** (`novodesenho/armazenamento.md`). Histórico: `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`, com as correções do 6.2a ainda fora da `main`
 - **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim e, **com tudo reunido, `novodesenho/pendencias.md`** (prioridade: otimizar como salvamos corpora e análises: espaço temporário, lixo em pastas temporárias e formato `.ttwc`/`.ttwa` robusto ou leve)
 
 ## Como usar (leia isto primeiro, é curto)

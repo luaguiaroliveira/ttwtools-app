@@ -123,7 +123,19 @@ Camadas em **standoff** (posições de caracteres) e a chave de cache `text_hash
 
 ---
 
-## 5. Decisões que dependem do usuário
+## 5. Diretrizes fixadas pelo usuário (2026-09-29) e retrocompatibilidade
+
+Pedido: **priorizar o que for mais leve, de fácil computação mesmo em máquinas antigas, e retrocompatível**; tratar o novo armazenamento como **beta na versão 0.6** (`0.6.0.dev0` no `pyproject.toml`; ponto de retorno: tag local `pre-armazenamento-0.6`).
+
+**Retrocompatibilidade (compromisso):**
+- **Leitura:** todo formato atual continua legível para sempre: `.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt` (xz e gzip) e os esquemas v0.1, v0.2 e v0.3. O formato novo é **acréscimo**, identificado pelo conteúdo (manifesto com número de versão), não só pela extensão.
+- **Escrita:** na 0.6 o padrão continua sendo o formato atual; o novo é **opt-in, marcado "beta"**, até ser validado em projetos reais e nos três sistemas. Sempre haverá "exportar para o formato clássico" (ida e volta sem perda; teste token a token).
+- **Conversão** nunca apaga o arquivo original.
+- **Não é possível** garantir que versões antigas do aplicativo (0.4, 0.5) leiam arquivos do formato novo (o ZIP não é um banco SQLite). Mitigação: manifesto com versão e uma mensagem de erro clara; quem precisar entregar para alguém com versão antiga exporta no formato clássico.
+
+**Leve e de fácil computação em máquina antiga (regras de desenho):** só biblioteca padrão no formato (`zipfile`, `zlib`, `sqlite3`); nada de `zstandard`, `pyarrow` ou DuckDB (o Mac Intel usa Python 3.11 e macOS 12); processar **por documento**, em fluxo (memória baixa, sem carregar a camada inteira); temporários **na pasta do destino ou no cache do aplicativo**, com limite e limpeza; checar espaço livre antes de gravar; o índice de busca é **opcional e sob demanda**, nunca obrigatório para abrir.
+
+## 6. Decisões que dependem do usuário
 
 1. **`.ttwa` como manifesto** (referencia os `.ttwc`, com opção de embutir) ou continua a ser "tudo junto" em formato mais leve?
 2. **ZIP único** (um arquivo para compartilhar) ou **pasta-pacote** (como um pacote do macOS) como formato de trabalho, com ZIP só para enviar?
@@ -132,7 +144,7 @@ Camadas em **standoff** (posições de caracteres) e a chave de cache `text_hash
 5. **Corpora clássicos:** distribuir só perfil de frequência e traços (poucos MB) e o corpus completo como download opcional?
 6. Começar pela **Fase A** (ganho grande, risco baixo) e decidir a Fase B depois de medir?
 
-## 6. Riscos e a medir
+## 7. Riscos e a medir
 
 - Medição de ponta a ponta do formato colunar com **lemas e traços** (a amostra usou o preset "rápido").
 - Velocidade de consulta com índice em cache versus dentro do arquivo (KWIC, frequência, colocados).

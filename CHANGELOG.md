@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+> Linha **0.6** (desenvolvimento): novo armazenamento de corpora e análises, em **beta** (mais leve, leitura de todos os formatos anteriores). Plano em `novodesenho/armazenamento.md`.
+
 ## [0.5.0] — 2026-09-29
 
 ### Adicionado
