@@ -435,6 +435,16 @@ def explore_collocates(corpus: str, node: str, left: int = 5, right: int = 5,
                      min_freq, top, sort)
 
 
+@router.get("/explore/collocate-examples", tags=["explore"])
+def explore_collocate_examples(corpus: str, node: str, collocate: str, left: int = 5, right: int = 5,
+                               unit: Literal["form", "lemma", "word_pos", "pos"] = "form", layer: str | None = None,
+                               limit: int = 20, offset: int = 0, where: list[str] | None = Query(None)):
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.collocate_examples, proj, corpus, node, collocate, (left, right), unit, layer,
+                     _where(where), limit, offset)
+
+
 @router.get("/explore/dispersion", tags=["explore"])
 def explore_dispersion(corpus: str, query: str, layer: str | None = None, where: list[str] | None = Query(None)):
     import ttwtools

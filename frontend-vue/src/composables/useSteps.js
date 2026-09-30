@@ -3,9 +3,9 @@
 // etapas que ainda podem vir (o que a tarefa pular não conta); os pesos são estimativas de duração relativa.
 export const STAGE_WEIGHT = {
   decompress: 2, migrate: 6, search: 3, indexes: 1, idx_read: 3, idx_words: 1, idx_lemmas: 1, idx_doc: 1, idx_upos: 1,
-  idx_xpos: 1, copy: 2, pack: 3, save: 2, vacuum: 2,
+  idx_xpos: 1, finish: 1, copy: 2, pack: 3, save: 2, vacuum: 2,
 }
-export const OPEN_PLAN = ['decompress', 'migrate', 'search', 'indexes', 'idx_read', 'idx_words', 'idx_lemmas', 'idx_doc', 'idx_upos', 'idx_xpos']
+export const OPEN_PLAN = ['decompress', 'migrate', 'search', 'indexes', 'idx_read', 'idx_words', 'idx_lemmas', 'idx_doc', 'idx_upos', 'idx_xpos', 'finish']
 export const SAVE_PLAN = ['copy', 'pack', 'save', 'vacuum']
 
 const weight = (stage) => STAGE_WEIGHT[stage] ?? 1

@@ -119,3 +119,33 @@ def install_exit_cleanup() -> None:
 # Definido pelo Apple Event handler ou pelo argumento --open para .ttwt.
 # O frontend lê e limpa este valor via GET /api/project/pending-open.
 pending_open_path: Optional[str] = None
+
+
+_clean_after_close = False
+
+
+def _install_derived_hooks() -> None:
+    """Resultado derivado (KFA, análises, tabelas de features) entra no arquivo de trabalho sem sujá-lo: se estava
+    salvo antes de gravar, continua "salvo" (a decisão de 2026-09-30: derivados dentro do arquivo, sem ativar "não salvo")."""
+    from ttwtools import project as _p
+
+    def enter():
+        return not unsaved()
+
+    def leave(was_clean):
+        global _clean_after_close
+        if was_clean:
+            mark_saved()
+            _clean_after_close = True                # fechar a conexão faz checkpoint do WAL e muda o arquivo: reavalia então
+
+    def after_close():
+        global _clean_after_close
+        if _clean_after_close:
+            _clean_after_close = False
+            mark_saved()
+    if not any(h[0] is enter for h in _p.DERIVED_HOOKS):
+        _p.DERIVED_HOOKS.append((enter, leave))
+        _p.CLOSE_HOOKS.append(after_close)
+
+
+_install_derived_hooks()

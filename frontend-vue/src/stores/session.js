@@ -54,14 +54,18 @@ export const useSession = defineStore('session', {
         }
         if (this.opening.status === 'cancelled') { this.opening = null; return }
         if (this.opening.status !== 'done') throw new Error(this.opening.error || 'erro ao abrir')
+        this.opening = { id: r.job_id, status: 'running', stage: 'finish', done: 0, total: 0 }   // ainda lendo o projeto para a tela
+      }
+      try {
+        this.corpus = null
+        this.layer = null
+        await this.refresh()
+        if (!this.restoreSaved() && this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
+        await this.loadLayers()
+        this.save()
+      } finally {
         this.opening = null
       }
-      this.corpus = null
-      this.layer = null
-      await this.refresh()
-      if (!this.restoreSaved() && this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
-      await this.loadLayers()
-      this.save()
     },
     /** Camadas do corpus ativo (para o seletor no cabeçalho e na tela Etiquetagem);
      * esquece a camada escolhida se ela não existir mais (corpus trocado, camada removida). */

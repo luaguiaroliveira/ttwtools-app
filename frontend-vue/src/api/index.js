@@ -61,6 +61,7 @@ export const api = {
     kwic: (p, signal) => get('/api/explore/kwic', { ...p, where: where(p.where) }, signal),
     frequency: (p) => get('/api/explore/frequency', { ...p, where: where(p.where) }),
     collocates: (p) => get('/api/explore/collocates', { ...p, where: where(p.where) }),
+    collocateExamples: (p) => get('/api/explore/collocate-examples', { ...p, where: where(p.where) }),
     dispersion: (p) => get('/api/explore/dispersion', { ...p, where: where(p.where) }),
   },
   compare: {

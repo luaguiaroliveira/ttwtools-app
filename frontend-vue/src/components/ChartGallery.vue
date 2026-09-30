@@ -61,8 +61,10 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('gallery.title')">
     <div class="flex flex-wrap items-end gap-2">
-      <label class="ttw-field"><span class="ttw-label">{{ t('gallery.choose') }}</span>
-        <select v-model="kind" class="select select-sm" data-testid="gallery-kind"><option v-for="k in KINDS" :key="k" :value="k">{{ t(`gallery.${k}`) }}</option></select></label>
+      <div class="ttw-field"><span class="ttw-label">{{ t('gallery.choose') }}</span>
+        <div role="tablist" class="tabs tabs-box flex-wrap w-fit" data-testid="gallery-kind" :aria-label="t('gallery.choose')">
+          <button v-for="k in KINDS" :key="k" type="button" role="tab" class="tab" :class="{ 'tab-active': kind === k }" :aria-selected="kind === k"
+                  :data-kind="k" @click="kind = k">{{ t(`gallery.${k}`) }}</button></div></div>
       <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="ttw-field w-24"><span class="ttw-label">{{ t('gallery.features_n') }}</span>
         <input v-model.number="nFeatures" type="number" min="2" max="40" class="input input-sm" /></label>
       <label v-if="kind === 'reduction'" class="ttw-field"><span class="ttw-label">{{ t('gallery.method') }}</span>

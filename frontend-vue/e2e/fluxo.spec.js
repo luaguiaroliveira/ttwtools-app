@@ -97,7 +97,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await expect(page.getByTestId('side-legend')).toContainText('corifa')
-  await page.getByTestId('gallery-kind').selectOption('radar')
+  await page.locator('[data-testid=gallery-kind] [data-kind=radar]').click()
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await a11y(page, 'kfa')
 

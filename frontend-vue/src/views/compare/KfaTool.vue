@@ -5,7 +5,6 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import ChartGallery from '../../components/ChartGallery.vue'
-import Collapsible from '../../components/Collapsible.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
@@ -13,8 +12,8 @@ import BusyModal from '../../components/BusyModal.vue'
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
-const { corpora, activeCorpus } = storeToRefs(useSession())
-const f = ref({ corpus2: '', groupKey: '', group1: '', group2: '', layer: '', metric: 'kfa', min_effect: 0.2 })
+const { corpora, activeCorpus, layer } = storeToRefs(useSession())
+const f = ref({ corpus2: '', groupKey: '', group1: '', group2: '', metric: 'kfa', min_effect: 0.2 })
 const groups = ref([])
 const data = ref(null)
 const error = ref(null)
@@ -23,7 +22,10 @@ const busy = ref(false)
 const job = ref(null)          // andamento da tarefa (etapa e documentos contados) para a barra
 let jobId = null
 const layers = computed(() => [...new Set((activeCorpus.value?.layers ?? []).map((l) => l.tool))])
-watch(layers, (ls) => { if (!f.value.layer && ls.length) f.value.layer = ls[0] }, { immediate: true })
+// a camada é a do topo da tela (seletor global); "automática" cai na primeira camada do corpus
+const effectiveLayer = computed(() => (layer.value && layers.value.includes(layer.value) ? layer.value : layers.value[0] ?? ''))
+const keptFor = ref('')                                    // camada para a qual o usuário escolheu manter o resultado antigo
+const stale = computed(() => Boolean(data.value && lastParams.value && lastParams.value.layer !== effectiveLayer.value && keptFor.value !== effectiveLayer.value))
 const sameCorpus = computed(() => f.value.corpus2 === '__groups__')
 async function loadGroups() {
   groups.value = f.value.groupKey ? [...new Set((await api.corpora.documents(props.corpus, { limit: 1000 })).rows.map((r) => r[f.value.groupKey]))] : []
@@ -32,18 +34,19 @@ const side = (n) => (sameCorpus.value ? { corpus: props.corpus, where: { [f.valu
   : { corpus: n === 1 ? props.corpus : f.value.corpus2, where: undefined })
 async function run() {
   error.value = null
+  keptFor.value = ''
   detail.value = null
   const s1 = side(1), s2 = side(2)
-  lastParams.value = { corpus: s1.corpus, corpus2: s2.corpus, layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect,
+  lastParams.value = { corpus: s1.corpus, corpus2: s2.corpus, layer: effectiveLayer.value, metric: f.value.metric, min_effect: f.value.min_effect,
     where: s1.where, where2: s2.where }
   busy.value = true
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
-      layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect }, { onJob: (j) => { job.value = j; jobId = j.id } })
+      layer: effectiveLayer.value, metric: f.value.metric, min_effect: f.value.min_effect }, { onJob: (j) => { job.value = j; jobId = j.id } })
   } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
 async function select(name) {
-  const [a, b] = await Promise.all([1, 2].map((n) => { const s = side(n); return api.compare.feature({ corpus: s.corpus, where: s.where, layer: f.value.layer, name }) }))
+  const [a, b] = await Promise.all([1, 2].map((n) => { const s = side(n); return api.compare.feature({ corpus: s.corpus, where: s.where, layer: effectiveLayer.value, name }) }))
   const row = data.value.rows.find((r) => r.Feature === name)
   detail.value = { name, row, v1: a.values, v2: b.values }
 }
@@ -65,25 +68,23 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
         <label class="ttw-field"><span class="ttw-label">{{ t('kfa.group1') }}</span><select v-model="f.group1" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
         <label class="ttw-field"><span class="ttw-label">{{ t('kfa.group2') }}</span><select v-model="f.group2" class="select select-sm"><option v-for="g in groups" :key="g">{{ g }}</option></select></label>
       </template>
+      <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
+        <select v-model="f.metric" class="select select-sm" data-testid="kfa-metric"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
+      <label class="ttw-field w-24"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" data-testid="kfa-min-effect" /></label>
       <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
+      <span class="badge badge-outline" data-testid="kfa-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
       <HelpTip term="kfa" />
     </form>
-    <div class="w-full">
-      <Collapsible :title="t('compare.advanced')">
-        <div class="flex flex-wrap items-end gap-2 pt-2">
-          <label class="ttw-field"><span class="ttw-label">{{ t('kfa.layer') }}</span>
-            <select v-model="f.layer" class="select select-sm"><option v-for="l in layers" :key="l">{{ l }}</option></select></label>
-          <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
-            <select v-model="f.metric" class="select select-sm"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
-          <label class="ttw-field w-24"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" /></label>
-        </div>
-      </Collapsible>
+    <div v-if="stale" role="alert" class="alert alert-warning text-sm flex flex-wrap items-center gap-2" data-testid="kfa-stale">
+      <span>{{ t('kfa.layer_changed', { old: lastParams.layer, new: effectiveLayer }) }}</span>
+      <button class="btn btn-sm btn-primary" data-testid="kfa-recalc" @click="run">{{ t('kfa.recalc', { layer: effectiveLayer }) }}</button>
+      <button class="btn btn-sm btn-ghost" data-testid="kfa-keep" @click="keptFor = effectiveLayer">{{ t('kfa.keep') }}</button>
     </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
-      <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }}</p>
+      <p role="status" class="text-sm">{{ t('kfa.results', { n: data.rows.length, n1: data.n1, n2: data.n2 }) }} · {{ t('kfa.result_layer', { layer: lastParams?.layer }) }}</p>
       <div class="flex gap-1"><CopyCode analysis="kfa" :params="lastParams" /><ExportMenu name="kfa" :rows="data.rows" /></div>
-      <ChartGallery :kfa="data" :layer="f.layer" :sides="gallerySides" @select="select" />
+      <ChartGallery :kfa="data" :layer="lastParams?.layer ?? effectiveLayer" :sides="gallerySides" @select="select" />
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
         <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
