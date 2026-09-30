@@ -54,6 +54,12 @@ if not (FRONTEND_DIR / 'index.html').is_file():
     raise SystemExit(f"frontend não encontrado em {FRONTEND_DIR} — compile a interface antes")
 datas += [(str(FRONTEND_DIR), 'frontend')]
 
+# Ícones dos formatos de arquivo: no macOS vão para Contents/Resources (o Finder os lê de lá); no Windows e no Linux
+# o build.py os copia para a pasta do pacote, com os scripts de associação (build/assoc).
+if sys.platform == 'darwin':
+    for _ext in ('ttwa', 'ttwl', 'ttwt', 'ttwal', 'ttwc', 'ttwcl'):
+        datas += [(str(ROOT / 'build' / 'fileicons' / f'{_ext}.icns'), '.')]
+
 # spaCy: bundle completo do modelo (codigo + dados + binarios + hidden imports)
 # para evitar erro [E050] em app congelado do PyInstaller.
 model_hidden = []
@@ -151,6 +157,26 @@ coll = COLLECT(
 
 # macOS: criar .app bundle
 if sys.platform == 'darwin':
+    # Um tipo de documento e um UTI por formato, cada um com o seu ícone (build/fileicons/<ext>.icns, copiado para
+    # Contents/Resources; gerado por assets/icone/make_file_icons.py). Os três primeiros mantêm os tipos MIME antigos.
+    _FORMATS = [
+        ('ttwa', 'TTW Archive', 'application/x-ttwa+sqlite3'),
+        ('ttwl', 'TTW Light Project', 'application/x-ttwl+sqlite3'),
+        ('ttwt', 'TTW Compressed Archive', 'application/x-ttwt'),
+        ('ttwal', 'TTW Light Corpus Package', 'application/x-ttwal+sqlite3'),
+        ('ttwc', 'TTW Corpus', 'application/x-ttwc+sqlite3'),
+        ('ttwcl', 'TTW Light Corpus', 'application/x-ttwcl+sqlite3'),
+    ]
+    DOC_TYPES = [{
+        'CFBundleTypeName': name, 'CFBundleTypeExtensions': [ext], 'CFBundleTypeMIMETypes': [mime],
+        'CFBundleTypeRole': 'Editor', 'LSHandlerRank': 'Owner', 'LSItemContentTypes': [f'br.edu.ttwtools.{ext}'],
+        'CFBundleTypeIconFile': f'{ext}.icns',
+    } for ext, name, mime in _FORMATS]
+    UTI_TYPES = [{
+        'UTTypeIdentifier': f'br.edu.ttwtools.{ext}', 'UTTypeDescription': name,
+        'UTTypeConformsTo': ['public.data', 'public.item'], 'UTTypeIconFile': f'{ext}.icns',
+        'UTTypeTagSpecification': {'public.filename-extension': [ext], 'public.mime-type': mime},
+    } for ext, name, mime in _FORMATS]
     app = BUNDLE(
         coll,
         name='TTWtools.app',
@@ -160,65 +186,7 @@ if sys.platform == 'darwin':
         info_plist={
             'NSHighResolutionCapable': True,
             'LSMinimumSystemVersion': os.environ.get('MACOSX_DEPLOYMENT_TARGET', '12.0'),
-            # Document-type associations (.ttwa and .ttwt)
-            'CFBundleDocumentTypes': [
-                {
-                    'CFBundleTypeName':       'TTW Archive',
-                    'CFBundleTypeExtensions': ['ttwa'],
-                    'CFBundleTypeMIMETypes':  ['application/x-ttwa+sqlite3'],
-                    'CFBundleTypeRole':       'Editor',
-                    'LSHandlerRank':          'Owner',
-                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwa'],
-                    'CFBundleTypeIconFile':   'icon',
-                },
-                {
-                    'CFBundleTypeName':       'TTW Light Project',
-                    'CFBundleTypeExtensions': ['ttwl'],
-                    'CFBundleTypeMIMETypes':  ['application/x-ttwl+sqlite3'],
-                    'CFBundleTypeRole':       'Editor',
-                    'LSHandlerRank':          'Owner',
-                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwl'],
-                    'CFBundleTypeIconFile':   'icon',
-                },
-                {
-                    'CFBundleTypeName':       'TTW Compressed Archive',
-                    'CFBundleTypeExtensions': ['ttwt'],
-                    'CFBundleTypeMIMETypes':  ['application/x-ttwt'],
-                    'CFBundleTypeRole':       'Editor',
-                    'LSHandlerRank':          'Owner',
-                    'LSItemContentTypes':     ['br.edu.ttwtools.ttwt'],
-                    'CFBundleTypeIconFile':   'icon',
-                },
-            ],
-            # UTI declarations so Finder recognises the file types
-            'UTExportedTypeDeclarations': [
-                {
-                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwa',
-                    'UTTypeDescription':      'TTW Archive',
-                    'UTTypeConformsTo':       ['public.data', 'public.item'],
-                    'UTTypeTagSpecification': {
-                        'public.filename-extension': ['ttwa'],
-                        'public.mime-type':          'application/x-ttwa+sqlite3',
-                    },
-                },
-                {
-                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwl',
-                    'UTTypeDescription':      'TTW Light Project',
-                    'UTTypeConformsTo':       ['public.data', 'public.item'],
-                    'UTTypeTagSpecification': {
-                        'public.filename-extension': ['ttwl'],
-                        'public.mime-type':          'application/x-ttwl+sqlite3',
-                    },
-                },
-                {
-                    'UTTypeIdentifier':       'br.edu.ttwtools.ttwt',
-                    'UTTypeDescription':      'TTW Compressed Archive',
-                    'UTTypeConformsTo':       ['public.data', 'public.item'],
-                    'UTTypeTagSpecification': {
-                        'public.filename-extension': ['ttwt'],
-                        'public.mime-type':          'application/x-ttwt',
-                    },
-                },
-            ],
+            'CFBundleDocumentTypes': DOC_TYPES,
+            'UTExportedTypeDeclarations': UTI_TYPES,
         },
     )

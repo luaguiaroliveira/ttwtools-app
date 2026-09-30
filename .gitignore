@@ -22,6 +22,10 @@ build/**
 !build/*.icns
 !build/*.ico
 !build/*.png
+!build/fileicons/
+!build/fileicons/*
+!build/assoc/
+!build/assoc/*
 !build/*.py
 !build/*.txt
 !build/hooks/

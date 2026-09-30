@@ -4,14 +4,41 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
-### Corrigido
+> Linha **0.6**: abrir arquivos grandes deixa de ser lento, o formato das camadas fica bem menor e Comparar ganha uma barra de comparação, mais gráficos interativos e ícones próprios para cada formato de arquivo.
 
-- **Comparar** (palavras-chave, KFA, faixas, galeria de gráficos e Laboratório) passa a calcular como **tarefa com andamento** (`?async=1`), em vez de uma requisição parada até o fim: o WebKit derruba requisições sem resposta por ~60 s, o que aparecia como "sem conexão com o servidor local" em máquinas lentas (Mac Intel). Falhas isoladas de rede ao consultar o andamento são repetidas.
-- Barra de progresso própria (o `<progress>` nativo aparecia como barra cheia e parada no macOS 12): faixa deslizante quando o andamento é desconhecido e largura real quando há porcentagem.
+### Adicionado
+
+- **Ícones próprios para cada formato de arquivo** (`.ttwa`, `.ttwl`, `.ttwal`, `.ttwc`, `.ttwcl`, `.ttwt`) e associação com o aplicativo: bloco único de folhas = um corpus (`.ttwc`), blocos lado a lado = vários corpora (`.ttwa`), contorno = arquivo leve, setas = compactado. **macOS:** o `.app` declara os seis tipos, cada um com o seu ícone (Finder e abrir com duplo clique). **Windows:** `registrar-associacoes.bat` na pasta do pacote (só para o usuário atual, sem administrador; `remover-associacoes.bat` desfaz). **Linux:** `instalar-associacoes.sh` (tipos MIME, ícones e entrada no menu; `--remover` desfaz). Fontes em `assets/icone/arquivos/`, gerados por `assets/icone/make_file_icons.py`.
+- **Comparar: barra "Comparação"** no topo, valendo para todas as ferramentas: corpus 2 (ou dois grupos do corpus ativo), **cor de cada lado** nos gráficos e a métrica da KFA. Palavras-chave e Faixas usam o corpus 2 da barra por padrão; novo `reference_where` (`keywords`, `frequency_bands`, rotas e `--reference-where` na linha de comando) compara dois grupos do mesmo corpus.
+- **Gráficos de Comparar abrem o texto no Leitor** (redução dimensional, PCA 3D, faixas por texto, mapa de calor e coordenadas paralelas), com o botão voltar trazendo a comparação como estava.
+- **Coordenadas paralelas** com controle de opacidade e espessura, destaque de um lado, zoom (roda do mouse ou botões), arrastar e destaque da linha sob o mouse com o nome do texto.
+- **Mapa de calor** com zoom global, horizontal e vertical do tamanho dos blocos, rolagem dentro da área do gráfico e títulos por lado.
+- **Barras do d** com ordem (maior módulo, crescente ou decrescente), altura ajustável, quantidade e rolagem: mostra todos os atributos, não só os 30 primeiros.
+- **|d| mínimo com controle deslizante** (ajuste fino), agora acima dos resultados: só filtra o que já foi calculado, sem recalcular.
+- **Leitor:** busca por fragmento de palavra (`const` acha *construction* e *deconstruction*; `*` e `?` mantêm a palavra inteira), busca com contagem e navegação, cópia do texto, marcar a etiqueta do token (caixa e dois cliques), justificação sem hifenizar e palavra que não quebra entre linhas.
+- **Exemplos de colocados** clicáveis (abrem o Leitor com o nó marcado) e forma real do nó com curingas; dispersão com as posições relativas.
+- **Palavras-chave e Faixas** mostram a camada usada, avisam quando a camada do topo não tem o campo da unidade e pedem recálculo quando a camada muda.
+- **Atributo contado** (tags, upos, xpos) na KFA e no Laboratório, com a camada do topo como padrão.
 
 ### Alterado
 
-- **KFA** mostra o andamento por documento contado e **reaproveita o resultado** guardado no projeto (mesmos parâmetros e mesmas camadas); repetições não se acumulam. As tabelas de features ficam em memória: o detalhe de uma feature e a galeria não recontam os corpora.
+- **Abrir é rápido:** arquivo salvo sem tabelas de busca abre sem montar o índice (arquivo de 139 MB: 0,4 s; antes 66 s na primeira abertura). O índice só é montado quando algo ainda precisa dele (camadas `TCL1` antigas ou recém-criadas), com andamento por etapa.
+- **Consultas pelos ids das camadas:** busca, KWIC, frequência, colocados, dispersão, leitura de documento, contagem de etiquetas, tabelas de atributos (KFA), palavras-chave e faixas leem os ids direto (mesmo resultado do SQL). A KFA entre dois corpora caiu de 70 s para 5 s no arquivo de teste.
+- **`TCL2` é o único formato gravado** e ficou menor: posições relativas (1 byte em vez de 4), `tags` omitida quando repete `xpos` e léxico por frequência. Arquivo de teste: 139 → 102 MB (de `TCL1`: 177 → 101 MB), 26,5 milhões de tokens idênticos. Salvar converte as camadas `TCL1`/JSON antigas; arquivos `TCL1` continuam abrindo. **Arquivos salvos nesta versão não abrem em versões anteriores do TTWtools.** A variável `TTWTOOLS_LAYER_FORMAT` foi removida.
+- **"KFA2" passou a se chamar "KFA ponderada"** (desvio-padrão combinado pelo tamanho de cada lado); a KFA de Biber & Egbert usa a média simples das variâncias. Os identificadores `kfa` e `kfa2` (linha de comando e API) não mudaram.
+- **KFA** mostra o andamento por documento contado e **reaproveita o resultado** guardado no projeto (mesmos parâmetros e mesmas camadas); repetições não se acumulam. As tabelas de atributos ficam em memória: o detalhe de um atributo e a galeria não recontam os corpora. Resultados derivados (KFA etc.) entram no arquivo sem ativar o aviso "não salvo".
+- Vocabulário: *feature* passa a se chamar **atributo** em toda a interface, ajuda e mensagens.
+- Arquivos de exemplo de `ttwa_files/` (Git LFS): `lemas_tcl2.ttwa` e `lemas_tcl2_comtabelas.ttwa` no lugar dos projetos antigos.
+
+### Corrigido
+
+- **Comparar** (palavras-chave, KFA, faixas, galeria de gráficos e Laboratório) calcula como **tarefa com andamento** (`?async=1`), em vez de uma requisição parada até o fim: o WebKit derruba requisições sem resposta por ~60 s, o que aparecia como "sem conexão com o servidor local" em máquinas lentas (Mac Intel). Falhas isoladas de rede ao consultar o andamento são repetidas.
+- Barra de progresso própria (o `<progress>` nativo aparecia como barra cheia e parada no macOS 12): faixa deslizante quando o andamento é desconhecido e largura real quando há porcentagem; barras em etapas na abertura e no salvamento.
+- As linhas da tabela de resultados da KFA passam a ter foco de teclado (falha de acessibilidade apontada pelo teste de ponta a ponta).
+
+### Verificação
+
+- Testes: 268 do pacote, 58 do servidor, 37 da interface e 27 de ponta a ponta (Playwright, nas três larguras). **Não testado** nesta versão: Mac Intel e macOS 12 em máquina real, Windows e Linux em máquina real (só o CI), associação de arquivos e ícones nos sistemas instalados.
 
 ## [0.6.0-alpha.1] — 2026-09-30
 

@@ -268,6 +268,22 @@ def _load_semver():
     return mod.semver
 
 
+def add_file_associations(target: Target, dist_dir: Path) -> None:
+    """Windows e Linux: põe na pasta do pacote os ícones dos formatos (`icons/<ext>.ico|png`) e o script que registra
+    as associações para o usuário (o macOS lê os ícones de Contents/Resources, ver o spec)."""
+    folder = dist_dir / "TTWtools"
+    icons = folder / "icons"
+    icons.mkdir(exist_ok=True)
+    kind = "ico" if target.os == "windows" else "png"
+    exts = ("ttwa", "ttwl", "ttwal", "ttwc", "ttwcl", "ttwt")
+    for ext in exts:
+        shutil.copy2(BUILD / "fileicons" / f"{ext}.{kind}", icons / f"{ext}.{kind}")
+    scripts = ("registrar-associacoes.bat", "remover-associacoes.bat") if target.os == "windows" else ("instalar-associacoes.sh",)
+    for name in scripts:
+        shutil.copy2(BUILD / "assoc" / name, folder / name)
+        (folder / name).chmod(0o755)
+
+
 def package(target: Target, dist_dir: Path, version: str) -> Path:
     semver = _load_semver()
 
@@ -286,6 +302,7 @@ def package(target: Target, dist_dir: Path, version: str) -> Path:
              "-ov", "-format", "UDZO", dmg])
         shutil.rmtree(staging, ignore_errors=True)
         return dmg
+    add_file_associations(target, dist_dir)
     if target.os == "windows":
         return Path(shutil.make_archive(str(out_dir / base), "zip", dist_dir, "TTWtools"))
     shutil.copy2(BUILD / "icon.png", dist_dir / "TTWtools" / "icon.png")
