@@ -10,6 +10,7 @@ import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import BarChart from '../../components/BarChart.vue'
+import { useTopLayer } from '../../composables/useTopLayer.js'
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
 const { corpora, layer } = storeToRefs(useSession())
@@ -18,6 +19,7 @@ const f = ref({ reference: '', unit: 'form', limits: '1000, 2000, 3000, 5000, 10
 const data = ref(null)
 const error = ref(null)
 const lastParams = ref(null)
+const topLayer = useTopLayer(computed(() => f.value.unit), lastParams)
 const chart = ref(null)
 const options = computed(() => [
   ...[...new Map(refs.value.map((r) => [r.ref, r])).values()].map((r) => ({ value: r.ref, label: `${r.name} · ${r.version}` })),
@@ -51,8 +53,15 @@ async function run() {
         <select v-model="f.unit" class="select select-sm"><option v-for="u in ['form', 'lemma', 'word_pos']" :key="u" :value="u">{{ t(`explore.unit.${u}`) }}</option></select></label>
       <label class="ttw-field w-56"><span class="ttw-label">{{ t('bands.limits') }}</span><input v-model="f.limits" class="input input-sm" /></label>
       <button class="btn btn-sm btn-primary" :disabled="!f.reference" data-testid="bands-run">{{ t('compare.run') }}</button>
+      <span class="badge badge-outline" data-testid="bands-layer" :title="t('compare.layer_auto_hint')">{{ layer ? t('kfa.layer_used', { layer }) : t('compare.layer_auto') }}</span>
       <HelpTip topic="faixas_frequencia" />
     </form>
+    <div v-if="topLayer.missing.value" role="alert" class="alert alert-warning py-1 text-sm" data-testid="bands-unit-needs">{{ t('compare.unit_needs', { layer, field: topLayer.missing.value, unit: t(`explore.unit.${f.unit}`) }) }}</div>
+    <div v-if="data && topLayer.stale.value" role="alert" class="alert alert-warning text-sm flex flex-wrap items-center gap-2" data-testid="bands-stale">
+      <span>{{ lastParams.layer && layer ? t('compare.layer_changed', { old: lastParams.layer, new: layer }) : t('compare.layer_changed_auto') }}</span>
+      <button class="btn btn-sm btn-primary" type="button" data-testid="bands-recalc" @click="run">{{ t('compare.recalc') }}</button>
+      <button class="btn btn-sm btn-ghost" type="button" @click="topLayer.keep()">{{ t('compare.keep') }}</button>
+    </div>
     <p v-if="!refs.length" class="text-sm text-text-muted">{{ t('compare.ref.none_installed') }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">

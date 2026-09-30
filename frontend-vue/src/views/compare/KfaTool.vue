@@ -107,7 +107,7 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
       </section>
       <div class="ttw-scroll">
         <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-          <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" @click="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+          <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="select(r.Feature)" @keydown.enter="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
             <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
       </div>
     </template>

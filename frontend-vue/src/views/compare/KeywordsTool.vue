@@ -10,6 +10,7 @@ import Collapsible from '../../components/Collapsible.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import BusyModal from '../../components/BusyModal.vue'
+import { useTopLayer } from '../../composables/useTopLayer.js'
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
@@ -19,6 +20,7 @@ const { corpora, activeCorpus, layer } = storeToRefs(session)
 const f = ref({ refKind: 'corpus', refCorpus: '', groupKey: '', groupValue: '', listPath: '', catalogRef: '', unit: 'form', measure: 'll', min_freq: 5, min_range: 1, correction: 'bonferroni' })
 const groups = ref([])
 const data = ref(null)
+const topLayer = useTopLayer(computed(() => f.value.unit), lastParams)
 const error = ref(null)
 const busy = ref(false)
 const others = computed(() => corpora.value.filter((c) => c.name !== props.corpus))
@@ -65,8 +67,15 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
       <label v-if="f.refKind === 'list'" class="ttw-field flex-1 min-w-48"><span class="ttw-label">{{ t('compare.list_path') }}</span>
         <input v-model="f.listPath" class="input input-sm" /></label>
       <button class="btn btn-sm btn-primary" data-testid="kw-run">{{ t('compare.run') }}</button>
+      <span class="badge badge-outline" data-testid="kw-layer" :title="t('compare.layer_auto_hint')">{{ layer ? t('kfa.layer_used', { layer }) : t('compare.layer_auto') }}</span>
       <HelpTip term="keyness" />
     </form>
+    <div v-if="topLayer.missing.value" role="alert" class="alert alert-warning py-1 text-sm" data-testid="kw-unit-needs">{{ t('compare.unit_needs', { layer, field: topLayer.missing.value, unit: t(`explore.unit.${f.unit}`) }) }}</div>
+    <div v-if="data && topLayer.stale.value" role="alert" class="alert alert-warning text-sm flex flex-wrap items-center gap-2" data-testid="kw-stale">
+      <span>{{ lastParams.layer && layer ? t('compare.layer_changed', { old: lastParams.layer, new: layer }) : t('compare.layer_changed_auto') }}</span>
+      <button class="btn btn-sm btn-primary" type="button" data-testid="kw-recalc" @click="run">{{ t('compare.recalc') }}</button>
+      <button class="btn btn-sm btn-ghost" type="button" @click="topLayer.keep()">{{ t('compare.keep') }}</button>
+    </div>
     <div class="w-full">
       <Collapsible :title="t('compare.advanced')">
         <div class="flex flex-wrap items-end gap-2 pt-2">
@@ -83,7 +92,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
     </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
-      <p class="text-sm font-medium">{{ t('compare.words', { target: data.target, tw: data.target_words, reference: data.reference, rw: data.reference_words }) }}</p>
+      <p class="text-sm font-medium">{{ t('compare.words', { target: data.target, tw: data.target_words, reference: data.reference, rw: data.reference_words }) }}<span v-if="data.reference_card?.tool"> · {{ t('compare.result_layer', { layer: data.reference_card.tool }) }}</span></p>
       <div class="flex gap-1"><CopyCode analysis="keywords" :params="lastParams" /><ExportMenu name="palavras-chave" :rows="data.rows" /></div>
       <div v-for="w in data.warnings" :key="w.code" role="alert" class="alert py-1 text-sm"
            :class="{ 'alert-error': w.severity === 'error', 'alert-warning': w.severity === 'warning', 'alert-info': w.severity === 'info' }">{{ w.message }}</div>
