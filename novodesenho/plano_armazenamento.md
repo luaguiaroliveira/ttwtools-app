@@ -6,7 +6,7 @@
 
 - **Fase A e B3 concluídas; Comparar como tarefa e barra de progresso própria feitos; aguardam o Mac Intel** (`macintel.md` seção 4): build com as correções, etapa I do teste (1ª abertura com índice em cache).
 - **Próximo passo:** o passo 1 da seção 3 (índice sob demanda por entrada, hash gravado, conexão por thread, fila de tarefas), depois de o usuário responder as decisões 1 e 2 (seção 4).
-- **Versão:** `0.6.0a2.dev0` · branch `new_set26` · ponto de retorno: tag local `pre-armazenamento-0.6`. Release em rascunho `v0.6.0-alpha.1` no GitHub (build **anterior** às correções de Comparar); pacotes novos saem pela branch `release-test/armazenamento-0.6-dev` (só artefatos, sem tag).
+- **Versão:** `0.6.0a2.dev0` · branch `new_out26` (fase de depuração; `new_set26` fica congelada no fecho da fase anterior) · ponto de retorno: tag local `pre-armazenamento-0.6`. Release em rascunho `v0.6.0-alpha.1` no GitHub (build **anterior** às correções de Comparar); pacotes novos saem pela branch `release-test/armazenamento-0.6-dev` (só artefatos, sem tag).
 - **Diretrizes do usuário:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível** (todo formato atual legível para sempre; formato novo opt-in, rotulado beta; conversão nunca apaga o original; sempre exportar ao formato clássico). Usar **features**, não "traços".
 
 ## 2. Como trabalhar
@@ -15,7 +15,7 @@
 2. **Submódulo:** a lógica vive em `libs/ttwtools/ttwtools`; commit e `git push` **dentro dele primeiro**, depois o ponteiro no app. Rota fina em `app/routes`; tela só apresenta; todo recurso novo = função pública + subcomando + rota + tela; textos por chave (`pt` e `en`, em `libs/ttwtools/ttwtools/data/i18n/ui.*.json`); depois de mexer em função pública: `cd libs/ttwtools && python docs/gerar_referencia.py`.
 3. **Disco (já houve 71 GB de lixo temporário):** antes de teste que abra `ttwa_files/*` conferir `df -h /` (mínimo 20 GB livres); um processo longo por vez, com o usuário sabendo; trabalhar em **cópias** e apagar o que criar; nunca deixar processo em segundo plano sem necessidade. Testes com projetos pequenos gerados; o real só nas medições marcadas.
 4. **Testes:** `pytest libs/ttwtools/tests -q` e `pytest tests -q` (`conda activate ttw314`); `cd frontend-vue && npm test && npm run e2e` ao fim de passos de tela. Cada passo acrescenta teste, inclusive "não deixa lixo temporário".
-5. **Não recompilar o pacote** até o usuário pedir; rodar por `python -m app --mode desktop|web`. Pacotes no GitHub: `git push origin new_set26:release-test/armazenamento-0.6-dev` (artefatos) ou `python build/release.py --version X --allow-branch` (tag e rascunho; ver `RELEASING.md`).
+5. **Não recompilar o pacote** até o usuário pedir; rodar por `python -m app --mode desktop|web`. Pacotes no GitHub: `git push origin new_out26:release-test/armazenamento-0.6-dev` (artefatos) ou `python build/release.py --version X --allow-branch` (tag e rascunho; ver `RELEASING.md`).
 
 ## 3. Andamento
 
@@ -39,7 +39,7 @@
 1. **Índice sob demanda por entrada** (só na 1ª consulta posicional), **hash de blob gravado uma vez**, **conexão por thread**, **fila de tarefas pesadas** (núcleos − 1). Sem mudar o formato.
 2. **Estatísticas B** (matriz documento × tipo, contagens de features) ao empacotar/etiquetar; KFA, palavras-chave, faixas e frequência passam a usá-las; **resultados derivados fora do arquivo** (sem ativar "não salvo"). Primeiro no cache, sem mudar o formato.
 3. **SQL nos laços quentes** (`frequency`, `collocates`, `feature_table` com `json_each`, regex no léxico), **PRAGMAs** medidos, **orçamentos por máquina** no `bench_storage.py`.
-4. **Protótipo `TCL2`** (ids + léxico por corpus) e índice com ids: medir tamanho e regex antes de fixar o formato.
+4. **Protótipo `TCL2`** (ids + léxico por corpus) e índice com ids: medir tamanho e regex antes de fixar o formato. Desenhar já com as **costuras** para código nativo opcional (`armazenamento.md` seção 9: ainda não; experimento de dois dias depois de medir no Intel).
 5. **Pasta-pacote com perfis Compacto/Pronto** (antigos B1, B2, B4).
 6. **Converter antigos** e corpora do catálogo (antigos B5, B6), e **verificação e lançamento do beta** (antigo B7: Windows, Linux, macOS 12; `0.6.0b1`).
 
@@ -64,6 +64,10 @@
 - `ttwa_files/essays_bawe_somentetexto_corpus/` (22 MB, resto de exportação interrompida): **não apagada** por decisão do usuário.
 - Sem trava leve por chave para dois processos construindo o mesmo índice (já é seguro por renome).
 - Medições do Mac Intel que faltam: `macintel.md` seção 4.
+- Formato colunar medido só com o preset rápido (sem lemas nem features morfológicas): medir ponta a ponta com tudo ligado (espere ~1,5× maior).
+- **Limites do B3 (índice em cache):** a chave inclui ids de camada e de documento, então só é compartilhada por quem descende do mesmo arquivo (cópias, salvar como, `.ttwc` exportado), não por projetos sem relação; re-etiquetar um documento muda a chave do grupo inteiro e reconstrói aquela entrada; camadas apagadas na sessão ficam visíveis na view até reabrir (as consultas passam por `layers`, então não aparecem); acima de 10 bancos anexados o agrupamento sobe de nível (corpus × ferramenta → ferramenta → tudo junto).
+- **Limites do A2 (espaço livre):** o tamanho descompactado lido do cabeçalho gzip dá a volta em 4 GB (usa 3× o arquivo quando fica menor que o arquivo); a migração v0.3 depois de abrir não é estimada.
+- Migrar sem perder nada: teste que compara camada antiga e nova token a token, com projetos reais antigos de `ttwa_files/` (vale para o passo 6).
 
 ## 6. Outras pendências do projeto (incorporadas de `pendencias.md`)
 

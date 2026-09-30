@@ -15,6 +15,8 @@ Projeto real de `ttwa_files/`: 2 corpora, 1.526 textos, 19 milhões de tokens; o
 | Índices de `tokens` | 7 | 5 (−21% no arquivo, mesma velocidade) |
 | Abrir sem tabelas | ~53 s **em toda** abertura | 1ª vez 38–44 s, depois 1 s (índice em cache) |
 
+Codec: na camada spaCy do corpus grande (3,76 M de tokens) o formato colunar (ids + léxico) fica em 15,0 MB com zlib, contra 14,3 MB com zstd e 12,6 MB com lzma; o JSON antigo, 34,1 MB com zlib [medido]. O ganho vem do **formato colunar**, não do codec: por isso `zlib` (biblioteca padrão) basta e o formato não depende de `zstandard`, que o Python 3.11 do Mac Intel não traz.
+
 Mac Intel (i5-5287U) contra M4: CPU de Python **5–9×** mais lenta, disco e descompressão ~2–3×, hash 21× (sem SHA-NI). Abrir com tabelas 12,6 s; migrar arquivo antigo 14,3 min; recriar tabelas sem cache 5,3 min; 6 consultas com tabelas 89,9 s.
 
 ## 2. Onde está o desperdício (código)
@@ -112,3 +114,37 @@ Os passos 1–3 não mudam o formato: dá para entregar já e medir no Intel ant
 3. **`TCL2` com ids e léxico por corpus**, mesmo que o cache deixe de ser compartilhado entre projetos sem relação?
 4. **Resultados derivados (KFA etc.) fora do arquivo**, sem ativar "não salvo"? Recomendação: sim.
 5. **Teto de espera no Intel** por operação (1ª abertura, etiquetar, comparar): vem das respostas em `macintel.md`, seção 6.
+
+## 9. Código nativo (Rust ou C++)? Avaliação em 2026-09-30
+
+**Conclusão: ainda não. Primeiro a arquitetura (seção 5, passos 1–4); depois um experimento curto e medido.** O motivo está na evidência, não em princípio.
+
+**O que medi (M4, projeto sintético de 1 M de tokens):**
+
+| operação | resultado |
+|---|---|
+| frequência de lemas: laço Python atual × SQL `GROUP BY lower(lemma)` | 0,87 s × 0,72 s (**só 1,2×**) |
+| contar 10 mil formas: `Counter` × numpy sobre strings × `bincount` sobre **ids** | 0,3 ms × 2,8 ms × **0,02 ms** |
+| `TCL1` em Python puro (camada de 10 mil tokens) | codifica 717 mil tok/s, decodifica 4.042 mil tok/s |
+
+Leitura: o custo não está na contagem (o `Counter` e o SQLite já são C), está em **fabricar strings e linhas** a cada token. Trocar Python por SQL sobre strings quase não ganha; trocar strings por **inteiros** ganha ~15× sem nenhum binário. Nativo em cima do desenho atual aceleraria o que a arquitetura pode simplesmente eliminar. (Uma estimativa minha anterior, de que SQL daria ordens de grandeza, **não se confirmou** para strings.)
+
+**Onde o nativo ainda pode valer depois dos passos 1–4** (laços por token que sobram): (a) `TCL2`: codificar/decodificar e montar o léxico (Intel hoje: 272/397 mil tok/s); (b) ler JSONL das etiquetagens e migrar arquivo antigo (14 min no Intel, laço por camada em Python); (c) construir o índice posicional (hoje SQLite + `executemany`); (d) janelas de colocados e n-gramas sobre arrays de ids; (e) só na Fase C, um índice próprio estilo CWB. **Não ajuda:** gzip/zlib (já é C; trocar de codec quebraria o requisito de ler com a biblioteca padrão), SQLite (já é C), spaCy/Stanza/torch (já nativos).
+
+**Alternativas que dão velocidade de C sem novo binário, a esgotar antes:** ids inteiros + `array`/`memoryview`; numpy (já vai no pacote: pandas e spaCy o trazem, 1.26.4 no Intel) **só para cálculo**, com o formato continuando legível só com a biblioteca padrão; BLAKE2 no lugar de SHA-256 (mais rápido sem SHA-NI); SQL com `json_each`; `multiprocessing`; e **Cython em modo Python puro** ou **mypyc**, em que o mesmo arquivo `.py` roda sem compilar e ganha velocidade se compilado (o melhor para portabilidade: o fallback é o próprio código).
+
+**Se e quando for para nativo:**
+
+| Opção | Portabilidade | Fallback | Custo de manter | Quando |
+|---|---|---|---|---|
+| **Cython/mypyc em modo Python puro** | extensão por plataforma, mesma fonte | o próprio `.py` | baixo | primeira tentativa |
+| **Rust + PyO3 (`abi3`) + maturin**, pacote opcional `ttwtools-native` | uma roda por SO/arquitetura serve do Python 3.9 ao 3.14; macOS 12 com `MACOSX_DEPLOYMENT_TARGET=12.0` | Python puro | médio (toolchain e CI) | se sobrar laço por token acima do orçamento |
+| **C com cffi/ctypes** | parecido, sem Python.h | Python puro | médio, memória manual | só se Rust não servir |
+| **Executável à parte + subprocesso** | binário por SO | Python puro | alto (IPC, empacotar, assinar) | só para isolar tarefa longa (memória, cancelar) |
+
+Rust é preferível a C++ aqui (compila para todos os alvos com o mesmo `cargo`, sem compilador diferente por sistema, segurança de memória). O pacote Python **nunca depende** do binário: `ttwtools._native` tenta importar e, se falhar, usa a implementação Python; `TTWTOOLS_NATIVE=0` força o caminho Python; verificação de versão da interface na importação. O binário **acelera, não define**: o formato de arquivo é o mesmo nos dois caminhos.
+
+**Regras para entrar:** (1) só uma "costura" por vez, com interface estreita (bytes/arrays entram e saem), escrita primeiro em Python e já com teste de **equivalência token a token** entre as duas implementações; (2) só depois de um perfil mostrar laço por token acima do orçamento no Mac Intel; (3) CI constrói e testa a roda em macOS x86_64 e arm64, Windows x64 e Linux (o x86_64 também roda sob Rosetta no M4); (4) plataforma sem roda continua funcionando em Python; (5) o PyInstaller já empacota extensões; assinatura entra com a decisão D4.
+
+**Ordem:** passos 1–3 (sem formato) → medir no Intel → protótipo `TCL2` já desenhado com as costuras → **experimento de dois dias**: a costura (a) em Cython modo puro e em Rust, comparando ganho, tamanho do pacote e esforço de CI. Só então decidir.
+
