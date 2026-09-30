@@ -19,6 +19,9 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - `ttwtools tag-counts` e `/api/corpora/{corpus}/tag-counts`: ocorrências de cada etiqueta no corpus.
 - Dica global das etiquetas (KWIC, Frequência por classe, painel do token).
 - Abrir e salvar arquivos em modal de progresso.
+- **Exportar** em Arquivo: um corpus (`.ttwc`, textos dentro; `.ttwcl`, textos ao lado) ou um **pacote leve com vários corpora** (`.ttwal`), à escolha; `ttwtools save-as DEST.ttwal --corpus A --corpus B`, `save_corpora_as()` e `POST /api/project/saveas` com `corpora` (a exportação é uma cópia: o projeto aberto não muda).
+- **Comparar**: modal de progresso enquanto calcula (palavras-chave, KFA e gráficos, faixas, Laboratório) e legenda ligando cada cor ao nome do corpus ou grupo.
+- **Ícone novo** do aplicativo e favicon da interface (`assets/icone/`, gerado por `make_icons.py`).
 
 ### Alterado
 
@@ -39,7 +42,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - Ferramentas de Explorar e Comparar mostram aviso (e recarregam uma vez) se o arquivo delas sumir depois de a interface ser recompilada com a janela aberta.
 - Lista de recentes não mistura mais arquivos de teste; recentes só no menu Recentes.
 
-- Pacote `ttwtools` 0.2.0.dev0 (commit `4653d8d`).
+- Pacote `ttwtools` 0.2.0.dev0 (commit `a93269c`).
 
 ## [0.4.0-rc.1] — 2026-09-27
 
