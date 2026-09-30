@@ -6,6 +6,22 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 > Linha **0.6** (desenvolvimento): novo armazenamento de corpora e análises, em **beta** (mais leve, leitura de todos os formatos anteriores). Plano em `novodesenho/armazenamento.md`.
 
+### Adicionado
+
+- **Compactar projeto** (Arquivo → Mais opções; `ttwtools compact`; `POST /api/project/compact`): remove as cópias antigas das etiquetagens (`tagged_files`) que já estão nas camadas, conferindo token a token; simula primeiro e pede confirmação. No projeto de teste, o banco foi de 2.979 para 2.066 MB.
+- **Checagem de espaço livre** antes de salvar, salvar como, exportar, abrir arquivo compactado e importar: a operação é recusada com mensagem clara (pt/en), sem criar nada.
+- **Uso de disco** (Módulos): o que ocupa disco (cópias de trabalho e cache), botão "Limpar restos" e aviso ao iniciar quando havia lixo grande; `ttwtools cache list|clear`. Cache com limite (`cache_limit_mb`, padrão 5 GB) e remoção do menos usado.
+- Camadas empacotadas em **formato colunar** (`TCL1`), ~45% menores que JSON+zlib; arquivos antigos continuam abrindo.
+
+### Alterado
+
+- Índices da tabela de tokens reduzidos de 7 para 5 (os de `word`/`lemma` simples não eram usados): −21% no arquivo, mesma velocidade. Arquivos antigos os perdem ao abrir.
+- Exportar `.ttwcl` do corpus grande do projeto de teste: 466 → 104 MB.
+
+### Corrigido
+
+- Gravação cancelada ou com falha deixava um arquivo `.part` ao lado do destino; abrir arquivo compactado que falhava na descompressão deixava a pasta de trabalho.
+
 ## [0.5.0] — 2026-09-29
 
 ### Adicionado

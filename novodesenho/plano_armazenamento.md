@@ -4,7 +4,7 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** A6 (A1–A5 concluídos)
+- **Passo atual:** **Fase A concluída.** Próximo: decidir com o usuário a Fase B (ver Relato do A6); nenhum passo começa antes
 - **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
 - **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
 - **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
@@ -73,10 +73,24 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ### A6 Fechar a Fase A
 - **Fazer:**
-  - [ ] Medição ponta a ponta no projeto real (com A2 ativo, um processo, sem monitor): abrir, exportar `.ttwcl`, compactar, reabrir; tabela no Relato; atualizar `armazenamento.md` §4.4 com números reais.
-  - [ ] `CHANGELOG.md` `[Unreleased]` (Adicionado/Alterado/Corrigido), `pendencias.md` (marcar o feito), `plano_implementacao.md` "Estado atual".
-  - [ ] Decidir com o usuário a Fase B com base nas medidas.
-- **Relato:** _(preencher)_
+  - [x] Medição ponta a ponta no projeto real (com A2 ativo, um processo, sem monitor): abrir, exportar `.ttwcl`, compactar, reabrir; tabela no Relato; atualizar `armazenamento.md` §4.4 com números reais.
+  - [x] `CHANGELOG.md` `[Unreleased]` (Adicionado/Alterado/Corrigido), `pendencias.md` (marcar o feito), `plano_implementacao.md` "Estado atual".
+  - [x] Decidir com o usuário a Fase B com base nas medidas.
+- **Relato:** medição ponta a ponta numa cópia do projeto real (`_novo.ttwa`, 2 corpora, 19 M de tokens; Apple Silicon; A2 ativo; um processo; cópia e saídas apagadas, disco sem resíduo):
+
+  | etapa | antes da Fase A | depois (A1+A4+A5) |
+  |---|---|---|
+  | abrir o `.ttwa` compactado (1.058 MB) | 7 s → banco de trabalho 2.979 MB | igual (só descompactar) |
+  | compactar projeto (A1) | — | 111 s: 10.675 cópias removidas, 0 mantidas; banco **2.979 → 2.066 MB** (A1 + índices do A4) |
+  | exportar `.ttwcl` do corpus grande | 388 MB (45 s) | **104 MB** (35 s) |
+  | exportar `.ttwc` (com tabelas de busca) | — | 592 MB (44 s) |
+  | salvar projeto todo (compactado) | 1.058 MB | **614 MB** (11 s) |
+  | salvar projeto todo sem tabelas de busca | — | **118 MB** (55 s) |
+  | reabrir com tabelas | 4 s | 4 s |
+  | reabrir sem tabelas (recria 19 M de tokens) | ~63 s | **53 s** |
+
+  Ganho: o corpus grande leve de 466 MB (medido antes) para 104 MB; o projeto todo de 1,06 GB para 614 MB (ou 118 MB sem tabelas de busca, ao custo de ~53 s ao abrir). **O que a Fase A não resolveu** (é o que a Fase B ataca): (1) abrir ainda descompacta ~2,0–3,0 GB por abertura; (2) o arquivo *com* tabelas de busca segue grande (614 MB) porque a tabela `tokens` e os índices ficam dentro dele; (3) recriar as tabelas leva ~53 s e cresce com o corpus; (4) o `.ttwa` continua a misturar corpora, camadas e análises. `armazenamento.md` §4.4 recebeu esses números. Verificação em outros sistemas (Windows/Linux, `os.kill(pid, 0)` da limpeza de órfãs) e máquina lenta (Mac Intel/macOS 12) **continuam por fazer**: rodar `pytest`, `ttwtools cache list`, abrir/salvar um projeto pequeno e cronometrar `layerfmt` lá.
+  - **Sugestão para a decisão da Fase B:** fazer a **B1 (especificação)** e o **B3 (índice de busca em cache por camada)** primeiro, porque atacam os itens (1)–(3) sem mudar o formato do `.ttwa`; deixar B5 (`.ttwa` manifesto) e B6 (corpora clássicos) para depois de medir o B3. Aguarda o usuário.
 
 ## Fase B — pasta-pacote, índice em cache e `.ttwa` manifesto (só depois da A e da medição; **beta**)
 

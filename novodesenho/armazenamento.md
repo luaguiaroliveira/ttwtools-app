@@ -99,6 +99,8 @@ O ganho vem do **formato colunar** (2,3× menor), não do codec: zlib (da biblio
 | Disco temporário para abrir                                        | 2,8 GB por abertura             | ~0 (índice em cache, compartilhado, com limite) |
 | Só remover `tagged_files` legados (passo barato, sem formato novo) |                                 | 466 MB → ~180 MB                                |
 
+**Medido ao fim da Fase A (2026-09-29, projeto real, Apple Silicon; detalhe em `plano_armazenamento.md`, A6):** corpus grande leve (`.ttwcl`) **466 → 104 MB**; projeto todo compactado **1.058 → 614 MB** (118 MB sem tabelas de busca, 53 s a mais ao abrir); banco de trabalho **2.979 → 2.066 MB** (remoção de `tagged_files`, índices reduzidos); camadas em `TCL1` **−45%** sobre JSON+zlib (dicionário por documento; o léxico por corpus, da Fase B, deve cortar mais). Sobram para a Fase B: descompactar ~2 GB ao abrir, tabelas de busca dentro do arquivo e recriação de ~53 s.
+
 ### 4.5 Fases (do mais barato ao mais ambicioso)
 
 **Fase A: sem mudar o formato (dias).**

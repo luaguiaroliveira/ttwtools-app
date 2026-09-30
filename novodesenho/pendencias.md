@@ -47,14 +47,14 @@ Incidente: a pasta temporária do sistema chegou a **71 GB** (77 cópias de trab
 
 **A. Espaço temporário e memória**
 - [ ] **Abrir um `.ttwa` compactado ainda descompacta tudo** (2,8 GB) numa cópia de trabalho. Alternativas a avaliar: abrir sem descompactar (arquivo por corpus, ou por partes, com `ATTACH` só do que se usa); descompactar por corpus sob demanda; manter o arquivo sem compactar quando o disco permite.
-- [ ] Medir e limitar o pico de disco de **Salvar** e **Salvar como** (compactar um banco de 3 GB usa arquivo `.part` + leitura). Avisar/recusar antes se o disco livre for insuficiente (hoje não há checagem).
-- [ ] Recriar as tabelas de busca ao abrir um arquivo leve leva ~63 s no projeto real (corpus grande): tornar incremental, sob demanda por camada, ou guardar os índices mais baratos.
-- [ ] Reduzir os **7 índices** (1,74 GB): `idx_tokens_word` e `idx_tokens_lword` (297 MB cada) e `lemma`/`llemma` (209 MB cada) são quase duplicados; um índice por `lower()` bastaria? Medir o efeito na velocidade do KWIC/frequência.
-- [ ] `tagged_files` (304 MB) guarda os arquivos etiquetados em texto: ainda é necessário, ou é derivável das camadas?
-- [ ] Trocar o empacotamento das camadas (JSON + zlib) por algo mais compacto e rápido (zstd, colunas binárias)?
+- [x] Checar espaço livre antes de **Salvar**, **Salvar como**, exportar, abrir compactado e importar: recusa com mensagem traduzida, sem criar nada (A2). Sobra: o pico do `VACUUM` do Compactar (até ~2× o banco) é só avisado na tela.
+- [ ] (medido na A6: 53 s; segue para o B3) Recriar as tabelas de busca ao abrir um arquivo leve leva ~63 s no projeto real (corpus grande): tornar incremental, sob demanda por camada, ou guardar os índices mais baratos.
+- [x] (A4: reduzidos a 5, −21% no arquivo, mesma velocidade; tabela em `plano_armazenamento.md`) Reduzir os **7 índices** (1,74 GB): `idx_tokens_word` e `idx_tokens_lword` (297 MB cada) e `lemma`/`llemma` (209 MB cada) são quase duplicados; um índice por `lower()` bastaria? Medir o efeito na velocidade do KWIC/frequência.
+- [x] (A1: `ttwtools compact` remove o que as camadas já têm) `tagged_files` (304 MB) guarda os arquivos etiquetados em texto: ainda é necessário, ou é derivável das camadas?
+- [x] (A5: formato colunar `TCL1`, −45%, só biblioteca padrão; zstd descartado pela diretriz de máquina antiga) Trocar o empacotamento das camadas (JSON + zlib) por algo mais compacto e rápido (zstd, colunas binárias)?
 
 **B. Lixo em pastas temporárias**
-- [ ] Um processo morto à força ainda deixa a pasta até o **próximo início do app** (então é apagada). Avaliar: painel "Uso de disco / Limpar temporários" em Recursos; aviso ao iniciar quando houver lixo grande; limpeza também ao abrir um projeto.
+- [x] (A3: painel Uso de disco em Módulos, aviso ao iniciar com ≥ 1 GB, `ttwtools cache`; a pasta de um processo morto continua até o próximo início) Um processo morto à força ainda deixa a pasta até o **próximo início do app** (então é apagada). Avaliar: painel "Uso de disco / Limpar temporários" em Recursos; aviso ao iniciar quando houver lixo grande; limpeza também ao abrir um projeto.
 - [ ] Testar a limpeza de órfãs no **Windows e no Linux** (`os.kill(pid, 0)` e caminhos de temporário se comportam diferente).
 - [ ] Onde ficam as pastas de textos dos formatos leves (`<nome>_corpus/`) quando a exportação é interrompida: hoje sobra a pasta (ex.: `ttwa_files/essays_bawe_somentetexto_corpus/`, 22 MB, resto de uma exportação interrompida; **não apagada**, decisão do usuário).
 
