@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.6.0-alpha.1] — 2026-09-30
+
 > Linha **0.6** (desenvolvimento): novo armazenamento de corpora e análises, em **beta** (mais leve, leitura de todos os formatos anteriores). Plano em `novodesenho/armazenamento.md`.
 
 ### Adicionado
@@ -22,6 +24,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 ### Corrigido
 
 - Gravação cancelada ou com falha deixava um arquivo `.part` ao lado do destino; abrir arquivo compactado que falhava na descompressão deixava a pasta de trabalho.
+
+- Pacote `ttwtools` 0.2.0.dev0 (commit `4573ab7`).
 
 ## [0.5.0] — 2026-09-29
 
@@ -188,7 +192,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...HEAD
+[0.6.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...v0.6.0-alpha.1
 [0.5.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...v0.5.0
 [0.4.0-rc.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...v0.4.0-rc.1
 [0.4.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...v0.4.0-alpha.1
