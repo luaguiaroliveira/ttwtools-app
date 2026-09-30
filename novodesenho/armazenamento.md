@@ -270,3 +270,40 @@ _Montar a tabela `tokens` temporária: inserir 6,98 s; criar os 5 índices 8,54 
 | passo 2 (TCL2 e tabela temporária) | 144 |
 | decodificações | 1.626 |
 | consultas | 1.626 |
+
+
+## 11. TCL2 com lemas e teste no aplicativo (2026-09-30, M4)
+
+Pedido do usuário: insistir no `TCL2`, medir com lemas e testar um arquivo no formato novo abrindo e rodando o aplicativo. Feito numa **cópia** do projeto do Intel; a cópia e o projeto etiquetado foram apagados (ficam só os dois arquivos de saída, abaixo).
+
+**Como se obtiveram os lemas.** As camadas `spacy` e `stanza` do projeto do Intel não têm lema nem feats. Etiquetei de novo o corpus `essays_bawe_somentetexto` (1.227 documentos, 3,76 M de tokens por ferramenta) com `ttwtools tag --components pos,tag,lemma,morph` (spaCy `en_core_web_sm`) e `pos,morph,lemma` (Stanza `en`), no `ttw314` (M4). spaCy: ~5 min; Stanza: ~45 min. Novas camadas: lema em 100% dos tokens; feats em 66% (Stanza).
+
+**Tamanho com lemas (7,5 M de tokens, `spacy` + `stanza`, medido pelo spike).**
+
+| formato | MB | B/token | razão ao `TCL1` |
+|---|---|---|---|
+| JSON + zlib | 88,5 | 11,8 | 1,53 |
+| `TCL1` | 58,0 | 7,73 | 1,00 |
+| `TCL2` spike (ids por frequência, largura mínima, numpy) + léxico | 42,2 | 5,62 | **0,73** |
+| `TCL2` spike, varint + léxico | 36,8 | 4,91 | 0,64 |
+| **`TCL2` real** (`layerfmt.encode_tcl2`, biblioteca padrão, ids na ordem de chegada, posições em int32) + léxico | 44,2 | 5,89 | **0,76** |
+| tabela `tokens` com os 5 índices | 1.077 | 143,5 | 18,6 |
+
+**Os lemas não mudam o veredito:** 0,73× (era 0,75× sem lemas). `lemma` custa 1,49 B/token, `word` 1,58, `feats` 0,48. O léxico por corpus continua valendo (lemas: 69 mil só no spaCy, 78 mil na união, 135 mil se separados), mas a entropia de `word` + `lemma` domina. **O critério ≤ ⅓ não é atendido com lemas** (nem o varint, 0,64×). Consultas por ids: frequência de **lemas** 0,012 s × 2,06 s (177×), regex 149×, glob 371×, matriz documento × tipo 11× (resultados idênticos).
+
+**Implementação real (experimental, desligada por padrão).** `TTWTOOLS_LAYER_FORMAT=tcl2` liga a gravação de camadas em `TCL2`; sem a variável nada muda (`TCL1`), e `TCL1`, JSON antigo e `TCL2` abrem sempre. Peças: `layerfmt.Lexicon`, `encode_tcl2`, `decode_tcl2`, `decode_ids` (só as colunas pedidas); `project.LayerStore` (empacota/desempacota, lê e grava o léxico); tabela nova `lexicon_parts` (léxico por corpus, **só cresce**: ids estáveis, camadas novas não invalidam blobs antigos; cada gravação acrescenta uma parte zlib+JSON). Tocam nele: `pack_search_tables`, `rebuild_search_tables`, `_layer_rows`, `_materialize_layer`, exportação `.ttwc/.ttwcl/.ttwal` (`_save_corpora_subset`, que **reescreve os ids** ao copiar entre arquivos, também de `TCL2` para `TCL1` e o inverso) e o índice em cache (`searchindex`: a chave do cache inclui a impressão digital do léxico quando o blob é `TCL2`). Testes novos: `tests/test_layerfmt_tcl2.py` (ida e volta com bordas, léxico que só cresce, empacotar/reabrir, exportar leve em `TCL2` e voltar a `TCL1`).
+
+**Teste na prática (arquivo real, `save-as --no-search-tables`, projeto inteiro: 5 ferramentas, 1.526 documentos).**
+
+| arquivo | tamanho | tempo de gravar |
+|---|---|---|
+| `TCL1` (hoje) | 176,6 MB | 1 min 50 s |
+| `TCL2` | **139,2 MB (0,79×)** | 1 min 58 s |
+
+(O ganho do arquivo inteiro é menor que o das camadas porque o arquivo tem também textos, tabelas de features, KFA etc., e é gzip do todo.) **Abrir e rodar no aplicativo:** subi o servidor (`python -m app --mode web`, porta 8799, com a variável ligada), abri o `.ttwa` em `TCL2` pela rota `/api/project/open` (descompacta numa cópia de trabalho, `search_tables=false`, índice em cache construído a partir dos blobs `TCL2`), e rodei `explore/kwic` (`lemma=examine`, 929 ocorrências, com contexto e lema) e `explore/frequency` (unidade lema, camada spaCy). Depois comparei, dentro do pacote, `frequency` (forma, lema, classe) e `kwic` de `spacy`, `stanza` e `mfte` nos dois arquivos (`TCL1` e `TCL2`): **as 12 consultas deram resultado idêntico** (impressão digital dos resultados igual). Só a rota de abrir e duas de consulta foram exercitadas pelo servidor; **a interface (telas) não foi aberta no navegador**, e não abri o arquivo pela tela nem salvei por ela em `TCL2`.
+
+**Não verificado / limites.** Paridade GUI: a escolha do formato ainda é só por variável de ambiente (sem opção no `save-as`, sem rota nem tela; fica assim enquanto for experimental). Não testado no Intel nem no Windows/Linux. Arquivos em `TCL2` **não abrem em versões anteriores do TTWtools** (o decodificador antigo falha no blob). Camadas apagadas deixam entradas no léxico (só cresce; um `compact` do léxico não existe). Não medi o tempo de abrir (primeira abertura: 104 s em `TCL1` e 71 s em `TCL2`, mas com cache de disco e ordem diferentes: **não é comparação válida**). Otimizações do tamanho ainda não feitas: ids por frequência (o spike usa; o real não), posições em largura mínima (spike: start+end ≈ 1,0 B/token; real: int32 + zlib), `tags` duplicando `xpos`, `end` derivável de `start` + tamanho da forma.
+
+**Decisão a tomar.** `TCL2` real entrega 0,76× em camadas e 0,79× no arquivo, com ~20% menos que o `TCL1`, e habilita consultas por ids (a implementação atual ainda **não** as usa: o aplicativo continua reconstruindo `tokens`). Vale ligar por padrão só se as consultas por ids forem implementadas (seção 5, passo 3) ou se o ganho de ~20% no arquivo justificar quebrar a abertura em versões anteriores.
+
+**Arquivos de teste** (gerados nesta sessão, na pasta temporária da sessão, ficam até você apagar): `scratchpad/out/lemas_tcl1.ttwa` (176,6 MB) e `lemas_tcl2.ttwa` (139,2 MB), ambos com camadas `spacy` e `stanza` **com lema** para o corpus `essays_bawe_somentetexto`, para testar no Intel.
