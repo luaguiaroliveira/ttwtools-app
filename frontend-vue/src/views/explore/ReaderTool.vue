@@ -200,7 +200,11 @@ function pick(c, k) {   // 'off' = olho fechado: tira a marcação
   else { kinds.value = { ...kinds.value, [c]: k }; next.add(c) }
   chosen.value = next
 }
-const onKey = (e) => { if (e.key === 'Escape' && panelOpen.value) panelOpen.value = false }
+// Esc fecha primeiro o menu da etiqueta (se aberto); só depois a gaveta
+const onKey = (e) => {
+  if (e.key !== 'Escape') return
+  if (menu.value) { menu.value = null; palette.value = false } else if (panelOpen.value) panelOpen.value = false
+}
 const closeMenu = (e) => { if (!e.target.closest?.('[data-mark-menu]')) menu.value = null }
 const PALETTES = [
   { id: 'default', colors: PALETTE.slice(0, 12) },
