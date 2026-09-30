@@ -231,6 +231,12 @@ const copyText = () => doc.value?.text && copyToClipboard(doc.value.text, 'text'
 const copySelection = () => { const s = selectedText(); if (s) copyToClipboard(s, 'selection') }
 // clicar num token mostra as etiquetas; arrastar para selecionar texto não deve mudar o token escolhido
 const pick1 = (tok) => { if (!selectedText()) selected.value = tok }
+// dois cliques numa palavra marcam (ou desmarcam) a etiqueta dela no texto, como a caixa "Marcar" do painel
+function markTok(tok) {
+  globalThis.getSelection?.()?.removeAllRanges()
+  selected.value = tok
+  if (label(tok)) toggle(label(tok))
+}
 function tokMenu(e, tok) {                  // botão direito: com texto selecionado, deixa o menu normal (Copiar)
   if (selectedText() || !label(tok)) return
   e.preventDefault()
@@ -386,7 +392,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
                 :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
                 :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok), 'is-found': foundSet.has(p.tok.idx), 'is-found-now': currentSet.has(p.tok.idx) }"
-                @click="pick1(p.tok)" @contextmenu="tokMenu($event, p.tok)">{{ p.text }}</span></template>
+                @click="pick1(p.tok)" @dblclick="markTok(p.tok)" @contextmenu="tokMenu($event, p.tok)">{{ p.text }}</span></template>
           </article>
           <footer v-if="chosen.size" class="reader-legend">
             <span v-for="[c, n] in classes.filter(([c]) => chosen.has(c))" :key="c">
@@ -452,6 +458,10 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <template v-if="selected.tags?.length"><dt>tags</dt><dd>{{ selected.tags.join(' ') }}</dd></template>
             <dt>def.</dt><dd>{{ info(label(selected))?.text || '—' }}<span v-if="info(label(selected))?.inferred" class="block text-xs text-text-muted italic">{{ t('taginfo.inferred') }}</span></dd>
           </dl>
+          <label v-if="selected && label(selected)" class="ttw-check mt-2" data-testid="reader-mark-tag">
+            <input type="checkbox" class="checkbox checkbox-sm" :checked="chosen.has(label(selected))" @change="toggle(label(selected))" />
+            <span>{{ t('reader.mark_tag', { tag: label(selected) }) }}</span></label>
+          <p v-if="selected && label(selected)" class="text-xs text-text-muted">{{ t('reader.mark_hint') }}</p>
           <TagDoc v-if="selected" :doc="tagDoc[label(selected)]" :version="docVersion" />
         </div>
       </aside>
