@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import QueryBox from './QueryBox.vue'
@@ -9,6 +10,9 @@ import ExportMenu from '../../components/ExportMenu.vue'
 
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
+const router = useRouter()
+// abre o texto do exemplo no Leitor, com o nó marcado (mesma rota do KWIC)
+const openInReader = (l) => router.push({ path: '/explorar/leitor', query: { file: l.filename, pos: l.start_char, end: l.end_char } })
 const f = ref({ left: 5, right: 5, unit: 'form', min_freq: 2, sort: 'll' })
 const data = ref(null)
 const error = ref(null)
@@ -87,11 +91,13 @@ function setSort(k) {
       </div>
       <p v-if="ex?.capped" class="text-xs text-warning">{{ t('explore.examples_capped') }}</p>
       <ul v-if="ex" class="flex flex-col gap-1 text-sm">
-        <li v-for="l in ex.lines" :key="`${l.filename}:${l.idx}`" class="flex flex-wrap items-baseline gap-x-1" :title="l.filename">
+        <li v-for="l in ex.lines" :key="`${l.filename}:${l.idx}`" class="flex flex-wrap items-baseline gap-x-1 cursor-pointer rounded px-1 hover:bg-base-300" tabindex="0"
+            role="link" :title="t('explore.open_in_reader', { file: l.filename })" :aria-label="t('explore.open_in_reader', { file: l.filename })" data-testid="coll-example"
+            @click="openInReader(l)" @keydown.enter="openInReader(l)">
           <span v-for="(c, i) in l.left" :key="`l${i}`" :class="c.hit ? 'rounded bg-base-300 px-1 font-medium underline' : ''">{{ c.w }}</span>
           <span class="text-primary font-bold">{{ l.node.map((c) => c.w).join(' ') }}</span>
           <span v-for="(c, i) in l.right" :key="`r${i}`" :class="c.hit ? 'rounded bg-base-300 px-1 font-medium underline' : ''">{{ c.w }}</span>
-          <span class="ml-auto text-xs text-text-muted truncate max-w-48">{{ l.filename }}</span>
+          <span class="ml-auto text-xs text-text-muted truncate max-w-48 underline decoration-dotted">{{ l.filename }} ↗</span>
         </li>
       </ul>
       <span v-if="exBusy" class="loading loading-dots loading-sm" aria-hidden="true" />
