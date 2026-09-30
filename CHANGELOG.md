@@ -11,6 +11,12 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Etiquetagem**: tela própria para acrescentar camadas ao corpus (estatísticas básicas e etiquetadores, com as opções de cada um); as escolhas vão para uma lista "A executar" guardada no projeto e executada numa etapa só, que pode ser ampliada depois; `ttwtools pipeline` faz o mesmo na linha de comando (6.2a).
 - Andamento de "Executar análise e etiquetagem": porcentagem geral e por tarefa, passo atual, tempo decorrido e estimativa (6.2a).
 - **Módulos**: área própria para modelos de etiquetagem (spaCy e Stanza, em inglês e português) e corpora do catálogo, com o que cada um faz, fonte, licença, dados de treino e tamanho; `ttwtools catalog models` mostra as mesmas fichas (6.2a).
+- **Redesign da interface** (`novodesenho/plano_redesign_ui.md`): temas laranja/cinza/preto (claro, escuro, alto contraste), fonte Inter empacotada, densidade compacta, componentes base próprios, cabeçalho com chips de camada e corpus, menus de idioma e tema, menu lateral só com ícones e dica animada, ícones duotone. Componentes adaptados do Vue Bits sem dependências novas (`docs/ui-componentes.md`).
+- **Leitor**: etiquetas em coluna única com ordenação (ocorrências no texto, no corpus, alfabética, grupo), dica com a descrição da etiqueta segundo o etiquetador (documentação oficial do MFTE 1.6 e descrições inferidas, marcadas como tal), seletor de cor (roda, paletas, hex), gaveta de etiquetas em telas curtas, zoom, tamanho de fonte e justificação da folha, voltar/avançar; abre já no texto clicado na Dispersão e no KWIC.
+- **Dispersão** compacta, com altura de linha ajustável; clicar num texto abre o leitor.
+- `ttwtools tag-counts` e `/api/corpora/{corpus}/tag-counts`: ocorrências de cada etiqueta no corpus.
+- Dica global das etiquetas (KWIC, Frequência por classe, painel do token).
+- Abrir e salvar arquivos em modal de progresso.
 
 ### Alterado
 
@@ -27,6 +33,9 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - "Salvar como" podia deixar de fora as alterações mais recentes (ainda no WAL do SQLite); trabalho feito num projeto aberto de .ttwt se perdia ao abrir outro projeto (6.2a).
 - Caminhos com `~` (ex.: `~/projeto.ttwa`) davam "unable to open database file" (6.2a).
 - Depois de instalar um corpus ou baixar um modelo, a lista só se atualiza quando a tarefa termina (6.2a).
+- KWIC e ferramentas de Explorar não ficam mais em branco em camadas sem UPOS/XPOS (BiberPlus, MFTE); `tag=` cai para UPOS/XPOS em camadas sem tags (spaCy, Stanza).
+- Ferramentas de Explorar e Comparar mostram aviso (e recarregam uma vez) se o arquivo delas sumir depois de a interface ser recompilada com a janela aberta.
+- Lista de recentes não mistura mais arquivos de teste; recentes só no menu Recentes.
 
 ## [0.4.0-rc.1] — 2026-09-27
 
