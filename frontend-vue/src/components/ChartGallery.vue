@@ -22,7 +22,22 @@ const Pca3D = defineAsyncComponent(() => import('./charts/Pca3D.vue'))
 const props = defineProps({ kfa: Object, sides: Array, layer: String, feature: String })
 const emit = defineEmits(['select'])
 const { t } = useI18n()
-const KINDS = ['bars', 'means', 'bubble', 'strip', 'heatmap', 'radar', 'violin', 'histogram', 'parcoords', 'reduction', 'pca3d']
+// Uma linha só: ícones com dica (título) e nome acessível; grupos separados por um traço fino.
+const GROUPS = [['bars', 'means', 'bubble'], ['strip', 'violin', 'histogram'], ['heatmap', 'radar', 'parcoords', 'reduction', 'pca3d']]
+const KINDS = GROUPS.flat()
+const ICONS = {
+  bars: '<path d="M4 6h9M4 12h16M4 18h6"/>',
+  means: '<path d="M4 20 20 4" stroke-dasharray="2 2"/><circle cx="8" cy="15" r="1.6"/><circle cx="14" cy="9" r="1.6"/><circle cx="17" cy="13" r="1.6"/>',
+  bubble: '<circle cx="8" cy="15" r="4"/><circle cx="16" cy="8" r="2.6"/><circle cx="17" cy="16" r="1.6"/>',
+  strip: '<path d="M3 6h18M3 12h18M3 18h18" opacity=".3"/><circle cx="7" cy="6" r="1"/><circle cx="14" cy="6" r="1"/><circle cx="10" cy="12" r="1"/><circle cx="17" cy="12" r="1"/><circle cx="6" cy="18" r="1"/><circle cx="12" cy="18" r="1"/>',
+  violin: '<path d="M12 3c4 3 4 6 1.5 9 2.5 3 2.5 6-1.5 9-4-3-4-6-1.5-9C8 9 8 6 12 3Z"/>',
+  histogram: '<path d="M4 20V13h4v7M8 20V6h4v14M12 20V9h4v11M16 20v-5h4v5"/>',
+  heatmap: '<rect x="4" y="4" width="5" height="5"/><rect x="10" y="4" width="5" height="5" fill="currentColor" opacity=".4"/><rect x="16" y="4" width="4" height="5"/><rect x="4" y="10" width="5" height="5" fill="currentColor" opacity=".7"/><rect x="10" y="10" width="5" height="5"/><rect x="16" y="10" width="4" height="5" fill="currentColor" opacity=".3"/><rect x="4" y="16" width="5" height="4"/><rect x="10" y="16" width="5" height="4" fill="currentColor" opacity=".5"/><rect x="16" y="16" width="4" height="4" fill="currentColor" opacity=".8"/>',
+  radar: '<path d="M12 3 21 10 17.5 20h-11L3 10Z" opacity=".4"/><path d="M12 8l5 3.5-2 5.5H9l-2-5.5Z"/>',
+  parcoords: '<path d="M5 4v16M12 4v16M19 4v16" opacity=".4"/><path d="M5 8 12 16 19 6"/>',
+  reduction: '<path d="M4 4v16h16" opacity=".4"/><circle cx="9" cy="14" r="1.3"/><circle cx="11" cy="16" r="1.3"/><circle cx="10" cy="12" r="1.3"/><circle cx="16" cy="7" r="1.3"/><circle cx="18" cy="9" r="1.3"/>',
+  pca3d: '<path d="M12 3 20 7.5v9L12 21 4 16.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
+}
 const kind = ref('bars')
 const nFeatures = ref(10)
 const method = ref('pca2d')
@@ -69,10 +84,15 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('gallery.title')">
     <div class="flex flex-wrap items-end gap-2">
-      <div class="ttw-field"><span class="ttw-label">{{ t('gallery.choose') }}</span>
-        <div role="tablist" class="tabs tabs-box flex-wrap w-fit" data-testid="gallery-kind" :aria-label="t('gallery.choose')">
-          <button v-for="k in KINDS" :key="k" type="button" role="tab" class="tab" :class="{ 'tab-active': kind === k }" :aria-selected="kind === k"
-                  :data-kind="k" @click="kind = k">{{ t(`gallery.${k}`) }}</button></div></div>
+      <div class="ttw-field"><span class="ttw-label">{{ t('gallery.choose') }}: <span class="font-medium" data-testid="gallery-kind-name">{{ t(`gallery.${kind}`) }}</span></span>
+        <div role="tablist" class="flex items-center gap-1" data-testid="gallery-kind" :aria-label="t('gallery.choose')">
+          <template v-for="(g, gi) in GROUPS" :key="gi">
+            <span v-if="gi" class="mx-1 h-5 w-px bg-base-300" aria-hidden="true"></span>
+            <button v-for="k in g" :key="k" type="button" role="tab" class="btn btn-sm btn-square" :class="kind === k ? 'btn-primary' : 'btn-ghost'"
+                    :aria-selected="kind === k" :aria-label="t(`gallery.${k}`)" :title="t(`gallery.${k}`)" :data-kind="k" @click="kind = k">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" v-html="ICONS[k]"></svg>
+            </button>
+          </template></div></div>
       <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="ttw-field w-24"><span class="ttw-label">{{ t('gallery.features_n') }}</span>
         <input v-model.number="nFeatures" type="number" min="2" max="40" class="input input-sm" /></label>
       <label v-if="kind === 'reduction'" class="ttw-field"><span class="ttw-label">{{ t('gallery.method') }}</span>

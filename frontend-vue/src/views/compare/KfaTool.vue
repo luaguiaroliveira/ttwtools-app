@@ -77,7 +77,6 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
       <FeatureSelect v-model="f.feature" :fields="layerFields" />
       <label class="ttw-field"><span class="ttw-label flex items-center gap-1"><HelpTip term="kfa">{{ t('kfa.metric') }}</HelpTip></span>
         <select v-model="f.metric" class="select select-sm" data-testid="kfa-metric"><option value="kfa">KFA (Biber & Egbert)</option><option value="kfa2">KFA2</option></select></label>
-      <label class="ttw-field w-24"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" data-testid="kfa-min-effect" /></label>
       <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
       <span class="badge badge-outline" data-testid="kfa-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
       <HelpTip term="kfa" />
@@ -90,7 +89,10 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="text-sm">{{ t('kfa.results', { n: shown.rows.length, n1: data.n1, n2: data.n2 }) }} · {{ t('kfa.result_layer', { layer: lastParams?.layer }) }} · {{ t('kfa.result_feature', { feature: data.feature }) }}</p>
-      <div class="flex gap-1"><CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" /></div>
+      <div class="flex flex-wrap items-end gap-2">
+      <label class="ttw-field w-28"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.1" min="0" class="input input-sm" data-testid="kfa-min-effect" /></label>
+        <span class="text-xs text-text-muted pb-2">{{ t('kfa.min_effect_filter') }}</span>
+        <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" /></div>
       <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
       <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
         <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
