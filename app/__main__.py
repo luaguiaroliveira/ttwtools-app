@@ -328,7 +328,6 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
         resizable=True,
         min_size=(900, 600),
     )
-
     # projeto compactado com alterações não salvas: o sistema pede confirmação ao fechar
     # (confirm_close é lido na hora de fechar nos três sistemas)
     def _watch_unsaved():
@@ -343,10 +342,19 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
 
     threading.Thread(target=_watch_unsaved, daemon=True, name="unsaved-watch").start()
 
-    webview.start(debug=False, localization={
+    localization = {
         "global.quitConfirmation": "Há alterações não salvas no projeto (use Arquivo → Salvar). Fechar mesmo assim?\n"
                                    "There are unsaved changes in the project (use File → Save). Quit anyway?",
-    })
+    }
+    # Linux: o ícone da janela vem do icon.png ao lado do executável (Windows/macOS usam o embutido)
+    icon = Path(sys.executable).parent / "icon.png"
+    if sys.platform.startswith("linux") and getattr(sys, "frozen", False) and icon.is_file():
+        try:
+            webview.start(debug=False, localization=localization, icon=str(icon))
+            return
+        except TypeError:  # pywebview antigo, sem o parâmetro icon
+            pass
+    webview.start(debug=False, localization=localization)
 
 
 def _wait_for_server(host: str, port: int, timeout: float = 10.0) -> None:
