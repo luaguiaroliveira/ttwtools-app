@@ -24,11 +24,14 @@ from app import state as app_state
 router = APIRouter()
 
 
-def _project():
+def _project(progress=None):
+    """Abre o projeto atual. Com `progress` (tarefa), o índice de busca, se for montado sob demanda, informa o andamento."""
     if not app_state.current_project_path:
         raise HTTPException(status_code=400, detail="Nenhum projeto aberto.")
     import ttwtools
-    return ttwtools.open_project(app_state.current_project_path)
+    proj = ttwtools.open_project(app_state.current_project_path)
+    proj.index_progress = progress
+    return proj
 
 
 def _where(items: list[str] | None) -> dict:
@@ -475,8 +478,8 @@ class KeywordsRequest(BaseModel):
 def compare_keywords(req: KeywordsRequest, async_: bool = _ASYNC):
     import ttwtools
 
-    def compute(_progress):
-        with _project() as proj:
+    def compute(progress):
+        with _project(progress) as proj:
             return _call(ttwtools.keywords, proj, req.corpus, req.reference, unit=req.unit, measure=req.measure, n=req.n,
                          layer=req.layer, where=req.where, min_freq=req.min_freq, min_range=req.min_range,
                          correction=req.correction, top=req.top, lang=req.lang)
@@ -623,7 +626,7 @@ def compare_kfa(req: KfaRequest, async_: bool = _ASYNC):
     import ttwtools
 
     def compute(progress):
-        with _project() as proj:
+        with _project(progress) as proj:
             return _call(ttwtools.kfa_layers, proj, req.corpus1, req.corpus2, req.layer, req.feature, req.metric,
                          req.min_effect, req.join, req.where1, req.where2, progress=progress)
     return _maybe_async("kfa", async_, compute)
@@ -663,8 +666,8 @@ def compare_viz(kind: Literal["matrix", "heatmap", "reduction"], req: VizRequest
     from ttwtools import viz
     sides = [s.model_dump() for s in req.sides]
 
-    def compute(_progress):
-        with _project() as proj:
+    def compute(progress):
+        with _project(progress) as proj:
             if kind == "matrix":
                 return _call(viz.feature_matrix, proj, sides, req.layer, req.features, req.feature, req.top)
             if kind == "heatmap":
@@ -705,8 +708,8 @@ def lab_compare(req: LabRequest, async_: bool = _ASYNC):
     """Laboratório (experimental): comparar N grupos (ttwtools.experimental.compare_groups)."""
     from ttwtools import experimental as ex
 
-    def compute(_progress):
-        with _project() as proj:
+    def compute(progress):
+        with _project(progress) as proj:
             if req.group_by:
                 if not req.corpus:
                     raise HTTPException(status_code=400, detail="group_by pede corpus")
@@ -733,8 +736,8 @@ def compare_bands(req: BandsRequest, async_: bool = _ASYNC):
     """Faixas de frequência lexical do corpus contra uma referência."""
     import ttwtools
 
-    def compute(_progress):
-        with _project() as proj:
+    def compute(progress):
+        with _project(progress) as proj:
             return _call(ttwtools.frequency_bands, proj, req.corpus, req.reference, unit=req.unit,
                          bands=tuple(req.bands), layer=req.layer, where=req.where)
     return _maybe_async("bands", async_, compute)
