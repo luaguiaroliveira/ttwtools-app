@@ -307,3 +307,8 @@ Pedido do usuário: insistir no `TCL2`, medir com lemas e testar um arquivo no f
 **Decisão a tomar.** `TCL2` real entrega 0,76× em camadas e 0,79× no arquivo, com ~20% menos que o `TCL1`, e habilita consultas por ids (a implementação atual ainda **não** as usa: o aplicativo continua reconstruindo `tokens`). Vale ligar por padrão só se as consultas por ids forem implementadas (seção 5, passo 3) ou se o ganho de ~20% no arquivo justificar quebrar a abertura em versões anteriores.
 
 **Arquivos de teste** (gerados nesta sessão, na pasta temporária da sessão, ficam até você apagar): `scratchpad/out/lemas_tcl1.ttwa` (176,6 MB) e `lemas_tcl2.ttwa` (139,2 MB), ambos com camadas `spacy` e `stanza` **com lema** para o corpus `essays_bawe_somentetexto`, para testar no Intel.
+
+
+## 12. `TCL2` vira o padrão (2026-09-30)
+
+Decisão do usuário: usar `TCL2` a partir de agora, pela redução de tamanho (~20–25%) e pela rapidez de busca. Feito: `layerfmt.default_format()` devolve `tcl2` (a variável `TTWTOOLS_LAYER_FORMAT=tcl1` volta ao `TCL1`); testes ajustados (`tests/test_layerfmt.py` cobre os dois formatos; `test_layerfmt_tcl2.py` cobre padrão, `TCL1` forçado e exportação de arquivo leve `TCL1` para `TCL2`); 248 testes do pacote e 51 do servidor passam. **Ressalvas ditas ao usuário:** (1) a rapidez de busca **ainda não existe no aplicativo**: as consultas continuam por `tokens`; só o spike mediu os ids; (2) arquivos gravados agora **não abrem em versões anteriores**; (3) copiar um arquivo antigo inteiro (`save-as` de um `.ttwa` sem tabelas) não converte: medido, o resultado sai idêntico (176,6 MB, `TCL1`); a conversão acontece ao abrir e salvar sem tabelas de busca, ou ao exportar um corpus (`.ttwc`, `.ttwcl`, `.ttwal`).
