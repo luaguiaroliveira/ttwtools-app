@@ -4,7 +4,7 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** A5 (A1–A4 concluídos)
+- **Passo atual:** A6 (A1–A5 concluídos)
 - **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
 - **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
 - **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
@@ -64,11 +64,12 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 ### A5 Camadas em formato colunar (dentro de `layer_blobs`)
 - Medido: 219,9 MB (JSON) → 49,5 MB cru → **15,0 MB com zlib** (camada de 3,76 M de tokens), contra 34,1 MB do JSON+zlib.
 - **Fazer:**
-  - [ ] `ttwtools.layerfmt`: `encode(tokens) -> bytes` / `decode(bytes) -> tokens`, cabeçalho com magia e **versão** (`TCL1`), dicionário local por documento (o léxico por corpus vem na Fase B), colunas em `array`/`struct` (sem numpy obrigatório), `zlib`. `decode` aceita também o blob JSON antigo (retrocompatível).
-  - [ ] `pack_search_tables` e `rebuild_search_tables` gravam/leem o formato novo (blobs antigos continuam legíveis); teste de ida e volta token a token com camadas reais pequenas (spaCy, Stanza, MFTE, BiberPlus).
-  - [ ] Medir tempo de codificar/decodificar em máquina lenta (registrar) e o tamanho no projeto real (uma vez).
+  - [x] `ttwtools.layerfmt`: `encode(tokens) -> bytes` / `decode(bytes) -> tokens`, cabeçalho com magia e **versão** (`TCL1`), dicionário local por documento (o léxico por corpus vem na Fase B), colunas em `array`/`struct` (sem numpy obrigatório), `zlib`. `decode` aceita também o blob JSON antigo (retrocompatível).
+  - [x] `pack_search_tables` e `rebuild_search_tables` gravam/leem o formato novo (blobs antigos continuam legíveis); teste de ida e volta token a token com camadas reais pequenas (spaCy, Stanza, MFTE, BiberPlus).
+  - [x] Medir tempo de codificar/decodificar em máquina lenta (registrar) e o tamanho no projeto real (uma vez).
 - **Pronto quando:** `.ttwcl` leve do corpus grande cai bem abaixo dos 466 MB (esperado ~180 MB só removendo `tagged_files` e ~100 MB com o formato colunar).
-- **Relato:** _(preencher)_
+- **Relato:** `ttwtools/layerfmt.py` (`TCL1`): `encode(rows)`/`decode(blob)`. Blob = `b"TCL1"` + zlib( `n:u32`, início (diferença do anterior) e tamanho do token em `int32`, e 7 colunas de texto: dicionário local em JSON + índice de 2 ou 4 bytes por token ). Só biblioteca padrão (`array`, `struct`, `zlib`, `json`); sem numpy. `decode` lê também o JSON+zlib antigo, então arquivos antigos abrem para sempre; linhas fora do padrão (valor não textual) caem no formato antigo (`_pack_rows`). `pack_search_tables`, a exportação leve (`_save_corpora_subset`), `rebuild_search_tables` e `_layer_rows` (A1) usam o módulo. Um arquivo salvo assim **não abre em versões anteriores ao 0.6** (só quando salvo sem tabelas de busca, ou em `.ttwcl`/`.ttwal`); o resto do formato não muda. Testes (`tests/test_layerfmt.py`, 8): ida e volta token a token em casos extremos (None, unicode, vazio, >65 535 formas) e em **todas as camadas reais** do `v2_small.ttwa` (BiberPlus, spaCy, MFTE; Stanza não está na amostra, coberta na medição real abaixo), blob antigo, fallback, pack→rebuild sem perda, menor que o JSON.
+  - **Medição no projeto real** (cópia; camadas por documento, ~3 mil tokens cada; 62 camadas amostradas, 188 mil tokens, ida e volta conferida): JSON+zlib 1,8 MB → TCL1 1,0 MB (**−45%**; o dicionário é por documento, o léxico por corpus vem na Fase B). **Tempo** (Apple Silicon): codificar ≈ 890 mil tokens/s, decodificar ≈ 3,3 milhões tokens/s, então recriar as tabelas de busca de 19 M de tokens leva ~6 s só de decodificação (o resto é inserir e indexar). **Não medido em máquina lenta**: em Mac Intel de 2015 espere ~3–5× (segundos, não minutos); confirmar no Mac Intel na A6. **Resultado do plano:** `.ttwcl` do corpus grande (essays_bawe) **103,5 MB** (era 466 MB; meta ~100 MB) e o do pequeno 6,2 MB, gerados depois de compactar (A1) e com o conjunto reduzido de índices (A4). O banco de trabalho foi de 2.979 → 2.066 MB (A1 + A4).
 
 ### A6 Fechar a Fase A
 - **Fazer:**
