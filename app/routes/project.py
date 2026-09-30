@@ -275,6 +275,11 @@ def export_project(req: ExportRequest):
     else:
         dest = ttwa_path.parent / ttwa_path.stem
 
+    from ttwtools.project import estimate_export_bytes
+    from ttwtools.storage import ensure_free_space
+    with TTWAProject.open(app_state.current_project_path) as proj:
+        ensure_free_space(dest, estimate_export_bytes(proj), "export")      # antes de criar a pasta
+
     dest.mkdir(parents=True, exist_ok=True)
 
     selected = set(req.items) if req.items else None
@@ -405,6 +410,11 @@ def saveas_project(req: SaveAsRequest):
                 names = corpora or proj.list_corpus_names()
                 save_corpora_as(proj, names, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
             return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpora": names}
+        if switch and (compress or not tables):
+            # depois de gravar, o app passa a trabalhar numa cópia do arquivo novo (na pasta temporária)
+            import tempfile
+            from ttwtools import storage
+            storage.ensure_free_space(tempfile.gettempdir(), storage.with_margin(Path(source).stat().st_size), "save_as")
         save_project_as(source, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
         if switch:
             if compress or not tables:
@@ -646,4 +656,5 @@ def _run_open_compressed(job_id: str, source: str) -> None:
         register_working_copy(work, None)
         import shutil
         shutil.rmtree(Path(work).parent, ignore_errors=True)      # a cópia parcial (GBs) não fica para trás
-        _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc)})
+        _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc),
+                                   **_jobs_registry.error_fields(exc)})

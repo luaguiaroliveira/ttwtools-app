@@ -4,7 +4,7 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** A2 (A1 concluído)
+- **Passo atual:** A3 (A1 e A2 concluídos)
 - **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
 - **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
 - **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
@@ -31,10 +31,10 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ### A2 Checar espaço livre antes de gravar
 - **Fazer:**
-  - [ ] `ttwtools.storage.ensure_free_space(path, needed_bytes, what)` (usa `shutil.disk_usage`); estimativas: salvar/salvar como (tamanho do banco + margem), exportar (estimativa por corpus), abrir compactado (tamanho descompactado lido do cabeçalho gzip quando possível, senão 3× o arquivo). Erro `InsufficientDiskSpace` com valores; mensagem traduzida na tela.
-  - [ ] Chamar em salvar, salvar como, exportar, abrir arquivo compactado, importar; teste com `monkeypatch` de `disk_usage`.
+  - [x] `ttwtools.storage.ensure_free_space(path, needed_bytes, what)` (usa `shutil.disk_usage`); estimativas: salvar/salvar como (tamanho do banco + margem), exportar (estimativa por corpus), abrir compactado (tamanho descompactado lido do cabeçalho gzip quando possível, senão 3× o arquivo). Erro `InsufficientDiskSpace` com valores; mensagem traduzida na tela.
+  - [x] Chamar em salvar, salvar como, exportar, abrir arquivo compactado, importar; teste com `monkeypatch` de `disk_usage`.
 - **Pronto quando:** operação recusada com mensagem clara **antes** de criar qualquer arquivo; nenhum resíduo.
-- **Relato:** _(preencher)_
+- **Relato:** novo módulo `ttwtools/storage.py` (só biblioteca padrão): `ensure_free_space(path, bytes, what)` (sobe até uma pasta existente; não cria nada), `InsufficientDiskSpace` (com `code` e `params` para a tela), `with_margin` (+10% + 64 MB), `estimate_open` (ISIZE do cabeçalho gzip quando plausível; senão 3× o arquivo). Chamado em: `save_project_as` (destino e, sem tabelas de busca, também a pasta temporária; antes de criar a pasta de destino), `save_corpus_as`/`save_corpora_as` (fração dos documentos × tamanho do banco), `decompress_project_file`/`decompress_from_ttwt` (abrir), `import_corpus` (2× o tamanho dos textos), rota `/export` (`estimate_export_bytes`: textos ×2, etiquetados ×5, tabelas ×2) e rota `saveas` com troca de projeto (cópia de trabalho). `TTWAProject.open` agora apaga a pasta de trabalho se a descompressão falha (antes vazava). Erros: rota síncrona → HTTP 507 com `{code, what, needed_mb, free_mb, path}`; tarefa → `error_code`/`error_params` (novo `jobs.error_fields`); CLI → mensagem e código 1. Tela: `error.disk_space` e `disk.what.*` (pt/en), em `errors.js` e `JobProgress`. Testes: `tests/test_storage.py` (8) e `tests/test_routes_storage.py` (`monkeypatch` de `shutil.disk_usage`, sem resíduo em pasta nova nem em `ttw_*` temporários). Limite conhecido: o ISIZE do gzip dá a volta em 4 GB (usa 3× se o valor fica menor que o arquivo); a migração v0.3 depois de abrir não é estimada.
 
 ### A3 Pastas de trabalho e cache num só lugar, com dono, limite e limpeza
 - **Fazer:**

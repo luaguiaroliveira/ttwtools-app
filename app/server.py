@@ -85,6 +85,14 @@ def build_app(open_file: str | None = None) -> FastAPI:
         default_response_class=SafeJSONResponse,
     )
 
+    from fastapi.responses import JSONResponse
+    from ttwtools.storage import InsufficientDiskSpace
+
+    @app.exception_handler(InsufficientDiskSpace)
+    async def _no_space(_request, exc: InsufficientDiskSpace):
+        """507 com código e valores: a tela traduz a mensagem (nada foi criado)."""
+        return JSONResponse(status_code=507, content={"detail": {"code": exc.code, **exc.params, "message": str(exc)}})
+
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],

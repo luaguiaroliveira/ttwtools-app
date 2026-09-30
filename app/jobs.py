@@ -60,6 +60,13 @@ def new(kind: str, **fields) -> str:
     return job_id
 
 
+def error_fields(exc: BaseException) -> dict:
+    """`error_code` e `error_params` quando o erro tem código estável (ex.: InsufficientDiskSpace):
+    a tela traduz por eles em vez de mostrar o texto em português."""
+    code = getattr(exc, "code", None)
+    return {"error_code": code, "error_params": getattr(exc, "params", {})} if isinstance(code, str) else {}
+
+
 def start(kind: str, fn: Callable[..., Any], *args, **fields) -> str:
     """Cria a tarefa e roda `fn(job, *args)` numa thread daemon."""
     job_id = new(kind, **fields)
@@ -73,7 +80,8 @@ def start(kind: str, fn: Callable[..., Any], *args, **fields) -> str:
         except JobCancelled:
             job.update(status="cancelled")
         except Exception as exc:  # noqa: BLE001 — erro vira estado da tarefa
-            job.update(status="error", error=f"{type(exc).__name__}: {exc}", traceback=traceback.format_exc())
+            job.update(status="error", error=f"{type(exc).__name__}: {exc}", traceback=traceback.format_exc(),
+                       **error_fields(exc))
         finally:
             job.update(finished_at=time.time())
 
