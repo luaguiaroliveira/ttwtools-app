@@ -595,7 +595,7 @@ def _migration_progress(job_id: str):
     """Progresso da migração v0.3 na tarefa: etapa (layers/indexes) e arquivos feitos/total."""
     def cb(done: int, total: int, stage: str):
         _open_jobs[job_id].update({"done": done, "total": total,
-                                   "stage": stage if stage in ("indexes", "search", "decompress") else "migrate",
+                                   "stage": stage if stage in ("indexes", "search", "decompress") or stage.startswith("idx_") else "migrate",
                                    "message": f"{done}/{total}"})
         if _open_jobs[job_id].get("cancel_requested"):      # a migração retoma de onde parou na próxima vez
             raise _jobs_registry.JobCancelled()

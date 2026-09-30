@@ -227,6 +227,7 @@ const exportAll = () => act(async () => {
     </p>
     <BusyModal :open="Boolean(opening)" :title="t('project.opening_title')" :job="opening" @cancel="api.jobs.cancel(opening.id)">
       <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted mt-2">{{ t('project.migrate_hint') }}</p>
+      <p v-else-if="opening?.stage?.startsWith('idx_')" class="text-xs text-text-muted mt-2" data-testid="index-hint">{{ t('project.index_hint') }}</p>
     </BusyModal>
     <ExportDialog :open="exportOpen" :corpora="corpora" :busy="busy || saving" @close="exportOpen = false" @export="exportTo" />
     <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" @cancel="saveJob.cancel" />

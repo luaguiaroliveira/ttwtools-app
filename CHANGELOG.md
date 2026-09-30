@@ -11,6 +11,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Compactar projeto** (Arquivo → Mais opções; `ttwtools compact`; `POST /api/project/compact`): remove as cópias antigas das etiquetagens (`tagged_files`) que já estão nas camadas, conferindo token a token; simula primeiro e pede confirmação. No projeto de teste, o banco foi de 2.979 para 2.066 MB.
 - **Checagem de espaço livre** antes de salvar, salvar como, exportar, abrir arquivo compactado e importar: a operação é recusada com mensagem clara (pt/en), sem criar nada.
 - **Uso de disco** (Módulos): o que ocupa disco (cópias de trabalho e cache), botão "Limpar restos" e aviso ao iniciar quando havia lixo grande; `ttwtools cache list|clear`. Cache com limite (`cache_limit_mb`, padrão 5 GB) e remoção do menos usado.
+- **Índice de busca em cache** (beta): arquivos salvos sem tabelas de busca abrem com o índice guardado neste computador (construído uma vez, com barra de progresso por etapa); a 2ª abertura leva ~1 s em vez de ~1 min e a cópia de trabalho fica pequena. `ttwtools index status|build|clear`; desliga com `TTWTOOLS_INDEX_CACHE=0`.
 - Camadas empacotadas em **formato colunar** (`TCL1`), ~45% menores que JSON+zlib; arquivos antigos continuam abrindo.
 
 ### Alterado

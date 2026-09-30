@@ -46,3 +46,12 @@ def spacy_model():
         return spacy.load("en_core_web_sm")
     except OSError:
         pytest.skip("modelo en_core_web_sm não instalado")
+
+
+
+@pytest.fixture(autouse=True)
+def _isolated_cache(tmp_path_factory, monkeypatch):
+    """Os testes nunca escrevem no cache nem na pasta de dados reais do usuário."""
+    base = tmp_path_factory.mktemp("ttw_user")
+    monkeypatch.setenv("TTWTOOLS_CACHE_DIR", str(base / "cache"))
+    monkeypatch.setenv("TTWTOOLS_DATA_DIR", str(base / "data"))
