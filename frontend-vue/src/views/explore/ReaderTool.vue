@@ -6,7 +6,7 @@
 // token mostra etiquetas, lema, traços e a definição do tagset.
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import rough from 'roughjs/bundled/rough.esm.js'
 import { api } from '../../api/index.js'
 import MarkIcon from '../../components/MarkIcon.vue'
@@ -17,6 +17,11 @@ import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../u
 const props = defineProps({ corpus: String, layer: String })
 const { t, locale } = useI18n()
 const route = useRoute()
+const router = useRouter()
+// voltar/avançar no histórico (ex.: KWIC → leitor → volta ao KWIC); habilitados só se houver para onde ir
+const hist = ref({ back: false, forward: false })
+const updateHist = () => setTimeout(() => { const st = globalThis.history?.state ?? {}; hist.value = { back: Boolean(st.back), forward: Boolean(st.forward) } }, 0)
+watch(() => route.fullPath, updateHist, { immediate: true })
 const files = ref([])
 const file = ref(route.query.file || '')
 const doc = ref(null)
@@ -271,6 +276,13 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
 <template>
   <section class="flex flex-col gap-3">
     <div class="ttw-form print:hidden">
+      <div class="ttw-field" role="group" :aria-label="t('reader.history')"><span class="ttw-label">{{ t('reader.history') }}</span>
+        <div class="flex gap-1">
+          <button type="button" class="btn btn-sm btn-square" :disabled="!hist.back" :aria-label="t('reader.back')" :title="t('reader.back')" data-testid="reader-back" @click="router.back()">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg></button>
+          <button type="button" class="btn btn-sm btn-square" :disabled="!hist.forward" :aria-label="t('reader.forward')" :title="t('reader.forward')" data-testid="reader-forward" @click="router.forward()">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5" /></svg></button>
+        </div></div>
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.document') }}</span>
         <select v-model="file" class="select select-sm max-w-xs" data-testid="reader-file"><option v-for="f in files" :key="f">{{ f }}</option></select></label>
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.color_by') }}</span>

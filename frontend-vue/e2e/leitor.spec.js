@@ -127,3 +127,29 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   await expect(page.getByTestId('disp-rows').locator('button').first()).toBeVisible({ timeout: 30_000 })
   expect(errors).toEqual([])
 })
+
+test('ferramenta cujo arquivo sumiu mostra aviso em vez de área em branco; leitor tem voltar/avançar', async ({ page, request }, info) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
+  expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
+  await request.post('/api/corpora/import', { data: { corpus_name: 'corifa', source: { kind: 'folder', path: path.join(CORPORA, 'CorIFAessaysNE_5') } } })
+  await page.goto('/#/explorar/kwic')
+  await page.getByTestId('explore-corpus').selectOption('corifa')
+  await page.getByTestId('query-input').fill('the')
+  await page.getByTestId('query-go').click()
+  await expect(page.getByTestId('kwic-total')).toContainText('1', { timeout: 30_000 })
+  // KWIC → leitor: o voltar leva de volta e o avançar retorna
+  if ((page.viewportSize()?.width ?? 0) >= 640) {
+    await page.locator('tbody tr').first().click()
+    await expect(page).toHaveURL(/leitor/)
+    await expect(page.getByTestId('reader-back')).toBeEnabled()
+    await expect(page.getByTestId('reader-forward')).toBeDisabled()
+    await page.getByTestId('reader-back').click()
+    await expect(page).toHaveURL(/kwic/)
+    await page.goForward()
+    await expect(page.getByTestId('reader-forward')).toBeDisabled()
+  }
+  // o arquivo da Frequência "some" (interface recompilada com a janela aberta)
+  await page.route('**/assets/FrequencyTool-*.js', (r) => r.fulfill({ status: 404, body: 'nope' }))
+  await page.getByRole('tab', { name: /Frequência|Frequency/ }).click()
+  await expect(page.getByTestId('tool-load-error')).toBeVisible({ timeout: 30_000 })
+})

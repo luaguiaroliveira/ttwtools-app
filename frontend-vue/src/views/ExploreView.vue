@@ -1,18 +1,19 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import TextType from '../components/vb/TextType.vue'
+import { lazyTool } from '../utils/lazy.js'
 import { useSession } from '../stores/session.js'
 
 const TOOLS = {
-  busca: defineAsyncComponent(() => import('./explore/SearchTool.vue')),
-  kwic: defineAsyncComponent(() => import('./explore/KwicTool.vue')),
-  frequencia: defineAsyncComponent(() => import('./explore/FrequencyTool.vue')),
-  colocados: defineAsyncComponent(() => import('./explore/CollocatesTool.vue')),
-  dispersao: defineAsyncComponent(() => import('./explore/DispersionTool.vue')),
-  leitor: defineAsyncComponent(() => import('./explore/ReaderTool.vue')),
+  busca: lazyTool(() => import('./explore/SearchTool.vue')),
+  kwic: lazyTool(() => import('./explore/KwicTool.vue')),
+  frequencia: lazyTool(() => import('./explore/FrequencyTool.vue')),
+  colocados: lazyTool(() => import('./explore/CollocatesTool.vue')),
+  dispersao: lazyTool(() => import('./explore/DispersionTool.vue')),
+  leitor: lazyTool(() => import('./explore/ReaderTool.vue')),
 }
 const { t } = useI18n()
 const route = useRoute()

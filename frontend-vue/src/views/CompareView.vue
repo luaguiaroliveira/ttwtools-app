@@ -1,15 +1,16 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import TextType from '../components/vb/TextType.vue'
+import { lazyTool } from '../utils/lazy.js'
 import { useSession } from '../stores/session.js'
 const TOOLS = {
-  'palavras-chave': defineAsyncComponent(() => import('./compare/KeywordsTool.vue')),
-  kfa: defineAsyncComponent(() => import('./compare/KfaTool.vue')),
-  faixas: defineAsyncComponent(() => import('./compare/BandsTool.vue')),
-  laboratorio: defineAsyncComponent(() => import('./compare/LabTool.vue')),
+  'palavras-chave': lazyTool(() => import('./compare/KeywordsTool.vue')),
+  kfa: lazyTool(() => import('./compare/KfaTool.vue')),
+  faixas: lazyTool(() => import('./compare/BandsTool.vue')),
+  laboratorio: lazyTool(() => import('./compare/LabTool.vue')),
 }
 const { t } = useI18n()
 const route = useRoute()
