@@ -4,6 +4,15 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Corrigido
+
+- **Comparar** (palavras-chave, KFA, faixas, galeria de gráficos e Laboratório) passa a calcular como **tarefa com andamento** (`?async=1`), em vez de uma requisição parada até o fim: o WebKit derruba requisições sem resposta por ~60 s, o que aparecia como "sem conexão com o servidor local" em máquinas lentas (Mac Intel). Falhas isoladas de rede ao consultar o andamento são repetidas.
+- Barra de progresso própria (o `<progress>` nativo aparecia como barra cheia e parada no macOS 12): faixa deslizante quando o andamento é desconhecido e largura real quando há porcentagem.
+
+### Alterado
+
+- **KFA** mostra o andamento por documento contado e **reaproveita o resultado** guardado no projeto (mesmos parâmetros e mesmas camadas); repetições não se acumulam. As tabelas de features ficam em memória: o detalhe de uma feature e a galeria não recontam os corpora.
+
 ## [0.6.0-alpha.1] — 2026-09-30
 
 > Linha **0.6** (desenvolvimento): novo armazenamento de corpora e análises, em **beta** (mais leve, leitura de todos os formatos anteriores). Plano em `novodesenho/armazenamento.md`.

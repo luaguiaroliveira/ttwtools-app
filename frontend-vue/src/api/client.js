@@ -50,3 +50,38 @@ export async function request(method, path, opts = {}) {
 
 export const get = (path, params, signal) => request('GET', path, { params, signal })
 export const post = (path, body, params) => request('POST', path, { body, params })
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+/**
+ * Cálculo longo como tarefa (`?async=1`): inicia, acompanha por /api/jobs/{id} e devolve o resultado.
+ * Uma requisição parada por mais de ~60 s é derrubada pelo WebKit ("sem conexão com o servidor");
+ * aqui cada consulta ao andamento é curta. Falhas de rede isoladas na consulta são repetidas (a tarefa
+ * continua no servidor). `onJob(job)` recebe cada estado (etapa, feitos/total) para a barra de progresso.
+ * @param {string} path  @param {any} body
+ * @param {{onJob?: (job: any) => void, signal?: AbortSignal, interval?: number, retries?: number}} [opts]
+ */
+export async function postJob(path, body, { onJob, signal, interval = 500, retries = 5 } = {}) {
+  const { job_id } = await request('POST', path, { body, params: { async: 1 }, signal })
+  let failures = 0
+  for (;;) {
+    if (signal?.aborted) throw new DOMException('cancelado', 'AbortError')
+    let job
+    try {
+      job = await request('GET', `/api/jobs/${job_id}`, { signal })
+      failures = 0
+    } catch (err) {
+      if (err?.name === 'AbortError' || !(err instanceof ApiError) || err.status !== 0 || ++failures > retries) throw err
+      await sleep(Math.min(4000, interval * 2 ** failures))
+      continue
+    }
+    onJob?.(job)
+    if (job.status === 'done') return job.result
+    if (job.status === 'error') {
+      const detail = job.error_code ? { code: job.error_code, ...(job.error_params ?? {}) } : String(job.error ?? '').replace(/^\w+(Error|Exception): /, '')
+      throw new ApiError(422, detail)
+    }
+    if (job.status === 'cancelled') throw new DOMException('cancelado', 'AbortError')
+    await sleep(interval)
+  }
+}

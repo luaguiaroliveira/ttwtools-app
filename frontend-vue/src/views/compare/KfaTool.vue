@@ -20,6 +20,8 @@ const data = ref(null)
 const error = ref(null)
 const detail = ref(null)
 const busy = ref(false)
+const job = ref(null)          // andamento da tarefa (etapa e documentos contados) para a barra
+let jobId = null
 const layers = computed(() => [...new Set((activeCorpus.value?.layers ?? []).map((l) => l.tool))])
 watch(layers, (ls) => { if (!f.value.layer && ls.length) f.value.layer = ls[0] }, { immediate: true })
 const sameCorpus = computed(() => f.value.corpus2 === '__groups__')
@@ -37,8 +39,8 @@ async function run() {
   busy.value = true
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
-      layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect })
-  } catch (err) { error.value = err.message } finally { busy.value = false }
+      layer: f.value.layer, metric: f.value.metric, min_effect: f.value.min_effect }, { onJob: (j) => { job.value = j; jobId = j.id } })
+  } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
 async function select(name) {
   const [a, b] = await Promise.all([1, 2].map((n) => { const s = side(n); return api.compare.feature({ corpus: s.corpus, where: s.where, layer: f.value.layer, name }) }))
@@ -50,7 +52,7 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
+    <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" :job="job" @cancel="jobId && api.jobs.cancel(jobId)" />
     <p v-if="!layers.length" class="text-text-muted">{{ t('kfa.no_layer') }}</p>
     <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('kfa.corpus2') }}</span>

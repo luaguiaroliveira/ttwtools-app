@@ -4,6 +4,7 @@
 // uma barra indeterminada com `message`. `delay` (ms) evita que o modal pisque em cálculos rápidos.
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import JobProgress from './JobProgress.vue'
+import ProgressBar from './ProgressBar.vue'
 const props = defineProps({ open: Boolean, title: { type: String, required: true }, job: Object, message: { type: String, default: '' }, delay: { type: Number, default: 0 } })
 const emit = defineEmits(['cancel'])
 const el = ref(null)
@@ -27,7 +28,7 @@ onBeforeUnmount(() => clearTimeout(timer))
       <JobProgress v-if="job" :job="job" @cancel="emit('cancel')" />
       <div v-else class="flex flex-col gap-2" role="status" aria-live="polite">
         <p v-if="message" class="text-sm">{{ message }}</p>
-        <progress class="progress progress-primary w-full" />
+        <ProgressBar />
       </div>
       <slot />
     </div>

@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { progressPercent } from '../composables/useJob.js'
+import ProgressBar from './ProgressBar.vue'
 import { diskText } from '../utils/errors.js'
 const props = defineProps({ job: Object })
 const emit = defineEmits(['cancel'])
@@ -23,7 +24,7 @@ const active = computed(() => ['queued', 'running'].includes(props.job?.status))
         {{ t('job.cancel') }}
       </button>
     </div>
-    <progress class="progress progress-primary w-full" :value="pct ?? undefined" max="100" :aria-valuenow="pct" />
+    <ProgressBar :value="pct" />
     <p v-if="job.status === 'error'" class="text-error text-sm">{{ job.error_code === 'insufficient_disk_space' ? diskText(job.error_params) : job.error }}</p>
   </div>
 </template>

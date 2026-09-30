@@ -3,7 +3,7 @@
 // vêm do pacote (/api/compare/viz/*); o Plotly só carrega no PCA 3D.
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { post } from '../api/client.js'
+import { postJob } from '../api/client.js'
 import ExportMenu from './ExportMenu.vue'
 import BusyModal from './BusyModal.vue'
 import SideLegend from './SideLegend.vue'
@@ -41,7 +41,7 @@ async function load() {
   if (!what) return
   busy.value = true
   try {
-    data.value = await post(`/api/compare/viz/${what}`, { sides: props.sides, layer: props.layer, features: what === 'matrix' ? topFeatures.value : null,
+    data.value = await postJob(`/api/compare/viz/${what}`, { sides: props.sides, layer: props.layer, features: what === 'matrix' ? topFeatures.value : null,
       top: nFeatures.value, method: kind.value === 'pca3d' ? 'pca3d' : method.value, perplexity: 5 })
   } catch (err) { error.value = err.message } finally { busy.value = false }
 }

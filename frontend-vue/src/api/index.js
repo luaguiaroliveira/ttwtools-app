@@ -1,5 +1,5 @@
 // Endpoints usados pela interface (um lugar só para os caminhos).
-import { get, post } from './client.js'
+import { get, post, postJob } from './client.js'
 
 const where = (w) => (w ? Object.entries(w).flatMap(([k, vs]) => [].concat(vs).map((v) => `${k}=${v}`)) : undefined)
 
@@ -64,14 +64,15 @@ export const api = {
     dispersion: (p) => get('/api/explore/dispersion', { ...p, where: where(p.where) }),
   },
   compare: {
-    keywords: (body) => post('/api/compare/keywords', body),
-    bands: (body) => post('/api/compare/bands', body),
-    kfa: (body) => post('/api/compare/kfa', body),
+    // cálculos longos: tarefa com andamento (não uma requisição parada); `opts.onJob` recebe o andamento
+    keywords: (body, opts) => postJob('/api/compare/keywords', body, opts),
+    bands: (body, opts) => postJob('/api/compare/bands', body, opts),
+    kfa: (body, opts) => postJob('/api/compare/kfa', body, opts),
     feature: (p) => get('/api/compare/feature', { ...p, where: where(p.where) }),
     references: () => get('/api/references'),
   },
   lab: {
-    compare: (body) => post('/api/lab/compare', body),
+    compare: (body, opts) => postJob('/api/lab/compare', body, opts),
   },
   writing: {
     analyze: (body) => post('/api/writing/analyze', body),

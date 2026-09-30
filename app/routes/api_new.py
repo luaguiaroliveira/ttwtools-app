@@ -46,6 +46,30 @@ def _call(fn, *args, **kwargs):
         raise HTTPException(status_code=422, detail=str(exc.args[0] if exc.args else exc)) from exc
 
 
+def _maybe_async(kind: str, async_: bool, compute):
+    """`compute(progress)` devolve o resultado. Com `async_` (`?async=1`) roda como tarefa e devolve
+    `{"job_id"}`: a tela acompanha por /api/jobs/{id} (com andamento e cancelamento) em vez de ficar
+    numa requisição parada, que o WebKit derruba depois de ~60 s sem resposta ("sem conexão com o
+    servidor"). Sem `async_`, calcula na hora (pacote, linha de comando e testes)."""
+    if not async_:
+        return compute(None)
+
+    def work(job):
+        def progress(done, total, stage=None):
+            if stage:
+                job.update(stage=stage)
+            job.progress(done, total, f"{done}/{total}")
+        try:
+            return compute(progress)
+        except HTTPException as exc:                 # dentro da tarefa o erro vira texto do estado
+            raise ValueError(str(exc.detail)) from exc
+
+    return {"job_id": jobs.start(kind, work)}
+
+
+_ASYNC = Query(False, alias="async", description="rodar como tarefa e devolver job_id")
+
+
 # ---------------------------------------------------------------------------
 # Taggers
 # ---------------------------------------------------------------------------
@@ -438,12 +462,15 @@ class KeywordsRequest(BaseModel):
 
 
 @router.post("/compare/keywords", tags=["compare"])
-def compare_keywords(req: KeywordsRequest):
+def compare_keywords(req: KeywordsRequest, async_: bool = _ASYNC):
     import ttwtools
-    with _project() as proj:
-        return _call(ttwtools.keywords, proj, req.corpus, req.reference, unit=req.unit, measure=req.measure, n=req.n,
-                     layer=req.layer, where=req.where, min_freq=req.min_freq, min_range=req.min_range,
-                     correction=req.correction, top=req.top, lang=req.lang)
+
+    def compute(_progress):
+        with _project() as proj:
+            return _call(ttwtools.keywords, proj, req.corpus, req.reference, unit=req.unit, measure=req.measure, n=req.n,
+                         layer=req.layer, where=req.where, min_freq=req.min_freq, min_range=req.min_range,
+                         correction=req.correction, top=req.top, lang=req.lang)
+    return _maybe_async("keywords", async_, compute)
 
 
 class WritingRequest(BaseModel):
@@ -580,12 +607,16 @@ class KfaRequest(BaseModel):
 
 
 @router.post("/compare/kfa", tags=["compare"])
-def compare_kfa(req: KfaRequest):
-    """KFA a partir das camadas (sem reetiquetar), entre corpora ou grupos."""
+def compare_kfa(req: KfaRequest, async_: bool = _ASYNC):
+    """KFA a partir das camadas (sem reetiquetar), entre corpora ou grupos. Repetir o pedido sobre as mesmas
+    camadas devolve o resultado guardado (`cached`). Com `?async=1`: tarefa com andamento por documento."""
     import ttwtools
-    with _project() as proj:
-        return _call(ttwtools.kfa_layers, proj, req.corpus1, req.corpus2, req.layer, req.feature, req.metric,
-                     req.min_effect, req.join, req.where1, req.where2)
+
+    def compute(progress):
+        with _project() as proj:
+            return _call(ttwtools.kfa_layers, proj, req.corpus1, req.corpus2, req.layer, req.feature, req.metric,
+                         req.min_effect, req.join, req.where1, req.where2, progress=progress)
+    return _maybe_async("kfa", async_, compute)
 
 
 @router.get("/compare/feature", tags=["compare"])
@@ -617,17 +648,20 @@ class VizRequest(BaseModel):
 
 
 @router.post("/compare/viz/{kind}", tags=["compare"])
-def compare_viz(kind: Literal["matrix", "heatmap", "reduction"], req: VizRequest):
+def compare_viz(kind: Literal["matrix", "heatmap", "reduction"], req: VizRequest, async_: bool = _ASYNC):
     """Dados dos gráficos da galeria (ttwtools.viz): matriz por texto, mapa de calor, redução."""
     from ttwtools import viz
     sides = [s.model_dump() for s in req.sides]
-    with _project() as proj:
-        if kind == "matrix":
-            return _call(viz.feature_matrix, proj, sides, req.layer, req.features, req.feature, req.top)
-        if kind == "heatmap":
-            return _call(viz.heatmap, proj, sides, req.layer, req.feature, req.top)
-        return _call(viz.reduction, proj, sides, req.layer, req.method, req.feature, req.top_features,
-                     req.perplexity, req.n_neighbors, req.min_dist)
+
+    def compute(_progress):
+        with _project() as proj:
+            if kind == "matrix":
+                return _call(viz.feature_matrix, proj, sides, req.layer, req.features, req.feature, req.top)
+            if kind == "heatmap":
+                return _call(viz.heatmap, proj, sides, req.layer, req.feature, req.top)
+            return _call(viz.reduction, proj, sides, req.layer, req.method, req.feature, req.top_features,
+                         req.perplexity, req.n_neighbors, req.min_dist)
+    return _maybe_async("viz", async_, compute)
 
 
 @router.get("/references", tags=["compare"])
@@ -657,19 +691,22 @@ class LabRequest(BaseModel):
 
 
 @router.post("/lab/compare", tags=["lab"])
-def lab_compare(req: LabRequest):
+def lab_compare(req: LabRequest, async_: bool = _ASYNC):
     """Laboratório (experimental): comparar N grupos (ttwtools.experimental.compare_groups)."""
     from ttwtools import experimental as ex
-    with _project() as proj:
-        if req.group_by:
-            if not req.corpus:
-                raise HTTPException(status_code=400, detail="group_by pede corpus")
-            groups = ex.groups_by_metadata(proj, req.corpus, req.group_by)
-        else:
-            groups = [g.model_dump(exclude_none=True) for g in req.groups or []]
-        result = _call(ex.compare_groups, proj, groups, req.layer, method=req.method, feature=req.feature,
-                       metric=req.metric, top=req.top, correction=req.correction, lang=req.lang)
-    return {**result, "group_specs": groups}
+
+    def compute(_progress):
+        with _project() as proj:
+            if req.group_by:
+                if not req.corpus:
+                    raise HTTPException(status_code=400, detail="group_by pede corpus")
+                groups = ex.groups_by_metadata(proj, req.corpus, req.group_by)
+            else:
+                groups = [g.model_dump(exclude_none=True) for g in req.groups or []]
+            result = _call(ex.compare_groups, proj, groups, req.layer, method=req.method, feature=req.feature,
+                           metric=req.metric, top=req.top, correction=req.correction, lang=req.lang)
+        return {**result, "group_specs": groups}
+    return _maybe_async("lab", async_, compute)
 
 
 class BandsRequest(BaseModel):
@@ -682,12 +719,15 @@ class BandsRequest(BaseModel):
 
 
 @router.post("/compare/bands", tags=["compare"])
-def compare_bands(req: BandsRequest):
+def compare_bands(req: BandsRequest, async_: bool = _ASYNC):
     """Faixas de frequência lexical do corpus contra uma referência."""
     import ttwtools
-    with _project() as proj:
-        return _call(ttwtools.frequency_bands, proj, req.corpus, req.reference, unit=req.unit,
-                     bands=tuple(req.bands), layer=req.layer, where=req.where)
+
+    def compute(_progress):
+        with _project() as proj:
+            return _call(ttwtools.frequency_bands, proj, req.corpus, req.reference, unit=req.unit,
+                         bands=tuple(req.bands), layer=req.layer, where=req.where)
+    return _maybe_async("bands", async_, compute)
 
 
 # ---------------------------------------------------------------------------
