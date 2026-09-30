@@ -10,6 +10,7 @@ import { api } from '../api/index.js'
 import { useJob } from '../composables/useJob.js'
 import JobProgress from './JobProgress.vue'
 import BusyModal from './BusyModal.vue'
+import { OPEN_PLAN, SAVE_PLAN } from '../composables/useSteps.js'
 import Collapsible from './Collapsible.vue'
 import FileIcon from './FileIcon.vue'
 import RecentList from './RecentList.vue'
@@ -225,12 +226,12 @@ const exportAll = () => act(async () => {
        class="alert alert-warning w-full text-sm py-1">
       {{ t('project.corpus_missing', { missing: project.corpus_status.missing, changed: project.corpus_status.changed }) }}
     </p>
-    <BusyModal :open="Boolean(opening)" :title="t('project.opening_title')" :job="opening" @cancel="api.jobs.cancel(opening.id)">
+    <BusyModal :open="Boolean(opening)" :title="t('project.opening_title')" :job="opening" :plan="OPEN_PLAN" @cancel="api.jobs.cancel(opening.id)">
       <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted mt-2">{{ t('project.migrate_hint') }}</p>
       <p v-else-if="opening?.stage?.startsWith('idx_')" class="text-xs text-text-muted mt-2" data-testid="index-hint">{{ t('project.index_hint') }}</p>
     </BusyModal>
     <ExportDialog :open="exportOpen" :corpora="corpora" :busy="busy || saving" @close="exportOpen = false" @export="exportTo" />
-    <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" @cancel="saveJob.cancel" />
+    <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" :plan="SAVE_PLAN" @cancel="saveJob.cancel" />
     <JobProgress v-if="saveJob.job.value?.status === 'error'" :job="saveJob.job.value" />
     <BusyModal :open="['queued', 'running'].includes(compactJob.job.value?.status)" :title="t('project.compact_title')" :job="compactJob.job.value" @cancel="compactJob.cancel" />
     <JobProgress v-if="compactJob.job.value?.status === 'error'" :job="compactJob.job.value" />

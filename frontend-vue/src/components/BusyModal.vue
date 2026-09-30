@@ -5,7 +5,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import JobProgress from './JobProgress.vue'
 import ProgressBar from './ProgressBar.vue'
-const props = defineProps({ open: Boolean, title: { type: String, required: true }, job: Object, message: { type: String, default: '' }, delay: { type: Number, default: 0 } })
+const props = defineProps({ open: Boolean, title: { type: String, required: true }, job: Object, plan: { type: Array, default: () => [] }, message: { type: String, default: '' }, delay: { type: Number, default: 0 } })
 const emit = defineEmits(['cancel'])
 const el = ref(null)
 const shown = ref(false)
@@ -25,7 +25,7 @@ onBeforeUnmount(() => clearTimeout(timer))
   <dialog ref="el" class="modal" :aria-label="title" data-testid="busy-modal" @cancel.prevent>
     <div class="modal-box max-w-md">
       <h2 class="font-bold text-lg mb-3">{{ title }}</h2>
-      <JobProgress v-if="job" :job="job" @cancel="emit('cancel')" />
+      <JobProgress v-if="job" :job="job" :plan="plan" @cancel="emit('cancel')" />
       <div v-else class="flex flex-col gap-2" role="status" aria-live="polite">
         <p v-if="message" class="text-sm">{{ message }}</p>
         <ProgressBar />

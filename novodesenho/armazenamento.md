@@ -312,3 +312,35 @@ Pedido do usuário: insistir no `TCL2`, medir com lemas e testar um arquivo no f
 ## 12. `TCL2` vira o padrão (2026-09-30)
 
 Decisão do usuário: usar `TCL2` a partir de agora, pela redução de tamanho (~20–25%) e pela rapidez de busca. Feito: `layerfmt.default_format()` devolve `tcl2` (a variável `TTWTOOLS_LAYER_FORMAT=tcl1` volta ao `TCL1`); testes ajustados (`tests/test_layerfmt.py` cobre os dois formatos; `test_layerfmt_tcl2.py` cobre padrão, `TCL1` forçado e exportação de arquivo leve `TCL1` para `TCL2`); 248 testes do pacote e 51 do servidor passam. **Ressalvas ditas ao usuário:** (1) a rapidez de busca **ainda não existe no aplicativo**: as consultas continuam por `tokens`; só o spike mediu os ids; (2) arquivos gravados agora **não abrem em versões anteriores**; (3) copiar um arquivo antigo inteiro (`save-as` de um `.ttwa` sem tabelas) não converte: medido, o resultado sai idêntico (176,6 MB, `TCL1`); a conversão acontece ao abrir e salvar sem tabelas de busca, ou ao exportar um corpus (`.ttwc`, `.ttwcl`, `.ttwal`).
+
+
+## 13. Consultas por ids, medidas de abrir/salvar e barras em etapas (2026-09-30, M4)
+
+**Medidas de antes (mesma máquina, `lemas_tcl1.ttwa` × `lemas_tcl2.ttwa`, consultas por SQL):** abrir 9,3 s × 39,5 s (não comparável: o índice em cache do `TCL1` já existia e o do `TCL2` foi reconstruído); KWIC de "the" 1,2 a 2,5 s nos dois; frequência 4,3 a 4,5 s nos dois; colocados 3,9 s nos dois; **salvar com tabelas 119,9 s (`TCL1`) × 117,7 s (`TCL2`), 904 e 905 MB**. Confirma: o `TCL2` em si não muda nada nas buscas SQL nem no salvar com tabelas.
+
+**Consultas por ids (`libs/ttwtools/ttwtools/idquery.py`).** `search`, `kwic`, `frequency` (forma, lema, classe, palavra+classe, n-grama de 1 a 3, por corpus, documento ou metadado, com `stop` e `words_only`) e `collocates` leem os ids do `TCL2` (`layer_blobs`) e o léxico do corpus; cada condição da consulta (forma, lema, curinga, regex, `pos=`, `tag=`, `&`, frases) é avaliada uma vez no léxico e vira máscara sobre os ids. Usado só quando **todas** as camadas escolhidas estão em `TCL2` e não há linhas em `main.tokens` (arquivo salvo sem tabelas de busca, sem etiquetagens novas naquela sessão); senão cai no SQL de antes. `TTWTOOLS_ID_QUERIES=0` desliga. Reproduz do SQL: desempates da frequência (1ª aparição), ordem das camadas, `LIKE` e `GLOB` do SQLite, `lower()` só ASCII, ordem de iteração dos acertos nos colocados.
+
+**Verificação.** Teste automático `tests/test_idquery.py`: 448 chamadas (busca, KWIC nas 3 ordens, frequência, colocados; 5 camadas/ferramentas; 21 consultas) no projeto pequeno, SQL antes e ids depois de empacotar: **todas idênticas** (270 com resultado). No projeto real (`lemas_tcl2.ttwa`, 7,5 M de tokens, spaCy e Stanza): 14 chamadas, **todas idênticas** ao SQL:
+
+| chamada | SQL | ids (1ª, com decodificar) | ids (2ª) |
+|---|---|---|---|
+| KWIC `the` (spaCy) | 2,96 s | 0,14 s | 0,06 s |
+| KWIC `the`, ordem à esquerda | 1,53 s | 0,17 s | 0,11 s |
+| KWIC regex `^(un\|re)[a-z]+(ed\|ing)$` | 19,5 s | 0,04 s | 0,04 s |
+| KWIC `in the` | 3,98 s | 0,06 s | 0,06 s |
+| KWIC `pos=NOUN of pos=NOUN` (Stanza) | 57,6 s | 0,16 s | 0,06 s |
+| KWIC `lemma=examine` (raro) | 0,01 s | 0,12 s | 0,04 s |
+| busca `*tion` | 4,04 s | 0,05 s | 0,05 s |
+| frequência de lemas | 4,57 s | 0,56 s | 0,49 s |
+| frequência de formas | 4,38 s | 0,47 s | 0,47 s |
+| frequência palavra+classe | 4,70 s | 0,87 s | 0,86 s |
+| frequência de bigramas | 5,03 s | 1,90 s | 1,92 s |
+| frequência por documento (1.227 grupos) | 4,41 s | 2,85 s | 2,66 s |
+| colocados de `result` | 4,03 s | 0,14 s | 0,15 s |
+| colocados de `lemma=examine` (lema) | 4,20 s | 0,15 s | 0,16 s |
+
+O único caso pior é o KWIC de palavra rarísssima (SQL com índice, 0,01 s; ids 0,04 a 0,12 s por ter de decodificar as colunas na 1ª vez). A frequência ainda tem folga (montar o vocabulário em Python e concatenar índices); o lento restante é o **abrir**.
+
+**O que não muda (dito com franqueza).** (1) **Abrir** continua construindo o índice em cache a partir dos blobs (9 a 40+ s no M4; minutos no Intel), porque outras funções ainda leem `tokens` (KFA, dispersão, leitura de documento, estatísticas, etiquetagem). Tornar isso preguiçoso exige que **toda** leitura de `tokens` passe por um ponto que monte o índice quando faltar; hoje há leituras espalhadas (`features.py`, `project.py`, `query.py` em `dispersion`, `read_document`, `tag_counts`) e uma falha seria silenciosa (resultado vazio), por isso **não foi feito**. É o próximo passo. (2) Arquivo salvo **com tabelas** não tem blobs: as consultas seguem no SQL, sem ganho. (3) Depois de "Salvar como", o aplicativo continua na **cópia de trabalho atual** (que já tem `tokens` ou o índice em cache), não no arquivo novo: é desenho (`app/routes/project.py`, `saveas`: "a cópia atual já tem as tabelas de busca"); as consultas por ids só valem depois de **reabrir** um arquivo salvo sem tabelas. (4) Dispersão, leitura de documento e contagem de etiquetas ainda usam SQL.
+
+**Barras de progresso em etapas.** Ao abrir e ao salvar, o modal agora mostra **uma barra geral** e, abaixo, **uma lista das etapas vistas, cada uma com a sua barra** (descompactar, atualizar formato, recriar tabelas, ler camadas, criar cada índice; no salvar: copiar, empacotar, salvar, reduzir). O andamento geral é ponderado por pesos estimados e só conta as etapas do plano que ainda podem vir (as puladas não entram). Código: `composables/useSteps.js`, `components/StepProgress.vue`, `JobProgress`/`BusyModal` com a propriedade `plan`; texto `job.overall` em `pt` e `en`; testes em `src/test/useSteps.test.js` (9 arquivos, 29 testes passam). **Não abri a tela no navegador** (só teste de componente e build): a aparência real fica para você conferir.
