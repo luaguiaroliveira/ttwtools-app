@@ -93,7 +93,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.goto('/#/comparar?tool=kfa')
   await page.getByTestId('kfa-corpus2').selectOption('corifa')
   await page.getByTestId('kfa-run').click()
-  await expect(page.getByRole('status').filter({ hasText: /traços|features/ })).toBeVisible()
+  await expect(page.getByRole('status').filter({ hasText: /atributos|features/ })).toBeVisible()
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await expect(page.getByTestId('side-legend')).toContainText('corifa')

@@ -82,7 +82,7 @@
   --ttw-shadow-card: 0 1px 2px rgb(0 0 0 / .06), 0 1px 3px rgb(0 0 0 / .10);
   --ttw-shadow-pop: 0 10px 30px rgb(0 0 0 / .15);
 
-  /* paleta categórica (grupos, lados, traços): valores por tema mais abaixo */
+  /* paleta categórica (grupos, lados, atributos): valores por tema mais abaixo */
 }
 
 :focus-visible {

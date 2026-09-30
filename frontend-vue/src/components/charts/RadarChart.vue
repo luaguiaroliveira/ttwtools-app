@@ -1,5 +1,5 @@
 <script setup>
-// Médias por traço (normalizadas pelo maior valor do traço) dos dois lados.
+// Médias por atributo (normalizadas pelo maior valor do atributo) dos dois lados.
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 const props = defineProps({ rows: Array })

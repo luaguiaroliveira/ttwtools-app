@@ -1,5 +1,5 @@
 <script setup>
-// Traço contado nas comparações (KFA, galeria, Laboratório). O padrão é `tags`, em qualquer camada; só as
+// Atributo contado nas comparações (KFA, galeria, Laboratório). O padrão é `tags`, em qualquer camada; só as
 // camadas que também têm `upos` e `xpos` (spaCy, Stanza) oferecem a escolha.
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'

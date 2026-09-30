@@ -22,7 +22,7 @@ Comparar **um texto** (n=1) com um corpus de referência e mostrar, com honestid
 
 | Item | Nota |
 |---|---|
-| Registro Biber por z-score | taxa de cada traço por 1.000 palavras vs distribuição dos textos da referência; barras divergentes; descritivo |
+| Registro Biber por z-score | taxa de cada atributo por 1.000 palavras vs distribuição dos textos da referência; barras divergentes; descritivo |
 | Distinctive / covarying collexemes | Fisher exato (hipergeométrica), força −log10(p) + FDR; escolha entre construções alternativas (`V to-inf` × `V that-clause`) |
 | Rede de colocação | node no centro, colocados em órbita por log ratio |
 | Bootstrap por texto da referência | intervalo da frequência esperada; dispersão fina; textos modelo do mesmo gênero |

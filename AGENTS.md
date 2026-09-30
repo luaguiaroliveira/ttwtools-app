@@ -12,6 +12,7 @@ Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek..
 
 - **Commits:** nunca incluir Claude nem outro agente como autor ou coautor (sem `Co-Authored-By`, sem linha de atribuição em commits ou PRs). Mensagens curtas, em português. **Nunca `git add -A`** (projetos reais em LFS em `ttwa_files/` mudam ao abrir): adicione arquivos pelo nome.
 - **Paridade GUI e pacote Python:** a lógica vive em `libs/ttwtools/ttwtools`; a rota em `app/routes` só chama a função; a tela só apresenta. Todo recurso novo = função pública + subcomando + rota + tela.
+- **Vocabulário (português):** *feature* = **atributo**; nunca "traço" ("traço" só no sentido de linha/risco desenhado). Vale para interface, ajuda, documentação e mensagens.
 - **Escopo:** só o **aplicativo local**. Não implementar envio de arquivos pelo navegador, privacidade do site, PWA nem ajuste fino para celular.
 - **Interface única, sem perfis;** opções avançadas em painéis recolhidos; todo texto por chave de tradução (`pt` e `en`). Operação longa = tarefa com andamento, nunca requisição parada.
 - **Sem retrabalho de etiquetagem:** nada novo reprocessa o que já existe em camada equivalente.

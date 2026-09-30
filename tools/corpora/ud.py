@@ -5,7 +5,7 @@ ud.py — Treebanks do Universal Dependencies como corpus (anotação manual UD)
     python tools/corpora/ud.py --treebank pt-bosque  --out dist-corpora   # UD Portuguese Bosque
 
 Importa train/dev/test da tag de release (`--tag`) como camada `conllu` (lema,
-UPOS, XPOS, traços, dependências). Um documento por `# newdoc`; metadados `split`
+UPOS, XPOS, atributos, dependências). Um documento por `# newdoc`; metadados `split`
 e os do treebank (EWT: `genre` pelo prefixo do id; Bosque: `source` e `variety`,
 CF = Folha de S.Paulo/pt-BR, CP = Público/pt-PT). Por padrão não acrescenta
 camada de tagger (`--tagger none`).

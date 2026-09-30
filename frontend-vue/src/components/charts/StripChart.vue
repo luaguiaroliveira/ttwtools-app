@@ -1,5 +1,5 @@
 <script setup>
-// Um ponto por texto e por traço, lados em cores diferentes (valor por 1000 palavras).
+// Um ponto por texto e por atributo, lados em cores diferentes (valor por 1000 palavras).
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SIDE_CLASS, linear } from '../../utils/scale.js'

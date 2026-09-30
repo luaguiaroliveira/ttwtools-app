@@ -53,7 +53,7 @@ Fonte única da frente de interface. Código: `frontend-vue/` (Vue 3.5 `<script 
 
 ## 5. Galeria de gráficos (Comparar → KFA)
 
-**Feitos** (`ChartGallery`, `components/charts/`, rotas `/api/compare/viz/*`): barras divergentes, médias, bolhas, strip, mapa de calor, radar, violino, histograma, coordenadas paralelas (só traço, com legenda), PCA 2D e 3D, t-SNE, MDS, UMAP (opcional, `umap-learn`). Dados a partir das tabelas de features, sem gravar nada novo no arquivo. **Falta:** grafo de força (similaridade por cosseno com filtro dos K vizinhos); aviso de tempo para t-SNE e UMAP com mais de ~200 textos. O plano antigo `plano_visualizacoes.md` (Plotly e `frontend-src`) foi superado pela interface Vue.
+**Feitos** (`ChartGallery`, `components/charts/`, rotas `/api/compare/viz/*`): barras divergentes, médias, bolhas, strip, mapa de calor, radar, violino, histograma, coordenadas paralelas (só atributo, com legenda), PCA 2D e 3D, t-SNE, MDS, UMAP (opcional, `umap-learn`). Dados a partir das tabelas de features, sem gravar nada novo no arquivo. **Falta:** grafo de força (similaridade por cosseno com filtro dos K vizinhos); aviso de tempo para t-SNE e UMAP com mais de ~200 textos. O plano antigo `plano_visualizacoes.md` (Plotly e `frontend-src`) foi superado pela interface Vue.
 
 ## 6. Usabilidade: o que já se adotou (manter)
 

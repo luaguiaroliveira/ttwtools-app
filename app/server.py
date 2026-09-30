@@ -38,7 +38,7 @@ def _ensure_ttwtools_importable() -> None:
 
 
 class SafeJSONResponse(JSONResponse):
-    """JSON que troca NaN e infinito por null (tabelas de traços têm células vazias)."""
+    """JSON que troca NaN e infinito por null (tabelas de atributos têm células vazias)."""
 
     def render(self, content) -> bytes:
         import json

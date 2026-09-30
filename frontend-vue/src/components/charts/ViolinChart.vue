@@ -1,5 +1,5 @@
 <script setup>
-// Densidade (núcleo gaussiano) de cada traço por lado, espelhada.
+// Densidade (núcleo gaussiano) de cada atributo por lado, espelhada.
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { SIDE_CLASS } from '../../utils/scale.js'

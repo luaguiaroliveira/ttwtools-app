@@ -1,5 +1,5 @@
 <script setup>
-// Documentação oficial de uma etiqueta (hoje: MFTE, lista de traços do MFTE): nome do traço, categoria,
+// Documentação oficial de uma etiqueta (hoje: MFTE, lista de atributos do MFTE): nome do atributo, categoria,
 // exemplos, unidade de normalização, autoria e operacionalização. O texto é o da fonte, em inglês.
 import { useI18n } from 'vue-i18n'
 defineProps({ doc: { type: Object, default: null }, version: { type: String, default: '' } })

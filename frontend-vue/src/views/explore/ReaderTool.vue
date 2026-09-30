@@ -3,7 +3,7 @@
 // (classes UPOS/XPOS ou primeira tag) com seleção múltipla; cada etiqueta marcada é
 // marcada no texto com traço à mão (roughjs, o motor do rough-notation), no estilo e na cor
 // escolhidos ao lado de cada etiqueta (botão direito também abre o menu). Clicar num
-// token mostra etiquetas, lema, traços e a definição do tagset.
+// token mostra etiquetas, lema, atributos e a definição do tagset.
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
