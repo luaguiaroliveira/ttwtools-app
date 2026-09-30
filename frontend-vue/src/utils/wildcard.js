@@ -1,11 +1,13 @@
-// Busca de palavras no texto do Leitor: `*` (qualquer sequência), `?` (uma letra), /regex/, sem distinguir maiúsculas.
+// Busca de palavras no texto do Leitor: um fragmento simples (`const`) casa com qualquer palavra que o contenha
+// (construction, deconstruction); com `*` ou `?` o padrão vale para a palavra inteira. `*` (qualquer sequência), `?` (uma letra), /regex/, sem distinguir maiúsculas.
 // Várias palavras separadas por espaço formam uma sequência de palavras seguidas (como no KWIC).
 const escapeRe = (s) => s.replace(/[.+^${}()|[\]\\]/g, '\\$&')
 
-/** Uma palavra da busca → RegExp que casa com a palavra inteira (ou null se a regex for inválida). */
+/** Uma palavra da busca → RegExp (fragmento simples: contém; com curinga: palavra inteira); null se a regex for inválida. */
 export function wordPattern(spec) {
   try {
     if (spec.length > 2 && spec.startsWith('/') && spec.endsWith('/')) return new RegExp(spec.slice(1, -1), 'i')
+    if (!/[*?]/.test(spec)) return new RegExp(escapeRe(spec), 'iu')
     return new RegExp(`^${escapeRe(spec).replace(/\*/g, '\\S*').replace(/\?/g, '\\S')}$`, 'iu')
   } catch { return null }
 }

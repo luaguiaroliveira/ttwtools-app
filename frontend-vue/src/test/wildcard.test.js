@@ -24,3 +24,12 @@ describe('busca no leitor', () => {
     expect(at('.')).toEqual(['.'])
   })
 })
+
+describe('fragmento de palavra', () => {
+  it('um fragmento simples casa com qualquer palavra que o contenha; com curinga vale a palavra inteira', () => {
+    const t = ['Construction', 'deconstruction', 'constructive', 'cat', 'concat'].map((word) => ({ word }))
+    expect(findMatches(t, 'const').map((m) => t[m.start].word)).toEqual(['Construction', 'deconstruction', 'constructive'])
+    expect(findMatches(t, 'cat').map((m) => t[m.start].word)).toEqual(['cat', 'concat'])
+    expect(findMatches(t, 'cat*').map((m) => t[m.start].word)).toEqual(['cat'])
+  })
+})
