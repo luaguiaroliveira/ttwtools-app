@@ -474,6 +474,32 @@ def save_project():
     return {"status": "saving", "job_id": _jobs_registry.start("save", work)}
 
 
+class CompactRequest(BaseModel):
+    dry_run: bool = True
+
+
+@router.post("/compact")
+def compact_project_route(req: CompactRequest):
+    """Remove as cópias antigas das etiquetagens (`tagged_files`) que já estão nas camadas (tarefa com
+    progresso). `dry_run` só relata; sem ele, grava e faz VACUUM (o arquivo pode ocupar o dobro do
+    espaço durante a etapa). Numa cópia de trabalho, o resultado vai ao arquivo com Salvar."""
+    _require_project()
+    path = app_state.current_project_path
+
+    def work(job, path=path, dry_run=req.dry_run):
+        import ttwtools
+        job.update(stage="check")
+        with ttwtools.open_project(path) as proj:
+            r = ttwtools.compact_project(proj, dry_run=dry_run,
+                                         progress=lambda d, t, s: job.update(stage=s, done=d, total=t))
+        reasons: dict[str, int] = {}
+        for k in r["kept"]:
+            reasons[k["reason"]] = reasons.get(k["reason"], 0) + 1
+        return {**{k: v for k, v in r.items() if k not in ("removed", "kept")}, "kept_reasons": reasons}
+
+    return {"job_id": _jobs_registry.start("compact", work)}
+
+
 @router.get("/saveas-status/{job_id}")
 def saveas_status(job_id: str):
     """Status de um job de save-as."""

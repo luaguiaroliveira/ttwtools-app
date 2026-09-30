@@ -24,6 +24,8 @@ const busy = ref(false)
 const exportDest = ref('')
 const done = ref('')
 const saveJob = useJob('save')
+const compactJob = useJob('compact')
+const compactPlan = ref(null)      // relatório da simulação, à espera de confirmação
 const pending = ref(null)          // ação à espera de "salvar antes?" (projeto de .ttwt)
 const fromTtwt = computed(() => Boolean(project.value?.compressed))
 // opções de gravação do arquivo (lembradas nele): compactar e guardar as tabelas de busca
@@ -117,6 +119,27 @@ watch(() => saveJob.job.value?.status, async (s) => {
   }
 })
 
+// compactar: simula primeiro (nada muda), mostra o efeito e só remove com confirmação
+const compactCheck = () => act(async () => {
+  compactPlan.value = null
+  compactJob.start(() => api.project.compact(true))
+})
+const compactRun = () => act(async () => {
+  compactPlan.value = null
+  compactJob.start(() => api.project.compact(false))
+})
+const mb = (b) => (b / 1e6).toFixed(1)
+watch(() => compactJob.job.value?.status, async (s) => {
+  const r = compactJob.job.value?.result
+  if (s !== 'done' || !r) return
+  if (r.dry_run) compactPlan.value = r
+  else {
+    done.value = t('project.compact_done', { n: r.n_removed, before: mb(r.size_before), after: mb(r.size_after) })
+    await session.refresh()
+  }
+})
+const reasonsText = (r) => Object.entries(r.kept_reasons ?? {}).map(([k, n]) => `${t(`project.compact_reason.${k}`)} (${n})`).join(', ')
+
 const openTyped = () => act(() => session.openProject(path.value))
 // caminho digitado: se já existe, avisa e oferece "Substituir"
 const exists = ref(false)
@@ -206,6 +229,8 @@ const exportAll = () => act(async () => {
     <ExportDialog :open="exportOpen" :corpora="corpora" :busy="busy || saving" @close="exportOpen = false" @export="exportTo" />
     <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" @cancel="saveJob.cancel" />
     <JobProgress v-if="saveJob.job.value?.status === 'error'" :job="saveJob.job.value" />
+    <BusyModal :open="['queued', 'running'].includes(compactJob.job.value?.status)" :title="t('project.compact_title')" :job="compactJob.job.value" @cancel="compactJob.cancel" />
+    <JobProgress v-if="compactJob.job.value?.status === 'error'" :job="compactJob.job.value" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1" data-testid="file-done"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <Collapsible v-if="project" :title="t('project.more')">
@@ -227,6 +252,18 @@ const exportAll = () => act(async () => {
             <button v-if="project.kind === 'ttwa'" class="btn btn-xs" :disabled="busy" @click="convert('ttwl')">{{ t('project.to_ttwl') }}</button>
             <button v-else class="btn btn-xs" :disabled="busy" @click="convert('ttwa')">{{ t('project.to_ttwa') }}</button>
             <button class="btn btn-xs" :disabled="busy" @click="exportCorpus">{{ t('project.export_corpus') }}</button>
+          </div>
+          <div class="flex flex-col gap-1" data-testid="compact">
+            <div class="flex flex-wrap items-center gap-2">
+              <button class="btn btn-xs" :disabled="busy || compactJob.job.value?.status === 'running'" data-testid="compact-check" @click="compactCheck">{{ t('project.compact') }}</button>
+            </div>
+            <span class="text-xs text-text-muted">{{ t('project.compact_explain') }}</span>
+            <div v-if="compactPlan" role="alertdialog" aria-modal="false" :aria-label="t('project.compact')" class="alert text-sm flex flex-wrap items-center gap-2" data-testid="compact-plan">
+              <span class="flex-1 min-w-48">{{ compactPlan.n_removed ? t('project.compact_result', { n: compactPlan.n_removed, mb: mb(compactPlan.bytes_freed), kept: compactPlan.n_kept }) : t('project.compact_none', { kept: compactPlan.n_kept }) }}
+                <span v-if="compactPlan.n_kept" class="block text-xs text-text-muted">{{ t('project.compact_kept', { reasons: reasonsText(compactPlan) }) }}</span></span>
+              <button v-if="compactPlan.n_removed" class="btn btn-xs btn-primary" data-testid="compact-confirm" @click="compactRun">{{ t('project.compact_confirm') }}</button>
+              <button class="btn btn-xs btn-ghost" @click="compactPlan = null">{{ t('project.cancel') }}</button>
+            </div>
           </div>
           <form class="flex flex-wrap gap-2 items-end" @submit.prevent="exportAll">
             <label class="ttw-field flex-1 min-w-48"><span class="ttw-label">{{ t('project.export_dest') }}</span>

@@ -23,6 +23,7 @@ export const api = {
     saveAs: (path, opts = {}) => post('/api/project/saveas', { path, ...opts }),
     save: () => post('/api/project/save'),
     unsaved: () => get('/api/project/unsaved'),
+    compact: (dry_run = true) => post('/api/project/compact', { dry_run }),
     setSaveOptions: (opts) => post('/api/project/save-options', opts),
     recent: () => get('/api/project/recent'),
     recentRemove: (path) => post('/api/project/recent/remove', { path: path || null }),
