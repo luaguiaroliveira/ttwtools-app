@@ -53,3 +53,22 @@ def test_open_compressed_refused(client, tmp_path, monkeypatch):
     job = wait_job(client, r.json()["job_id"])
     assert job["status"] == "error" and job["error_code"] == "insufficient_disk_space" and job["error_params"]["what"] == "open"
     assert _residue() == residue
+
+
+def test_disk_usage_routes(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(tempfile, "tempdir", str(tmp_path))
+    monkeypatch.setenv("TTWTOOLS_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setenv("TTWTOOLS_DATA_DIR", str(tmp_path / "data"))
+    dead = tmp_path / "ttw_export_dead"
+    dead.mkdir()
+    (dead / "owner.pid").write_text("999999")
+    (dead / "work.bin").write_bytes(b"x" * 2000)
+    from ttwtools import storage
+    (storage.cache_entry("indice") / "d.bin").write_bytes(b"y" * 1000)
+
+    u = client.get("/api/utils/disk-usage").json()
+    assert u["orphans_bytes"] >= 2000 and u["cache_bytes"] >= 1000 and u["free_bytes"] > 0
+    assert [w["kind"] for w in u["workdirs"]] == ["export"] and u["workdirs"][0]["alive"] is False
+    r = client.post("/api/utils/disk-usage/clear").json()
+    assert r["workdirs_removed"] == 1 and r["cache_freed"] >= 1000 and not dead.exists()
+    assert client.get("/api/utils/disk-usage").json()["orphans_bytes"] == 0

@@ -130,6 +130,7 @@ def build_app(open_file: str | None = None) -> FastAPI:
     from app import state as app_state
     import atexit
     atexit.register(app_state.drop_working_copy)    # a cópia de trabalho não fica para trás ao sair
+    atexit.register(app_state.cleanup_on_exit)      # nem as outras pastas de trabalho, e o cache respeita o limite
     app_state.purge_stale_workdirs()                # restos de sessões encerradas à força
     app_state.install_exit_cleanup()                # e não deixa restos desta sessão
 

@@ -32,6 +32,8 @@ export const api = {
   },
   utils: {
     openUrl: (url) => post('/api/utils/open-url', { url }),
+    diskUsage: () => get('/api/utils/disk-usage'),
+    diskClear: () => post('/api/utils/disk-usage/clear'),
     pickFolder: (default_location) => get('/api/utils/pick-folder', { default_location }),
     pickFile: (default_location, kind) => get('/api/utils/pick-file', { default_location, kind }),
     pickSave: (suggested, default_location) => get('/api/utils/pick-save', { suggested, default_location }),

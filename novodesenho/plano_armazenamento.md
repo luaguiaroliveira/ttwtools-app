@@ -4,7 +4,7 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** A3 (A1 e A2 concluídos)
+- **Passo atual:** A4 (A1–A3 concluídos)
 - **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
 - **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
 - **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
@@ -38,12 +38,12 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ### A3 Pastas de trabalho e cache num só lugar, com dono, limite e limpeza
 - **Fazer:**
-  - [ ] Módulo `ttwtools.storage`: `workdir(kind)` (cópias de trabalho, exportações, empacotamento; hoje `make_workdir` em `project.py`) e `cache_dir()` (índices e derivados; `platformdirs.user_cache_dir`, já usado pelo catálogo); marca `owner.pid`; registro de uso (tamanho, último uso).
-  - [ ] Limite configurável do cache (padrão sugerido: 5 GB) com remoção LRU; `purge_orphans()` reúne o que já existe; limpeza ao iniciar e ao sair.
-  - [ ] `ttwtools cache list|clear`; rota `/api/utils/disk-usage`; painel **Uso de disco** em Recursos (o que é, quanto ocupa, botão limpar) com aviso quando houver lixo grande ao iniciar.
-  - [ ] Teste (fixture reutilizável) que garante **nenhum arquivo residual** depois de abrir, salvar, exportar, cancelar e falhar.
+  - [x] Módulo `ttwtools.storage`: `workdir(kind)` (cópias de trabalho, exportações, empacotamento; hoje `make_workdir` em `project.py`) e `cache_dir()` (índices e derivados; `platformdirs.user_cache_dir`, já usado pelo catálogo); marca `owner.pid`; registro de uso (tamanho, último uso).
+  - [x] Limite configurável do cache (padrão sugerido: 5 GB) com remoção LRU; `purge_orphans()` reúne o que já existe; limpeza ao iniciar e ao sair.
+  - [x] `ttwtools cache list|clear`; rota `/api/utils/disk-usage`; painel **Uso de disco** em Recursos (o que é, quanto ocupa, botão limpar) com aviso quando houver lixo grande ao iniciar.
+  - [x] Teste (fixture reutilizável) que garante **nenhum arquivo residual** depois de abrir, salvar, exportar, cancelar e falhar.
 - **Pronto quando:** matar o processo no meio de uma exportação e reiniciar apaga os restos; o painel mostra o uso.
-- **Relato:** _(preencher)_
+- **Relato:** tudo em `ttwtools/storage.py`. **Pastas de trabalho:** `workdir(kind)` (`work`/`export`/`pack`), `make_workdir` (agora só delega; `project.make_workdir`/`purge_orphan_workdirs` continuam existindo), `owner.pid`, `list_workdirs()` (tamanho, dono vivo ou não, idade), `purge_orphans()` (dono morto ou, sem marca, mais de 24 h; guarda em `last_purge` o que apagou), `release_own_workdirs()`. **Cache:** `cache_dir()` (`platformdirs.user_cache_dir("TTWtools")`; `TTWTOOLS_CACHE_DIR` muda), `cache_entry(key)`/`touch_cache` (marca de uso em `.last_used`), `cache_entries()`, `enforce_cache_limit()` (LRU; limite = `cache_limit_mb` do `settings.json`, padrão 5 GB), `clear_cache()`. `disk_usage()` e `cleanup(exit=)` reúnem tudo. **Quando roda:** o app limpa órfãs e aplica o limite ao iniciar; ao sair (atexit e `/quit`) apaga as pastas do próprio processo. **CLI:** `ttwtools cache list|clear`. **Rotas:** `GET /api/utils/disk-usage`, `POST /api/utils/disk-usage/clear` (apaga cache e órfãs; o que está em uso fica). **Tela:** painel "Uso de disco" em Módulos (Recursos) com o que é, quanto ocupa, detalhes recolhidos e botão "Limpar restos"; faixa de aviso no topo do Arquivo quando há ≥ 1 GB de restos (apagados ao iniciar ou ainda lá). **Vazamento achado pelo teste e corrigido:** `save_project_as` deixava `X.part` se a gravação fosse cancelada ou falhasse. Testes: `tests/test_storage_dirs.py` (8; inclui matar um processo no meio da criação de uma pasta de exportação e o reinício apagar o resto) e fixture reutilizável `no_temp_residue` em `tests/conftest.py` (abrir, salvar, salvar sem tabelas, exportar, cancelar, falhar), mais `test_disk_usage_routes`. O cache ainda não guarda nada: quem o usa é a Fase B (B3).
 
 ### A4 Índices: medir e enxugar
 - **Fazer:**

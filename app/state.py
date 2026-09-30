@@ -86,8 +86,16 @@ def purge_stale_workdirs(max_age_hours: float = 24) -> int:
     """Apaga cópias de trabalho e pastas de exportação abandonadas: as de processo que já morreu (marca
     `owner.pid`) e, sem marca (versões antigas), as com mais de `max_age_hours`. As de processos vivos
     ficam: podem ser de outra janela do aplicativo aberta."""
-    from ttwtools.project import purge_orphan_workdirs
-    return purge_orphan_workdirs(max_age_hours=max_age_hours)
+    from ttwtools import storage
+    n = storage.purge_orphans(max_age_hours=max_age_hours)
+    storage.enforce_cache_limit()                   # cache acima do limite: apaga o menos usado
+    return n
+
+
+def cleanup_on_exit() -> None:
+    """Ao sair: apaga as pastas de trabalho deste processo e aplica o limite do cache."""
+    from ttwtools import storage
+    storage.cleanup(exit=True)
 
 
 def new_workdir(name: str) -> str:

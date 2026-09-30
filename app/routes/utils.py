@@ -125,6 +125,22 @@ def pick_save(suggested: str = "projeto.ttwa", default_location: str = ""):
     return _answer(pick)
 
 
+@router.get("/disk-usage")
+def disk_usage_route():
+    """Uso de disco do TTWtools (pastas de trabalho e cache) e espaço livre; só chama o pacote."""
+    from ttwtools import storage
+    return storage.disk_usage()
+
+
+@router.post("/disk-usage/clear")
+def disk_usage_clear():
+    """Apaga o cache e as pastas de trabalho abandonadas (as em uso ficam)."""
+    from ttwtools import storage
+    freed = storage.clear_cache()
+    n = storage.purge_orphans()
+    return {"cache_freed": freed, "workdirs_removed": n, "workdirs_freed": storage.last_purge["bytes"]}
+
+
 @router.post("/open-url")
 def open_url(body: dict):
     """Abre um link do projeto no navegador do sistema (só endereços do GitHub do TTWtools)."""
@@ -148,6 +164,7 @@ def quit_app():
         try:
             from app import state as app_state
             app_state.drop_working_copy()        # os._exit não passa pelo atexit: apaga a cópia de trabalho antes
+            app_state.cleanup_on_exit()
         except Exception:  # noqa: BLE001
             pass
         os._exit(0)

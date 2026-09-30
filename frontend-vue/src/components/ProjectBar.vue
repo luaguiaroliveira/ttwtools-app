@@ -14,6 +14,7 @@ import Collapsible from './Collapsible.vue'
 import FileIcon from './FileIcon.vue'
 import RecentList from './RecentList.vue'
 import ExportDialog from './ExportDialog.vue'
+import DiskUsagePanel from './DiskUsagePanel.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -175,6 +176,7 @@ const exportAll = () => act(async () => {
       <button class="pbtn" :disabled="!project || busy || saving" data-testid="project-save-as" @click="saveAs"><FileIcon name="saveas" />{{ t('project.save_as') }}</button>
       <button class="pbtn" :disabled="!project || busy || saving || !corpora.length" data-testid="project-export" @click="exportOpen = true"><FileIcon name="export" />{{ t('project.export') }}</button>
     </div>
+    <DiskUsagePanel banner />
     <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm min-w-0">
       <span class="font-medium">{{ project.name }}</span>
       <span class="badge badge-outline" data-testid="project-kind">{{ t(`project.ext.${ext}`) }}</span>
