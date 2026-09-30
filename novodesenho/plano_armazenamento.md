@@ -4,7 +4,7 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ## Estado atual (atualizar ao fim de cada passo)
 
-- **Passo atual:** A4 (A1–A3 concluídos)
+- **Passo atual:** A5 (A1–A4 concluídos)
 - **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
 - **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
 - **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
@@ -47,10 +47,19 @@ Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atu
 
 ### A4 Índices: medir e enxugar
 - **Fazer:**
-  - [ ] Benchmark (script em `libs/ttwtools/tests/` ou `tools/`, sobre um projeto **sintético grande** de ~2 M de tokens, não o real) do KWIC, frequência, colocados e dispersão com os 7 índices atuais × conjunto reduzido (`lower(word)`, `lower(lemma)`, `doc`, `upos`, `xpos`).
-  - [ ] Se a perda for aceitável, reduzir; índices continuam recriáveis; `rebuild_search_tables` cria o conjunto novo; arquivos antigos abrem e são atualizados sob demanda.
+  - [x] Benchmark (script em `libs/ttwtools/tests/` ou `tools/`, sobre um projeto **sintético grande** de ~2 M de tokens, não o real) do KWIC, frequência, colocados e dispersão com os 7 índices atuais × conjunto reduzido (`lower(word)`, `lower(lemma)`, `doc`, `upos`, `xpos`).
+  - [x] Se a perda for aceitável, reduzir; índices continuam recriáveis; `rebuild_search_tables` cria o conjunto novo; arquivos antigos abrem e são atualizados sob demanda.
 - **Pronto quando:** tabela antes/depois (tamanho e tempo) no Relato; decisão registrada.
-- **Relato:** _(preencher)_
+- **Relato:** `libs/ttwtools/tools/bench_indexes.py` (projeto **sintético** Zipf de 2 M de tokens, 200 documentos; apaga tudo ao fim; mediana de 3 execuções). Medido em 2026-09-29 (Mac Apple Silicon):
+
+  | conjunto | arquivo (MB) | criar índices (s) | KWIC forma | KWIC lema+classe | KWIC classe | busca | frequência (lema) | colocados | dispersão |
+  |---|---|---|---|---|---|---|---|---|---|
+  | antigo (7) | 267,7 | 3,88 | 0,033 s | 0,012 s | 0,052 s | 0,017 s | 1,94 s | 1,67 s | 0,060 s |
+  | **reduzido (5)** | **211,7** | **2,72** | 0,033 s | 0,011 s | 0,050 s | 0,016 s | 1,81 s | 1,66 s | 0,061 s |
+  | mínimo (3, sem upos/xpos) | 157,6 | 1,64 | 0,034 s | 0,006 s | 0,106 s | 0,016 s | 1,83 s | 1,67 s | 0,061 s |
+  | nenhum | 78,1 | 0 | 0,308 s | 0,313 s | 0,205 s | 0,150 s | 1,79 s | 1,81 s | 0,195 s |
+
+  **Decisão:** adotado o **reduzido (5)**: `lower(word)`, `lower(lemma)`, `doc_id`, `upos`, `xpos`. Saem os índices simples de `word` e `lemma`, que nenhuma consulta usa (todas comparam `lower(...)`): −21% no arquivo (−56 MB em 2 M de tokens), −30% ao criar, tempos iguais. O "mínimo" é 41% menor, mas dobra o KWIC por classe (`pos=`), então não foi adotado. Frequência e colocados varrem a tabela (índice não ajuda) e dispersão e busca dependem só dos índices de forma. Arquivos antigos abrem normalmente: ao abrir, `_connect` apaga `idx_tokens_word`/`idx_tokens_lemma` (`_OBSOLETE_INDEXES`; o espaço é reaproveitado e o arquivo encolhe no próximo Salvar/VACUUM); `rebuild_search_tables` e a migração criam só o conjunto novo. Teste: `tests/test_indexes.py`. Observação: a tabela `tokens` (78 MB sem índices) segue sendo o grosso; quem a reduz é o formato colunar (A5).
 
 ### A5 Camadas em formato colunar (dentro de `layer_blobs`)
 - Medido: 219,9 MB (JSON) → 49,5 MB cru → **15,0 MB com zlib** (camada de 3,76 M de tokens), contra 34,1 MB do JSON+zlib.
