@@ -49,8 +49,9 @@ Se um comando acima ainda não existir, é porque o passo que o cria não foi co
 | Onde | O quê |
 |---|---|
 | `novodesenho/plano_implementacao.md` | Plano, andamento, relatos e decisões pendentes |
-| `novodesenho/plano_armazenamento.md` | **Novo armazenamento (beta 0.6): siga este plano, um passo por vez** |
-| `novodesenho/pendencias.md` | Tudo que está em aberto, reunido (salvar/recuperar corpora, decisões, verificação, UI) |
+| `novodesenho/plano_armazenamento.md` | **Plano e pendências: o que foi feito, próximo passo, decisões abertas e tudo que falta no projeto** |
+| `novodesenho/armazenamento.md` | Eficiência e formato de arquivo: evidência, proposta, perfis Compacto/Pronto |
+| `novodesenho/macintel.md` | Testes na máquina lenta de referência (Mac Intel, macOS 12): números, problemas, como repetir |
 | `novodesenho/novomodelo.md` | Desenho do novo TTWtools |
 | `app/` | Servidor FastAPI local |
 | `frontend-vue/` | Interface (Vue 3); o build sai em `frontend/` (fora do git) |

@@ -1,154 +1,114 @@
-# Armazenamento de corpora e análises: situação, problemas e proposta
+# Eficiência e formato de arquivo: análise e proposta
 
-Escrito em 2026-09-29, a pedido do usuário (prioridade registrada em `pendencias.md`, seção 1). **É proposta, não decisão**: nada aqui foi implementado além do que está marcado "já feito". Números medidos no projeto real de `ttwa_files/` (2 corpora, 1.525 textos; o corpus grande tem 1.226 textos, 20,2 milhões de caracteres, 5 camadas de ~3,7 milhões de tokens). O que vem de conhecimento geral sobre outras ferramentas (seção 3) **não foi conferido na internet nesta sessão**: confirmar antes de citar.
+Responde a uma pergunta: o que tornaria o TTWtools **rápido, leve em memória e robusto** do Apple Silicon ao Mac Intel de 2015, **mantendo perfis de arquivo diferentes** (maiores e prontos × compactos que podem reprocessar) e todas as funcionalidades previstas. Medições e observações do Intel: `macintel.md`. Andamento, próximos passos e decisões: `plano_armazenamento.md`. Convenção: **[medido]**, **[código]** (leitura do código), **[estimado]** (extrapolação a validar com protótipo), **[geral]** (prática de outras ferramentas, de memória, **a conferir** antes de decidir algo caro).
 
-Objetivo do usuário: um modelo **enxuto e versátil** para analisar corpora individuais e em comparação, com corpora clássicos internos (comparação de corpora menores ou de textos individuais), guardando **dados sobre o corpus** (camadas, comparações) e **os textos originais** de forma opcionalmente separada, com a maior eficiência de espaço, de carregamento e de uso.
+## 1. Situação (medida)
 
----
+Projeto real de `ttwa_files/`: 2 corpora, 1.526 textos, 19 milhões de tokens; o corpus grande tem 96% dos tokens e 5 camadas de ~3,7 M.
 
-## 1. A solução atual
+| | Antes da Fase A | Depois (A1–A5) |
+|---|---|---|
+| Banco de trabalho | 2.979 MB | 2.066 MB |
+| Projeto todo compactado | 1.058 MB | 614 MB (118 MB sem tabelas de busca) |
+| `.ttwcl` do corpus grande | 466 MB | 104 MB |
+| Camada em `layer_blobs` | JSON+zlib | colunar `TCL1`, −45% |
+| Índices de `tokens` | 7 | 5 (−21% no arquivo, mesma velocidade) |
+| Abrir sem tabelas | ~53 s **em toda** abertura | 1ª vez 38–44 s, depois 1 s (índice em cache) |
 
-**Um arquivo SQLite por projeto** (`.ttwa`, texto dentro; `.ttwl`, texto numa pasta ao lado; `.ttwc`/`.ttwcl` um corpus só; `.ttwal` pacote leve de vários), **compactado por inteiro com gzip** ao salvar.
+Mac Intel (i5-5287U) contra M4: CPU de Python **5–9×** mais lenta, disco e descompressão ~2–3×, hash 21× (sem SHA-NI). Abrir com tabelas 12,6 s; migrar arquivo antigo 14,3 min; recriar tabelas sem cache 5,3 min; 6 consultas com tabelas 89,9 s.
 
-Tabelas principais: `documents` (hash do texto), `document_meta`, `layers` (uma camada **por documento e etiquetador**, com `text_hash + tool + versão + config_hash`, o que evita reprocessar), `tokens` (uma linha por token e camada: 12 colunas), **7 índices** sobre `tokens`, `layer_blobs` (tokens empacotados em JSON + zlib, usado no modo "sem tabelas de busca"), `corpus_files` (textos), `tagged_files` (legado, ver abaixo), `feature_tables`, `kfa_results`, `analyses`, `project_meta`.
+## 2. Onde está o desperdício (código)
 
-Fluxo:
-- **Abrir** um arquivo compactado = descompactar **tudo** numa cópia de trabalho na pasta temporária (2,8 GB para um projeto de 1,06 GB).
-- **Trabalhar** = consultas SQL direto nessa cópia.
-- **Salvar** = compactar a cópia inteira de novo (~23 s) e gravar por cima do arquivo.
-- **Exportar um corpus** = (agora) copiar só as linhas do corpus para um arquivo novo.
+1. **Tokens como texto, uma linha por token**: `word`, `lemma`, `upos`, `xpos`, `feats`, `tags`, `extra` em TEXT; ~110 bytes por token com índices (cache de 2.124 MB para 19 M).
+2. **Consultas em Python sobre linhas**: `query.frequency` (`query.py:297`) traz **todas** as linhas de cada camada (`fetchall`, `query.py:290`) e conta num `Counter`; n-gramas guardam todos os distintos do corpus na memória. `collocates`, `keywords` (`keyness.py`) e `feature_table` (um `json.loads` **por token**, `features.py:67`) seguem o mesmo padrão.
+3. **`REGEXP` linha a linha** (`query.py:97,137`): uma chamada Python por token da tabela inteira.
+4. **Derivados recalculados a cada tela** (frequências, contagens de features, perfis por documento). Só o KFA ganhou reaproveitamento (resultado guardado + tabelas em memória).
+5. **Índice construído por inteiro na abertura** (B3): 10 entradas (ferramentas × corpora) mesmo que só uma seja usada.
+6. **Chave do cache relê e hasheia todos os blobs** a cada abertura (`searchindex.entry_key`): 1,6 s por 250 MB no Intel.
+7. **Cada requisição reabre o projeto** (`api_new._project`): DDL, verificação de migração e, no modo cache, anexar 10 bancos.
+8. **Abrir compactado descompacta tudo** (gzip não é acessível por partes): 2–3 GB de temporário por abertura.
+9. **Migrar, compactar e salvar** fazem laços em Python token a token (migrar 14 min, compactar 10 min no Intel).
+10. **Resultados derivados sujam o arquivo**: o KFA grava dentro do projeto e ativa "não salvo"; salvar no Intel custa de 29 s a 6 min.
 
-### Para onde vai o espaço (banco descompactado, 2,98 GB)
+## 3. O que outros fazem [geral, a conferir]
 
-| Parte                              | Tamanho   | Observação                                                                     |
-| ---------------------------------- | --------- | ------------------------------------------------------------------------------ |
-| `tokens`                           | 887 MB    | ~49 bytes por token e camada                                                   |
-| 7 índices de `tokens`              | ~1.740 MB | `word`/`lword` (297 MB cada) e `lemma`/`llemma` (209 MB cada) quase duplicados |
-| `tagged_files`                     | 304 MB    | **cópia legada** da saída dos etiquetadores (ver 2)                            |
-| textos, tabelas de features, resto | ~50 MB    | os **textos são ~1%**                                                          |
+| Ferramenta | Ideia | O que aproveitamos |
+|---|---|---|
+| CWB/CQPweb, Manatee (Sketch Engine) | atributo = coluna de **inteiros** + **léxico**; índice invertido; `mmap`; regex roda **no léxico**; frequências pré-calculadas | modelo mais provado para concordância em corpus grande: colunas de inteiros + léxico por corpus + regex no léxico |
+| spaCy `DocBin` | arrays de ids + armazém de strings compartilhado, comprimido | é o `TCL1`, com léxico compartilhado no lugar do dicionário por documento |
+| Parquet/Arrow, DuckDB | colunar, dicionário por coluna, leitura só das colunas necessárias | o princípio; as bibliotecas ficam **fora** (só biblioteca padrão) |
+| Lucene | segmentos **imutáveis**; novo dado = novo segmento | salvar incremental; nunca regravar o que existe |
+| Git, Nix, Bazel | objetos endereçados pelo **conteúdo**, imutáveis | o cache do B3 já é assim; estender a tudo que for derivado |
+| ZIP/ePub/Office/`.app` | partes lidas sob demanda a partir de um manifesto | a pasta-pacote |
+| AntConc, #LancsBox | tudo na memória | o que **não** queremos com 19 M de tokens em 8 GB |
 
-Depois do gzip: 1,06 GB. Sem tabelas de busca (só `layer_blobs`): o `.ttwcl` do corpus grande fica com 466 MB, dos quais `tagged_files` = 290 MB (61%), `layer_blobs` = 180 MB (5 × ~35 MB), tabelas de features = 15 MB.
+Lição comum: strings viram inteiros + dicionário; o pesado é construído uma vez, imutável e endereçado por conteúdo; **estatísticas agregadas não dependem do índice posicional**; o que não foi pedido não é construído.
 
----
+## 4. Proposta: quatro camadas
 
-## 2. Os problemas
+```
+A. OBJETOS (verdade, imutáveis, pequenos)   textos · camadas em colunas de inteiros · léxico por corpus
+B. ESTATÍSTICAS derivadas (minúsculas)      matriz documento×tipo · contagens de features por documento · TTR
+C. ÍNDICE posicional (grande, descartável)  tokens + índices por (corpus, ferramenta), só quando precisa
+D. EXECUÇÃO                                 tarefas com andamento · limite de concorrência e de memória
+```
 
-1. **O arquivo mistura o que é dado do que é índice.** 87% do banco são tokens + índices, que são **derivados** e recriáveis (63 s para as 5 camadas do corpus grande). Guardar e compactar índices é o que faz o arquivo chegar a 1 GB.
-2. **Dado duplicado.** `tagged_files` (290 MB no `.ttwcl` leve, 304 MB no projeto) é a saída de etiquetagem do formato antigo (v0.1/0.2). Confirmei que **etiquetagens novas não a preenchem** (0 linhas depois de etiquetar com spaCy), mas a migração de projetos antigos a manteve ao lado das camadas. Além disso, tokens e `layer_blobs` guardam a mesma informação em duas formas.
-3. **Abrir = descompactar tudo.** Um projeto de 1 GB compactado ocupa 2,8 GB de disco só para abrir, e cada abertura cria **outra** cópia (não há cache reaproveitável). Abrir é lento (~5 s aqui, mas cresce com o projeto) e o disco é o gargalo, não a memória (a exportação usou ~158 MB de RAM).
-4. **Salvar reescreve tudo.** Uma análise pequena nova obriga a compactar e gravar 3 GB de novo.
-5. **Pastas temporárias que se acumulam.** A pasta temporária do sistema chegou a **71 GB** (77 cópias de trabalho de 2,8 GB + 3,9 GB de uma exportação interrompida) e o disco do usuário ficou com 6,6 GB livres. Causas encontradas: cópia só apagada ao trocar de projeto; erro na abertura não limpava; `/quit` saía por `os._exit`; a cópia criada pelo pacote tinha nome que a limpeza não reconhecia; e a exportação antiga fazia 3 cópias no pico. **Corrigido em parte** (seção "Já feito" abaixo), mas o desenho continua exigindo uma cópia enorme por abertura.
-6. **Um `.ttwa` é "tudo junto"**: corpora, camadas e análises entre corpora no mesmo arquivo. Para comparar dois corpora é preciso carregar os dois inteiros, mesmo que a comparação use só tabelas pequenas (frequências, features). Um corpus clássico (Brown, etc.) não pode ser distribuído sem levar seus milhões de tokens.
-7. **"Leve" não é leve.** A definição do projeto (`novomodelo.md` §9.3) é "sem o texto do corpus", mas o texto é ~1% do arquivo. O `.ttwl` (projeto inteiro) continua guardando tokens e índices.
-8. **Sem checagem de espaço** antes de salvar/exportar; sem cache com limite; sem painel de uso de disco.
+- **A.** Camadas `TCL2` (colunas de inteiros, posições em deltas, léxico por corpus). Estimativa: **3–5× menor** que o `TCL1` e que a tabela de tokens [estimado; protótipo antes de decidir].
+- **B. Sempre dentro do arquivo, mesmo no compacto.** Por camada: matriz documento × tipo (forma, lema, classe) e contagens de features por documento; ~1 M de linhas para 19 M de tokens [estimado]. Com ela, **sem tocar nos tokens**: frequência, palavras-chave, faixas, KFA, dispersão por documento, detalhe de feature, galeria, Escrita (texto n=1 contra referência). Nasce quando a camada nasce (sem segunda passagem), chaveada pelo conteúdo. É o mesmo dado dos corpora clássicos (perfil de frequência + features) e das listas `reference-list`: um formato para três usos.
+- **C. Sob demanda, uma entrada por vez.** Só KWIC, colocados, posições da dispersão e leitor precisam dele. Construir na **primeira consulta posicional**, por (corpus × ferramenta), com a barra de etapas que já existe. Com ids, regex e glob rodam no léxico e viram `word_id IN (...)`. Ids **nativos do projeto** (remapear ids numa view levou o KWIC de 8 ms a 17 s [medido]); o léxico por corpus resolve o compartilhamento por outro caminho.
+- **D.** Toda operação pesada como tarefa com andamento (Comparar já é); limite de tarefas pesadas simultâneas (núcleos − 1, no Intel 3); uma conexão por thread reaproveitada; consultas em SQL (`GROUP BY` sobre ids) em vez de `fetchall` + `Counter`; `temp_store` em arquivo para não estourar memória.
 
-### Já feito (2026-09-29)
-Exportar copiando só o que fica; `.ttwcl`/`.ttwal` sem tabelas de busca por padrão e empacotados direto (466 MB, 46 s, pico de disco 3,6 GB, contra 1.000 MB, 89 s e 6,3 GB); pastas temporárias com dono (`owner.pid`) e limpeza das órfãs ao iniciar; cópia de trabalho apagada em erro, no `/quit` e no SIGTERM.
+### Perfis de arquivo: mesmo formato, o que muda é o que vai dentro
 
----
+| Perfil | Dentro | Tamanho [estimado] | 1ª abertura | Demais | Reprocessa? |
+|---|---|---|---|---|---|
+| **Compacto** | A + B | ~10–20% do atual | segundos; estatísticas imediatas | igual | só o índice C, **se e quando** houver consulta posicional |
+| **Pronto** | A + B + C | C ocupa 2–4× o compacto | extrai C para o cache (segundos a 1 min) | segundos | nada |
+| **Cache local** | C fora do arquivo | — | — | — | C reaproveitado entre arquivos da mesma linhagem |
 
-## 3. Como outras ferramentas resolvem (conhecimento geral, a conferir)
+"Pronto" responde à necessidade de uma máquina lenta: o compacto **mais** as entradas de índice já construídas (`entry.json` + `tokens.sqlite`, autocontidas). Trocar de perfil = acrescentar ou retirar a pasta `index/`, **sem reprocessar as camadas**. O ZIP é só transporte; dentro dele o índice comprime ~3:1, então "Pronto" é sempre maior para enviar.
 
-- **IMS Open Corpus Workbench (CWB/CQP)**, base de TXM e CQPweb; **Manatee (NoSketchEngine/Sketch Engine)**: cada atributo posicional (forma, lema, classe) vira arquivos próprios: um **léxico** (cada palavra distinta uma vez) e um **fluxo de números inteiros** com um id por token, mais um **índice invertido** ordenado; tudo em arquivos mapeados na memória (mmap). É o modelo mais enxuto conhecido para corpora grandes: consulta sem carregar o corpus. O corpus é um **diretório** por corpus, não um arquivo único; troca-se em formato vertical (VRT/CoNLL-U).
-- **BlackLab (INL, sobre Lucene)**: índice integrado (posições, forward index para contexto/KWIC e um armazenamento de conteúdo), um índice por corpus.
-- **spaCy `DocBin`**: serializa documentos como **arrays numéricos** (hashes de atributos) mais uma **tabela de strings compartilhada**, comprimidos; só grava os atributos escolhidos. Mostra o ganho de guardar tokens como inteiros com léxico à parte.
-- **Apache Parquet / Arrow** (Hugging Face `datasets` usa Arrow com mmap; DuckDB e Polars consultam Parquet direto, lendo só as colunas e blocos necessários): armazenamento **colunar** com codificação por dicionário e zstd/zlib. Bom para tabela de tokens e de features; custo: dependência (`pyarrow`/DuckDB) e compatibilidade com macOS 12 e com o torch fixado.
-- **Contêiner ZIP com manifesto** (EPUB, Office Open XML, JAR): um arquivo só, **partes independentes** que se leem sem descompactar o resto; atualizar = copiar as partes inalteradas sem recomprimir e trocar as que mudaram.
-- **SQLite como formato de arquivo de aplicativo** (é o que fazemos hoje); extensões de compressão por linha (por exemplo `sqlite-zstd`) e **FTS5**; funciona bem, mas **índice e dado no mesmo arquivo** é o que pesa.
-- **zstd em modo "seekable"** (frames independentes com tabela de offsets): leitura aleatória de um trecho sem descompactar o resto.
-- **Armazenamento endereçado por conteúdo** (como o Git): objetos imutáveis chamados pelo hash, deduplicados e reaproveitados entre projetos. Já temos o gancho: `text_hash + tool + versão + config_hash` identifica uma camada.
-- **Padrões de anotação em standoff** (GrAF/ISO 24612, usado pelo OANC/MASC, que já importamos): camadas separadas apontando por posição para o texto, como fazemos.
+### Contêiner e migração (decisões já tomadas)
 
-Lição comum: **texto, anotação e índice são coisas diferentes**; o índice é derivado e mora fora do arquivo de troca; tokens viram inteiros com um léxico compartilhado.
+`.ttwc` = **pasta-pacote** (`manifest.json`, `meta.sqlite` com documentos, catálogo de camadas, análises, `texts/`, `layers/`, léxico; ZIP só para enviar). `.ttwa` = **manifesto** de corpora referenciados + resultados (com opção de embutir). Corpora clássicos = só perfil de frequência + features (B). Salvar = objetos novos + `meta.sqlite`, sem cópia de trabalho de vários GB. Conversão (`ttwtools convert`) nunca apaga o original e exporta de volta ao formato clássico; todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas 0.1–0.3) continua legível para sempre; o novo é opt-in, rotulado beta, e não abre em versões antigas do aplicativo.
 
----
+## 5. Melhorias, em ordem de impacto ÷ risco
 
-## 4. Proposta
+| # | Passo | Ganho | Mexe no formato? | Risco |
+|---|---|---|---|---|
+| 1 | Índice sob demanda por entrada; hash gravado uma vez ao empacotar; conexão por thread; fila de tarefas pesadas | 1ª abertura de minutos a segundos no Intel [estimado]; sem corrida | não | baixo |
+| 2 | Estatísticas B calculadas ao empacotar/etiquetar; KFA, palavras-chave, faixas, frequência usam B; resultados derivados **fora** do arquivo (não sujam) | "recalcular tudo" some | não (B vai para o cache primeiro) | médio |
+| 3 | SQL nos laços quentes, `PRAGMA`s (`cache_size`, `mmap_size`, `temp_store`, `page_size` 16 KiB nos índices), orçamentos no benchmark | tempo e memória das consultas posicionais | não | baixo |
+| 4 | Protótipo `TCL2` + léxico + índice com ids (medir tamanho e regex) | decide o formato com número | não | médio |
+| 5 | Pasta-pacote com perfis Compacto/Pronto | os dois tipos de arquivo | sim | alto |
+| 6 | Converter antigos; migração única com aviso; corpora do catálogo | encerra a Fase B | sim | médio |
 
-### 4.1 Medida que sustenta a proposta (camada spaCy do corpus grande, 3.756.174 tokens)
+Os passos 1–3 não mudam o formato: dá para entregar já e medir no Intel antes de investir em 4–6.
 
-| Representação da camada                                       | Cru      | zlib 6      | zstd 9  | lzma 4  |
-| ------------------------------------------------------------- | -------- | ----------- | ------- | ------- |
-| JSON atual (o que vai em `layer_blobs`)                       | 219,9 MB | 34,1 MB     | 26,5 MB | 23,4 MB |
-| **Colunar** (ids inteiros + léxico de palavras compartilhado) | 49,5 MB  | **15,0 MB** | 14,3 MB | 12,6 MB |
+## 6. Funcionalidades previstas e compatibilidade
 
-O ganho vem do **formato colunar** (2,3× menor), não do codec: zlib (da biblioteca padrão, disponível em qualquer Python do pacote) fica a 5% do zstd. Isso evita depender de `zstandard` no Mac Intel (Python 3.11, sem `compression.zstd`). Medido com o preset "rápido" (sem lemas); com lemas e features morfológicos espere algo maior (uns 1,5×).
+| Funcionalidade | Como fica |
+|---|---|
+| KWIC, colocados, leitor, dispersão de posições | usam C (sob demanda); mesmas respostas |
+| Frequência, palavras-chave, faixas, KFA, Laboratório, galeria, Escrita | passam a usar B; milissegundos; os testes comparam com o caminho atual |
+| Corpora do catálogo | pacote só com A (ou nem isso) + B |
+| Arquivos antigos | migração única, com aviso e sem apagar |
+| Paridade GUI/pacote/CLI | cada peça: função pública + subcomando (`stats build`, `index build`, `pack --profile`) |
+| macOS 12 Intel, só biblioteca padrão | nenhuma dependência nova |
 
-### 4.2 Quatro tipos de dado, cada um com seu ciclo de vida
+## 7. Robustez e o que não fazer
 
-1. **Textos** (imutáveis, com hash): 20 M de caracteres ≈ **7 MB** compactados. Em frames por documento, para ler um texto sem descompactar os outros.
-2. **Camadas** (imutáveis, identificadas por `text_hash + tool + versão + config_hash`): arquivo colunar por corpus e etiquetador, com **léxico compartilhado** e um bloco por documento (leitura direta de um documento para o Leitor e o contexto do KWIC). **≈ 15 MB por camada** neste corpus (5 camadas ≈ 75 MB) em vez de ~35 MB.
-3. **Metadados e análises** (pequenos, editáveis): um `meta.sqlite` com `documents`, `document_meta`, catálogo de camadas, `analyses`, `feature_tables`, `kfa_results`, lista "a executar", `project_meta`. KB a poucos MB.
-4. **Índice de busca** (derivado): **fora do arquivo**, num **cache local do aplicativo** (não na pasta temporária do sistema), por camada e identificado pelo hash da camada, com limite de tamanho (LRU) e botão "limpar cache". Construído sob demanda (~13 s por camada de 3,7 M de tokens), pode rodar em segundo plano, e é **reaproveitado por todo projeto que contenha a mesma camada**. Os arquivos deixam de carregar 87% de índice.
+- **Atômico e imutável**: `.part` + renome; chave = conteúdo; entrada incompleta não existe. Derivados são descartáveis; a verdade (A) só recebe acréscimos. Dois processos construindo a mesma chave já são seguros (renome); falta trava leve por chave.
+- **Teste de falha**: matar no meio de cada etapa e conferir que nada fica inválido (o teste de resíduos do A3 cobre a pasta temporária). Tudo desligável (`TTWTOOLS_INDEX_CACHE=0` já existe; o mesmo padrão para B e o índice sob demanda).
+- **Não** trocar de motor (DuckDB, Arrow) nem adicionar `zstandard`; **não** remapear ids em views; **não** construir índice que ninguém pediu; **não** guardar a mesma informação duas vezes; **não** tratar estimativa como medida.
 
-### 4.3 Contêiner
+## 8. Decisões do usuário
 
-- **`.ttwc` (um corpus)** = ZIP com `manifest.json`, `meta.sqlite`, `texts/`, `layers/`. **Abrir = ler o diretório do ZIP** (milissegundos); nada é descompactado até ser preciso, e uma camada só é lida quando usada. Salvar = gravar um `.part` **na pasta do destino** (não na temporária do sistema), copiando as partes inalteradas **sem recomprimir** e trocando só as novas: o temporário passa a ser o tamanho do arquivo final, sem a cópia de trabalho de 2,8 GB.
-- **Leve:** o mesmo arquivo com `texts/` como **pasta ao lado** (já é o `.ttwcl`).
-- **`.ttwa` (conjunto/comparação)** passa a ser **um manifesto**: lista de corpora **referenciados** (id, nome, hash de conteúdo, caminho) + **resultados** das comparações (KFA, palavras-chave, Laboratório) + tabelas de features e perfis de frequência usados. Tamanho: KB a MB. Só precisa abrir os `.ttwc` para explorar tokens. **Robusto** = embutir os `.ttwc` dentro (pacote); **leve** = só referências.
-- **Corpora clássicos internos:** um pacote traz o que a comparação realmente usa: **perfil de frequência** (forma, lema, classe; contagem e amplitude por documento) e **tabelas de features por texto**, alguns MB; a **camada de tokens** completa é um download opcional. Isso permite comparar textos individuais ou corpora pequenos contra Brown, LOB, etc. sem carregar milhões de tokens.
-- **Migração:** ferramenta (`ttwtools convert` e botão em Arquivo) que separa um `.ttwa` antigo em `.ttwc` por corpus + `.ttwa` de análises, **remove `tagged_files` legados já cobertos por camadas** (verificando que a camada reproduz o conteúdo) e nunca apaga o arquivo original. Os formatos atuais continuam **legíveis** para sempre.
+**Já tomadas (2026-09-29/30):** `.ttwa` como manifesto; pasta-pacote (ZIP só para enviar); índice em cache com barra de etapas clara; léxico por corpus; corpora clássicos só com perfil de frequência + features; começar pela Fase A; depois, começar pelo B3 com o Mac Intel como referência.
 
-### 4.4 Estimativa para o seu projeto (a confirmar com uma medição de ponta a ponta)
-
-|                                                                    | Hoje                            | Proposta                                        |
-| ------------------------------------------------------------------ | ------------------------------- | ----------------------------------------------- |
-| Corpus grande, **robusto** (textos + camadas, sem índice)          | 1,06 GB (`.ttwa` dos 2 corpora) | ~85–130 MB                                      |
-| Corpus grande, **leve** (textos ao lado)                           | 466 MB                          | ~80–120 MB + 7 MB de textos                     |
-| Conjunto comparando 2 corpora                                      | tudo junto (1,06 GB)            | KB–MB (referências + resultados)                |
-| Disco temporário para abrir                                        | 2,8 GB por abertura             | ~0 (índice em cache, compartilhado, com limite) |
-| Só remover `tagged_files` legados (passo barato, sem formato novo) |                                 | 466 MB → ~180 MB                                |
-
-**Medido ao fim da Fase A (2026-09-29, projeto real, Apple Silicon; detalhe em `plano_armazenamento.md`, A6):** corpus grande leve (`.ttwcl`) **466 → 104 MB**; projeto todo compactado **1.058 → 614 MB** (118 MB sem tabelas de busca, 53 s a mais ao abrir); banco de trabalho **2.979 → 2.066 MB** (remoção de `tagged_files`, índices reduzidos); camadas em `TCL1` **−45%** sobre JSON+zlib (dicionário por documento; o léxico por corpus, da Fase B, deve cortar mais). Sobram para a Fase B: descompactar ~2 GB ao abrir, tabelas de busca dentro do arquivo e recriação de ~53 s.
-
-### 4.5 Fases (do mais barato ao mais ambicioso)
-
-**Fase A: sem mudar o formato (dias).**
-1. Remover `tagged_files` legados cobertos por camadas (ferramenta "Compactar projeto"). Maior ganho pelo menor custo: ~290 MB no leve.
-2. Checar espaço livre antes de salvar/exportar e recusar com mensagem clara.
-3. Cache de trabalho no diretório de cache do aplicativo, com registro e limite (LRU), em vez da temporária do sistema; painel "Uso de disco / Limpar" em Recursos.
-4. Reduzir os índices duplicados (um índice por `lower(word)` e outro por `lower(lemma)`), medindo o efeito no KWIC e na frequência.
-5. Empacotamento de camadas em formato colunar + zlib (2,3× menor que o JSON atual), com **versão no cabeçalho** e leitura dos dois formatos.
-
-**Fase B: novo contêiner (semanas).**
-6. `.ttwc` em ZIP (manifesto + `meta.sqlite` + textos + camadas colunares); abrir lendo só o índice; salvar por partes.
-7. Índice de busca em cache por camada, construído sob demanda e em segundo plano; consultas continuam em SQL sobre o banco de cache (ATTACH), então o código de busca quase não muda.
-8. `.ttwa` como manifesto de referências + resultados, com a opção de embutir; conversão dos antigos.
-9. Perfis de frequência e tabelas de features como formato dos **corpora clássicos** do catálogo (liga com a decisão D6).
-
-**Fase C: só se for preciso (corpora de 100 M+ de tokens).**
-10. Índice próprio estilo CWB (léxico + fluxos de inteiros + postings em arquivos mmap) ou DuckDB/Parquet. Custo alto e dependência nova; o SQLite em cache já cobre dezenas de milhões de tokens (limite anotado em `novomodelo.md` §9.5).
-
-### 4.6 O que não mudar
-
-Camadas em **standoff** (posições de caracteres) e a chave de cache `text_hash + tool + versão + config_hash`; conferência de hash dos textos externos; paridade GUI × pacote (cada operação nova como função pública, subcomando e rota); compatibilidade com macOS 12 Intel (Python 3.11: **só biblioteca padrão** no formato; `pyarrow`/DuckDB só se a Fase C vier).
-
----
-
-## 5. Diretrizes fixadas pelo usuário (2026-09-29) e retrocompatibilidade
-
-Pedido: **priorizar o que for mais leve, de fácil computação mesmo em máquinas antigas, e retrocompatível**; tratar o novo armazenamento como **beta na versão 0.6** (`0.6.0.dev0` no `pyproject.toml`; ponto de retorno: tag local `pre-armazenamento-0.6`).
-
-**Retrocompatibilidade (compromisso):**
-- **Leitura:** todo formato atual continua legível para sempre: `.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt` (xz e gzip) e os esquemas v0.1, v0.2 e v0.3. O formato novo é **acréscimo**, identificado pelo conteúdo (manifesto com número de versão), não só pela extensão.
-- **Escrita:** na 0.6 o padrão continua sendo o formato atual; o novo é **opt-in, marcado "beta"**, até ser validado em projetos reais e nos três sistemas. Sempre haverá "exportar para o formato clássico" (ida e volta sem perda; teste token a token).
-- **Conversão** nunca apaga o arquivo original.
-- **Não é possível** garantir que versões antigas do aplicativo (0.4, 0.5) leiam arquivos do formato novo (o ZIP não é um banco SQLite). Mitigação: manifesto com versão e uma mensagem de erro clara; quem precisar entregar para alguém com versão antiga exporta no formato clássico.
-
-**Leve e de fácil computação em máquina antiga (regras de desenho):** só biblioteca padrão no formato (`zipfile`, `zlib`, `sqlite3`); nada de `zstandard`, `pyarrow` ou DuckDB (o Mac Intel usa Python 3.11 e macOS 12); processar **por documento**, em fluxo (memória baixa, sem carregar a camada inteira); temporários **na pasta do destino ou no cache do aplicativo**, com limite e limpeza; checar espaço livre antes de gravar; o índice de busca é **opcional e sob demanda**, nunca obrigatório para abrir.
-
-## 6. Decisões que dependem do usuário
-
-1. **`.ttwa` como manifesto** (referencia os `.ttwc`, com opção de embutir) ou continua a ser "tudo junto" em formato mais leve? => manifesto
-2. **ZIP único** (um arquivo para compartilhar) ou **pasta-pacote** (como um pacote do macOS) como formato de trabalho, com ZIP só para enviar? => pasta-pacote
-3. O **índice de busca em cache** é aceitável (a primeira abertura de cada camada leva ~13 s por camada de 3,7 M de tokens, depois é instantânea e compartilhada)? Ou prefere que o arquivo robusto **abra pronto** (arquivo bem maior)? => índice em cache, com aplicativo sendo claro com progress bars para cada etapa.
-4. Léxico compartilhado **por corpus** (melhor compressão, camadas ficam ligadas ao corpus) ou **por camada** (camadas independentes, ~10–20% maiores)? => por corpus
-5. **Corpora clássicos:** distribuir só perfil de frequência e features (poucos MB) e o corpus completo como download opcional? => só perfil de frequência e features
-6. Começar pela **Fase A** (ganho grande, risco baixo) e decidir a Fase B depois de medir? => Fase A
-
-## 7. Riscos e a medir
-
-- Medição de ponta a ponta do formato colunar com **lemas e features** (a amostra usou o preset "rápido").
-- Velocidade de consulta com índice em cache versus dentro do arquivo (KWIC, frequência, colocados).
-- Comportamento em **Windows e Linux** (caminhos, cache, limpeza de órfãs, bloqueio de arquivos ao reescrever o ZIP).
-- Migrar sem perder nada: teste que compara camada antiga e nova token a token, e projetos reais antigos de `ttwa_files/` como base de teste.
+**Abertas:**
+1. **Estatísticas B sempre dentro do arquivo**, mesmo no compacto? Recomendação: sim (poucos MB; o que o Intel mais sente).
+2. **Índice só sob demanda** (a 1ª busca posicional espera, com barra de etapas) ou construir ao abrir como hoje? Recomendação: sob demanda.
+3. **`TCL2` com ids e léxico por corpus**, mesmo que o cache deixe de ser compartilhado entre projetos sem relação?
+4. **Resultados derivados (KFA etc.) fora do arquivo**, sem ativar "não salvo"? Recomendação: sim.
+5. **Teto de espera no Intel** por operação (1ª abertura, etiquetar, comparar): vem das respostas em `macintel.md`, seção 6.

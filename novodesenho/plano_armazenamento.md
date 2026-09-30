@@ -1,134 +1,82 @@
-# Plano de implementação — novo armazenamento (beta da 0.6)
+# Plano e pendências: armazenamento (beta 0.6) e o que falta no projeto
 
-Fonte única de andamento desta frente. **Leia só este cabeçalho e o passo atual** (`grep -n '^### ' novodesenho/plano_armazenamento.md`). Análise, medidas e alternativas: `novodesenho/armazenamento.md` (consulte só a seção citada no passo). Pendências gerais: `novodesenho/pendencias.md`. Regras do repositório: `AGENTS.md`.
+**Três documentos, cada um com um papel:** este (o que foi feito, o que falta, o que decidir) · `armazenamento.md` (eficiência e formato de arquivo: evidência, proposta) · `macintel.md` (testes na máquina lenta de referência). Regras do repositório: `AGENTS.md`. Substitui o antigo `pendencias.md` (incorporado na seção 6); os relatos detalhados dos passos A1–A6 e B3 estão no histórico do Git.
 
-## Estado atual (atualizar ao fim de cada passo)
+## 1. Estado atual (atualizar a cada passo)
 
-- **Passo atual:** **B3 concluído** (Fase A também; decisão do usuário 2026-09-30: começar pelo B3, Mac Intel é referência). Próximo: a definir com o usuário (ver Relato do B3: B1/B2 ou decidir a "pronto para abrir")
-- **Versão:** `0.6.0.dev0` · **branch:** `new_set26` · **ponto de retorno:** tag local `pre-armazenamento-0.6`
-- **Decisões do usuário (2026-09-29):** `.ttwa` = **manifesto** (referencia corpora + guarda resultados); formato de trabalho novo = **pasta-pacote** (ZIP só para enviar); **índice de busca em cache**, com **barra de progresso clara em cada etapa**; **léxico compartilhado por corpus**; **corpora clássicos = só perfil de frequência + features**; **começar pela Fase A** e decidir a B depois de medir.
-- **Diretrizes:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão: `zipfile`, `zlib`, `sqlite3`, `json`, `struct`; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível**: todo formato atual (`.ttwa`, `.ttwl`, `.ttwc`, `.ttwcl`, `.ttwal`, `.ttwt`; esquemas v0.1–v0.3) continua legível para sempre; o formato novo é **opt-in, rotulado "beta"**; conversão nunca apaga o original; sempre exportar de volta ao formato clássico.
-- **Terminologia:** usar **features** (não "traços") na documentação e na interface.
+- **Fase A e B3 concluídas; Comparar como tarefa e barra de progresso própria feitos; aguardam o Mac Intel** (`macintel.md` seção 4): build com as correções, etapa I do teste (1ª abertura com índice em cache).
+- **Próximo passo:** o passo 1 da seção 3 (índice sob demanda por entrada, hash gravado, conexão por thread, fila de tarefas), depois de o usuário responder as decisões 1 e 2 (seção 4).
+- **Versão:** `0.6.0a2.dev0` · branch `new_set26` · ponto de retorno: tag local `pre-armazenamento-0.6`. Release em rascunho `v0.6.0-alpha.1` no GitHub (build **anterior** às correções de Comparar); pacotes novos saem pela branch `release-test/armazenamento-0.6-dev` (só artefatos, sem tag).
+- **Diretrizes do usuário:** o mais **leve**, de **fácil computação em máquina antiga** (só biblioteca padrão; nada de `zstandard`, `pyarrow`, DuckDB; Mac Intel = Python 3.11, macOS 12) e **retrocompatível** (todo formato atual legível para sempre; formato novo opt-in, rotulado beta; conversão nunca apaga o original; sempre exportar ao formato clássico). Usar **features**, não "traços".
 
-## Como trabalhar (curto)
+## 2. Como trabalhar
 
-1. **Um passo por vez.** Ao concluir: marque `[x]`, preencha o **Relato**, atualize "Estado atual", rode os testes do que mexeu e faça **um commit** `[A1] mensagem curta em português` (sem coautoria de agente; nunca `git add -A`; adicione arquivos pelo nome). Depois pare ou siga ao próximo; **em sessão nova, comece em "Estado atual"**.
-2. **Submódulo:** a lógica vive em `libs/ttwtools/ttwtools`; commit e `git push` **dentro dele primeiro**, depois o ponteiro no app. Rota fina em `app/routes`, tela só apresenta. Todo recurso novo = função pública + subcomando + rota + tela; textos por chave de tradução (`pt` e `en`, em `libs/ttwtools/ttwtools/data/i18n/ui.*.json`); depois de mexer em função pública: `cd libs/ttwtools && python docs/gerar_referencia.py`.
-3. **DISCO (o usuário já teve 71 GB de lixo temporário):** antes de qualquer teste que abra `ttwa_files/*` (3 GB descompactados) confira `df -h /` (mínimo de 20 GB livres); rode um processo longo por vez, **sempre com o usuário sabendo**; apague o que criar (`ls -d $TMPDIR/ttw_* $TMPDIR/../T/ttw_*`); nunca deixe monitor ou processo em segundo plano sem necessidade. Teste com projetos **pequenos gerados nos testes**; use o projeto real só nas medições marcadas.
-4. **Testes:** `pytest libs/ttwtools/tests -q` e `pytest tests -q` (ambiente `conda activate ttw314`); `cd frontend-vue && npm test && npm run e2e` só ao fim de passos de tela. Cada passo acrescenta teste, inclusive **"não deixa lixo temporário"**.
-5. **Não recompilar o pacote** (PyInstaller) até o usuário pedir; rodar por `python -m app --mode desktop|web`.
+1. **Um passo por vez.** Ao concluir: atualizar este arquivo, rodar os testes do que mexeu e fazer **um commit** `[passo] mensagem curta em português` (sem coautoria de agente; nunca `git add -A`; adicionar arquivos pelo nome).
+2. **Submódulo:** a lógica vive em `libs/ttwtools/ttwtools`; commit e `git push` **dentro dele primeiro**, depois o ponteiro no app. Rota fina em `app/routes`; tela só apresenta; todo recurso novo = função pública + subcomando + rota + tela; textos por chave (`pt` e `en`, em `libs/ttwtools/ttwtools/data/i18n/ui.*.json`); depois de mexer em função pública: `cd libs/ttwtools && python docs/gerar_referencia.py`.
+3. **Disco (já houve 71 GB de lixo temporário):** antes de teste que abra `ttwa_files/*` conferir `df -h /` (mínimo 20 GB livres); um processo longo por vez, com o usuário sabendo; trabalhar em **cópias** e apagar o que criar; nunca deixar processo em segundo plano sem necessidade. Testes com projetos pequenos gerados; o real só nas medições marcadas.
+4. **Testes:** `pytest libs/ttwtools/tests -q` e `pytest tests -q` (`conda activate ttw314`); `cd frontend-vue && npm test && npm run e2e` ao fim de passos de tela. Cada passo acrescenta teste, inclusive "não deixa lixo temporário".
+5. **Não recompilar o pacote** até o usuário pedir; rodar por `python -m app --mode desktop|web`. Pacotes no GitHub: `git push origin new_set26:release-test/armazenamento-0.6-dev` (artefatos) ou `python build/release.py --version X --allow-branch` (tag e rascunho; ver `RELEASING.md`).
 
-## Fase A — sem mudar o formato (entra como beta da 0.6)
+## 3. Andamento
 
-### A1 Compactar projeto: remover `tagged_files` legados
-- Contexto: `tagged_files` (304 MB no projeto real, 290 MB do `.ttwcl` leve) é cópia legada da saída dos etiquetadores (v0.1/0.2); etiquetagens novas **não** a preenchem (medido). As camadas (`layers` + tokens ou `layer_blobs`) já têm o conteúdo.
-- **Fazer:**
-  - [x] `ttwtools.project.compact_project(project, dry_run=True, progress=None)`: para cada `tagged_files` (corpus, arquivo, etiquetador) confirma que existe camada equivalente (mesmo documento; tokens iguais **token a token** ao decodificar o JSONL); só então apaga. Devolve relatório (removidos, mantidos com motivo, bytes liberados). **Nunca remove o que não conseguir provar equivalente.**
-  - [x] Subcomando `ttwtools compact PROJETO [--dry-run]`; rota `POST /api/project/compact` (tarefa com progresso); botão "Compactar projeto (remover cópias antigas)" em Arquivo → Mais opções, com o efeito explicado e confirmação; `VACUUM` no fim (documentar o pico de disco).
-- **Pronto quando:** teste com projeto sintético v0.2 migrado (tagged_files + camadas) remove só os equivalentes, mantém o resto e os resultados de busca/KWIC não mudam; `--dry-run` não altera nada; medição no projeto real (uma vez) mostra o ganho.
-- **Relato:** `compact_project(project, dry_run=True, progress=None)` em `project.py` (exportada; subcomando `ttwtools compact PROJETO [--dry-run]`; rota `POST /api/project/compact` como tarefa, com etapas `check` e `vacuum`; botão "Compactar projeto (remover cópias antigas)" em Arquivo → Mais opções: simula, mostra quantas cópias e MB saem e o que fica, e só remove após "Remover agora"; textos pt/en). Equivale = mesmo documento, ferramenta, versão, modelo e configuração, e tokens iguais token a token (lê `tokens` ou, sem tabelas de busca, `layer_blobs`). **Única tolerância:** em Stanza/spaCy os arquivos `_upos` e `_xpos` compartilham uma camada cuja coluna `tags` guarda a de um só; o outro arquivo difere apenas em `tags` = `[upos]`/`[xpos]` do mesmo token, informação que a camada já tem, e é aceito. Motivos de "mantido": `not_jsonl`, `no_document`, `no_layer`, `tokens_differ`. `VACUUM` no fim, precedido e seguido de `wal_checkpoint(TRUNCATE)` para o tamanho medido ser real. Nota: depois de compactar, o Exportar deixa de oferecer os arquivos `tagged/…` (vêm de `tagged_files`); as camadas seguem exportáveis. Testes: `tests/test_compact.py` (6) e `tests/test_routes_compact.py`, com "sem lixo temporário".
-  - **Medição no projeto real** (cópia do `_novo.ttwa`, 10.675 cópias): simulação 103 s, remoção + VACUUM 119 s; **10.675 removidas, 0 mantidas**; banco **2.979 → 2.571 MB** (−408 MB; o conteúdo das linhas era 295 MB comprimido); camadas e nº de tokens (18.978.656) idênticos. Sem a tolerância de `tags`, 3.050 ficavam como `tokens_differ`. Cópia apagada; disco sem resíduo.
+### Feito
 
-### A2 Checar espaço livre antes de gravar
-- **Fazer:**
-  - [x] `ttwtools.storage.ensure_free_space(path, needed_bytes, what)` (usa `shutil.disk_usage`); estimativas: salvar/salvar como (tamanho do banco + margem), exportar (estimativa por corpus), abrir compactado (tamanho descompactado lido do cabeçalho gzip quando possível, senão 3× o arquivo). Erro `InsufficientDiskSpace` com valores; mensagem traduzida na tela.
-  - [x] Chamar em salvar, salvar como, exportar, abrir arquivo compactado, importar; teste com `monkeypatch` de `disk_usage`.
-- **Pronto quando:** operação recusada com mensagem clara **antes** de criar qualquer arquivo; nenhum resíduo.
-- **Relato:** novo módulo `ttwtools/storage.py` (só biblioteca padrão): `ensure_free_space(path, bytes, what)` (sobe até uma pasta existente; não cria nada), `InsufficientDiskSpace` (com `code` e `params` para a tela), `with_margin` (+10% + 64 MB), `estimate_open` (ISIZE do cabeçalho gzip quando plausível; senão 3× o arquivo). Chamado em: `save_project_as` (destino e, sem tabelas de busca, também a pasta temporária; antes de criar a pasta de destino), `save_corpus_as`/`save_corpora_as` (fração dos documentos × tamanho do banco), `decompress_project_file`/`decompress_from_ttwt` (abrir), `import_corpus` (2× o tamanho dos textos), rota `/export` (`estimate_export_bytes`: textos ×2, etiquetados ×5, tabelas ×2) e rota `saveas` com troca de projeto (cópia de trabalho). `TTWAProject.open` agora apaga a pasta de trabalho se a descompressão falha (antes vazava). Erros: rota síncrona → HTTP 507 com `{code, what, needed_mb, free_mb, path}`; tarefa → `error_code`/`error_params` (novo `jobs.error_fields`); CLI → mensagem e código 1. Tela: `error.disk_space` e `disk.what.*` (pt/en), em `errors.js` e `JobProgress`. Testes: `tests/test_storage.py` (8) e `tests/test_routes_storage.py` (`monkeypatch` de `shutil.disk_usage`, sem resíduo em pasta nova nem em `ttw_*` temporários). Limite conhecido: o ISIZE do gzip dá a volta em 4 GB (usa 3× se o valor fica menor que o arquivo); a migração v0.3 depois de abrir não é estimada.
+| Passo | Resultado |
+|---|---|
+| A1 Compactar projeto | `ttwtools compact`: remove `tagged_files` legados comprovados iguais às camadas (tolera `tags` = upos/xpos em Stanza/spaCy); banco 2.979 → 2.571 MB |
+| A2 Espaço livre | `storage.ensure_free_space` antes de salvar, salvar como, exportar, abrir e importar; erro 507 traduzido |
+| A3 Pastas e cache | `storage`: pastas com dono, cache com limite (5 GB) e LRU, painel "Uso de disco", `ttwtools cache`; corrigido `.part` deixado por gravação cancelada |
+| A4 Índices | 7 → 5 (−21% no arquivo, mesma velocidade); `tools/bench_indexes.py` |
+| A5 Camadas colunares | `layerfmt` `TCL1`: −45% sobre JSON+zlib; `.ttwcl` do corpus grande 466 → 104 MB |
+| A6 Fecho da Fase A | medição ponta a ponta; CHANGELOG |
+| B3 Índice em cache | `searchindex`: ATTACH somente leitura + view `tokens`; etapas com progresso; 1ª abertura 38–44 s (M4), depois 1 s; `ttwtools index status/build/clear`; desliga com `TTWTOOLS_INDEX_CACHE=0` |
+| Compatibilidade | testes pelo app: formatos antigos (direto, gzip, xz; esquema 0.2) e novos abrem e respondem igual |
+| Comparar robusto | `?async=1` em palavras-chave, KFA, faixas, galeria e Laboratório (tarefa com andamento e cancelar); KFA por documento e reaproveitada; tabelas de features em memória; `ProgressBar` própria |
+| Ferramentas de medição | `tools/bench_storage.py` (as três opções, relatório em Markdown) |
 
-### A3 Pastas de trabalho e cache num só lugar, com dono, limite e limpeza
-- **Fazer:**
-  - [x] Módulo `ttwtools.storage`: `workdir(kind)` (cópias de trabalho, exportações, empacotamento; hoje `make_workdir` em `project.py`) e `cache_dir()` (índices e derivados; `platformdirs.user_cache_dir`, já usado pelo catálogo); marca `owner.pid`; registro de uso (tamanho, último uso).
-  - [x] Limite configurável do cache (padrão sugerido: 5 GB) com remoção LRU; `purge_orphans()` reúne o que já existe; limpeza ao iniciar e ao sair.
-  - [x] `ttwtools cache list|clear`; rota `/api/utils/disk-usage`; painel **Uso de disco** em Recursos (o que é, quanto ocupa, botão limpar) com aviso quando houver lixo grande ao iniciar.
-  - [x] Teste (fixture reutilizável) que garante **nenhum arquivo residual** depois de abrir, salvar, exportar, cancelar e falhar.
-- **Pronto quando:** matar o processo no meio de uma exportação e reiniciar apaga os restos; o painel mostra o uso.
-- **Relato:** tudo em `ttwtools/storage.py`. **Pastas de trabalho:** `workdir(kind)` (`work`/`export`/`pack`), `make_workdir` (agora só delega; `project.make_workdir`/`purge_orphan_workdirs` continuam existindo), `owner.pid`, `list_workdirs()` (tamanho, dono vivo ou não, idade), `purge_orphans()` (dono morto ou, sem marca, mais de 24 h; guarda em `last_purge` o que apagou), `release_own_workdirs()`. **Cache:** `cache_dir()` (`platformdirs.user_cache_dir("TTWtools")`; `TTWTOOLS_CACHE_DIR` muda), `cache_entry(key)`/`touch_cache` (marca de uso em `.last_used`), `cache_entries()`, `enforce_cache_limit()` (LRU; limite = `cache_limit_mb` do `settings.json`, padrão 5 GB), `clear_cache()`. `disk_usage()` e `cleanup(exit=)` reúnem tudo. **Quando roda:** o app limpa órfãs e aplica o limite ao iniciar; ao sair (atexit e `/quit`) apaga as pastas do próprio processo. **CLI:** `ttwtools cache list|clear`. **Rotas:** `GET /api/utils/disk-usage`, `POST /api/utils/disk-usage/clear` (apaga cache e órfãs; o que está em uso fica). **Tela:** painel "Uso de disco" em Módulos (Recursos) com o que é, quanto ocupa, detalhes recolhidos e botão "Limpar restos"; faixa de aviso no topo do Arquivo quando há ≥ 1 GB de restos (apagados ao iniciar ou ainda lá). **Vazamento achado pelo teste e corrigido:** `save_project_as` deixava `X.part` se a gravação fosse cancelada ou falhasse. Testes: `tests/test_storage_dirs.py` (8; inclui matar um processo no meio da criação de uma pasta de exportação e o reinício apagar o resto) e fixture reutilizável `no_temp_residue` em `tests/conftest.py` (abrir, salvar, salvar sem tabelas, exportar, cancelar, falhar), mais `test_disk_usage_routes`. O cache ainda não guarda nada: quem o usa é a Fase B (B3).
+### Próximos passos (detalhe e ganho em `armazenamento.md` seção 5)
 
-### A4 Índices: medir e enxugar
-- **Fazer:**
-  - [x] Benchmark (script em `libs/ttwtools/tests/` ou `tools/`, sobre um projeto **sintético grande** de ~2 M de tokens, não o real) do KWIC, frequência, colocados e dispersão com os 7 índices atuais × conjunto reduzido (`lower(word)`, `lower(lemma)`, `doc`, `upos`, `xpos`).
-  - [x] Se a perda for aceitável, reduzir; índices continuam recriáveis; `rebuild_search_tables` cria o conjunto novo; arquivos antigos abrem e são atualizados sob demanda.
-- **Pronto quando:** tabela antes/depois (tamanho e tempo) no Relato; decisão registrada.
-- **Relato:** `libs/ttwtools/tools/bench_indexes.py` (projeto **sintético** Zipf de 2 M de tokens, 200 documentos; apaga tudo ao fim; mediana de 3 execuções). Medido em 2026-09-29 (Mac Apple Silicon):
+1. **Índice sob demanda por entrada** (só na 1ª consulta posicional), **hash de blob gravado uma vez**, **conexão por thread**, **fila de tarefas pesadas** (núcleos − 1). Sem mudar o formato.
+2. **Estatísticas B** (matriz documento × tipo, contagens de features) ao empacotar/etiquetar; KFA, palavras-chave, faixas e frequência passam a usá-las; **resultados derivados fora do arquivo** (sem ativar "não salvo"). Primeiro no cache, sem mudar o formato.
+3. **SQL nos laços quentes** (`frequency`, `collocates`, `feature_table` com `json_each`, regex no léxico), **PRAGMAs** medidos, **orçamentos por máquina** no `bench_storage.py`.
+4. **Protótipo `TCL2`** (ids + léxico por corpus) e índice com ids: medir tamanho e regex antes de fixar o formato.
+5. **Pasta-pacote com perfis Compacto/Pronto** (antigos B1, B2, B4).
+6. **Converter antigos** e corpora do catálogo (antigos B5, B6), e **verificação e lançamento do beta** (antigo B7: Windows, Linux, macOS 12; `0.6.0b1`).
 
-  | conjunto | arquivo (MB) | criar índices (s) | KWIC forma | KWIC lema+classe | KWIC classe | busca | frequência (lema) | colocados | dispersão |
-  |---|---|---|---|---|---|---|---|---|---|
-  | antigo (7) | 267,7 | 3,88 | 0,033 s | 0,012 s | 0,052 s | 0,017 s | 1,94 s | 1,67 s | 0,060 s |
-  | **reduzido (5)** | **211,7** | **2,72** | 0,033 s | 0,011 s | 0,050 s | 0,016 s | 1,81 s | 1,66 s | 0,061 s |
-  | mínimo (3, sem upos/xpos) | 157,6 | 1,64 | 0,034 s | 0,006 s | 0,106 s | 0,016 s | 1,83 s | 1,67 s | 0,061 s |
-  | nenhum | 78,1 | 0 | 0,308 s | 0,313 s | 0,205 s | 0,150 s | 1,79 s | 1,81 s | 0,195 s |
+## 4. Decisões do usuário
 
-  **Decisão:** adotado o **reduzido (5)**: `lower(word)`, `lower(lemma)`, `doc_id`, `upos`, `xpos`. Saem os índices simples de `word` e `lemma`, que nenhuma consulta usa (todas comparam `lower(...)`): −21% no arquivo (−56 MB em 2 M de tokens), −30% ao criar, tempos iguais. O "mínimo" é 41% menor, mas dobra o KWIC por classe (`pos=`), então não foi adotado. Frequência e colocados varrem a tabela (índice não ajuda) e dispersão e busca dependem só dos índices de forma. Arquivos antigos abrem normalmente: ao abrir, `_connect` apaga `idx_tokens_word`/`idx_tokens_lemma` (`_OBSOLETE_INDEXES`; o espaço é reaproveitado e o arquivo encolhe no próximo Salvar/VACUUM); `rebuild_search_tables` e a migração criam só o conjunto novo. Teste: `tests/test_indexes.py`. Observação: a tabela `tokens` (78 MB sem índices) segue sendo o grosso; quem a reduz é o formato colunar (A5).
+**Tomadas:** `.ttwa` = manifesto; pasta-pacote (ZIP só para enviar); índice em cache com barra de etapas; léxico por corpus; corpora clássicos só com perfil de frequência + features; Fase A primeiro; depois B3 com o Mac Intel como referência.
 
-### A5 Camadas em formato colunar (dentro de `layer_blobs`)
-- Medido: 219,9 MB (JSON) → 49,5 MB cru → **15,0 MB com zlib** (camada de 3,76 M de tokens), contra 34,1 MB do JSON+zlib.
-- **Fazer:**
-  - [x] `ttwtools.layerfmt`: `encode(tokens) -> bytes` / `decode(bytes) -> tokens`, cabeçalho com magia e **versão** (`TCL1`), dicionário local por documento (o léxico por corpus vem na Fase B), colunas em `array`/`struct` (sem numpy obrigatório), `zlib`. `decode` aceita também o blob JSON antigo (retrocompatível).
-  - [x] `pack_search_tables` e `rebuild_search_tables` gravam/leem o formato novo (blobs antigos continuam legíveis); teste de ida e volta token a token com camadas reais pequenas (spaCy, Stanza, MFTE, BiberPlus).
-  - [x] Medir tempo de codificar/decodificar em máquina lenta (registrar) e o tamanho no projeto real (uma vez).
-- **Pronto quando:** `.ttwcl` leve do corpus grande cai bem abaixo dos 466 MB (esperado ~180 MB só removendo `tagged_files` e ~100 MB com o formato colunar).
-- **Relato:** `ttwtools/layerfmt.py` (`TCL1`): `encode(rows)`/`decode(blob)`. Blob = `b"TCL1"` + zlib( `n:u32`, início (diferença do anterior) e tamanho do token em `int32`, e 7 colunas de texto: dicionário local em JSON + índice de 2 ou 4 bytes por token ). Só biblioteca padrão (`array`, `struct`, `zlib`, `json`); sem numpy. `decode` lê também o JSON+zlib antigo, então arquivos antigos abrem para sempre; linhas fora do padrão (valor não textual) caem no formato antigo (`_pack_rows`). `pack_search_tables`, a exportação leve (`_save_corpora_subset`), `rebuild_search_tables` e `_layer_rows` (A1) usam o módulo. Um arquivo salvo assim **não abre em versões anteriores ao 0.6** (só quando salvo sem tabelas de busca, ou em `.ttwcl`/`.ttwal`); o resto do formato não muda. Testes (`tests/test_layerfmt.py`, 8): ida e volta token a token em casos extremos (None, unicode, vazio, >65 535 formas) e em **todas as camadas reais** do `v2_small.ttwa` (BiberPlus, spaCy, MFTE; Stanza não está na amostra, coberta na medição real abaixo), blob antigo, fallback, pack→rebuild sem perda, menor que o JSON.
-  - **Medição no projeto real** (cópia; camadas por documento, ~3 mil tokens cada; 62 camadas amostradas, 188 mil tokens, ida e volta conferida): JSON+zlib 1,8 MB → TCL1 1,0 MB (**−45%**; o dicionário é por documento, o léxico por corpus vem na Fase B). **Tempo** (Apple Silicon): codificar ≈ 890 mil tokens/s, decodificar ≈ 3,3 milhões tokens/s, então recriar as tabelas de busca de 19 M de tokens leva ~6 s só de decodificação (o resto é inserir e indexar). **Não medido em máquina lenta**: em Mac Intel de 2015 espere ~3–5× (segundos, não minutos); confirmar no Mac Intel na A6. **Resultado do plano:** `.ttwcl` do corpus grande (essays_bawe) **103,5 MB** (era 466 MB; meta ~100 MB) e o do pequeno 6,2 MB, gerados depois de compactar (A1) e com o conjunto reduzido de índices (A4). O banco de trabalho foi de 2.979 → 2.066 MB (A1 + A4).
+**Abertas** (recomendações em `armazenamento.md` seção 8):
+1. Estatísticas B **sempre dentro do arquivo**, mesmo no compacto?
+2. Índice **só sob demanda** ou construir ao abrir?
+3. `TCL2` com ids e léxico por corpus, mesmo que o cache deixe de ser compartilhado entre projetos sem relação?
+4. Resultados derivados **fora do arquivo**?
+5. **Teto de espera no Intel** por operação (respostas em `macintel.md` seção 6).
 
-### A6 Fechar a Fase A
-- **Fazer:**
-  - [x] Medição ponta a ponta no projeto real (com A2 ativo, um processo, sem monitor): abrir, exportar `.ttwcl`, compactar, reabrir; tabela no Relato; atualizar `armazenamento.md` §4.4 com números reais.
-  - [x] `CHANGELOG.md` `[Unreleased]` (Adicionado/Alterado/Corrigido), `pendencias.md` (marcar o feito), `plano_implementacao.md` "Estado atual".
-  - [x] Decidir com o usuário a Fase B com base nas medidas.
-- **Relato:** medição ponta a ponta numa cópia do projeto real (`_novo.ttwa`, 2 corpora, 19 M de tokens; Apple Silicon; A2 ativo; um processo; cópia e saídas apagadas, disco sem resíduo):
+**Questões de desenho do `.ttwc` × `.ttwa`** (resolver no passo 5): o `.ttwa` referencia os `.ttwc` por caminho + hash (como o `.ttwl`) ou os embute; o que fazer com camadas e resultados quando um `.ttwc` muda depois da análise; a etiquetagem usada numa comparação mora sempre no `.ttwc`; migrar os `.ttwa` atuais (separar ou aceitar tudo embutido); **definição de "leve"** (hoje `.ttwcl` e `.ttwal` saem sem tabelas de busca, o `.ttwl` não; o texto é ~1% do arquivo); relação com os pacotes do catálogo (D6); limite do SQLite (BNC e Hansard pedem outra estratégia, NM §9.5); destino do `.ttwt` antigo; paridade GUI/CLI para montar, embutir e separar.
 
-  | etapa | antes da Fase A | depois (A1+A4+A5) |
-  |---|---|---|
-  | abrir o `.ttwa` compactado (1.058 MB) | 7 s → banco de trabalho 2.979 MB | igual (só descompactar) |
-  | compactar projeto (A1) | — | 111 s: 10.675 cópias removidas, 0 mantidas; banco **2.979 → 2.066 MB** (A1 + índices do A4) |
-  | exportar `.ttwcl` do corpus grande | 388 MB (45 s) | **104 MB** (35 s) |
-  | exportar `.ttwc` (com tabelas de busca) | — | 592 MB (44 s) |
-  | salvar projeto todo (compactado) | 1.058 MB | **614 MB** (11 s) |
-  | salvar projeto todo sem tabelas de busca | — | **118 MB** (55 s) |
-  | reabrir com tabelas | 4 s | 4 s |
-  | reabrir sem tabelas (recria 19 M de tokens) | ~63 s | **53 s** |
+## 5. Pendências abertas de armazenamento
 
-  Ganho: o corpus grande leve de 466 MB (medido antes) para 104 MB; o projeto todo de 1,06 GB para 614 MB (ou 118 MB sem tabelas de busca, ao custo de ~53 s ao abrir). **O que a Fase A não resolveu** (é o que a Fase B ataca): (1) abrir ainda descompacta ~2,0–3,0 GB por abertura; (2) o arquivo *com* tabelas de busca segue grande (614 MB) porque a tabela `tokens` e os índices ficam dentro dele; (3) recriar as tabelas leva ~53 s e cresce com o corpus; (4) o `.ttwa` continua a misturar corpora, camadas e análises. `armazenamento.md` §4.4 recebeu esses números. Verificação em outros sistemas (Windows/Linux, `os.kill(pid, 0)` da limpeza de órfãs) e máquina lenta (Mac Intel/macOS 12) **continuam por fazer**: rodar `pytest`, `ttwtools cache list`, abrir/salvar um projeto pequeno e cronometrar `layerfmt` lá.
-  - **Sugestão para a decisão da Fase B:** fazer a **B1 (especificação)** e o **B3 (índice de busca em cache por camada)** primeiro, porque atacam os itens (1)–(3) sem mudar o formato do `.ttwa`; deixar B5 (`.ttwa` manifesto) e B6 (corpora clássicos) para depois de medir o B3. Aguarda o usuário.
+- Abrir compactado ainda descompacta tudo (2–3 GB de temporário): resolvido pela pasta-pacote (passo 5).
+- Testar a limpeza de pastas órfãs (`os.kill(pid, 0)`, caminhos de temporário) no **Windows e no Linux**.
+- Pico do `VACUUM` do Compactar (até ~2× o banco) só é avisado na tela.
+- `ttwa_files/essays_bawe_somentetexto_corpus/` (22 MB, resto de exportação interrompida): **não apagada** por decisão do usuário.
+- Sem trava leve por chave para dois processos construindo o mesmo índice (já é seguro por renome).
+- Medições do Mac Intel que faltam: `macintel.md` seção 4.
 
-## Fase B — pasta-pacote, índice em cache e `.ttwa` manifesto (só depois da A e da medição; **beta**)
+## 6. Outras pendências do projeto (incorporadas de `pendencias.md`)
 
-Decisões já tomadas estão em "Estado atual". Detalhes de desenho: `armazenamento.md` §4.2–4.3.
+**Release.** `0.5.0` gravada, tag `v0.5.0` **só local**, sem release (falta decidir o push; recompilar com o ícone novo; teste em macOS 12). Rascunhos no GitHub: `v0.4.0-alpha.1`, `v0.4.0-rc.1`, `v0.6.0-alpha.1`. Submódulo `ttwtools` em `0.2.0.dev0`, sem tag própria. 6.3: congelar (tag do submódulo, CHANGELOG), conferir rascunho, publicar, `SHA256SUMS.txt`.
 
-### B1 Especificação do formato
-- [ ] `libs/ttwtools/docs/formato-pacote.md`: pasta `nome.ttwc/` (arquivo com o mesmo nome continua sendo o `.ttwc` clássico; **pasta** = formato novo, reconhecido pelo tipo e pelo `manifest.json`), com `manifest.json` (versão, ids, hashes), `meta.sqlite` (documents, document_meta, catálogo de camadas, analyses, feature_tables, kfa_results, pending_steps, project_meta), `texts/` (por documento, compactado), `layers/` (colunar, **léxico compartilhado por corpus** em `lexicon/`), sem índice. Empacotar para enviar = ZIP da pasta (`nome.ttwc.zip`), abrir = descompactar ou ler direto; confirmar com o usuário o nome do ZIP.
-- [ ] `.ttwa` = manifesto: corpora referenciados (id, nome, hash, caminho relativo/absoluto), resultados de comparação, perfis de frequência e tabelas de features usados; opção de embutir. Regras de versão e de erro para versões antigas.
+**Decisões do plano de implementação** (`plano_implementacao.md`): D4 assinatura e notarização; D5 formato do pacote no Windows e Linux; D6 onde hospedar o catálogo (aguarda o usuário, junto das licenças 4.3); D8 nomes dos destinos e do rótulo do corpus ativo; D9 padrão recomendado de cada tagger (medir tempo e qualidade); 5.2 dados reais do OANC/MASC.
 
-### B2 Leitura e escrita do pacote (`ttwtools.bundle`)
-- [ ] Abrir lendo só o manifesto; texto por documento; camada sob demanda; salvar **incremental** (objetos imutáveis novos + `meta.sqlite`), sem cópia de trabalho de vários GB; temporários só no destino/cache.
+**Verificação** (6.2 e 6.2a): mensagens de erro do servidor sempre em português, mapear para chaves pt/en; testar os diálogos nativos na janela desktop (CI e e2e só em modo web); continuar `verificacao/macos-arm64.md` e os roteiros de Windows, Linux e macOS 12 Intel (máquinas fora daqui); revisar LEIAME/README com os nomes novos das telas e formatos.
 
-### B3 Índice de busca em cache por camada
-- [ ] Construído sob demanda, em segundo plano, **com barra de progresso por etapa** ("Lendo a camada", "Criando o índice de formas", ...); compartilhado por hash entre projetos; consultas existentes rodam por `ATTACH` (o código de busca **não** muda: view temporária `tokens`); limite e LRU do A3.
-- **Relato:** módulo `ttwtools/searchindex.py` + integração em `project.py`. **Arquitetura:** um arquivo salvo sem tabelas de busca mantém as camadas em `layer_blobs` (formato `TCL1`). Ao abrir, em vez de recriar `tokens` dentro do projeto, o índice é construído **uma vez** num SQLite da pasta de cache (`idx-<chave>/tokens.sqlite` + `entry.json`; atômico: `.part` e renomeia) e **anexado somente leitura** (`ATTACH ... mode=ro`); uma `TEMP VIEW tokens` = `main.tokens ∪ idx1.tokens ∪ …` faz as consultas existentes funcionarem sem mudança. O projeto continua pequeno e sem tabelas no arquivo (abrir não o altera: não vira "não salvo").
-  - **Decisão de desenho medida (protótipo, 300 mil tokens sintéticos):** a cache precisa guardar os **ids nativos** do projeto. Com a view remapeando `layer_id`, o SQLite perde a chave primária `(layer_id, idx)` e o KWIC com mais de uma palavra passou de 8 ms para **17 s**. Com ids nativos: igual à tabela direta (uma cache) e ≤ 2× com `UNION ALL`. Consequência: a **chave** = hash de formato + ids + blobs, então o cache é compartilhado por quem descende do mesmo arquivo (cópias, salvar como, `.ttwc` exportado), **não** por projetos sem relação que por acaso tenham os mesmos textos (caso a tratar no B1/B2, com léxico e ids por corpus).
-  - **Grupos:** camadas do mesmo corpus + ferramenta + versão + modelo + configuração. Se passar do limite de bancos anexados do SQLite (10), agrupa por ferramenta e, por fim, tudo junto (`plan_entries`). Memo por arquivo (tamanho e data do banco e do WAL) evita recalcular hashes a cada abertura na mesma sessão do app.
-  - **Etapas com progresso** (app e CLI): `idx_read` (camadas lidas) e uma por índice (`idx_words`, `idx_lemmas`, `idx_doc`, `idx_upos`, `idx_xpos`), com aviso "só na primeira vez" na janela de abertura. Antes de construir: `ensure_free_space` ("criar o índice de busca"). LRU do A3 protege as entradas em uso (`keep`).
-  - **Escrita em modo cache:** camadas novas vão para `main.tokens` (escritas qualificadas com `main.`). Salvar **sem tabelas** empacota só as novas; salvar **com tabelas** e exportar `.ttwc` **materializam** os tokens numa cópia temporária (`rebuild_search_tables` / `_materialize_layer`); `save_project_as(raw=True)` grava o banco como está.
-  - **Desligar:** `TTWTOOLS_INDEX_CACHE=0` ou `index_cache: false` no `settings.json` volta a recriar as tabelas ao abrir (comportamento anterior); falha que não seja de disco também cai nele, com aviso.
-  - **CLI:** `ttwtools index status|build|clear PROJETO`. Testes: `tests/test_searchindex.py` (13: mesmos tokens e mesmas respostas de KWIC/frequência/colocados/dispersão que o projeto materializado, etapas, segunda abertura sem construir, cópia compartilha o cache, camada nova + salvar/materializar, exportar `.ttwc`/`.ttwcl`, cache apagado, cancelar sem resíduo, disco cheio recusa antes, limite de anexos, LRU) e `_isolated_cache` (testes nunca tocam o cache real).
-  - **Medição no projeto real** (cópia; Apple Silicon; cache em pasta própria, apagada): o arquivo salvo sem tabelas ficou em 415 MB (esta cópia ainda tinha os `tagged_files`; sem eles, ~120 MB como no A6). **Abrir com tabelas:** 6 s, banco de 2.979 MB. **Abrir sem tabelas, 1ª vez** (constrói o índice; 10 entradas, 19 M de tokens, cache de **2.124 MB**): **44 s**, banco de trabalho 459 MB (antes da Fase A: 2.979 MB). **2ª vez: 1,0 s** (antes: ~53–63 s em *toda* abertura). Consultas (corpus de 3,7 M de tokens, via `UNION ALL` de 10 caches × tabela direta): KWIC 0,86 × 0,74 s; KWIC lema+classe 0,52 × 0,48 s; busca 0,53 × 0,38 s; frequência de lemas 4,6 × 3,8 s; colocados 4,8 × 3,9 s; dispersão 0,60 × 0,64 s, ou seja **+0 a +40%**, aceitável.
-  - **Mac Intel (referência do usuário):** não medido aqui. A construção é CPU e disco; espere a 1ª abertura de 2–5 min (M-series: 44 s) e as seguintes em poucos segundos. Para quem não quiser pagar a 1ª vez (ou para máquinas lentas), já existe o arquivo **com** tabelas (abre em ~6 s, mas 600 MB+); o desenho permite um terceiro modo, **"abre pronto"**: levar a própria entrada de cache (`entry.json` + `tokens.sqlite`, autocontida) dentro do pacote e **copiá-la** para o cache no lugar de construí-la (sem descompactar 3 GB e sem a 1ª espera). Isso fica para o B2/B4, junto da decisão do formato.
-  - **Teste no Mac Intel:** `novodesenho/verificacao/macos-intel-armazenamento.md` + `libs/ttwtools/tools/bench_storage.py` medem as três opções (com tabelas, sem tabelas + cache, sem tabelas sem cache), compactar, exportar e consultas, e geram um relatório em Markdown com recomendação e quatro perguntas para o usuário decidir (inclusive se vale o modo "abre pronto").
-  - **Limites conhecidos:** um arquivo com mais de uma linhagem de ids não compartilha cache; re-etiquetar um documento muda a chave do grupo inteiro (reconstrói aquela entrada; entradas por documento seriam a otimização); orfãos de camada apagada na sessão ficam visíveis na view até reabrir (consultas passam por `layers`, então não aparecem).
+**Redesign visual** (`plano_redesign_ui.md`): etapas 5 (Vue Bits: rota `/lab`, BorderGlow/GlareHover, medir CPU), 6 (responsivo em 1440/1280/1024/768/390) e 7; capturas antes/depois; daltonismo dos gráficos; tabelas com ordenação clicável e números à direita, painel lateral redimensionável; componentes base como `.vue` próprios; menu Recentes não fecha ao clicar fora; modal de progresso ainda não cobre busca, frequência e colocados de Explorar.
 
-### B4 Integração no app e na CLI
-- [ ] Abrir/salvar pasta-pacote; interruptor "formato beta" (opt-in); exportar para o clássico e empacotar ZIP; barras de progresso claras em cada etapa (o usuário pediu explicitamente); `ttwtools convert`.
+**Leitor, etiquetas e Explorar/Comparar:** abrir o Leitor **na ocorrência** clicada na Dispersão; 18 tags do MFTE sem correspondência na lista 1.6 (e 18 códigos da planilha sem tag), traduzir nome e exemplos e conferir a licença de reuso; dica global das etiquetas só em KWIC, Frequência (classe) e painel do token; "Explicar esta tela" (botão retirado, evento `ttw:explain` mantido) para os guias de Aprender; bug não reproduzido de aba em branco em Frequência/Colocados depois do Leitor; exportar SVG/PNG da Dispersão não testado após a mudança para linhas em HTML; Busca e Colocados com camadas só de tags sem teste automatizado.
 
-### B5 `.ttwa` manifesto e conversão dos antigos
-- [ ] `ttwtools convert PROJETO.ttwa DESTINO/` separa em `.ttwc` por corpus + `.ttwa` de análises (nunca apaga o original); teste de ida e volta token a token com projetos reais antigos (v0.1/v0.2/v0.3).
+**Questões antigas do desenho** (`novomodelo.md`): NM §8 (idiomas de interface além de pt/en, português como idioma de corpus, opções em primeiro plano, limite dos corpora embutidos, formatos de importação além de `.txt`); NM §9.5 (corpora embutidos como pacotes baixáveis, limite do SQLite); NM §17.9 (nomes dos destinos; PWA e hospedagem adiados à fase web).
 
-### B6 Corpora clássicos do catálogo
-- [ ] Pacote = **perfil de frequência** (forma, lema, classe; contagem e amplitude por documento) + **tabelas de features por texto**; corpus completo como download opcional; liga com D6 (hospedagem). Comparação de textos individuais e corpora pequenos contra eles.
-
-### B7 Verificação e lançamento do beta
-- [ ] Projetos reais, Windows/Linux (bloqueio de arquivos, caminhos, limpeza de órfãs), macOS 12 Intel (Python 3.11, só biblioteca padrão); roteiro em `verificacao/`; `0.6.0b1` (`python build/release.py --version 0.6.0-beta.1`; recompilar só quando o usuário pedir).
-
-## Registro de mudanças neste plano
-
-- 2026-09-29: plano criado a partir de `armazenamento.md` e das respostas do usuário.
+**Documentos antigos com caixas soltas** (não conferidos): `plano_visualizacoes.md`, `libs/ttwtools/plano.md`, `libs/ttwtools/todoc.md` têm `[ ]` de fases já superadas; revisar item a item. `plano_escrita.md` e `ferramentaescrita.md`: Escrita experimental, sem lista própria.

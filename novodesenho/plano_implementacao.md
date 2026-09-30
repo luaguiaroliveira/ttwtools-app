@@ -9,7 +9,7 @@ Este arquivo é a **fonte única de andamento** da implementação. O desenho es
 - **Branch de trabalho:** `new_set26` (app) · submódulo `libs/ttwtools` no `main` dele
 - **Versão alvo atual:** `0.6.0` (`pyproject.toml` em `0.6.0.dev0`; a `0.5.0` está gravada e com tag local `v0.5.0`, ainda não publicada); novo armazenamento como **beta na 0.6** (`novodesenho/armazenamento.md`). Histórico: `0.4.0` (D1 resolvida); `v0.4.0-rc.1` lançada da `main` em 2026-09-27; `new_set26` em `0.4.0rc2.dev0`, com as correções do 6.2a ainda fora da `main`
 - **Armazenamento (beta 0.6):** Fase A concluída (A1–A6, 2026-09-29; `novodesenho/plano_armazenamento.md`): compactar projeto, checagem de espaço, pastas e cache com dono/limite, índices reduzidos, camadas colunares. **Aguarda o usuário decidir a Fase B**; falta testar em Windows/Linux e no Mac Intel (macOS 12)
-- **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim e, **com tudo reunido, `novodesenho/pendencias.md`** (prioridade: otimizar como salvamos corpora e análises: espaço temporário, lixo em pastas temporárias e formato `.ttwc`/`.ttwa` robusto ou leve)
+- **Bloqueios / decisões pendentes:** ver "Decisões pendentes" no fim e, **com tudo reunido, `novodesenho/plano_armazenamento.md` (seção 6)** (prioridade: otimizar como salvamos corpora e análises: espaço temporário, lixo em pastas temporárias e formato `.ttwc`/`.ttwa` robusto ou leve)
 
 ## Como usar (leia isto primeiro, é curto)
 
@@ -1044,7 +1044,7 @@ Um subitem por problema apontado nos arquivos de `verificacao/`, com a origem (a
 
 ## Decisões pendentes
 
-> Lista completa e atual de tudo que está em aberto (inclui estas decisões): `novodesenho/pendencias.md`.
+> Lista completa e atual de tudo que está em aberto (inclui estas decisões): `novodesenho/plano_armazenamento.md` (seção 6).
 
 | # | Decisão | Onde afeta | Situação |
 |---|---|---|---|
