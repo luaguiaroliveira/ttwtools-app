@@ -27,6 +27,7 @@ def render(size: int, out: Path) -> None:
 
 def main() -> None:
     render(512, BUILD / "icon.png")
+    render(128, BUILD.parent / "frontend-vue" / "public" / "favicon.png")
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         sizes = [16, 24, 32, 48, 64, 128, 256]
