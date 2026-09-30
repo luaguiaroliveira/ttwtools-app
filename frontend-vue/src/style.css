@@ -157,7 +157,8 @@
 .reader-sheet-head p { font-size: calc(9pt * var(--z)); color: #555; }
 .reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; user-select: text; -webkit-user-select: text; cursor: text; }
 .reader-text.is-justified { text-align: justify; hyphens: none; -webkit-hyphens: none; }   /* sem hifenizar: a palavra partida em duas linhas estragava a marcação */
-.reader-tok { cursor: pointer; border-radius: 2px; position: relative; }
+.reader-paper { overflow: hidden; }   /* nada que se desenhe sobre o texto passa da folha */
+.reader-tok { cursor: pointer; border-radius: 2px; position: relative; white-space: nowrap; }   /* palavra não parte em duas linhas (nem no hífen): a marcação é um retângulo só */
 .reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }
 .reader-tok svg.rn path { stroke-linecap: round; }
 .reader-tok.is-selected { outline: 2px solid #B8460A; }
