@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-09-30
+
 > Linha **0.6**: abrir arquivos grandes deixa de ser lento, o formato das camadas fica bem menor e Comparar ganha uma barra de comparação, mais gráficos interativos e ícones próprios para cada formato de arquivo.
 
 ### Adicionado
@@ -39,6 +41,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 ### Verificação
 
 - Testes: 268 do pacote, 58 do servidor, 37 da interface e 27 de ponta a ponta (Playwright, nas três larguras). **Não testado** nesta versão: Mac Intel e macOS 12 em máquina real, Windows e Linux em máquina real (só o CI), associação de arquivos e ícones nos sistemas instalados.
+
+- Pacote `ttwtools` 0.2.0 (commit `30271b9`, tag `v0.2.0`).
 
 ## [0.6.0-alpha.1] — 2026-09-30
 
@@ -228,7 +232,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...v0.6.0
 [0.6.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...v0.6.0-alpha.1
 [0.5.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...v0.5.0
 [0.4.0-rc.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...v0.4.0-rc.1
