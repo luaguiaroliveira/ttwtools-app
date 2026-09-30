@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Ícone do formato .ttwcl do TTWtools. Gerado por assets/icone/make_file_icons.py: não edite à mão. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2B2926"/><stop offset="1" stop-color="#1C1B1A"/></linearGradient></defs>
+  <path d="M232 64H680L872 256V944a48 48 0 0 1-48 48H232a48 48 0 0 1-48-48V112a48 48 0 0 1 48-48Z" fill="url(#bg)"/>
+  <path d="M680 64V208a48 48 0 0 0 48 48H872Z" fill="#47443F"/>
+  <text x="232" y="176" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="92" fill="#FF8533">TTW</text>
+  
+  <rect x="433.0" y="293.0" width="284" height="324" rx="14" fill="#1C1B1A" stroke="#F2F2F2" stroke-width="6" stroke-opacity="0.55"/><rect x="403.0" y="323.0" width="284" height="324" rx="14" fill="#1C1B1A" stroke="#F2F2F2" stroke-width="6" stroke-opacity="0.55"/><rect x="373.0" y="353.0" width="284" height="324" rx="14" fill="#1C1B1A" stroke="#F2F2F2" stroke-width="6" stroke-opacity="0.55"/><rect x="344.0" y="384.0" width="282" height="322" rx="14" fill="#1C1B1A" stroke="#FF8533" stroke-width="8"/><rect x="386" y="446" width="197" height="20" rx="4" fill="#FF8533"/><rect x="386" y="502" width="197" height="20" rx="4" fill="#FF8533"/><rect x="386" y="558" width="122" height="20" rx="4" fill="#FF8533"/><rect x="386" y="614" width="197" height="20" rx="4" fill="#FF8533"/>
+  <text x="528" y="900" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="112" fill="#F2F2F2">.ttwcl</text>
+</svg>
