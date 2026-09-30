@@ -29,6 +29,8 @@ Projeto real de `ttwa_files/` (2 corpora, 19 milhões de tokens no total, 5 cama
 
 Incidente: a pasta temporária do sistema chegou a **71 GB** (77 cópias de trabalho `ttw_work_*` de 2,8 GB cada, mais 3,9 GB de uma exportação interrompida), deixando o disco com 6,6 GB livres. Causas encontradas: cópia de trabalho só apagada ao trocar de projeto; abertura com **erro** não apagava a pasta parcial; `/quit` saía por `os._exit` sem limpar; a cópia criada pelo pacote se chamava `ttw_XXXX` e a limpeza de órfãs não a reconhecia; a exportação copiava o projeto inteiro antes de apagar o que não ia (3 cópias no pico).
 
+> **Análise e proposta completas: `novodesenho/armazenamento.md`** (solução atual, problemas medidos, ferramentas análogas, modelo proposto em 3 fases e decisões que dependem do usuário).
+
 ### Já feito (2026-09-29)
 
 - [x] Exportar copiando **só o que fica** (não copia o projeto todo e apaga); camada a camada, com progresso ("Copiando os dados…").
