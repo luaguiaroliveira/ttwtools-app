@@ -145,6 +145,11 @@ def quit_app():
     def _shutdown():
         import time
         time.sleep(0.3)  # allow response to be sent
+        try:
+            from app import state as app_state
+            app_state.drop_working_copy()        # os._exit não passa pelo atexit: apaga a cópia de trabalho antes
+        except Exception:  # noqa: BLE001
+            pass
         os._exit(0)
 
     threading.Thread(target=_shutdown, daemon=True).start()

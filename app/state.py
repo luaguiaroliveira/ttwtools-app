@@ -83,28 +83,28 @@ def unsaved() -> bool:
 
 
 def purge_stale_workdirs(max_age_hours: float = 24) -> int:
-    """Apaga cópias de trabalho abandonadas (processo encerrado à força) mais velhas que o limite.
-    As recentes ficam: podem ser de outra janela do aplicativo aberta."""
-    import shutil
-    import tempfile
-    import time
-    from pathlib import Path
-    n = 0
-    for d in Path(tempfile.gettempdir()).glob("ttw_work_*"):
-        try:
-            if time.time() - d.stat().st_mtime > max_age_hours * 3600:
-                shutil.rmtree(d, ignore_errors=True)
-                n += 1
-        except OSError:
-            pass
-    return n
+    """Apaga cópias de trabalho e pastas de exportação abandonadas: as de processo que já morreu (marca
+    `owner.pid`) e, sem marca (versões antigas), as com mais de `max_age_hours`. As de processos vivos
+    ficam: podem ser de outra janela do aplicativo aberta."""
+    from ttwtools.project import purge_orphan_workdirs
+    return purge_orphan_workdirs(max_age_hours=max_age_hours)
 
 
 def new_workdir(name: str) -> str:
-    """Pasta temporária para uma cópia de trabalho; devolve o caminho do banco dentro dela."""
-    import tempfile
-    from pathlib import Path
-    return str(Path(tempfile.mkdtemp(prefix="ttw_work_")) / name)
+    """Pasta temporária (com o processo dono marcado) para uma cópia de trabalho; devolve o caminho do banco dentro dela."""
+    from ttwtools.project import make_workdir
+    return str(make_workdir("ttw_work_") / name)
+
+
+def install_exit_cleanup() -> None:
+    """SIGTERM passa a encerrar normalmente (rodando o atexit que apaga a cópia de trabalho): sem isso, matar o
+    processo deixava uma cópia do projeto (vários GB) na pasta temporária."""
+    import signal
+    import sys
+    try:
+        signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))      # SIGTERM não roda o atexit por padrão
+    except (ValueError, OSError):                                   # fora da thread principal
+        pass
 
 
 # Arquivo a ser aberto via frontend (com barra de progresso se .ttwt).

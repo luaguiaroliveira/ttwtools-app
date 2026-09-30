@@ -393,15 +393,15 @@ def saveas_project(req: SaveAsRequest):
         from ttwtools.project import save_corpora_as, save_corpus_as, save_project_as, decompress_project_file
         job.update(stage="save")
         prog = lambda d, t: job.progress(d, t, "")  # noqa: E731
-        stage = lambda d, t, m: job.update(stage="pack" if m == "pack" else "save", done=d, total=t)  # noqa: E731
+        stage = lambda d, t, m: job.update(stage=m if m in ("pack", "copy") else "save", done=d, total=t)  # noqa: E731
         if single:
             with ttwtools.open_project(source) as proj:
-                save_corpus_as(proj, corpus, dest, progress_cb=prog, compress=compress, search_tables=tables)
+                save_corpus_as(proj, corpus, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
             return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpus": corpus}
         if package:
             with ttwtools.open_project(source) as proj:
                 names = corpora or proj.list_corpus_names()
-                save_corpora_as(proj, names, dest, progress_cb=prog, compress=compress, search_tables=tables)
+                save_corpora_as(proj, names, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
             return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpora": names}
         save_project_as(source, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
         if switch:
@@ -616,4 +616,6 @@ def _run_open_compressed(job_id: str, source: str) -> None:
         _open_jobs[job_id].update({"status": "cancelled", "message": ""})
     except Exception as exc:  # noqa: BLE001
         register_working_copy(work, None)
+        import shutil
+        shutil.rmtree(Path(work).parent, ignore_errors=True)      # a cópia parcial (GBs) não fica para trás
         _open_jobs[job_id].update({"status": "error", "error": str(exc), "message": str(exc)})

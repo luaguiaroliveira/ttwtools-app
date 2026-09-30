@@ -123,6 +123,7 @@ def build_app(open_file: str | None = None) -> FastAPI:
     import atexit
     atexit.register(app_state.drop_working_copy)    # a cópia de trabalho não fica para trás ao sair
     app_state.purge_stale_workdirs()                # restos de sessões encerradas à força
+    app_state.install_exit_cleanup()                # e não deixa restos desta sessão
 
     if open_file:
         # qualquer projeto pode estar compactado ou precisar de migração: a tela abre com progresso
