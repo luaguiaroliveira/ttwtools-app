@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-09-29
+
 ### Adicionado
 
 - Projetos **salvos compactados por padrão**, com opções visíveis ao salvar: compactar e guardar as tabelas de busca (sem elas o arquivo fica bem menor e as tabelas são recriadas ao abrir); aviso "não salvo" e confirmação ao fechar (6.2a).
@@ -36,6 +38,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - KWIC e ferramentas de Explorar não ficam mais em branco em camadas sem UPOS/XPOS (BiberPlus, MFTE); `tag=` cai para UPOS/XPOS em camadas sem tags (spaCy, Stanza).
 - Ferramentas de Explorar e Comparar mostram aviso (e recarregam uma vez) se o arquivo delas sumir depois de a interface ser recompilada com a janela aberta.
 - Lista de recentes não mistura mais arquivos de teste; recentes só no menu Recentes.
+
+- Pacote `ttwtools` 0.2.0.dev0 (commit `4653d8d`).
 
 ## [0.4.0-rc.1] — 2026-09-27
 
@@ -162,7 +166,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...v0.5.0
 [0.4.0-rc.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-alpha.1...v0.4.0-rc.1
 [0.4.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.7...v0.4.0-alpha.1
 [0.3.7]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.3.6...v0.3.7
