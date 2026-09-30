@@ -1,7 +1,7 @@
 """Gera icon.png (Linux), icon.ico (Windows) e icon.icns (macOS) a partir de icon.svg.
 
 Requer Inkscape (ou rsvg-convert) e, para o .ico, ImageMagick; o .icns exige macOS (iconutil).
-Uso: python build/make_icons.py
+Uso: python assets/icone/make_icons.py
 """
 import shutil
 import subprocess
@@ -9,8 +9,9 @@ import sys
 import tempfile
 from pathlib import Path
 
-BUILD = Path(__file__).resolve().parent
-SVG = BUILD / "icon.svg"
+HERE = Path(__file__).resolve().parent
+BUILD = HERE.parent.parent / "build"  # saída: build/icon.{png,ico,icns}, lidos pelo spec
+SVG = HERE / "icon.svg"
 INKSCAPE = shutil.which("inkscape") or "/Applications/Inkscape.app/Contents/MacOS/inkscape"
 
 
