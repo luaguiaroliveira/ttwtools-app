@@ -3,7 +3,9 @@
 // vêm do pacote (/api/compare/viz/*); o Plotly só carrega no PCA 3D.
 import { computed, defineAsyncComponent, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { postJob } from '../api/client.js'
+import { galleryMemory } from '../utils/memory.js'
 import ExportMenu from './ExportMenu.vue'
 import BusyModal from './BusyModal.vue'
 import SideLegend from './SideLegend.vue'
@@ -22,6 +24,13 @@ const Pca3D = defineAsyncComponent(() => import('./charts/Pca3D.vue'))
 const props = defineProps({ kfa: Object, sides: Array, layer: String, feature: String })
 const emit = defineEmits(['select'])
 const { t } = useI18n()
+const router = useRouter()
+// clicar num texto (ponto, linha ou célula) abre o Leitor, no corpus do lado dele; o botão voltar do Leitor traz de volta
+const CLICKABLE = ['strip', 'heatmap', 'parcoords', 'reduction', 'pca3d']
+function openText({ side, filename }) {
+  const s = props.sides.find((x) => x.label === side) ?? props.sides[0]
+  router.push({ path: '/explorar/leitor', query: { file: filename, corpus: s.corpus, layer: props.layer || undefined, color: 'tags' } })
+}
 // Uma linha só: ícones com dica (título) e nome acessível; grupos separados por um traço fino.
 const GROUPS = [['bars', 'means', 'bubble'], ['strip', 'violin', 'histogram'], ['heatmap', 'radar', 'parcoords', 'reduction', 'pca3d']]
 const KINDS = GROUPS.flat()
@@ -38,9 +47,10 @@ const ICONS = {
   reduction: '<path d="M4 4v16h16" opacity=".4"/><circle cx="9" cy="14" r="1.3"/><circle cx="11" cy="16" r="1.3"/><circle cx="10" cy="12" r="1.3"/><circle cx="16" cy="7" r="1.3"/><circle cx="18" cy="9" r="1.3"/>',
   pca3d: '<path d="M12 3 20 7.5v9L12 21 4 16.5v-9Z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/>',
 }
-const kind = ref('bars')
-const nFeatures = ref(10)
-const method = ref('pca2d')
+const kind = ref(galleryMemory.kind)
+const nFeatures = ref(galleryMemory.nFeatures)
+const method = ref(galleryMemory.method)
+watch([kind, nFeatures, method], () => Object.assign(galleryMemory, { kind: kind.value, nFeatures: nFeatures.value, method: method.value }))
 const data = ref(null)
 const error = ref(null)
 const busy = ref(false)
@@ -51,7 +61,7 @@ const needs = { strip: 'matrix', violin: 'matrix', histogram: 'matrix', parcoord
 
 // Gráficos já calculados ficam guardados (por pedido): voltar a um gráfico, ou mexer no |d| mínimo sem mudar os
 // atributos usados, não calcula de novo.
-const memo = new Map()
+const memo = galleryMemory.cache      // sobrevive à ida ao Leitor e à volta
 async function load() {
   data.value = null
   error.value = null
@@ -69,6 +79,7 @@ async function load() {
   } catch (err) { error.value = err.message } finally { busy.value = false }
 }
 watch([kind, nFeatures, method, topFeatures, () => props.sides, () => props.layer, () => props.feature], load)
+if (needs[kind.value]) load()     // volta do Leitor com um gráfico que precisa de dados
 // legenda: liga cor e forma ao corpus/grupo (o que a cor significa muda com o gráfico)
 const legend = computed(() => {
   const [a, b] = labels.value
@@ -108,15 +119,16 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
       <BubbleChart v-else-if="kind === 'bubble'" :rows="kfa.rows" />
       <RadarChart v-else-if="kind === 'radar'" :rows="kfa.rows.slice(0, nFeatures)" />
       <template v-else-if="data">
-        <StripChart v-if="kind === 'strip'" :matrix="data" />
+        <StripChart v-if="kind === 'strip'" :matrix="data" @open="openText" />
         <ViolinChart v-else-if="kind === 'violin'" :matrix="data" />
         <HistogramChart v-else-if="kind === 'histogram'" :matrix="data" />
-        <ParCoords v-else-if="kind === 'parcoords'" :matrix="data" />
-        <HeatmapChart v-else-if="kind === 'heatmap'" :heat="data" />
-        <ReductionChart v-else-if="kind === 'reduction'" :data="data" :sides="labels" />
-        <Pca3D v-else-if="kind === 'pca3d'" :data="data" :sides="labels" />
+        <ParCoords v-else-if="kind === 'parcoords'" :matrix="data" @open="openText" />
+        <HeatmapChart v-else-if="kind === 'heatmap'" :heat="data" @open="openText" />
+        <ReductionChart v-else-if="kind === 'reduction'" :data="data" :sides="labels" @open="openText" />
+        <Pca3D v-else-if="kind === 'pca3d'" :data="data" :sides="labels" @open="openText" />
       </template>
       <p v-else-if="needs[kind] && !error" class="text-sm text-text-muted">{{ t('gallery.loading') }}</p>
+      <p v-if="data && CLICKABLE.includes(kind) && kind !== 'parcoords'" class="text-xs text-text-muted">{{ t('gallery.open_reader') }}</p>
     </div>
   </section>
 </template>

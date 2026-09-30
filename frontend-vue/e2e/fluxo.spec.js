@@ -84,14 +84,13 @@ test('fluxo completo', async ({ page, request }, info) => {
 
   // 5. palavras-chave contra o outro corpus
   await page.goto('/#/comparar?tool=palavras-chave')
-  await page.getByTestId('kw-ref').selectOption('corifa')
+  await expect(page.getByTestId('cmp-corpus2')).toHaveValue('corifa')     // a barra de comparação já traz o outro corpus
   await page.getByTestId('kw-run').click()
   await expect(page.getByTestId('kw-table').locator('tbody tr').first()).toBeVisible()
   await a11y(page, 'palavras-chave')
 
   // 6. KFA
   await page.goto('/#/comparar?tool=kfa')
-  await page.getByTestId('kfa-corpus2').selectOption('corifa')
   await page.getByTestId('kfa-run').click()
   await expect(page.getByRole('status').filter({ hasText: /atributos|features/ })).toBeVisible()
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
@@ -100,6 +99,14 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.locator('[data-testid=gallery-kind] [data-kind=radar]').click()
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await a11y(page, 'kfa')
+  // coordenadas paralelas: controle de opacidade e clique numa linha abre o texto no Leitor, com volta
+  await page.locator('[data-testid=gallery-kind] [data-kind=parcoords]').click()
+  await page.getByTestId('parcoords-alpha').fill('0.6')
+  await page.locator('svg polyline.cursor-pointer').first().dispatchEvent('click')
+  await expect(page).toHaveURL(/leitor.*corpus=/)
+  await page.getByTestId('reader-back').click()
+  await expect(page).toHaveURL(/comparar\?tool=kfa/)
+  await expect(page.getByTestId('parcoords-alpha')).toBeVisible()
 
   // navegação principal visível na largura certa
   const width = page.viewportSize().width

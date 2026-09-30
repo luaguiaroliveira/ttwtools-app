@@ -11,13 +11,15 @@ import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import BusyModal from '../../components/BusyModal.vue'
 import { useTopLayer } from '../../composables/useTopLayer.js'
+import { useCompare } from '../../stores/compare.js'
 const lastParams = ref(null)
 const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
 const router = useRouter()
 const session = useSession()
 const { corpora, activeCorpus, layer } = storeToRefs(session)
-const f = ref({ refKind: 'corpus', refCorpus: '', groupKey: '', groupValue: '', listPath: '', catalogRef: '', unit: 'form', measure: 'll', min_freq: 5, min_range: 1, correction: 'bonferroni' })
+const cmp = useCompare()
+const f = ref({ refKind: 'bar', refCorpus: '', groupKey: '', groupValue: '', listPath: '', catalogRef: '', unit: 'form', measure: 'll', min_freq: 5, min_range: 1, correction: 'bonferroni' })
 const groups = ref([])
 const data = ref(null)
 const topLayer = useTopLayer(computed(() => f.value.unit), lastParams)
@@ -34,13 +36,15 @@ async function loadGroups() {
 }
 async function run() {
   error.value = null
-  const reference = f.value.refKind === 'corpus' ? f.value.refCorpus : f.value.refKind === 'rest' ? `rest:${f.value.groupKey}` : f.value.refKind === 'catalog' ? f.value.catalogRef : f.value.listPath
-  const where = f.value.refKind === 'rest' ? { [f.value.groupKey]: [f.value.groupValue] } : undefined
-  lastParams.value = { corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure, layer: layer.value,
+  const bar = f.value.refKind === 'bar' ? cmp.sides(props.corpus) : null     // corpus 2 (ou dois grupos) da barra de comparação
+  const reference = bar ? bar[1].corpus : f.value.refKind === 'corpus' ? f.value.refCorpus : f.value.refKind === 'rest' ? `rest:${f.value.groupKey}` : f.value.refKind === 'catalog' ? f.value.catalogRef : f.value.listPath
+  const where = bar ? bar[0].where : f.value.refKind === 'rest' ? { [f.value.groupKey]: [f.value.groupValue] } : undefined
+  const reference_where = bar ? bar[1].where : undefined
+  lastParams.value = { corpus: props.corpus, reference, where, reference_where, unit: f.value.unit, measure: f.value.measure, layer: layer.value,
     min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction }
   busy.value = true
   try {
-    data.value = await api.compare.keywords({ corpus: props.corpus, reference, where, unit: f.value.unit, measure: f.value.measure,
+    data.value = await api.compare.keywords({ corpus: props.corpus, reference, where, reference_where, unit: f.value.unit, measure: f.value.measure,
       min_freq: f.value.min_freq, min_range: f.value.min_range, correction: f.value.correction, layer: layer.value, lang: locale.value })
   } catch (err) { error.value = err.message } finally { busy.value = false }
 }
@@ -52,7 +56,7 @@ const kwic = (item) => router.push({ path: '/explorar/kwic', query: { q: item } 
     <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" />
     <form id="palavras-chave" class="flex flex-wrap items-end gap-2" @submit.prevent="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('compare.reference') }}</span>
-        <select v-model="f.refKind" class="select select-sm"><option value="corpus">{{ t('compare.ref.corpus') }}</option>
+        <select v-model="f.refKind" class="select select-sm" data-testid="kw-refkind"><option value="bar">{{ t('compare.ref.bar') }}</option><option value="corpus">{{ t('compare.ref.corpus') }}</option>
           <option value="rest" :disabled="!activeCorpus?.metadata_keys.length">{{ t('compare.ref.rest') }}</option><option value="catalog" :disabled="!catalogRefs.length">{{ t('compare.ref.catalog') }}</option><option value="list">{{ t('compare.ref.list') }}</option></select></label>
       <label v-if="f.refKind === 'catalog'" class="ttw-field"><span class="ttw-label">{{ t('compare.ref.catalog') }}</span>
         <select v-model="f.catalogRef" class="select select-sm" data-testid="kw-catalog"><option v-for="r in catalogRefs" :key="r.ref" :value="r.ref">{{ r.name }} · {{ r.version }}</option></select></label>

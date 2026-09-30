@@ -7,6 +7,7 @@ import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
+import { useCompare } from '../../stores/compare.js'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
@@ -16,7 +17,8 @@ const props = defineProps({ corpus: String })
 const { t, locale } = useI18n()
 const { corpora, activeCorpus, layer } = storeToRefs(useSession())
 const METHODS = ['one_vs_rest', 'pairwise', 'anova', 'profile', 'dendrogram', 'nearest']
-const f = ref({ mode: 'metadata', key: '', picked: [], feature: '', method: 'one_vs_rest', metric: 'kfa' })
+const cmp = useCompare()     // a métrica vem da barra de comparação
+const f = ref({ mode: 'metadata', key: '', picked: [], feature: '', method: 'one_vs_rest' })
 const data = ref(null)
 const error = ref(null)
 const busy = ref(false)
@@ -29,7 +31,7 @@ watch(() => activeCorpus.value?.metadata_keys, (ks) => { if (!f.value.key && ks?
 const ready = computed(() => effectiveLayer.value && (f.value.mode === 'metadata' ? f.value.key : f.value.picked.length >= 2))
 
 function params() {
-  const base = { layer: effectiveLayer.value, method: f.value.method, metric: f.value.metric, feature: f.value.feature || undefined }
+  const base = { layer: effectiveLayer.value, method: f.value.method, metric: cmp.metric, feature: f.value.feature || undefined }
   return f.value.mode === 'metadata'
     ? { ...base, corpus: props.corpus, group_by: f.value.key }
     : { ...base, groups: f.value.picked.map((c) => ({ corpus: c, label: c })) }
@@ -83,8 +85,6 @@ const exportRows = computed(() => {
       <FeatureSelect v-model="f.feature" :fields="layerFields" />
       <label class="ttw-field"><span class="ttw-label">{{ t('lab.method') }}</span>
         <select v-model="f.method" class="select select-sm" data-testid="lab-method"><option v-for="m in METHODS" :key="m" :value="m">{{ t(`lab.method.${m}`) }}</option></select></label>
-      <label v-if="['one_vs_rest', 'pairwise'].includes(f.method)" class="ttw-field"><span class="ttw-label">{{ t('kfa.metric') }}</span>
-        <select v-model="f.metric" class="select select-sm"><option>kfa</option><option>kfa2</option></select></label>
       <button class="btn btn-sm btn-primary" :disabled="!ready || busy" data-testid="lab-run">{{ t('compare.run') }}</button>
       <span class="badge badge-outline" data-testid="lab-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
       <HelpTip topic="laboratorio" />

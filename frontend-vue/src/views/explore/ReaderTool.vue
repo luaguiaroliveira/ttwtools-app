@@ -16,6 +16,10 @@ import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../u
 import { findMatches } from '../../utils/wildcard.js'
 
 const props = defineProps({ corpus: String, layer: String })
+// Os gráficos de Comparar abrem textos de qualquer um dos lados: `?corpus=` e `?layer=` valem só nesta tela
+// (o corpus ativo do aplicativo não muda, e o botão voltar leva de volta ao gráfico).
+const rc = computed(() => (route.query.corpus ? String(route.query.corpus) : props.corpus))
+const rl = computed(() => (route.query.layer ? String(route.query.layer) : props.layer))
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -50,10 +54,10 @@ watch([sortBy, zoom, fontPt, justify], () => {
 const corpusCounts = ref({})   // ocorrências de cada etiqueta no corpus todo (calculadas no servidor)
 let countsKey = ''
 async function loadCounts() {
-  const key = `${props.corpus}|${doc.value?.layer?.tool ?? ''}|${colorBy.value}`
+  const key = `${rc.value}|${doc.value?.layer?.tool ?? ''}|${colorBy.value}`
   if (!doc.value?.layer || key === countsKey) return
   countsKey = key
-  try { corpusCounts.value = (await api.corpora.tagCounts(props.corpus, doc.value.layer.tool, colorBy.value)).counts } catch { corpusCounts.value = {}; countsKey = '' }
+  try { corpusCounts.value = (await api.corpora.tagCounts(rc.value, doc.value.layer.tool, colorBy.value)).counts } catch { corpusCounts.value = {}; countsKey = '' }
 }
 const tagGroup = ref({})     // etiqueta → id do grupo
 const tagDoc = ref({})       // etiqueta → documentação oficial (MFTE)
@@ -80,14 +84,14 @@ const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf
 const MAX_ANNOTATIONS = 2500   // acima disso o SVG pesa: marca só as primeiras
 
 onMounted(async () => {
-  files.value = (await api.corpora.documents(props.corpus, { limit: 1000 })).rows.map((r) => r.filename)
+  files.value = (await api.corpora.documents(rc.value, { limit: 1000 })).rows.map((r) => r.filename)
   if (!file.value) file.value = files.value[0]
   else if (!files.value.includes(file.value)) files.value = [file.value, ...files.value]   // a lista traz só os primeiros 1000
 })
 watch(() => route.query.file, (f) => { if (f) file.value = String(f) })   // a Dispersão abre um texto aqui
-watch(() => [file.value, props.layer], async () => {
+watch(() => [file.value, rl.value, rc.value], async () => {
   if (!file.value) return
-  doc.value = await api.corpora.text(props.corpus, file.value, props.layer)
+  doc.value = await api.corpora.text(rc.value, file.value, rl.value)
   selected.value = null
   // camada sem `tags` (ex.: só UPOS): cai para UPOS para a lista não ficar vazia
   if (!route.query.color && colorBy.value === 'tags' && !doc.value.tokens.some((x) => x.tags?.length)) colorBy.value = 'upos'
@@ -119,7 +123,12 @@ async function loadTagset() {
 // descrição de uma etiqueta (própria ou inferida) — { text, source, inferred } ou null
 const info = (tag) => describeTag(tag, tagDefs.value, t)
 watch([colorBy, locale], loadTagset)
-watch(() => props.corpus, () => { countsKey = ''; corpusCounts.value = {} })
+watch(rc, async () => {
+  countsKey = ''
+  corpusCounts.value = {}
+  files.value = (await api.corpora.documents(rc.value, { limit: 1000 })).rows.map((r) => r.filename)
+  if (file.value && !files.value.includes(file.value)) files.value = [file.value, ...files.value]
+})
 const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
 const classes = computed(() => {
   const counts = {}

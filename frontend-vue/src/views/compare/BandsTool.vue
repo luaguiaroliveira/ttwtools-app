@@ -11,10 +11,13 @@ import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import BarChart from '../../components/BarChart.vue'
 import { useTopLayer } from '../../composables/useTopLayer.js'
+import { useCompare } from '../../stores/compare.js'
 const props = defineProps({ corpus: String })
 const { t } = useI18n()
 const { corpora, layer } = storeToRefs(useSession())
 const refs = ref([])
+const cmp = useCompare()
+const BAR = '__bar__'     // a comparação da barra de cima (corpus 2 ou dois grupos)
 const f = ref({ reference: '', unit: 'form', limits: '1000, 2000, 3000, 5000, 10000' })
 const data = ref(null)
 const error = ref(null)
@@ -22,19 +25,21 @@ const lastParams = ref(null)
 const topLayer = useTopLayer(computed(() => f.value.unit), lastParams)
 const chart = ref(null)
 const options = computed(() => [
+  { value: BAR, label: t('compare.ref.bar') },
   ...[...new Map(refs.value.map((r) => [r.ref, r])).values()].map((r) => ({ value: r.ref, label: `${r.name} · ${r.version}` })),
   ...corpora.value.filter((c) => c.name !== props.corpus).map((c) => ({ value: c.name, label: c.name })),
 ])
 onMounted(async () => {
   refs.value = (await api.compare.references()).references
-  f.value.reference = options.value[0]?.value ?? ''
+  f.value.reference = BAR
 })
 const label = (r) => (r.band === 'off_list' ? t('bands.off_list') : r.to ? `${r.from}–${r.to}` : t('bands.beyond', { n: r.from - 1 }))
 const busy = ref(false)
 async function run() {
   error.value = null
   const bands = f.value.limits.split(/[,;\s]+/).map(Number).filter((n) => n > 0)
-  lastParams.value = { corpus: props.corpus, reference: f.value.reference, unit: f.value.unit, layer: layer.value }
+  const bar = f.value.reference === BAR ? cmp.sides(props.corpus) : null
+  lastParams.value = { corpus: props.corpus, reference: bar ? bar[1].corpus : f.value.reference, where: bar?.[0].where, reference_where: bar?.[1].where, unit: f.value.unit, layer: layer.value }
   busy.value = true
   try {
     data.value = await api.compare.bands({ ...lastParams.value, bands })

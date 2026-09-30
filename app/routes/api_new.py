@@ -467,6 +467,7 @@ class KeywordsRequest(BaseModel):
     n: int = 2
     layer: str | None = None
     where: dict[str, list[str]] | None = None
+    reference_where: dict[str, list[str]] | None = None
     min_freq: int = 5
     min_range: int = 1
     correction: Literal["bonferroni", "fdr", "none"] = "bonferroni"
@@ -481,7 +482,7 @@ def compare_keywords(req: KeywordsRequest, async_: bool = _ASYNC):
     def compute(progress):
         with _project(progress) as proj:
             return _call(ttwtools.keywords, proj, req.corpus, req.reference, unit=req.unit, measure=req.measure, n=req.n,
-                         layer=req.layer, where=req.where, min_freq=req.min_freq, min_range=req.min_range,
+                         layer=req.layer, where=req.where, reference_where=req.reference_where, min_freq=req.min_freq, min_range=req.min_range,
                          correction=req.correction, top=req.top, lang=req.lang)
     return _maybe_async("keywords", async_, compute)
 
@@ -729,6 +730,7 @@ class BandsRequest(BaseModel):
     bands: list[int] = [1000, 2000, 3000, 5000, 10000]
     layer: str | None = None
     where: dict[str, list[str]] | None = None
+    reference_where: dict[str, list[str]] | None = None
 
 
 @router.post("/compare/bands", tags=["compare"])
@@ -739,7 +741,7 @@ def compare_bands(req: BandsRequest, async_: bool = _ASYNC):
     def compute(progress):
         with _project(progress) as proj:
             return _call(ttwtools.frequency_bands, proj, req.corpus, req.reference, unit=req.unit,
-                         bands=tuple(req.bands), layer=req.layer, where=req.where)
+                         bands=tuple(req.bands), layer=req.layer, where=req.where, reference_where=req.reference_where)
     return _maybe_async("bands", async_, compute)
 
 
