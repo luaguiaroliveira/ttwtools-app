@@ -102,7 +102,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [0.4.0-alpha.1] — 2026-09-26
 
-Linha nova **0.4.0** (reformulação; histórico em `novodesenho/memoria.md`).
+Linha nova **0.4.0** (reformulação; histórico em `novodesenho/memoria_para_IA.md`).
 
 ### Adicionado
 - Versão única: `pyproject.toml` é a fonte; `app/_version.py` expõe `__version__`, `python -m app --version` e `GET /api/version` (app, `ttwtools`, commit). `RELEASING.md` (hoje `CONTRIBUTING.md`) com a regra de versão. (passo 0.2)

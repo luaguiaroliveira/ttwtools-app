@@ -5,7 +5,7 @@ Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek..
 ## Comece por aqui
 
 1. Leia **só a seção 1 ("Retomar aqui")** de `novodesenho/plano.md`: estado, próximos passos e regras que mais se esquecem. O resto do plano é referência.
-2. Trabalhe **uma frente e um passo por vez**; ao concluir, atualize "Retomar aqui", rode os testes do que mexeu e faça um commit `[passo] mensagem curta em português`. Acrescente aprendizados e armadilhas novos a `novodesenho/memoria.md` (não precisa lê-lo inteiro).
+2. Trabalhe **uma frente e um passo por vez**; ao concluir, atualize "Retomar aqui", rode os testes do que mexeu e faça um commit `[passo] mensagem curta em português`. Acrescente aprendizados e armadilhas novos a `novodesenho/memoria_para_IA.md` (não precisa lê-lo inteiro).
 3. `novodesenho/novomodelo.md` é o desenho original, citado por número de seção (`§N`) em 12 módulos do pacote: **não condensar nem renumerar**; consulte só a seção citada.
 
 ## Regras permanentes
@@ -46,6 +46,6 @@ python build/build.py                                # pacote PyInstaller; relea
 | `novodesenho/macintel.md` | Testes na máquina lenta de referência (Mac Intel): números, problemas, como repetir |
 | `novodesenho/interface.md` · `escrita.md` · `verificacao.md` | Frentes de interface, de Escrita e roteiro de verificação manual |
 | `novodesenho/novomodelo.md` | Desenho original (citado por `§N` no código) |
-| `novodesenho/memoria.md` | Percurso e armadilhas, para a IA lembrar |
+| `novodesenho/memoria_para_IA.md` | Percurso e armadilhas, para a IA lembrar |
 | `CONTRIBUTING.md` | Ambiente, testes, pacotes, versão e release |
 | `app/` · `frontend-vue/` · `libs/ttwtools/` · `build/` | Servidor, interface, pacote (submódulo), empacotamento |

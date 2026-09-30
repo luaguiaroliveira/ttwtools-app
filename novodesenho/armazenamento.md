@@ -44,6 +44,8 @@ Mac Intel (i5-5287U) contra M4: CPU de Python **5–9×** mais lenta, disco e de
 | ZIP/ePub/Office/`.app` | partes lidas sob demanda a partir de um manifesto | a pasta-pacote |
 | AntConc, #LancsBox | tudo na memória | o que **não** queremos com 19 M de tokens em 8 GB |
 
+Nota sobre o nome: **`TCL` = *TTWtools Columnar Layer***, nome próprio do projeto (não existe como formato ou pacote externo; nada a ver com a linguagem Tcl). `TCL1` é o código de 4 bytes do blob atual.
+
 Lição comum: strings viram inteiros + dicionário; o pesado é construído uma vez, imutável e endereçado por conteúdo; **estatísticas agregadas não dependem do índice posicional**; o que não foi pedido não é construído.
 
 ## 4. Proposta: quatro camadas
@@ -109,10 +111,10 @@ Os passos 1–3 não mudam o formato: dá para entregar já e medir no Intel ant
 **Já tomadas (2026-09-29/30):** `.ttwa` como manifesto; pasta-pacote (ZIP só para enviar); índice em cache com barra de etapas clara; léxico por corpus; corpora clássicos só com perfil de frequência + features; começar pela Fase A; depois, começar pelo B3 com o Mac Intel como referência.
 
 **Abertas:**
-1. **Estatísticas B sempre dentro do arquivo**, mesmo no compacto? Recomendação: sim (poucos MB; o que o Intel mais sente).
+1. ~~Estatísticas B dentro do arquivo?~~ **Decidido (2026-09-30): sim.** Regra geral: o que melhora a **usabilidade** do aplicativo e é pequeno (estatísticas derivadas, resultados de análises, perfis) **vai dentro do arquivo**, inclusive no perfil compacto; só o que é grande e reconstruível (índice posicional) fica no cache ou opcional no perfil Pronto.
 2. **Índice só sob demanda** (a 1ª busca posicional espera, com barra de etapas) ou construir ao abrir como hoje? Recomendação: sob demanda.
 3. **`TCL2` com ids e léxico por corpus**, mesmo que o cache deixe de ser compartilhado entre projetos sem relação?
-4. **Resultados derivados (KFA etc.) fora do arquivo**, sem ativar "não salvo"? Recomendação: sim.
+4. **Resultados derivados (KFA etc.)**: pela regra acima ficam **dentro** do arquivo; o problema do "não salvo" (salvar custa de 29 s a 6 min no Intel, porque o formato atual recompacta tudo) se resolve **não marcando o arquivo como alterado por causa de derivados** (vão junto na próxima gravação) e, na pasta-pacote, salvando só o objeto novo.
 5. **Teto de espera no Intel** por operação (1ª abertura, etiquetar, comparar): vem das respostas em `macintel.md`, seção 6.
 
 ## 9. Código nativo (Rust ou C++)? Avaliação em 2026-09-30
