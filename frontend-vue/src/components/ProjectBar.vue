@@ -13,6 +13,7 @@ import BusyModal from './BusyModal.vue'
 import Collapsible from './Collapsible.vue'
 import FileIcon from './FileIcon.vue'
 import RecentList from './RecentList.vue'
+import ExportDialog from './ExportDialog.vue'
 
 const { t } = useI18n()
 const session = useSession()
@@ -34,7 +35,7 @@ async function setOption(key, value) {
   await session.refresh()
   if (r.needs_save_as) optsNote.value = t('project.options_need_save_as')
 }
-const oneCorpus = ref('')              // corpus para "Salvar um corpus como"
+const exportOpen = ref(false)
 const ext = computed(() => (shown.value || '').split('.').pop().toLowerCase())
 const shown = computed(() => project.value?.display_path ?? project.value?.path)
 const stem = computed(() => (shown.value || 'projeto').split(/[\\/]/).pop().replace(/\.[^.]+$/, ''))
@@ -95,14 +96,16 @@ const saveAs = () => act(async () => {
   lastSaved.value = r.path
   saveJob.start(() => api.project.saveAs(r.path))
 })
-const saveCorpus = () => act(async () => {
-  const corpus = oneCorpus.value || corpora.value[0]?.name
-  if (!corpus) return
-  const r = await api.utils.pickSave(`${corpus}.ttwc`)
+// exportar: um corpus (.ttwc/.ttwcl) ou um pacote leve com vários (.ttwal); é uma cópia, o projeto aberto não muda
+const exportTo = (opts) => act(async () => {
+  exportOpen.value = false
+  const { kind, corpus, corpora: picked } = opts
+  const base = kind === 'ttwal' ? stem.value : corpus
+  const r = await api.utils.pickSave(`${base}.${kind}`)
   if (!r?.path) return
-  const path = /\.ttwcl?$/i.test(r.path) ? r.path : r.path.replace(/\.[^.\\/]+$/, '') + '.ttwc'
+  const path = new RegExp(`\\.${kind}$`, 'i').test(r.path) ? r.path : r.path.replace(/\.[^.\\/]+$/, '') + `.${kind}`
   lastSaved.value = path
-  saveJob.start(() => api.project.saveAs(path, { corpus }))
+  saveJob.start(() => api.project.saveAs(path, kind === 'ttwal' ? { corpora: picked } : { corpus }))
 })
 watch(() => saveJob.job.value?.status, async (s) => {
   if (s === 'done') {
@@ -147,6 +150,7 @@ const exportAll = () => act(async () => {
       <span class="w-px bg-base-300 mx-1 self-stretch" aria-hidden="true" />
       <button class="pbtn" :class="{ 'btn-primary': fromTtwt }" :disabled="!project || busy || saving" data-testid="project-save" @click="save"><FileIcon name="save" />{{ t('project.save') }}</button>
       <button class="pbtn" :disabled="!project || busy || saving" data-testid="project-save-as" @click="saveAs"><FileIcon name="saveas" />{{ t('project.save_as') }}</button>
+      <button class="pbtn" :disabled="!project || busy || saving || !corpora.length" data-testid="project-export" @click="exportOpen = true"><FileIcon name="export" />{{ t('project.export') }}</button>
     </div>
     <div v-if="project" class="flex flex-wrap items-center gap-2 text-sm min-w-0">
       <span class="font-medium">{{ project.name }}</span>
@@ -199,6 +203,7 @@ const exportAll = () => act(async () => {
     <BusyModal :open="Boolean(opening)" :title="t('project.opening_title')" :job="opening" @cancel="api.jobs.cancel(opening.id)">
       <p v-if="opening?.stage === 'migrate'" class="text-xs text-text-muted mt-2">{{ t('project.migrate_hint') }}</p>
     </BusyModal>
+    <ExportDialog :open="exportOpen" :corpora="corpora" :busy="busy || saving" @close="exportOpen = false" @export="exportTo" />
     <BusyModal :open="saving" :title="t('project.saving_title')" :job="saveJob.job.value" @cancel="saveJob.cancel" />
     <JobProgress v-if="saveJob.job.value?.status === 'error'" :job="saveJob.job.value" />
     <p v-if="done" role="status" class="text-sm flex items-center gap-1" data-testid="file-done"><span class="badge badge-success badge-sm" aria-hidden="true">✓</span>{{ done }}</p>
@@ -217,14 +222,6 @@ const exportAll = () => act(async () => {
           <span class="text-xs text-text-muted">{{ t('project.type_path_hint') }}</span>
         </form>
         <template v-if="project">
-          <div class="flex flex-wrap items-end gap-2">
-            <label class="flex flex-col gap-1"><span class="ttw-label">{{ t('project.save_corpus') }}</span>
-              <select v-model="oneCorpus" class="select select-sm" :disabled="!corpora.length" data-testid="save-corpus-select">
-                <option value="">{{ corpora[0]?.name ?? '—' }}</option>
-                <option v-for="c in corpora.slice(1)" :key="c.name" :value="c.name">{{ c.name }}</option></select></label>
-            <button class="btn btn-sm" :disabled="busy || saving || !corpora.length" data-testid="save-corpus" @click="saveCorpus">{{ t('project.save_corpus_button') }}</button>
-          </div>
-          <p class="text-xs text-text-muted">{{ t('project.save_corpus_hint') }}</p>
           <p class="text-xs opacity-80">{{ t('project.formats_hint') }}</p>
           <div class="flex flex-wrap gap-1">
             <button v-if="project.kind === 'ttwa'" class="btn btn-xs" :disabled="busy" @click="convert('ttwl')">{{ t('project.to_ttwl') }}</button>

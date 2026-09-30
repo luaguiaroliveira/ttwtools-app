@@ -63,6 +63,7 @@ class SaveAsRequest(BaseModel):
     compress: bool | None = None       # None = opção lembrada no arquivo (padrão: compactado)
     search_tables: bool | None = None  # None = opção lembrada (padrão: com tabelas de busca)
     corpus: str | None = None   # .ttwc/.ttwcl: o corpus a gravar (um só)
+    corpora: list[str] | None = None   # .ttwal/.ttwl/.ttwa: seleção de corpora a exportar (vazio em .ttwal = todos)
 
 
 class SaveOptionsRequest(BaseModel):
@@ -360,16 +361,20 @@ def export_project(req: ExportRequest):
 @router.post("/saveas")
 def saveas_project(req: SaveAsRequest):
     """Salvar como: grava o projeto atual em outro arquivo, compactado por padrão, e (switch)
-    passa a trabalhar nele. `.ttwc`/`.ttwcl` gravam só o corpus `corpus` (e não trocam de
-    projeto). Tarefa; acompanhe em /api/jobs/{id}."""
+    passa a trabalhar nele. `.ttwc`/`.ttwcl` gravam só o corpus `corpus` e `.ttwal` uma seleção
+    (`corpora`; sem ela, todos), em versão leve: são exportações e não trocam de projeto.
+    Tarefa; acompanhe em /api/jobs/{id}."""
     _require_project()
-    from ttwtools.project import SINGLE_CORPUS_EXTENSIONS, PROJECT_EXTENSIONS
+    from ttwtools.project import SINGLE_CORPUS_EXTENSIONS, PROJECT_EXTENSIONS, TTWAL_EXTENSION
     dest = Path(req.path).expanduser().resolve()
     if dest.suffix.lower() not in PROJECT_EXTENSIONS:
         dest = dest.with_suffix("." + (req.format or "ttwa"))
     single = dest.suffix.lower() in SINGLE_CORPUS_EXTENSIONS
+    package = dest.suffix.lower() == TTWAL_EXTENSION or bool(req.corpora)   # seleção de corpora: exportação, não troca de projeto
+    export = single or package
     source = app_state.current_project_path
     corpus = req.corpus
+    corpora = req.corpora
     if single and not corpus:
         import ttwtools
         with ttwtools.open_project(source) as proj:
@@ -380,12 +385,12 @@ def saveas_project(req: SaveAsRequest):
 
     import ttwtools
     with ttwtools.open_project(source) as proj:
-        opts = proj.save_options() if single else proj.set_save_options(req.compress, req.search_tables)
+        opts = proj.save_options() if export else proj.set_save_options(req.compress, req.search_tables)
     compress = opts["compress"] if req.compress is None else req.compress
     tables = opts["search_tables"] if req.search_tables is None else req.search_tables
 
-    def work(job, source=source, dest=dest, switch=req.switch, compress=compress, tables=tables, corpus=corpus):
-        from ttwtools.project import save_corpus_as, save_project_as, decompress_project_file
+    def work(job, source=source, dest=dest, switch=req.switch, compress=compress, tables=tables, corpus=corpus, corpora=corpora):
+        from ttwtools.project import save_corpora_as, save_corpus_as, save_project_as, decompress_project_file
         job.update(stage="save")
         prog = lambda d, t: job.progress(d, t, "")  # noqa: E731
         stage = lambda d, t, m: job.update(stage="pack" if m == "pack" else "save", done=d, total=t)  # noqa: E731
@@ -393,6 +398,11 @@ def saveas_project(req: SaveAsRequest):
             with ttwtools.open_project(source) as proj:
                 save_corpus_as(proj, corpus, dest, progress_cb=prog, compress=compress, search_tables=tables)
             return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpus": corpus}
+        if package:
+            with ttwtools.open_project(source) as proj:
+                names = corpora or proj.list_corpus_names()
+                save_corpora_as(proj, names, dest, progress_cb=prog, compress=compress, search_tables=tables)
+            return {"path": str(dest), "size": dest.stat().st_size, "switched": False, "corpora": names}
         save_project_as(source, dest, progress_cb=prog, compress=compress, search_tables=tables, progress=stage)
         if switch:
             if compress or not tables:

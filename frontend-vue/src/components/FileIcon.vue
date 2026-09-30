@@ -8,6 +8,7 @@ defineProps({ name: { type: String, required: true } })
     <template v-else-if="name === 'open'"><path d="M3 7a1 1 0 0 1 1-1h5l2 2.500h8a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" /><path d="M3 11h18" /></template>
     <template v-else-if="name === 'recent'"><circle cx="12" cy="12" r="8.500" /><path d="M12 7v5l3.500 2" /></template>
     <template v-else-if="name === 'save'"><path d="M5 3h11l3 3v15H5z" /><path d="M8 3v5h7V3" /><rect x="8" y="13" width="8" height="8" rx="1" /></template>
+    <template v-else-if="name === 'export'"><path d="M5 8v12h14V8" /><path d="M12 15V3" /><path d="m8 7 4-4 4 4" /></template>
     <template v-else><path d="M5 3h11l3 3v6" /><path d="M8 3v5h7V3" /><path d="M5 3v18h6" /><path d="M14.500 20.500 21 14l1.500 1.500L16 22h-2z" /></template>
   </svg>
 </template>

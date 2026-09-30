@@ -93,7 +93,7 @@ def main() -> None:
         "--open",
         metavar="FILE",
         default=None,
-        help="Abre um arquivo .ttwa, .ttwl ou .ttwt ao iniciar.",
+        help="Abre um arquivo .ttwa, .ttwl, .ttwal, .ttwc, .ttwcl ou .ttwt ao iniciar.",
     )
     args = parser.parse_args()
 
@@ -101,7 +101,7 @@ def main() -> None:
     open_file = args.open
     if not open_file:
         for arg in sys.argv[1:]:
-            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwl', '.ttwt'):
+            if not arg.startswith('-') and Path(arg).suffix.lower() in ('.ttwa', '.ttwl', '.ttwal', '.ttwc', '.ttwcl', '.ttwt'):
                 open_file = arg
                 break
 

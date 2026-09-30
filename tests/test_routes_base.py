@@ -161,3 +161,13 @@ def test_salvar_e_salvar_como_com_ttwt(client, tmp_path):
     with ttwtools.open_project(one) as c:
         assert c.list_corpus_names() == ["mais"] and c.single_corpus
     assert client.get("/api/project/info").json()["path"] == str(raw.resolve())
+    # pacote leve com uma seleção de corpora: .ttwal, também sem trocar de projeto
+    pack = tmp_path / "pacote.ttwal"
+    j = client.post("/api/project/saveas", json={"path": str(pack), "corpora": ["mais", "novo"]}).json()
+    assert sorted(wait_job(client, j["job_id"])["result"]["corpora"]) == ["mais", "novo"]
+    with ttwtools.open_project(pack) as c:
+        assert c.is_light and not c.single_corpus and set(c.list_corpus_names()) == {"mais", "novo"}
+    everything = tmp_path / "tudo.ttwal"                 # .ttwal sem seleção = todos os corpora
+    j = client.post("/api/project/saveas", json={"path": str(everything)}).json()
+    assert wait_job(client, j["job_id"])["result"]["switched"] is False
+    assert client.get("/api/project/info").json()["path"] == str(raw.resolve())

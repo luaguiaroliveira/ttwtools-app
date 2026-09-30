@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
-PROJECT_EXTS = ("ttwa", "ttwl", "ttwc", "ttwcl", "ttwt")
+PROJECT_EXTS = ("ttwa", "ttwl", "ttwal", "ttwc", "ttwcl", "ttwt")
 
 
 def _window():
