@@ -2,6 +2,8 @@
 
 **Para quê:** medir, na máquina mais lenta que o TTWtools precisa atender, as três formas de guardar e abrir um projeto, e gerar **um relatório único** para decidir o que fazer na Fase B (ver `novodesenho/plano_armazenamento.md`, B3). O relatório sai em Markdown; você preenche quatro respostas no fim e devolve o arquivo.
 
+> **Resultado já obtido (parcial):** [`relatorio_intel_20260930.md`](relatorio_intel_20260930.md) — índice e status em [`LEIA.md`](LEIA.md). O teste foi interrompido na etapa I; falta concluir e responder a seção 4.
+
 **As três opções comparadas**
 
 | # | Opção | Como funciona | Trade-off |
