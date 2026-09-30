@@ -11,7 +11,7 @@
   src: url(../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2) format("woff2-variations");
   unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
 
-/* Temas (plano: novodesenho/plano_redesign_ui.md). Valores e contrastes conferidos com
+/* Temas (novodesenho/interface.md). Valores e contrastes conferidos com
    frontend-vue/scripts/contrast.py: rode-o ao mudar qualquer cor. */
 @plugin "daisyui/theme" {
   name: "light";
@@ -69,7 +69,7 @@
   --color-text-muted: var(--ttw-text-muted);
 }
 
-/* Tokens do TTWtools (ver novodesenho/relatorio_usabilidade.md §4).
+/* Tokens do TTWtools (ver novodesenho/interface.md §2).
    Paleta de dados, cores de POS/etiquetador e medidas ficam num só lugar para
    telas, tabelas e gráficos usarem os mesmos valores. */
 @theme {

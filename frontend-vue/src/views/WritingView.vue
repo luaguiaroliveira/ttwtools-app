@@ -5,8 +5,7 @@ import TextType from '../components/vb/TextType.vue'
 //  - "Construções (classes)": moldes de classes gramaticais (n-gramas de POS).
 // Cada resultado é clicável: exemplos no texto e no corpus, com as classes coloridas e o
 // acerto destacado (como no Leitor). O estado vive em stores/writing.js para não se perder
-// ao navegar (ex.: "ver no corpus" e voltar). Ver novodesenho/plano_escrita.md,
-// ferramentaescrita.md.
+// ao navegar (ex.: "ver no corpus" e voltar). Ver novodesenho/escrita.md.
 import { computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

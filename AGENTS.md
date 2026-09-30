@@ -8,7 +8,7 @@ Instruções permanentes para qualquer agente (Claude, Gemini, Codex, DeepSeek..
 2. O desenho está em `novodesenho/novomodelo.md`. **Não leia inteiro:** consulte apenas as seções citadas no passo.
 3. Trabalhe **um passo por vez**. Ao concluir: marque os `[x]`, preencha o **Relato**, atualize o "Estado atual" do plano, rode os testes e faça um commit começando por `[passo]` (ex.: `[1.2] esquema v3 do projeto`).
 
-**Redesign visual (frontend-vue):** siga `novodesenho/plano_redesign_ui.md` (estado e etapas nele), uma etapa por vez.
+**Interface (frontend-vue):** siga `novodesenho/interface.md` (estado e etapas nele), uma etapa por vez.
 
 ## Regras permanentes
 
