@@ -150,3 +150,123 @@ Rust é preferível a C++ aqui (compila para todos os alvos com o mesmo `cargo`,
 
 **Ordem:** passos 1–3 (sem formato) → medir no Intel → protótipo `TCL2` já desenhado com as costuras → **experimento de dois dias**: a costura (a) em Cython modo puro e em Rust, comparando ganho, tamanho do pacote e esforço de CI. Só então decidir.
 
+
+
+## 10. Protótipo TCL2: resultados (2026-09-30, M4)
+
+Spike `libs/ttwtools/tools/proto_tcl2.py` (não muda o app nem o formato gravado). Rodado numa **cópia** de `com_tabelas.ttwa`: corpus `essays_bawe_somentetexto`, camadas `spacy` e `stanza`, 2.454 camadas, 7.504.886 tokens, Apple M4, Python 3.13, numpy 2.2.6. Tudo abaixo é **medido no M4**, salvo o que estiver marcado [estimado]. Para repetir no Intel: `python tools/proto_tcl2.py PROJETO --saida rel.md` (mesma tabela).
+
+**Veredito contra o critério de adoção (tamanho ≤ ⅓ do `TCL1` **e** regex no léxico ordens de grandeza mais rápida que `REGEXP` por linha):**
+
+- **Tamanho: NÃO atende.** `TCL2` = **0,75× o `TCL1`** (largura fixa, com léxico) e **0,68×** (varint); o critério pedia ≤ 0,33×. Contra o JSON antigo: 0,42×. Contra a tabela `tokens` com 5 índices (hoje): 875 MB → 30,6 MB (**≈ 29× menor**), mas isso o `TCL1` já entrega (40,7 MB, 21×).
+- **Regex/glob no léxico: atende.** Regex 0,015 s × 2,22 s (**150×**); glob 0,018 s × 6,05 s (**338×**; o SQLite aí usa `GLOB` nativo, não callback Python). Contagens idênticas. Frequência por `bincount` 0,012 s × 2,09 s (171×); matriz documento × tipo (2,1 M de células) 0,19 s × 2,09 s (11×), resultados idênticos ao laço.
+- **Resultado: revisar, não adotar como está.** Os ganhos de consulta são reais (ordens de grandeza), mas o ganho de espaço sobre `TCL1` é de 25–32%, não de dois terços. Ver "por que não chegou a ⅓".
+
+**Por que não chegou a ⅓ (medido por coluna, camadas sem léxico).** O `TCL1` já tinha tirado o grosso: o que sobra é entropia real. Em `TCL2` (largura fixa): `word` 11,8 MB (1,58 B/token) · `xpos` 3,8 · `tags` 3,8 · `upos` 3,2 · `start` 3,75 · `end` 3,67 · `lemma`, `feats`, `extra` ~0,07 cada (vazios). Três fontes de sobra **não exploradas** no spike, [estimado] em bytes a partir dessa tabela: `tags` repete `xpos` em `spacy` e `stanza` (`["DT"]` × `DT`): −3,8 MB; `end` é `start` + tamanho da forma na quase totalidade dos tokens: −3,6 MB; `start` deriva do texto quando só há espaços entre tokens (não medido). Somando só as duas primeiras: ~23 MB, **≈ 0,57× o `TCL1`**; ainda longe de ⅓. **Ressalva importante:** nessas camadas `lemma`, `feats` e `extra` estão **vazios** (spaCy e Stanza gravados sem lema no projeto do Intel), o caso em que o léxico por corpus mais ajudaria (lemas e features repetidos por documento) **não foi medido**. Um projeto com lemas preenchidos deve dar razão menor.
+
+**Léxico por corpus (prova).** `word`: 81.097 formas só com `spacy`, 85.920 na união com `stanza` (+6%), contra 162.954 se cada ferramenta tivesse o seu (+101%). `upos` 17, `xpos` 51. O léxico inteiro serializa em 0,4 MB (1× por corpus). No `TCL1`, a soma dos dicionários por camada tem 2,35 M de entradas contra 86 mil no léxico do corpus (27×).
+
+**Largura fixa × varint.** Só `word` muda (11,8 → 9,1 MB); as demais colunas empatam (já cabem em 1 ou 2 bytes). Varint dá −8% no total (27,9 × 30,6 MB), mas exige laço em Python na biblioteca padrão (o spike usou numpy, vetorizado, só para medir; decodificar 144 mil ids em 3 ms). **Recomendação:** largura fixa (`array` + `frombytes`, 100% biblioteca padrão), mais simples e rápida; varint só se o nativo vier.
+
+**Velocidade (Mtokens/s no M4; mesma linha do `macintel.md`).**
+
+| medida | `TCL1` | `TCL2` | razão |
+|---|---|---|---|
+| codificar | 0,88 | 2,05 a 3,13 (linhas → ids 3,13; zlib das colunas 2,05, contando largura fixa e varint) | ≈ 1,2× no total |
+| decodificar linhas completas com strings | 3,39 | 4,22 | 1,25× |
+| decodificar só `word` (ids) | — | 86 | 25× o `TCL1` |
+| decodificar 4 colunas de ids | — | 46 | 14× |
+| decodificar 9 colunas (ids e posições) | — | 23 | 7× |
+
+Codificar `TCL2` (2,40 s de mapeamento + 3,66 s de zlib, este último com dois formatos) fica no mesmo patamar do `TCL1` (8,57 s) ou abaixo. No Intel [estimado], com as razões já medidas (codificar 3×, decodificar 8×): decodificar só ids ≈ 10 Mtok/s, regex no léxico ainda em décimos de segundo, `bincount` sobre 7,5 M de ids em ~0,1 s. Não medido no Intel.
+
+**Memória.** Fluxo do passo 1: pico de 97 MB; com `TCL2` e a tabela temporária: 144 MB; o pico de **1,6 GB** vem de manter os ids de `word`, `lemma`, `upos`, `xpos` de todas as camadas na memória para as consultas do spike (o real leria por camada ou por corpus: 4 colunas × 7,5 M × 4 B = 120 MB, [estimado]). O `TCL2` decodifica para `numpy` sem cópia (`frombuffer`).
+
+**O que o spike não fez (dito com franqueza).** Não chamou `query.frequency` (o "laço atual" é um `SELECT` por camada + `Counter`, equivalente); não testou lemas/feats reais; não montou o índice posicional com os mesmos ids (parte (d) só até a máscara sobre ids); não foi rodado no Intel; a tabela `tokens` temporária é montada por `executemany`, não pelo caminho real do projeto (o tamanho de 875 MB bate com o real, 21× o `TCL1`).
+
+**Costuras para código nativo** (seção 9): os pontos quentes do `TCL2` em Python são (1) linhas → ids (dicionários Python, 2,4 s/7,5 M), (2) zlib das colunas (3,7 s, e não seria acelerado por Rust), (3) varint e (4) varrer o léxico com `re` (0,006 a 0,009 s, irrelevante). Com ids, as consultas de contagem (`bincount`, `unique`) já são numpy; **não há gargalo que peça nativo agora**. A costura útil é `decode_ids(blob, colunas)` → array de inteiros, e `mascara_do_lexico(padrão)` → ids.
+
+#### Saída completa do script (M4)
+
+
+| formato | MB | bytes/token | razão ao TCL1 |
+|---|---|---|---|
+| JSON + zlib (antigo) | 73,1 | 9,74 | 1,80 |
+| `TCL1` (atual, dicionário por documento) | 40,7 | 5,43 | 1,00 |
+| `TCL2` largura fixa + zlib por coluna, camadas | 30,3 | 4,03 | 0,74 |
+| `TCL2` largura fixa, camadas + léxico do corpus (1×) | 30,6 | 4,08 | 0,75 |
+| `TCL2` varint + zlib por coluna, camadas + léxico | 27,9 | 3,72 | 0,68 |
+| tabela `tokens` sem índices | 366,7 | 48,86 | 9,00 |
+| tabela `tokens` com os 5 índices (hoje) | 874,8 | 116,56 | 21,48 |
+
+##### Onde estão os bytes do `TCL2` (camadas, sem o léxico)
+
+| coluna | fixa (MB) | varint (MB) | bytes/token (fixa) |
+|---|---|---|---|
+| start | 3,75 | 3,74 | 0,50 |
+| end | 3,67 | 3,67 | 0,49 |
+| word | 11,83 | 9,11 | 1,58 |
+| lemma | 0,07 | 0,07 | 0,01 |
+| upos | 3,21 | 3,21 | 0,43 |
+| xpos | 3,79 | 3,79 | 0,50 |
+| feats | 0,07 | 0,07 | 0,01 |
+| tags | 3,79 | 3,79 | 0,50 |
+| extra | 0,07 | 0,07 | 0,01 |
+
+_Léxico serializado (JSON+zlib): 0,4 MB. Entradas de dicionário somadas por camada no `TCL1`: 2.351.857; entradas do léxico por corpus: 86.039._
+
+##### Léxico por coluna e crescimento ao somar ferramentas
+
+| coluna | só `spacy` | união (léxico por corpus) | soma dos léxicos separados |
+|---|---|---|---|
+| word | 81.097 | 85.920 | 162.954 |
+| lemma | 0 | 0 | 0 |
+| upos | 17 | 17 | 34 |
+| xpos | 50 | 51 | 99 |
+| feats | 0 | 0 | 0 |
+| tags | 50 | 51 | 99 |
+| extra | 0 | 0 | 0 |
+
+#### 2. Velocidade (Mtokens/s; maior é melhor)
+
+| medida | tempo (s) | Mtok/s |
+|---|---|---|
+| ler linhas do SQLite (referência) | 4,30 | 1,75 |
+| codificar `TCL1` | 8,67 | 0,87 |
+| codificar `TCL2`: linhas → ids (dicionários Python) | 2,39 | 3,14 |
+| codificar `TCL2`: zlib das colunas (largura fixa + varint, ambos) | 3,64 | 2,06 |
+| decodificar `TCL1` (linhas completas) | 2,22 | 3,38 |
+| decodificar `TCL2`: 1 coluna de ids (`word`) | 0,09 | 85,50 |
+| decodificar `TCL2`: 4 colunas de ids (word, lemma, upos, xpos) | 0,16 | 46,17 |
+| decodificar `TCL2`: 9 colunas (só ids e posições) | 0,33 | 22,58 |
+| decodificar `TCL2`: linhas completas com strings | 1,81 | 4,15 |
+
+_Verificação: 0 camadas amostradas com decodificação diferente da original (esperado 0). Varint (vetorizado com numpy; em biblioteca padrão seria laço Python): decodificar `word` de 50 camadas (143.980 ids) em 0,003 s, ida e volta ok._
+
+#### 3. Consultas sobre ids × laço atual (unidade: **word**; lemas vazios nessas camadas, medida sobre a forma)
+
+| medida | `TCL2` (ids) | laço atual (SQLite + `Counter`) | razão |
+|---|---|---|---|
+| frequência do corpus | 0,012 s (+ 0,002 s juntar) | 2,09 s | 171× |
+| matriz documento × tipo (2.108.289 células) | 0,193 s | 2,09 s (mesmo laço) | 11× |
+| resultado igual ao do laço | sim | | |
+
+_Sem incluir o custo de decodificar os ids (seção 2). O laço é o de `query.frequency`: `SELECT` por camada e `Counter`; a função em si não foi chamada (exigiria abrir o projeto)._
+
+##### Regex e glob sobre `word` (85.920 formas distintas no léxico)
+
+| consulta | léxico (varre) + máscara sobre ids | `TCL2` total | SQLite | razão | ocorrências | igual |
+|---|---|---|---|---|---|---|
+| regex `^(un\|re)[a-z]{3,}(ed\|ing)$` (REGEXP por linha) | 0,006 s + 0,009 s | 0,015 s | 2,22 s | 150× | 32.564 | sim |
+| glob `*tion` (`lower(word) GLOB`, C nativo) | 0,009 s + 0,009 s | 0,018 s | 6,05 s | 338× | 119.875 | sim |
+
+_Montar a tabela `tokens` temporária: inserir 6,98 s; criar os 5 índices 8,54 s._
+
+#### 4. Memória (pico acumulado do processo, MB)
+
+| depois de | MB |
+|---|---|
+| passo 1 (fluxo: TCL1, JSON, contagens) | 97 |
+| passo 2 (TCL2 e tabela temporária) | 144 |
+| decodificações | 1.626 |
+| consultas | 1.626 |

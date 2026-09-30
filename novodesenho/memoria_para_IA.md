@@ -24,6 +24,7 @@ Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrad
 - **Áudio do usuário (.opus):** `ffmpeg -ar 16000 -ac 1 audio.wav` e `faster-whisper` (modelo `small`, `language="pt"`) num venv isolado; o `av` novo quebra `decode_audio` (`metadata_errors`): passar o áudio como array numpy lido com o módulo `wave`.
 - **Testes:** `_isolated_cache` (autouse) impede testes de tocar o cache e os dados reais; fixture `no_temp_residue` confere que nada sobra em `ttw_*`; ler a fixture `v2_small.ttwa` sempre numa **cópia** (abrir em WAL cria `-wal`/`-shm` ao lado).
 - **Medições:** cópias e saídas em pasta de trabalho apagada ao fim; conferir `df -h /` antes; um processo longo por vez; Intel só mede com a máquina livre (a primeira tentativa, com 16 GB usados e swap alto, foi inválida).
+- **TCL2 (spike, 2026-09-30):** o `TCL1` já tirou o grosso; `TCL2` (ids + léxico por corpus) só rende 0,75× em espaço, mas consultas por ids são 100×+ mais rápidas (`bincount`, regex sobre o léxico → máscara). Em `spacy`/`stanza` do projeto do Intel `lemma`, `feats` e `extra` são **vazios** e `tags` repete `xpos`; `end` ≈ `start` + len(word). Escrever `re.IGNORECASE` igual ao `REGEXP` do `query.py` ao comparar. `zsh` recusa `rm dir_*` sem correspondência e aborta a linha; `sleep` seguido de `cat` é bloqueado (usar `until` em segundo plano). Um `.ttwa` "com tabelas" gunzipa para SQLite puro (`gunzip -c`), com `tokens` e `layer_blobs` vazio.
 
 ## Documentos removidos em 2026-09-30 (recuperáveis no Git)
 
