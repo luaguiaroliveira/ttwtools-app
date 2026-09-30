@@ -31,6 +31,8 @@ Incidente: a pasta temporária do sistema chegou a **71 GB** (77 cópias de trab
 
 > **Diretrizes do usuário (2026-09-29): o mais leve, de fácil computação em máquina antiga e retrocompatível; entra como beta na 0.6 (versão `0.6.0.dev0`; ponto de retorno: tag `pre-armazenamento-0.6`).**
 
+> **Plano de implementação em passos (Fase A e B): `novodesenho/plano_armazenamento.md`.**
+
 > **Análise e proposta completas: `novodesenho/armazenamento.md`** (solução atual, problemas medidos, ferramentas análogas, modelo proposto em 3 fases e decisões que dependem do usuário).
 
 ### Já feito (2026-09-29)
