@@ -1,0 +1,80 @@
+{
+  "label": "web",
+  "shell": "web",
+  "cmd": "",
+  "date": "2026-10-03 20:36:21",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "startup": {
+      "runs": [
+        {
+          "server_ready_s": 1.098,
+          "html_s": null,
+          "js_s": null,
+          "ui_boot_s": null,
+          "rss_boot_mb": 293.3,
+          "rss_idle_mb": 263.9,
+          "processes": 1,
+          "cpu_idle_pct": 0.15,
+          "user_agent": null
+        },
+        {
+          "server_ready_s": 1.081,
+          "html_s": null,
+          "js_s": null,
+          "ui_boot_s": null,
+          "rss_boot_mb": 291.9,
+          "rss_idle_mb": 261.1,
+          "processes": 1,
+          "cpu_idle_pct": 0.17,
+          "user_agent": null
+        },
+        {
+          "server_ready_s": 1.096,
+          "html_s": null,
+          "js_s": null,
+          "ui_boot_s": null,
+          "rss_boot_mb": 291.8,
+          "rss_idle_mb": 291.8,
+          "processes": 1,
+          "cpu_idle_pct": 0.16,
+          "user_agent": null
+        }
+      ],
+      "summary": {
+        "server_ready_s": {
+          "median": 1.096,
+          "min": 1.081,
+          "max": 1.098
+        },
+        "rss_boot_mb": {
+          "median": 291.9,
+          "min": 291.8,
+          "max": 293.3
+        },
+        "rss_idle_mb": {
+          "median": 263.9,
+          "min": 261.1,
+          "max": 291.8
+        },
+        "processes": {
+          "median": 1,
+          "min": 1,
+          "max": 1
+        },
+        "cpu_idle_pct": {
+          "median": 0.16,
+          "min": 0.15,
+          "max": 0.17
+        }
+      }
+    }
+  },
+  "commit": "a0f65a8"
+}

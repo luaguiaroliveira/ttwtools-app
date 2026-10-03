@@ -134,6 +134,9 @@ def build_app(open_file: str | None = None) -> FastAPI:
     app_state.purge_stale_workdirs()                # restos de sessões encerradas à força
     app_state.install_exit_cleanup()                # e não deixa restos desta sessão
 
+    from app import bench
+    bench.install(app)                              # marcas de tempo, só com TTW_BENCH_FILE (tools/bench)
+
     if open_file:
         # qualquer projeto pode estar compactado ou precisar de migração: a tela abre com progresso
         app_state.pending_open_path = str(Path(open_file).resolve())

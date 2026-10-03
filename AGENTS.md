@@ -44,6 +44,7 @@ python build/build.py                                # pacote PyInstaller; relea
 |---|---|
 | `novodesenho/plano.md` | **Comece aqui:** retomar, regras, estado por frente, pendências |
 | `novodesenho/armazenamento.md` | Eficiência e formato de arquivo: evidência, proposta, perfis Compacto/Pronto, código nativo |
+| `novodesenho/tauri.md` | Migração da casca pywebview → Tauri (branch `tauri_1`): plano, paridade, benchmark `tools/bench`, critérios |
 | `novodesenho/macintel.md` | Testes na máquina lenta de referência (Mac Intel): números, problemas, como repetir |
 | `novodesenho/interface.md` · `escrita.md` · `verificacao.md` | Frentes de interface, de Escrita e roteiro de verificação manual |
 | `novodesenho/novomodelo.md` | Desenho original (citado por `§N` no código) |

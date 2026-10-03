@@ -1,0 +1,100 @@
+{
+  "label": "pywebview",
+  "shell": "pywebview",
+  "cmd": "",
+  "date": "2026-10-03 20:40:29",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "startup": {
+      "runs": [
+        {
+          "server_ready_s": 1.433,
+          "html_s": 1.889,
+          "js_s": 1.904,
+          "ui_boot_s": 2.028,
+          "rss_boot_mb": 484.9,
+          "rss_idle_mb": 439.4,
+          "processes": 4,
+          "cpu_idle_pct": 1.57,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.089,
+          "html_s": 1.445,
+          "js_s": 1.458,
+          "ui_boot_s": 1.622,
+          "rss_boot_mb": 468.2,
+          "rss_idle_mb": 433.6,
+          "processes": 4,
+          "cpu_idle_pct": 1.86,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.092,
+          "html_s": 1.483,
+          "js_s": 1.499,
+          "ui_boot_s": 1.651,
+          "rss_boot_mb": 490.8,
+          "rss_idle_mb": 436.8,
+          "processes": 4,
+          "cpu_idle_pct": 2.26,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        }
+      ],
+      "summary": {
+        "server_ready_s": {
+          "median": 1.092,
+          "min": 1.089,
+          "max": 1.433
+        },
+        "html_s": {
+          "median": 1.483,
+          "min": 1.445,
+          "max": 1.889
+        },
+        "js_s": {
+          "median": 1.499,
+          "min": 1.458,
+          "max": 1.904
+        },
+        "ui_boot_s": {
+          "median": 1.651,
+          "min": 1.622,
+          "max": 2.028
+        },
+        "rss_boot_mb": {
+          "median": 484.9,
+          "min": 468.2,
+          "max": 490.8
+        },
+        "rss_idle_mb": {
+          "median": 436.8,
+          "min": 433.6,
+          "max": 439.4
+        },
+        "processes": {
+          "median": 4,
+          "min": 4,
+          "max": 4
+        },
+        "cpu_idle_pct": {
+          "median": 1.86,
+          "min": 1.57,
+          "max": 2.26
+        }
+      }
+    },
+    "open": {
+      "ok": true,
+      "open_s": 1.84,
+      "project": "/private/var/folders/ww/9gzg7yg95db6yw3r_k5p95qh0000gn/T/ttw-bench-2bm5uhkh/v2_small.ttwa"
+    }
+  },
+  "commit": "a0f65a8"
+}
