@@ -93,3 +93,6 @@ dist-corpora/
 *.ttwl-wal
 *.ttwl-shm
 *.ttwl-journal
+
+# benchmark da casca: imagens de diferença se regeneram (tools/bench)
+tools/bench/resultados/visual/diff-*.png
