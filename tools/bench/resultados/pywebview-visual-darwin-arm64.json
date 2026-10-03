@@ -1,0 +1,39 @@
+{
+  "label": "pywebview-visual",
+  "shell": "pywebview",
+  "cmd": "",
+  "date": "2026-10-03 20:52:27",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "visual": {
+      "arquivo": {
+        "png": "resultados/visual/pywebview-visual-arquivo.png"
+      },
+      "inicio": {
+        "png": "resultados/visual/pywebview-visual-inicio.png"
+      },
+      "etiquetagem": {
+        "png": "resultados/visual/pywebview-visual-etiquetagem.png"
+      },
+      "explorar": {
+        "png": "resultados/visual/pywebview-visual-explorar.png"
+      },
+      "comparar": {
+        "png": "resultados/visual/pywebview-visual-comparar.png"
+      },
+      "modulos": {
+        "png": "resultados/visual/pywebview-visual-modulos.png"
+      },
+      "aprender": {
+        "png": "resultados/visual/pywebview-visual-aprender.png"
+      }
+    }
+  },
+  "commit": "16dbe1d"
+}

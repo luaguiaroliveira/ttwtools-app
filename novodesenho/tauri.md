@@ -95,7 +95,7 @@ Limites conhecidos: (a) RSS soma páginas compartilhadas entre processos: serve 
 | CPU em repouso | 0,16 % | 1,86 % | |
 | abrir arquivo | — | 1,8 s | ok |
 
-A captura de tela (`visual`) **ainda não foi gerada**: depende da permissão de Gravação de Tela. Gerar uma vez antes da F1 e guardar (fica como referência para o fim da fase 6). Este benchmark não mede o Mac Intel nem Windows/Linux: repetir lá o mesmo comando.
+**Linha de base visual (feita 2026-10-03):** 7 telas em `tools/bench/resultados/visual/pywebview-visual-*.png` (2560×1600, **tema escuro**, porque o app segue o tema do sistema; para o claro, trocar a aparência do macOS e repetir com outro `--label`). Referência até o fim da fase 6; comparar com `compare-visual`. Este benchmark não mede o Mac Intel nem Windows/Linux: repetir lá o mesmo comando.
 
 ## 6. Riscos
 
