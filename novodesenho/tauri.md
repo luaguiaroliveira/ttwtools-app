@@ -97,6 +97,23 @@ Limites conhecidos: (a) RSS soma páginas compartilhadas entre processos: serve 
 
 **Linha de base visual (feita 2026-10-03):** 7 telas em `tools/bench/resultados/visual/pywebview-visual-*.png` (2560×1600, **tema escuro**, porque o app segue o tema do sistema; para o claro, trocar a aparência do macOS e repetir com outro `--label`). Referência até o fim da fase 6; comparar com `compare-visual`. Este benchmark não mede o Mac Intel nem Windows/Linux: repetir lá o mesmo comando.
 
+## 5b. Spike F1: resultado parcial (2026-10-03)
+
+`src-tauri/` (Tauri 2.11.6, Rust 1.88 do Homebrew) sobe `python -m app --mode web` numa porta livre, espera `/api/health`, abre a janela 1280×800 (mínimo 900×600) e encerra o servidor ao sair. **Só desenvolvimento**: usa `TTW_PYTHON` e `TTW_APP_DIR`; o sidecar empacotado é a F3. Compilar: `cd src-tauri && cargo build` (o `.cargo/config.toml` faz o cargo escolher versões compatíveis com o Rust instalado, pois o Tauri mais novo pede 1.90; no CI usar Rust atual e regerar o `Cargo.lock`).
+
+Medido no mesmo M4, binário **debug** (mediana de 3), contra o pywebview:
+
+| métrica | pywebview | Tauri | variação |
+|---|---:|---:|---:|
+| interface montada | 1,65 s | 1,55 s | −6 % |
+| RSS ao montar | 485 MB | 510 MB | +5 % |
+| RSS em repouso | 437 MB | 417 MB | −5 % |
+| processos | 4 | 5 | +1 |
+| CPU em repouso | 1,86 % | 1,93 % | ≈ |
+| abrir arquivo (`--open`) | 1,84 s | 1,71 s | ok |
+
+**Visual: 0,00 % de pixels diferentes nas 7 telas** (tolerância 16/255, tema escuro), como previsto: mesmo WKWebView. Dentro dos critérios da seção 7 neste Mac. **Ainda não provado** (próximos passos, nesta ordem): diálogo de abrir/salvar/pasta, download por `Blob`, abrir arquivo com o app já aberto (`RunEvent::Opened`), confirmar fechar com alterações não salvas, menu Editar (copiar/colar), ícone do app; depois Windows e Linux.
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).

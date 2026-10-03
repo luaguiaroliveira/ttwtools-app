@@ -1,0 +1,100 @@
+{
+  "label": "tauri-debug",
+  "shell": "cmd",
+  "cmd": "/Users/padovani/repositorios/repositorios_lu/ttw/ttwtools-app/src-tauri/target/debug/ttwtools-tauri --port {port}",
+  "date": "2026-10-03 20:55:56",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "startup": {
+      "runs": [
+        {
+          "server_ready_s": 1.764,
+          "html_s": 2.0,
+          "js_s": 2.012,
+          "ui_boot_s": 2.149,
+          "rss_boot_mb": 512.7,
+          "rss_idle_mb": 407.4,
+          "processes": 5,
+          "cpu_idle_pct": 1.77,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.261,
+          "html_s": 1.396,
+          "js_s": 1.406,
+          "ui_boot_s": 1.553,
+          "rss_boot_mb": 510.3,
+          "rss_idle_mb": 424.1,
+          "processes": 5,
+          "cpu_idle_pct": 2.05,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.213,
+          "html_s": 1.349,
+          "js_s": 1.361,
+          "ui_boot_s": 1.501,
+          "rss_boot_mb": 509.0,
+          "rss_idle_mb": 416.6,
+          "processes": 5,
+          "cpu_idle_pct": 1.93,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        }
+      ],
+      "summary": {
+        "server_ready_s": {
+          "median": 1.261,
+          "min": 1.213,
+          "max": 1.764
+        },
+        "html_s": {
+          "median": 1.396,
+          "min": 1.349,
+          "max": 2.0
+        },
+        "js_s": {
+          "median": 1.406,
+          "min": 1.361,
+          "max": 2.012
+        },
+        "ui_boot_s": {
+          "median": 1.553,
+          "min": 1.501,
+          "max": 2.149
+        },
+        "rss_boot_mb": {
+          "median": 510.3,
+          "min": 509.0,
+          "max": 512.7
+        },
+        "rss_idle_mb": {
+          "median": 416.6,
+          "min": 407.4,
+          "max": 424.1
+        },
+        "processes": {
+          "median": 5,
+          "min": 5,
+          "max": 5
+        },
+        "cpu_idle_pct": {
+          "median": 1.93,
+          "min": 1.77,
+          "max": 2.05
+        }
+      }
+    },
+    "open": {
+      "ok": true,
+      "open_s": 1.711,
+      "project": "/private/var/folders/ww/9gzg7yg95db6yw3r_k5p95qh0000gn/T/ttw-bench-rijgu434/v2_small.ttwa"
+    }
+  },
+  "commit": "bd03a37"
+}

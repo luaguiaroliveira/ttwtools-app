@@ -414,7 +414,7 @@ def cmd_compare_visual(args) -> int:
             w, h = min(ia.width, ib.width), min(ia.height, ib.height)
             ia, ib = ia.crop((0, 0, w, h)), ib.crop((0, 0, w, h))
         diff = ImageChops.difference(ia, ib).convert("L").point(lambda v: 255 if v > args.tolerance else 0)
-        pct = 100 * sum(1 for v in diff.getdata() if v) / (diff.width * diff.height)
+        pct = 100 * diff.histogram()[255] / (diff.width * diff.height)
         diff.save(out / f"diff-{name}.png")
         print(f"| {name} | {pct:.2f}% dos pixels | {note} |")
     return 0
