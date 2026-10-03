@@ -118,9 +118,14 @@ Todos, em macOS arm64, macOS 12 Intel, Windows e Linux:
 
 Se algum critério falhar sem solução razoável, o pywebview fica e este branch é arquivado.
 
-## 8. Decisões que são suas (antes da F4)
+## 8. Decisões do usuário (2026-10-03) e consequências
 
-1. **Distribuição**: manter zip/dmg sem instalador (com os scripts de associação) ou adotar instaladores do Tauri (`.dmg`/`.app`, NSIS ou MSI, `.deb`/AppImage)?
-2. **Linux**: quais distribuições prometemos (WebKitGTK 4.1 exige Ubuntu 22.04 ou equivalente)?
-3. **Windows 10**: embutir o instalador do WebView2 (maior) ou exigir o runtime?
-4. **Assinatura e notarização** do macOS: hoje não consta no repositório; o Tauri facilita, mas precisa de conta de desenvolvedor.
+1. **Instalador: sim** (Tauri: `.dmg` no macOS, NSIS no Windows, `.deb` e `.rpm` no Linux). No macOS, ver abaixo.
+2. **Linux:** Debian/Ubuntu (`.deb`), Red Hat/Fedora (`.rpm`), Manjaro/Arch (o Tauri não gera pacote pacman: **AppImage** ou um `PKGBUILD` que instala o `.deb`/binário; decidir no F4). O `.deb`/`.rpm` depende de **WebKitGTK 4.1**: conferir no CI e anotar a versão mínima de cada família (Ubuntu 22.04+ e Debian 12+ têm; Debian 11 e Ubuntu 20.04 provavelmente ficam de fora).
+3. **Windows:** embutir o WebView2 (`webviewInstallMode: offlineInstaller`, ~130 MB a mais no instalador, não exige internet).
+4. **macOS sem conta Apple Developer (sem assinar nem notarizar):** o app continua rodando, mas o Gatekeeper avisa na primeira abertura. É o **mesmo** que o pacote atual (o `build/` não assina). Estratégia:
+   - assinatura *ad hoc* (`signingIdentity: "-"` no Tauri): obrigatória no Apple Silicon, grátis; conferir no spike que o selo continua válido com o sidecar Python (torch etc.) dentro de `Resources`;
+   - instruções por versão no instalador/site: macOS 12–14, clique direito > Abrir; macOS 15, Ajustes > Privacidade e Segurança > "Abrir mesmo assim"; alternativa `xattr -dr com.apple.quarantine /Applications/TTWtools.app`;
+   - **atualização pelo próprio app** (plugin `updater` do Tauri, chave minisign própria, sem Apple): arquivos que o app baixa não ganham quarentena, então só a **primeira** instalação passa pelo aviso;
+   - se a distribuição crescer, a conta paga (US$ 99/ano) elimina o aviso; não bloqueia a migração.
+   - Windows tem o equivalente (SmartScreen sem certificado): mesma tática de instrução.
