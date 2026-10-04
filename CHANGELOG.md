@@ -4,12 +4,16 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.7.0-alpha.1] — 2026-10-04
+
 > Linha **0.7 (experimental)**: a janela do aplicativo passa de pywebview para **Tauri** (Rust), sem mudar a interface nem o servidor.
 
 ### Alterado
 
 - **Casca Tauri** no lugar do pywebview: mesma interface (comparação visual idêntica), abertura da interface ≈13 % mais rápida e ≈6 % menos memória no macOS arm64 (`novodesenho/tauri.md`). Diálogos do sistema, exportação, duplo clique em arquivos do TTWtools (também com o aplicativo já aberto) e instância única funcionam como antes.
 - **Pacotes pelo CI nos 4 sistemas:** macOS (`.dmg`, arm64 e Intel/macOS 12), Windows (`.zip` portátil) e Linux (`.tar.gz`, precisa de `libwebkit2gtk-4.1` instalado). Sem assinatura nem notarização: no macOS use botão direito → Abrir; no Windows o SmartScreen avisa.
+
+- Pacote `ttwtools` 0.2.0 (commit `30271b9`, tag `v0.2.0`).
 
 ## [0.6.0] — 2026-09-30
 
@@ -239,7 +243,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...HEAD
+[0.7.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...v0.7.0-alpha.1
 [0.6.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...v0.6.0
 [0.6.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...v0.6.0-alpha.1
 [0.5.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.4.0-rc.1...v0.5.0
