@@ -4,6 +4,8 @@ Branch `tauri_1` (aberta em 2026-10-03, a partir de `main` em `a0f65a8`). **Fren
 
 ## 1. Diretrizes (decididas)
 
+0. **Preferência do usuário (2026-10-03):** seguir com o Tauri, apesar dos ganhos tímidos medidos (a motivação é ciclo de vida, instaladores e manutenção, não desempenho). Os critérios da seção 7 continuam valendo para a troca final.
+
 1. **Compatibilidade**: macOS 12 (Intel e Apple Silicon), Windows e Linux, como hoje (`plano.md` seção 2). A casca nova não pode fechar nenhuma porta que a atual abre.
 2. **Qualidade visual**: a interface Vue/Tailwind/daisyUI **não muda**; a aparência tem de ser a mesma na janela. No macOS os dois usam o mesmo motor (WKWebView), então a expectativa é de diferença zero; no Windows (WebView2) e no Linux (WebKitGTK) conferir.
 3. **Mesmas capacidades**: tudo o que o aplicativo faz hoje dentro da janela (seção 3) continua fazendo. É a matriz de paridade que decide, não a impressão.
@@ -142,7 +144,7 @@ Marque o que falhar aqui; é o que decide a F2.
 
 ## 5d. F3: servidor empacotado (feito 2026-10-03, macOS arm64)
 
-`python build/build.py --shell tauri` gera `dist/<alvo>/ttwtools-server/` (spec com `TTW_SHELL=tauri`: sem `webview`, sem `.app`). **Rode com o Python do ambiente do projeto** (`~/miniconda3/envs/ttw314/bin/python build/build.py ...`): com o Python base (sem uvicorn) o PyInstaller termina "com sucesso" mas o pacote sai sem o servidor e o autoteste falha com `No module named 'uvicorn'` (o `collect_submodules` vazio não avisa). Resultado: autoteste ok (torch, Stanza, spaCy, API, interface), `check_macos_min` ok (436 Mach-O, nenhum acima de 12.3), **702 MB** (o `TTWtools.app` do pywebview tem 703 MB: o Tauri não muda o tamanho). `TTW_SERVER=<exe> ./src-tauri/target/debug/ttwtools-tauri` abre a janela com o servidor empacotado, a ponte IPC passa e não sobra processo órfão.
+`python build/build.py --shell tauri` gera `dist/<alvo>/ttwtools-server/` (spec com `TTW_SHELL=tauri`: sem `webview`, sem `.app`). **Rode com o Python do ambiente do projeto** (`~/miniconda3/envs/ttw314/bin/python build/build.py ...`): com o Python base (sem uvicorn) o PyInstaller termina "com sucesso" mas o pacote sai sem o servidor e o autoteste falha com `No module named 'uvicorn'` (o `collect_submodules` vazio não avisa). **Agora o `build.py` confere os módulos antes e aborta com a mensagem certa** (`check_build_modules`). Resultado: autoteste ok (torch, Stanza, spaCy, API, interface), `check_macos_min` ok (436 Mach-O, nenhum acima de 12.3), **702 MB** (o `TTWtools.app` do pywebview tem 703 MB: o Tauri não muda o tamanho). `TTW_SERVER=<exe> ./src-tauri/target/debug/ttwtools-tauri` abre a janela com o servidor empacotado, a ponte IPC passa e não sobra processo órfão.
 
 Medido (mediana de 3; o pywebview da linha de base roda **do código-fonte**, então a comparação favorece-o um pouco): interface montada 1,60 s (pywebview 1,65 s); RSS em repouso 474 MB (+8 %; inclui o processo extra do carregador do PyInstaller); CPU em repouso 2,4 % (1,9 %). Falta medir o pywebview **empacotado** para uma comparação justa: `python build/build.py` (padrão) e `run --shell cmd` sobre o executável.
 

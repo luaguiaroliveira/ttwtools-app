@@ -155,6 +155,19 @@ def install_deps(target: Target) -> None:
     run(target.py("-m", "spacy", "download", "en_core_web_sm"))
 
 
+def check_build_modules(target: Target, shell: str) -> None:
+    """Falha cedo se o Python do alvo não tem o que o spec empacota: sem isso o PyInstaller termina
+    "com sucesso" (collect_submodules vazio não avisa) e só o autoteste do final acusa o erro."""
+    needed = ["uvicorn", "fastapi", "starlette", "spacy", "ttwtools"] + (["webview"] if shell == "pywebview" else [])
+    code = "import importlib.util as u; print(' '.join(m for m in %r if u.find_spec(m) is None))" % (needed,)
+    out = subprocess.run(target.py("-c", code), capture_output=True, text=True)
+    missing = out.stdout.split()
+    if out.returncode != 0 or missing:
+        raise SystemExit(f"O Python do alvo ({target.python}) não tem: {', '.join(missing) or out.stderr.strip()}.\n"
+                         "Use o ambiente do projeto (ex.: --python ~/miniconda3/envs/ttw314/bin/python) "
+                         "ou instale com --install-deps.")
+
+
 def create_intel_env(target: Target) -> None:
     conda = CONDA_X86 / "bin" / "conda"
     if not conda.is_file():
@@ -353,6 +366,7 @@ def main() -> int:
     if args.deps_only:
         log("Dependências prontas")
         return 0
+    check_build_modules(target, args.shell)
     if not args.skip_frontend:
         build_frontend(ROOT / args.frontend_src)
 
