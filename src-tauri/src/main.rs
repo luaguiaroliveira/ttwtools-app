@@ -27,9 +27,9 @@ fn free_port() -> u16 {
     TcpListener::bind("127.0.0.1:0").and_then(|l| l.local_addr()).map(|a| a.port()).unwrap_or(8765)
 }
 
-fn parse_args() -> (Option<u16>, Option<String>) {
+fn parse_args(args: impl IntoIterator<Item = String>) -> (Option<u16>, Option<String>) {
     let (mut port, mut open) = (None, None);
-    let mut args = std::env::args().skip(1);
+    let mut args = args.into_iter();
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--port" => port = args.next().and_then(|v| v.parse().ok()),
@@ -56,22 +56,55 @@ fn spawn_server(port: u16, open: Option<&str>) -> std::io::Result<Child> {
     if let Some(file) = open {
         cmd.args(["--open", file]);
     }
+    cmd.env("TTW_PARENT_PID", std::process::id().to_string()); // o servidor sai sozinho se a casca cair
     cmd.current_dir(app_dir()).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
     #[cfg(unix)]
     std::os::unix::process::CommandExt::process_group(&mut cmd, 0); // grupo próprio: encerra a árvore inteira
     cmd.spawn()
 }
 
+/// Requisição HTTP mínima ao servidor local (sem dependência de cliente HTTP); devolve a resposta inteira.
+fn http(port: u16, method: &str, path: &str, body: &str) -> Option<String> {
+    let mut stream = TcpStream::connect_timeout(&([127, 0, 0, 1], port).into(), Duration::from_millis(300)).ok()?;
+    stream.set_read_timeout(Some(Duration::from_secs(3))).ok()?;
+    let request = format!(
+        "{method} {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n{body}",
+        body.len()
+    );
+    stream.write_all(request.as_bytes()).ok()?;
+    let mut response = String::new();
+    stream.read_to_string(&mut response).ok()?;
+    Some(response)
+}
+
 fn healthy(port: u16) -> bool {
-    let Ok(mut stream) = TcpStream::connect_timeout(&([127, 0, 0, 1], port).into(), Duration::from_millis(300)) else {
-        return false;
-    };
-    let _ = stream.set_read_timeout(Some(Duration::from_secs(2)));
-    let request = format!("GET /api/health HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\n\r\n");
-    let mut head = String::new();
-    stream.write_all(request.as_bytes()).is_ok()
-        && stream.take(64).read_to_string(&mut head).is_ok()
-        && head.contains(" 200 ")
+    http(port, "GET", "/api/health", "").is_some_and(|r| r.contains(" 200 "))
+}
+
+fn has_unsaved(port: u16) -> bool {
+    http(port, "GET", "/api/project/unsaved", "").is_some_and(|r| r.contains("\"unsaved\":true"))
+}
+
+struct Port(u16);
+
+/// Entrega um arquivo aberto pelo sistema (evento do macOS ou segunda instância) à interface:
+/// o servidor guarda o caminho e a interface o lê ao ganhar foco, como com o Apple Event do pywebview.
+fn hand_over(app: &tauri::AppHandle, file: String) {
+    let port = app.state::<Port>().0;
+    let app = app.clone();
+    std::thread::spawn(move || {
+        let deadline = Instant::now() + Duration::from_secs(120);
+        while !healthy(port) && Instant::now() < deadline {
+            std::thread::sleep(Duration::from_millis(100));
+        }
+        let body = serde_json::json!({ "path": file }).to_string();
+        http(port, "POST", "/api/project/pending-open", &body);
+        if let Some(window) = app.get_webview_window("main") {
+            let _ = window.unminimize();
+            let _ = window.set_focus();
+            let _ = window.eval("window.dispatchEvent(new Event('focus'))");
+        }
+    });
 }
 
 fn stop(server: &Server) {
@@ -182,13 +215,52 @@ fn selftest_script(dir: &str) -> String {
 }
 
 fn main() {
-    let (arg_port, open) = parse_args();
+    let (arg_port, open) = parse_args(std::env::args().skip(1));
     let port = arg_port
         .or_else(|| std::env::var("TTW_PORT").ok().and_then(|v| v.parse().ok()))
         .unwrap_or_else(free_port);
 
     let app = tauri::Builder::default()
+        // 1º plugin: uma segunda instância (Explorer/Linux abrindo outro arquivo) entrega o arquivo à primeira
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            match parse_args(argv.into_iter().skip(1)).1 {
+                Some(file) => hand_over(app, file),
+                None => {
+                    if let Some(window) = app.get_webview_window("main") {
+                        let _ = window.unminimize();
+                        let _ = window.set_focus();
+                    }
+                }
+            }
+        }))
         .plugin(tauri_plugin_dialog::init())
+        .on_window_event(move |window, event| {
+            // alterações não salvas: pede confirmação (mesmo texto do pywebview), em vez de fechar direto
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                if has_unsaved(port) {
+                    api.prevent_close();
+                    let target = window.clone();
+                    window
+                        .app_handle()
+                        .dialog()
+                        .message(
+                            "Há alterações não salvas no projeto (use Arquivo → Salvar). Fechar mesmo assim?\n\
+                             There are unsaved changes in the project (use File → Save). Quit anyway?",
+                        )
+                        .title("TTWtools")
+                        .kind(tauri_plugin_dialog::MessageDialogKind::Warning)
+                        .buttons(tauri_plugin_dialog::MessageDialogButtons::OkCancelCustom(
+                            "Fechar / Quit".into(),
+                            "Cancelar / Cancel".into(),
+                        ))
+                        .show(move |close| {
+                            if close {
+                                let _ = target.destroy();
+                            }
+                        });
+                }
+            }
+        })
         .invoke_handler(tauri::generate_handler![pick_file, pick_save, pick_folder, save_file, selftest_done])
         .on_page_load(|webview, payload| {
             if let Ok(dir) = std::env::var("TTW_TAURI_SELFTEST") {
@@ -206,6 +278,7 @@ fn main() {
         .setup(move |app| {
             let child = spawn_server(port, open.as_deref())?;
             app.manage(Server(Mutex::new(Some(child))));
+            app.manage(Port(port));
             let handle = app.handle().clone();
             std::thread::spawn(move || {
                 let deadline = Instant::now() + Duration::from_secs(120);
@@ -237,11 +310,19 @@ fn main() {
         .build(tauri::generate_context!())
         .expect("erro ao iniciar o Tauri");
 
-    app.run(|handle, event| {
-        if let RunEvent::Exit = event {
+    app.run(|handle, event| match event {
+        RunEvent::Exit => {
             if let Some(server) = handle.try_state::<Server>() {
                 stop(&server);
             }
         }
+        // macOS: duplo clique num arquivo do TTWtools (app fechado ou aberto) chega aqui, não em argv
+        #[cfg(target_os = "macos")]
+        RunEvent::Opened { urls } => {
+            if let Some(path) = urls.iter().find_map(|u| u.to_file_path().ok()) {
+                hand_over(handle, path.display().to_string());
+            }
+        }
+        _ => {}
     });
 }

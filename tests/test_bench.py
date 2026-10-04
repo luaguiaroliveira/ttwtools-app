@@ -38,3 +38,15 @@ def test_resumo_do_harness():
     spec.loader.exec_module(mod)
     out = mod.summarize([{"a": 1.0, "b": None}, {"a": 3.0, "b": None}, {"a": 2.0, "b": None}])
     assert out == {"a": {"median": 2.0, "min": 1.0, "max": 3.0}}
+
+
+def test_parent_alive():
+    """O servidor da casca Tauri só sai se o pai sumir (app/__main__.py `_watch_parent`)."""
+    import os
+    import subprocess
+    import sys
+    from app.__main__ import _parent_alive
+    assert _parent_alive(os.getpid())
+    proc = subprocess.Popen([sys.executable, "-c", "pass"])
+    proc.wait()
+    assert not _parent_alive(proc.pid)

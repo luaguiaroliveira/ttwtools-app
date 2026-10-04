@@ -62,6 +62,44 @@ def _ensure_std_streams() -> None:
             setattr(sys, name, open(os.devnull, "w", encoding="utf-8"))
 
 
+def _parent_alive(pid: int) -> bool:
+    """O processo `pid` ainda existe? (os.kill(pid, 0) no Windows MATARIA o processo: usa a API do sistema)"""
+    if sys.platform == "win32":
+        import ctypes
+        handle = ctypes.windll.kernel32.OpenProcess(0x00100000, False, pid)   # SYNCHRONIZE
+        if not handle:
+            return False
+        try:
+            return ctypes.windll.kernel32.WaitForSingleObject(handle, 0) == 0x102   # WAIT_TIMEOUT: ainda roda
+        finally:
+            ctypes.windll.kernel32.CloseHandle(handle)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _watch_parent() -> None:
+    """Casca Tauri: ela passa TTW_PARENT_PID; se cair sem avisar (kill, falha), o servidor sai em vez de
+    ficar órfão. SIGTERM de si mesmo roda a limpeza (cópia de trabalho) instalada em app/state.py."""
+    raw = os.environ.get("TTW_PARENT_PID", "")
+    if not raw.isdigit():
+        return
+    parent = int(raw)
+
+    def watch():
+        import signal
+        import time
+        while _parent_alive(parent):
+            time.sleep(1)
+        os.kill(os.getpid(), signal.SIGTERM) if sys.platform != "win32" else os._exit(0)
+
+    threading.Thread(target=watch, daemon=True, name="parent-watch").start()
+
+
 def main() -> None:
     _ensure_std_streams()
     if "--version" in sys.argv[1:]:
@@ -73,6 +111,7 @@ def main() -> None:
     if "--selftest" in sys.argv[1:]:
         sys.exit(_selftest())
 
+    _watch_parent()
     _prewarm_torch()
     # Register macOS 'odoc' handler as early as possible so queued startup
     # events are delivered naturally when webview.start() runs the Cocoa loop.
