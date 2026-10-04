@@ -114,6 +114,30 @@ Medido no mesmo M4, binário **debug** (mediana de 3), contra o pywebview:
 
 **Visual: 0,00 % de pixels diferentes nas 7 telas** (tolerância 16/255, tema escuro), como previsto: mesmo WKWebView. Dentro dos critérios da seção 7 neste Mac. **Ainda não provado** (próximos passos, nesta ordem): diálogo de abrir/salvar/pasta, download por `Blob`, abrir arquivo com o app já aberto (`RunEvent::Opened`), confirmar fechar com alterações não salvas, menu Editar (copiar/colar), ícone do app; depois Windows e Linux.
 
+## 5c. Estado da paridade (F2 parcial, 2026-10-03, macOS arm64, binário debug)
+
+| # | Item | Estado |
+|---|---|---|
+| 1, 2 | Janela e ciclo de vida do servidor | **feito e testado**: abre, espera `/api/health`, encerra o servidor ao sair; se a casca morrer (inclusive `kill -9`) o servidor sai em ~2 s (`TTW_PARENT_PID`, `app/__main__.py`) |
+| 3 | Diálogos abrir/salvar/pasta | **implementado** (`src-tauri/src/main.rs`, `frontend-vue/src/api/shell.js`); a **ponte IPC a partir da origem `http://127.0.0.1` está provada** por autoteste (`TTW_TAURI_SELFTEST=<pasta>`: grava 4 bytes por `save_file` e sai com 0). Os diálogos em si **precisam de olho humano** (roteiro abaixo) |
+| 4 | Download (CSV, TXT, SVG, PNG) | **implementado** como "salvar como" + gravação binária (`export.js` → `shell.saveAs`); caminho de gravação testado; o diálogo e o fluxo de ponta a ponta **precisam de olho humano** |
+| 5 | Confirmar fechar com não salvo | **implementado** (`CloseRequested` + `/api/project/unsaved`, texto pt/en); **precisa de olho humano** |
+| 6 | Abrir arquivo | **testado**: segunda instância com `--open` entrega o arquivo à primeira, que abre o projeto (plugin `single-instance`, `POST /api/project/pending-open`). Evento `RunEvent::Opened` do macOS (duplo clique no Finder) **implementado, só testável com o `.app` empacotado** (F4) |
+| 8 | Ícone | só no pacote (F4) |
+| 10 | Copiar/colar | menu padrão do Tauri; **conferir à mão** |
+| 7, 12–15 | Associações, selftest do pacote, macOS 12 Intel, Windows, Linux | pendentes (F3 e F4) |
+
+Descobertas: (a) comandos do app chamados de **origem remota** exigem permissão por comando (`build.rs` com `AppManifest::commands` + `allow-<comando>` na capability) além de `remote.urls` e `withGlobalTauri`; sem isso o erro é "not allowed. Plugin not found"; (b) `window.__TAURI__` existe na página servida por `http://127.0.0.1`; (c) `.on_page_load` dispara `Finished` para a URL externa e dá para injetar JS com `webview.eval`; (d) `os.kill(pid, 0)` no Windows mata o processo: o `_parent_alive` usa a API do sistema.
+
+**Roteiro manual (5 minutos, no Mac):** `cd src-tauri && cargo build`, depois
+`TTW_PYTHON=~/miniconda3/envs/ttw314/bin/python ./target/debug/ttwtools-tauri`
+1. Arquivo > **Abrir...**: aparece o seletor nativo só com `.ttwa/.ttwl/...`; escolher abre o projeto; cancelar não faz nada.
+2. **Novo...** / **Salvar como...**: o diálogo de salvar sugere o nome e, sem extensão, o app a acrescenta.
+3. Em um corpus, **exportar tabela CSV**: abre "salvar como"; conferir que o arquivo gravado abre certo (também SVG e PNG de um gráfico).
+4. Fazer uma alteração num projeto compactado e **fechar a janela**: pergunta em pt/en; "Cancelar" mantém aberto; "Fechar" sai.
+5. Selecionar texto e **⌘C / ⌘V** funcionam.
+Marque o que falhar aqui; é o que decide a F2.
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).
