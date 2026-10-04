@@ -14,8 +14,8 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Retomar aqui
 
-- **Estado:** Passos 1, 2, 3, 4 e 5 **feitos** (5/7).
-- **Próximo passo:** Passo 6 (clicar num atributo abre a tela dos textos, em ordem decrescente com arquivo e frequência).
+- **Estado:** Passos 1, 2, 3, 4, 5 e 6 **feitos** (6/7).
+- **Próximo passo:** Passo 7 (por texto: abrir no Leitor e ver as sentenças do atributo no KWIC).
 - **Decisões (tomadas em 2026-10-04):** Passo 2 = tela de análise como **rota própria**; Passo 7 = **filtro `filename` novo** no KWIC (reusar `kwic`/`search`, não criar função de sentenças).
 - **Ordem:** 1 → 2 → 3 → 4 → 5 → 6 → 7 (3, 4 e 5 são independentes entre si, mas ficam na tela do Passo 2).
 
@@ -124,7 +124,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 6 — Clicar num atributo abre a tela dos textos
 
-- [ ] feito — Feito: _data / agente / commit / notas_
+- [x] feito — Feito: 2026-10-04, opencode; clicar numa barra do gráfico **ou** numa linha da tabela abre uma **gaveta que desliza à direita**, com botão de voltar e Esc, listando os textos daquele atributo **por lado, em ordem decrescente** de ocorrências por 1000 palavras, com `arquivo · por 1000 · ocorrências absolutas`. O atributo escolhido fica na URL (`?tool=kfa&view=analise&textos=<atributo>`), então voltar (e o botão do navegador) fecha sem recalcular; `detail` continua em `kfaMemory`. `feature_values` (pacote) passou a devolver `count` (absoluto) além de `value`/`words`; docstring e `docs/referencia.md` atualizados; teste em `test_features.py` e `test_routes_new.py`. i18n `kfa.tag_texts/text_column/freq_per_1000/freq_abs/no_texts/texts_hint/back` (pt/en). `npm test` 45/45, `npm run e2e` 30/30 (3 larguras, axe verde; a região rolável ganhou `tabindex=0 role=region`), `pytest libs/ttwtools/tests` 268/268, `pytest tests` 63/63. **Falta conferir no Mac Intel** (visual).
 
 **Objetivo.** Clicar num atributo (barra do gráfico ou linha da tabela) abre uma tela que desliza à direita (sempre com botão de voltar) listando os textos em que aquele atributo ocorre, **em ordem decrescente**, com o **nome do arquivo** e a **frequência do atributo naquele arquivo**.
 

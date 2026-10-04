@@ -160,6 +160,26 @@ test('fluxo completo', async ({ page, request }, info) => {
   const before = await vb()
   await page.getByTestId('bars-height').fill('8')
   expect(await vb()).not.toBe(before)
+  // 6. clicar num atributo (barra) abre a gaveta dos textos, em ordem decrescente; o botão voltar fecha
+  const firstBar = page.locator('[data-testid=bars-scroll] g[role=button]').first()
+  await firstBar.click()
+  await expect(page).toHaveURL(/textos=/)
+  const drawer = page.getByTestId('kfa-texts')
+  await expect(drawer).toBeVisible()
+  const drawerRows = drawer.locator('section').first().locator('tbody tr')
+  if ((await drawerRows.count()) > 1) {
+    const per1 = Number((await drawerRows.nth(0).locator('td').nth(1).textContent()))
+    const per2 = Number((await drawerRows.nth(1).locator('td').nth(1).textContent()))
+    expect(per1).toBeGreaterThanOrEqual(per2)
+  }
+  await a11y(page, 'kfa-textos')
+  await page.getByTestId('kfa-texts-back').click()
+  await expect(drawer).toHaveCount(0)
+  // clicar numa linha da tabela abre a mesma lista
+  await page.getByTestId('kfa-table').locator('tbody tr').first().click()
+  await expect(page.getByTestId('kfa-texts')).toBeVisible()
+  await page.getByTestId('kfa-texts-back').click()
+  await expect(page.getByTestId('kfa-texts')).toHaveCount(0)
   // mapa de calor: o zoom horizontal muda a largura do desenho, o vertical a altura
   await page.locator('[data-testid=gallery-kind] [data-kind=heatmap]').click()
   const svg = page.locator('[data-testid=heatmap-controls] ~ div svg')

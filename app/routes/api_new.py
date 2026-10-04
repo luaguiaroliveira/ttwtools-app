@@ -636,7 +636,7 @@ def compare_kfa(req: KfaRequest, async_: bool = _ASYNC):
 @router.get("/compare/feature", tags=["compare"])
 def compare_feature(corpus: str, layer: str, name: str, feature: str | None = None,
                     where: list[str] | None = Query(None)):
-    """Valor por 1000 palavras de um atributo em cada documento (detalhe do atributo)."""
+    """Ocorrências de um atributo por documento (por 1000 palavras e absoluta) — detalhe do atributo."""
     from ttwtools.features import feature_values
     with _project() as proj:
         return {"values": _call(feature_values, proj, corpus, layer, name, feature, _where(where))}

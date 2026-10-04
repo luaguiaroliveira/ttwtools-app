@@ -141,7 +141,7 @@ def test_kfa_routes(client, opened, spacy_model):
     r = client.post("/api/compare/kfa", json={"corpus1": "bawe", "corpus2": "corifa", "layer": "spacy", "feature": "upos"})
     assert r.status_code == 200 and r.json()["n1"] == 5 and r.json()["rows"][0]["Feature"]
     v = client.get("/api/compare/feature", params={"corpus": "bawe", "layer": "spacy", "name": "NOUN", "feature": "upos"}).json()
-    assert len(v["values"]) == 5 and v["values"][0]["value"] > 0
+    assert len(v["values"]) == 5 and v["values"][0]["value"] > 0 and v["values"][0]["count"] > 0
     assert client.post("/api/compare/kfa", json={"corpus1": "bawe", "corpus2": "corifa", "layer": "mfte"}).status_code == 422
 
 

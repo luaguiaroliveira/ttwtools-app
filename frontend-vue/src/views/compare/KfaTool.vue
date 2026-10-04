@@ -49,11 +49,6 @@ async function run() {
       layer: effectiveLayer.value, feature: f.value.feature || undefined, metric: cmp.metric, min_effect: 0 }, { onJob: (j) => { job.value = j; jobId = j.id } })
   } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
-async function select(name) {
-  const [a, b] = await Promise.all([1, 2].map((n) => { const s = gallerySides.value[n - 1]; return api.compare.feature({ corpus: s.corpus, where: s.where, layer: lastParams.value?.layer ?? effectiveLayer.value, feature: data.value.feature, name }) }))
-  const row = data.value.rows.find((r) => r.Feature === name)
-  detail.value = { name, row, v1: a.values, v2: b.values }
-}
 const maxD = computed(() => Math.max(1, Math.ceil(Math.max(0, ...(data.value?.rows ?? []).map((r) => Math.abs(r.Effect_Size))) * 10) / 10))
 watch([data, lastParams, f, detail, keptFor], () => { kfaMemory.value = { corpus: props.corpus, data: data.value, lastParams: lastParams.value, f: f.value, detail: detail.value, keptFor: keptFor.value } }, { deep: false })
 watch(f, () => { if (kfaMemory.value) kfaMemory.value.f = f.value }, { deep: true })
@@ -62,7 +57,6 @@ const minD = computed(() => Number(f.value.min_effect) || 0)
 const shown = computed(() => (data.value ? { ...data.value, rows: data.value.rows.filter((r) => Math.abs(r.Effect_Size) >= minD.value) } : null))
 const copyParams = computed(() => (lastParams.value ? { ...lastParams.value, min_effect: minD.value } : null))
 const gallerySides = computed(() => (lastParams.value ? [{ corpus: lastParams.value.corpus, where: lastParams.value.where, label: lastParams.value.label1 }, { corpus: lastParams.value.corpus2, where: lastParams.value.where2, label: lastParams.value.label2 }] : cmp.sides(props.corpus)))
-const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(detail.value?.v2 ?? [])].map((v) => v.value)))
 // Linha de resumo do resultado (mostrada na configuração e na tela de análise)
 const resultLine = computed(() => (data.value
   ? `${t('kfa.results', { n: shown.value.rows.length, n1: data.value.n1, n2: data.value.n2 })} · ${t('kfa.result_layer', { layer: lastParams.value?.layer })} · ${t('kfa.result_feature', { feature: data.value.feature })}`
@@ -82,6 +76,27 @@ const showChart = ref(galleryMemory.showChart ?? true)
 const showTable = ref(galleryMemory.showTable ?? true)
 const split = ref(galleryMemory.split ?? 50)
 watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showChart: showChart.value, showTable: showTable.value, split: split.value }))
+
+// Clicar num atributo (barra do gráfico ou linha da tabela) abre a gaveta com os textos em que ele
+// ocorre, em ordem decrescente de frequência (arquivo + ocorrências por 1000 e absolutas). O atributo
+// escolhido fica na URL (`textos=<atributo>`): o botão voltar (e o do navegador) fecha a gaveta sem
+// recalcular a análise.
+const textsFeature = computed(() => route.query.textos ?? '')
+const textsOpen = computed(() => Boolean(analyzing.value && data.value && textsFeature.value))
+async function loadDetail(name) {
+  if (!data.value || detail.value?.name === name) return
+  detail.value = null
+  const [a, b] = await Promise.all([1, 2].map((n) => { const s = gallerySides.value[n - 1]; return api.compare.feature({ corpus: s.corpus, where: s.where, layer: lastParams.value?.layer ?? effectiveLayer.value, feature: data.value.feature, name }) }))
+  const row = data.value.rows.find((r) => r.Feature === name)
+  detail.value = { name, row, v1: a.values, v2: b.values }
+}
+function openTexts(name) {
+  router.push({ path: '/comparar', query: { ...route.query, tool: 'kfa', view: 'analise', textos: name } })
+}
+function closeTexts() { const q = { ...route.query }; delete q.textos; router.push({ path: '/comparar', query: q }) }
+watch(textsFeature, (name) => { if (name) loadDetail(name) })
+// Só os textos que têm o atributo, do maior para o menor valor por 1000 palavras, um grupo por lado.
+const textsSides = computed(() => (detail.value ? gallerySides.value.map((s, i) => ({ label: s.label, rows: (detail.value[i ? 'v2' : 'v1'] ?? []).filter((v) => v.count > 0 || v.value > 0).sort((a, b) => b.value - a.value) })) : []))
 </script>
 <template>
   <section class="flex flex-col gap-3">
@@ -103,28 +118,42 @@ watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showCh
         <button type="button" class="btn btn-sm" :aria-pressed="showChart" data-testid="analysis-toggle-chart" @click="showChart = !showChart">{{ showChart ? t('analysis.hide_chart') : t('analysis.show_chart') }}</button>
         <button type="button" class="btn btn-sm" :aria-pressed="showTable" data-testid="analysis-toggle-table" @click="showTable = !showTable">{{ showTable ? t('analysis.hide_table') : t('analysis.show_table') }}</button></div>
       <SplitPane v-model="split" :show-left="showChart" :show-right="showTable">
-        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
-        <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
-          <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
-          <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
-          <p class="text-xs text-text-muted">{{ t('kfa.detail_hint') }}</p>
-          <svg viewBox="0 0 600 84" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
-            <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 40 + 4})`">
-              <text x="0" y="8" class="fill-current text-[10px]">{{ gallerySides[i].label }}</text>
-              <line x1="10" x2="590" y1="24" y2="24" class="stroke-current opacity-20" />
-              <circle v-for="v in vals" :key="v.filename" :cx="10 + (v.value / maxV) * 580" cy="24" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
-            </g>
-          </svg>
-          <RouterLink class="link text-sm" :to="{ path: '/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
-        </section>
+        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="openTexts" />
         <template #right>
           <div class="ttw-scroll" data-testid="kfa-table">
             <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-              <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="select(r.Feature)" @keydown.enter="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+              <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
                 <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
           </div>
         </template>
       </SplitPane>
+      <!-- Gaveta dos textos do atributo: desliza à direita, sempre com botão de voltar (e Esc). -->
+      <Transition name="ttw-texts">
+        <div v-if="textsOpen" class="fixed inset-0 z-40 flex justify-end" role="dialog" aria-modal="true"
+             :aria-label="t('kfa.tag_texts', { feature: textsFeature })" @keydown.esc="closeTexts">
+          <div class="absolute inset-0 bg-black/40" @click="closeTexts" />
+          <aside class="relative bg-base-100 w-full max-w-xl h-full overflow-auto p-4 flex flex-col gap-3 shadow-xl" data-testid="kfa-texts">
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-bold">{{ t('kfa.tag_texts', { feature: textsFeature }) }}</h2>
+              <button type="button" class="btn btn-sm btn-ghost ml-auto" autofocus data-testid="kfa-texts-back" @click="closeTexts">{{ t('kfa.back') }}</button>
+            </div>
+            <p v-if="!detail || detail.name !== textsFeature" class="text-sm text-text-muted" role="status">{{ t('gallery.loading') }}</p>
+            <template v-else>
+              <p class="text-xs text-text-muted">{{ t('kfa.texts_hint') }}</p>
+              <p v-if="!textsSides.some((s) => s.rows.length)" class="text-text-muted">{{ t('kfa.no_texts') }}</p>
+              <section v-for="(s, i) in textsSides" v-show="s.rows.length" :key="i" class="flex flex-col gap-1">
+                <h3 class="font-semibold text-sm">{{ s.label }}</h3>
+                <div class="ttw-scroll" tabindex="0" role="region" :aria-label="s.label">
+                  <table class="table table-xs">
+                    <thead><tr><th>{{ t('kfa.text_column') }}</th><th class="text-right">{{ t('kfa.freq_per_1000') }}</th><th class="text-right">{{ t('kfa.freq_abs') }}</th></tr></thead>
+                    <tbody><tr v-for="v in s.rows" :key="v.filename"><td class="break-all">{{ v.filename }}</td><td class="text-right tabular-nums">{{ v.value.toFixed(2) }}</td><td class="text-right tabular-nums">{{ v.count }}</td></tr></tbody>
+                  </table>
+                </div>
+              </section>
+            </template>
+          </aside>
+        </div>
+      </Transition>
     </template>
 
     <!-- Configuração e execução: rodata a KFA e abre a análise. -->
@@ -150,3 +179,14 @@ watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showCh
     </template>
   </section>
 </template>
+<style scoped>
+/* A gaveta dos textos desliza da direita; sem animação para quem pede menos movimento. */
+.ttw-texts-enter-active, .ttw-texts-leave-active { transition: opacity 0.2s ease; }
+.ttw-texts-enter-active aside, .ttw-texts-leave-active aside { transition: transform 0.2s ease; }
+.ttw-texts-enter-from, .ttw-texts-leave-to { opacity: 0; }
+.ttw-texts-enter-from aside, .ttw-texts-leave-to aside { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) {
+  .ttw-texts-enter-active, .ttw-texts-leave-active,
+  .ttw-texts-enter-active aside, .ttw-texts-leave-active aside { transition: none; }
+}
+</style>
