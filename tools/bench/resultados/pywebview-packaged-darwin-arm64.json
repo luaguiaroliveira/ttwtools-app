@@ -1,0 +1,104 @@
+{
+  "label": "pywebview-packaged",
+  "shell": "cmd",
+  "cmd": "dist/macos-arm64/TTWtools.app/Contents/MacOS/TTWtools --port {port}",
+  "date": "2026-10-04 06:49:25",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "startup": {
+      "runs": [
+        {
+          "server_ready_s": 1.812,
+          "html_s": 2.271,
+          "js_s": 2.283,
+          "ui_boot_s": 2.393,
+          "rss_boot_mb": 505.1,
+          "rss_idle_mb": 502.9,
+          "processes": 4,
+          "cpu_idle_pct": 1.28,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.316,
+          "html_s": 1.721,
+          "js_s": 1.732,
+          "ui_boot_s": 1.829,
+          "rss_boot_mb": 504.8,
+          "rss_idle_mb": 506.8,
+          "processes": 4,
+          "cpu_idle_pct": 2.45,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.192,
+          "html_s": 1.574,
+          "js_s": 1.583,
+          "ui_boot_s": 1.666,
+          "rss_boot_mb": 503.7,
+          "rss_idle_mb": 506.3,
+          "processes": 4,
+          "cpu_idle_pct": 2.12,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        }
+      ],
+      "summary": {
+        "server_ready_s": {
+          "median": 1.316,
+          "min": 1.192,
+          "max": 1.812
+        },
+        "html_s": {
+          "median": 1.721,
+          "min": 1.574,
+          "max": 2.271
+        },
+        "js_s": {
+          "median": 1.732,
+          "min": 1.583,
+          "max": 2.283
+        },
+        "ui_boot_s": {
+          "median": 1.829,
+          "min": 1.666,
+          "max": 2.393
+        },
+        "rss_boot_mb": {
+          "median": 504.8,
+          "min": 503.7,
+          "max": 505.1
+        },
+        "rss_idle_mb": {
+          "median": 506.3,
+          "min": 502.9,
+          "max": 506.8
+        },
+        "processes": {
+          "median": 4,
+          "min": 4,
+          "max": 4
+        },
+        "cpu_idle_pct": {
+          "median": 2.12,
+          "min": 1.28,
+          "max": 2.45
+        }
+      }
+    },
+    "open": {
+      "ok": true,
+      "open_s": 1.915,
+      "project": "/private/var/folders/ww/9gzg7yg95db6yw3r_k5p95qh0000gn/T/ttw-bench-0cmj2bl_/v2_small.ttwa"
+    },
+    "size": {
+      "bundle_mb": 730.3,
+      "bundle": "dist/macos-arm64/TTWtools.app"
+    }
+  },
+  "commit": "63e8de2"
+}
