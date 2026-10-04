@@ -246,6 +246,8 @@ fn main() {
         .unwrap_or_else(free_port);
 
     let app = tauri::Builder::default()
+        // antes do laço de eventos: o macOS entrega `Opened` (duplo clique) antes de o `setup` terminar
+        .manage(Port(port))
         // 1º plugin: uma segunda instância (Explorer/Linux abrindo outro arquivo) entrega o arquivo à primeira
         .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
             match parse_args(argv.into_iter().skip(1)).1 {
@@ -303,7 +305,6 @@ fn main() {
         .setup(move |app| {
             let child = spawn_server(port, open.as_deref(), resolve_server(app))?;
             app.manage(Server(Mutex::new(Some(child))));
-            app.manage(Port(port));
             let handle = app.handle().clone();
             std::thread::spawn(move || {
                 let deadline = Instant::now() + Duration::from_secs(120);
