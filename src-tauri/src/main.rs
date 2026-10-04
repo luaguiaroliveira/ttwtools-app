@@ -49,17 +49,42 @@ fn app_dir() -> PathBuf {
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).parent().unwrap().to_path_buf())
 }
 
-fn spawn_server(port: u16, open: Option<&str>) -> std::io::Result<Child> {
-    let python = std::env::var("TTW_PYTHON").unwrap_or_else(|_| "python".into());
-    let mut cmd = Command::new(python);
-    cmd.args(["-m", "app", "--mode", "web", "--port", &port.to_string()]);
+/// Onde está o servidor empacotado (executável do PyInstaller, `build.py --shell tauri`): TTW_SERVER, ou
+/// `server/ttwtools-server` nos resources do pacote. None = desenvolvimento (usa `python -m app`).
+fn resolve_server(app: &tauri::App) -> Option<PathBuf> {
+    if let Some(path) = std::env::var_os("TTW_SERVER") {
+        return Some(PathBuf::from(path));
+    }
+    let name = if cfg!(windows) { "ttwtools-server.exe" } else { "ttwtools-server" };
+    let packaged = app.path().resource_dir().ok()?.join("server").join(name);
+    packaged.is_file().then_some(packaged)
+}
+
+fn spawn_server(port: u16, open: Option<&str>, server: Option<PathBuf>) -> std::io::Result<Child> {
+    let mut cmd = match &server {
+        Some(exe) => {
+            let mut cmd = Command::new(exe);
+            cmd.args(["--mode", "web", "--port", &port.to_string()]);
+            cmd.current_dir(exe.parent().unwrap_or(&app_dir()));
+            cmd
+        }
+        None => {
+            let python = std::env::var("TTW_PYTHON").unwrap_or_else(|_| "python".into());
+            let mut cmd = Command::new(python);
+            cmd.args(["-m", "app", "--mode", "web", "--port", &port.to_string()]);
+            cmd.current_dir(app_dir());
+            cmd
+        }
+    };
     if let Some(file) = open {
         cmd.args(["--open", file]);
     }
     cmd.env("TTW_PARENT_PID", std::process::id().to_string()); // o servidor sai sozinho se a casca cair
-    cmd.current_dir(app_dir()).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
+    cmd.stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
     #[cfg(unix)]
     std::os::unix::process::CommandExt::process_group(&mut cmd, 0); // grupo próprio: encerra a árvore inteira
+    #[cfg(windows)]
+    std::os::windows::process::CommandExt::creation_flags(&mut cmd, 0x0800_0000); // CREATE_NO_WINDOW
     cmd.spawn()
 }
 
@@ -276,7 +301,7 @@ fn main() {
             }
         })
         .setup(move |app| {
-            let child = spawn_server(port, open.as_deref())?;
+            let child = spawn_server(port, open.as_deref(), resolve_server(app))?;
             app.manage(Server(Mutex::new(Some(child))));
             app.manage(Port(port));
             let handle = app.handle().clone();

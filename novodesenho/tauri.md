@@ -138,6 +138,8 @@ Descobertas: (a) comandos do app chamados de **origem remota** exigem permissão
 5. Selecionar texto e **⌘C / ⌘V** funcionam.
 Marque o que falhar aqui; é o que decide a F2.
 
+**Resultado (usuário, 2026-10-03, macOS arm64): o roteiro manual passou, "funciona bem".** Itens 3, 4, 5 e 10 da matriz verificados à mão.
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).

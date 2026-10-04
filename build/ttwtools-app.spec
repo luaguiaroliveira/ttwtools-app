@@ -16,6 +16,11 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules, coll
 
 ROOT = Path(SPECPATH).parent  # pasta raiz do repositório
 
+# TTW_SHELL=tauri: só o servidor (sem pywebview, sem .app), pasta dist/<alvo>/ttwtools-server, que o Tauri
+# leva em resources e executa (novodesenho/tauri.md, fase F3). Padrão: pywebview, o pacote atual.
+SHELL = os.environ.get('TTW_SHELL', 'pywebview')
+assert SHELL in ('pywebview', 'tauri'), f"TTW_SHELL inválido: {SHELL}"
+
 # ttwtools source: o install editável usa PEP 660 e o PyInstaller não consegue
 # rastrear o mecanismo de import customizado, então incluímos os fontes diretamente.
 # Tenta primeiro o submodule local, depois o repositório irmão.
@@ -56,7 +61,7 @@ datas += [(str(FRONTEND_DIR), 'frontend')]
 
 # Ícones dos formatos de arquivo: no macOS vão para Contents/Resources (o Finder os lê de lá); no Windows e no Linux
 # o build.py os copia para a pasta do pacote, com os scripts de associação (build/assoc).
-if sys.platform == 'darwin':
+if sys.platform == 'darwin' and SHELL == 'pywebview':
     for _ext in ('ttwa', 'ttwl', 'ttwt', 'ttwal', 'ttwc', 'ttwcl'):
         datas += [(str(ROOT / 'build' / 'fileicons' / f'{_ext}.icns'), '.')]
 
@@ -90,8 +95,9 @@ hidden += collect_submodules('fastapi')
 hidden += collect_submodules('uvicorn')
 hidden += collect_submodules('starlette')
 hidden += collect_submodules('anyio')
-hidden += ['webview', 'webview.platforms.cocoa', 'webview.platforms.winforms',
-           'webview.platforms.gtk', 'webview.platforms.qt']
+if SHELL == 'pywebview':
+    hidden += ['webview', 'webview.platforms.cocoa', 'webview.platforms.winforms',
+               'webview.platforms.gtk', 'webview.platforms.qt']
 hidden += ['spacy', 'thinc', 'blis', 'murmurhash', 'cymem', 'preshed',
            'srsly', 'catalogue', 'wasabi', 'typer', 'click']
 hidden += ['en_core_web_sm', 'en_core_web_sm.about']
@@ -111,7 +117,7 @@ a = Analysis(
     hookspath=[str(ROOT / 'build' / 'hooks')],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['tkinter', 'test'],  # 'unittest' must stay: torch.distributed.distributed_c10d imports it
+    excludes=['tkinter', 'test'] + (['webview'] if SHELL == 'tauri' else []),  # 'unittest' must stay: torch.distributed.distributed_c10d imports it
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     noarchive=False,
@@ -131,7 +137,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='TTWtools',
+    name='TTWtools' if SHELL == 'pywebview' else 'ttwtools-server',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -152,11 +158,11 @@ coll = COLLECT(
     strip=False,
     upx=False,
     upx_exclude=[],
-    name='TTWtools',
+    name='TTWtools' if SHELL == 'pywebview' else 'ttwtools-server',
 )
 
-# macOS: criar .app bundle
-if sys.platform == 'darwin':
+# macOS: criar .app bundle (só na casca pywebview; no Tauri o .app é do Tauri)
+if sys.platform == 'darwin' and SHELL == 'pywebview':
     # Um tipo de documento e um UTI por formato, cada um com o seu ícone (build/fileicons/<ext>.icns, copiado para
     # Contents/Resources; gerado por assets/icone/make_file_icons.py). Os três primeiros mantêm os tipos MIME antigos.
     _FORMATS = [

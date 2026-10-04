@@ -241,8 +241,8 @@ def build_frontend(src: Path) -> None:
     run([npm, "run", "build"], cwd=src)
 
 
-def run_pyinstaller(target: Target, frontend_out: Path, dist_dir: Path, work_dir: Path) -> None:
-    env = dict(os.environ, PYTHONNOUSERSITE="1", TTW_FRONTEND_DIR=str(frontend_out),
+def run_pyinstaller(target: Target, frontend_out: Path, dist_dir: Path, work_dir: Path, shell: str = "pywebview") -> None:
+    env = dict(os.environ, PYTHONNOUSERSITE="1", TTW_FRONTEND_DIR=str(frontend_out), TTW_SHELL=shell,
                TTW_VERSION=re.match(r"\d+\.\d+\.\d+", project_version()).group(0))
     if target.macos_min:
         env["MACOSX_DEPLOYMENT_TARGET"] = target.macos_min
@@ -251,7 +251,9 @@ def run_pyinstaller(target: Target, frontend_out: Path, dist_dir: Path, work_dir
                   "--distpath", dist_dir, "--workpath", work_dir, "--noconfirm"), env=env)
 
 
-def executable(target: Target, dist_dir: Path) -> Path:
+def executable(target: Target, dist_dir: Path, shell: str = "pywebview") -> Path:
+    if shell == "tauri":                       # só o servidor: dist/<alvo>/ttwtools-server/ttwtools-server
+        return dist_dir / "ttwtools-server" / ("ttwtools-server.exe" if target.os == "windows" else "ttwtools-server")
     if target.os == "macos":
         return dist_dir / "TTWtools.app" / "Contents" / "MacOS" / "TTWtools"
     if target.os == "windows":
@@ -325,6 +327,8 @@ def main() -> int:
     parser.add_argument("--skip-frontend", action="store_true")
     parser.add_argument("--skip-env-fixes", action="store_true", help="não ajusta versões nem rodas do ambiente")
     parser.add_argument("--no-package", action="store_true")
+    parser.add_argument("--shell", choices=["pywebview", "tauri"], default="pywebview",
+                        help="pywebview (padrão): pacote atual; tauri: só o servidor (sem janela), para o Tauri levar em resources")
     args = parser.parse_args()
 
     target = Target(args.arch, args.python)
@@ -360,11 +364,11 @@ def main() -> int:
     build_info.write_text(f'VERSION = {version!r}\nCOMMIT = {git_commit()!r}\nTTWTOOLS_VERSION = {ttwtools_version!r}\nDATE = {datetime.date.today().isoformat()!r}\n',
                           encoding="utf-8")
     try:
-        run_pyinstaller(target, frontend_out, dist_dir, work_dir)
+        run_pyinstaller(target, frontend_out, dist_dir, work_dir, args.shell)
     finally:
         build_info.unlink(missing_ok=True)
 
-    exe = executable(target, dist_dir)
+    exe = executable(target, dist_dir, args.shell)
     log(f"Autoteste: {exe.relative_to(ROOT)} --selftest")
     # O executável de janela no Windows não tem stdout: o autoteste grava também em arquivo.
     selftest_log = BUILD / "_work" / f"selftest-{target.name}.log"
@@ -378,10 +382,13 @@ def main() -> int:
 
     if target.os == "macos":
         log(f"Conferindo o mínimo de macOS ({target.macos_min})")
-        run([sys.executable, BUILD / "check_macos_min.py", dist_dir / "TTWtools.app",
+        run([sys.executable, BUILD / "check_macos_min.py",
+             dist_dir / ("TTWtools.app" if args.shell == "pywebview" else "ttwtools-server"),
              "--min", target.macos_min])
 
-    if not args.no_package:
+    if args.shell == "tauri":
+        log(f"Servidor para o Tauri: {exe.parent.relative_to(ROOT)} (empacotar com o Tauri: novodesenho/tauri.md, F4)")
+    elif not args.no_package:
         pkg = package(target, dist_dir, version)
         log(f"Pacote: {pkg.relative_to(ROOT)} ({pkg.stat().st_size / 2**20:.0f} MB)")
     log("Build concluído")
