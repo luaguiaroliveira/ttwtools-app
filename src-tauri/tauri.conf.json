@@ -3,10 +3,40 @@
   "productName": "TTWtools",
   "version": "0.0.1",
   "identifier": "br.ufmg.ttwtools",
-  "build": { "frontendDist": "./dist" },
-  "app": { "withGlobalTauri": true, "windows": [], "security": { "csp": null } },
+  "build": {
+    "frontendDist": "./dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": {
+      "csp": null
+    }
+  },
   "bundle": {
-    "active": false,
-    "icon": ["icons/icon.png", "icons/icon.icns", "icons/icon.ico"]
+    "active": true,
+    "targets": [
+      "app"
+    ],
+    "icon": [
+      "icons/icon.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "resources": {
+      "../dist/macos-arm64/ttwtools-server": "server"
+    },
+    "macOS": {
+      "minimumSystemVersion": "12.0",
+      "signingIdentity": "-",
+      "files": {
+        "Resources/ttwa.icns": "../build/fileicons/ttwa.icns",
+        "Resources/ttwl.icns": "../build/fileicons/ttwl.icns",
+        "Resources/ttwt.icns": "../build/fileicons/ttwt.icns",
+        "Resources/ttwal.icns": "../build/fileicons/ttwal.icns",
+        "Resources/ttwc.icns": "../build/fileicons/ttwc.icns",
+        "Resources/ttwcl.icns": "../build/fileicons/ttwcl.icns"
+      }
+    }
   }
 }

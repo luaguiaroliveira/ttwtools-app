@@ -148,6 +148,12 @@ Marque o que falhar aqui; é o que decide a F2.
 
 Medido (mediana de 3; o pywebview da linha de base roda **do código-fonte**, então a comparação favorece-o um pouco): interface montada 1,60 s (pywebview 1,65 s); RSS em repouso 474 MB (+8 %; inclui o processo extra do carregador do PyInstaller); CPU em repouso 2,4 % (1,9 %). **Pywebview empacotado (2026-10-04, mediana de 3, `pywebview-packaged-darwin-arm64.json`):** interface montada 1,83 s; RSS em repouso 506 MB; CPU em repouso 2,1 %. Comparação justa: **Tauri 1,60 s (−13 %), 474 MB (−6 %), CPU 2,4 % (≈)**; dentro dos critérios. O cenário `open` não gravou resultado com `--cmd` do pywebview (não investigado; o `open` do Tauri foi verificado à mão na F2).
 
+## 5e. F4: pacote macOS arm64 (2026-10-04, parcial)
+
+`cd src-tauri && cargo tauri build --bundles app` (PATH com `~/.cargo/bin`; `tauri-cli` 2.11.5, ver `plano.md`) gera `src-tauri/target/release/bundle/macos/TTWtools.app`, assinado ad hoc (`signingIdentity "-"`), sem notarização. Configuração: `tauri.conf.json` (`bundle.resources` copia `../dist/macos-arm64/ttwtools-server` para `Resources/server`; `minimumSystemVersion` 12.0; `macOS.files` copia os 6 `.icns` de `build/fileicons`) e `src-tauri/Info.plist` (tipos de documento e UTIs dos 6 formatos, gerado com os mesmos dados do spec do PyInstaller; o `fileAssociations` do Tauri 2.11 não aceita ícone por extensão nem tipo exportado). Conferido: `Info.plist` com os 12 identificadores `br.edu.ttwtools.*`, ícones em `Resources`, o pacote abre sozinho, sobe `Resources/server/ttwtools-server`, `/api/health` ok e nenhum servidor órfão ao fechar.
+
+**Problemas abertos:** (1) o `server` embutido tem **1,0 GB** contra 702 MB na origem: o Tauri copia os 29 links simbólicos do PyInstaller como arquivos (some também `_internal`); alternativa: gerar o `.app` por `build.py` (ditto) ou pós-processar. (2) Falta: `check_macos_min.py` sobre o `.app`; associação de arquivo/`RunEvent::Opened` com o `.app` instalado (duplo clique no Finder); `.dmg`; alvo Intel (12.0); Windows e Linux; CI com Rust. (3) O alvo `dist/macos-arm64/ttwtools-server` está fixo em `tauri.conf.json`: para outros alvos usar `--config` com sobreposição.
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).
