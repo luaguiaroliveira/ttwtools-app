@@ -1,0 +1,104 @@
+{
+  "label": "tauri-packaged-server",
+  "shell": "cmd",
+  "cmd": "/Users/padovani/repositorios/repositorios_lu/ttw/ttwtools-app/src-tauri/target/debug/ttwtools-tauri --port {port}",
+  "date": "2026-10-03 22:10:51",
+  "machine": {
+    "system": "Darwin",
+    "release": "24.6.0",
+    "machine": "arm64",
+    "python": "3.14.3",
+    "psutil": true
+  },
+  "scenarios": {
+    "startup": {
+      "runs": [
+        {
+          "server_ready_s": 1.251,
+          "html_s": 1.38,
+          "js_s": 1.391,
+          "ui_boot_s": 1.493,
+          "rss_boot_mb": 528.9,
+          "rss_idle_mb": 440.7,
+          "processes": 5,
+          "cpu_idle_pct": 2.43,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.581,
+          "html_s": 1.78,
+          "js_s": 1.791,
+          "ui_boot_s": 1.901,
+          "rss_boot_mb": 530.6,
+          "rss_idle_mb": 473.9,
+          "processes": 5,
+          "cpu_idle_pct": 2.47,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        },
+        {
+          "server_ready_s": 1.356,
+          "html_s": 1.483,
+          "js_s": 1.494,
+          "ui_boot_s": 1.602,
+          "rss_boot_mb": 529.7,
+          "rss_idle_mb": 530.4,
+          "processes": 5,
+          "cpu_idle_pct": 2.15,
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        }
+      ],
+      "summary": {
+        "server_ready_s": {
+          "median": 1.356,
+          "min": 1.251,
+          "max": 1.581
+        },
+        "html_s": {
+          "median": 1.483,
+          "min": 1.38,
+          "max": 1.78
+        },
+        "js_s": {
+          "median": 1.494,
+          "min": 1.391,
+          "max": 1.791
+        },
+        "ui_boot_s": {
+          "median": 1.602,
+          "min": 1.493,
+          "max": 1.901
+        },
+        "rss_boot_mb": {
+          "median": 529.7,
+          "min": 528.9,
+          "max": 530.6
+        },
+        "rss_idle_mb": {
+          "median": 473.9,
+          "min": 440.7,
+          "max": 530.4
+        },
+        "processes": {
+          "median": 5,
+          "min": 5,
+          "max": 5
+        },
+        "cpu_idle_pct": {
+          "median": 2.43,
+          "min": 2.15,
+          "max": 2.47
+        }
+      }
+    },
+    "open": {
+      "ok": true,
+      "open_s": 1.929,
+      "project": "/private/var/folders/ww/9gzg7yg95db6yw3r_k5p95qh0000gn/T/ttw-bench-3mcctune/v2_small.ttwa"
+    },
+    "size": {
+      "bundle_mb": 727.8,
+      "bundle": "/Users/padovani/repositorios/repositorios_lu/ttw/ttwtools-app/dist/macos-arm64/ttwtools-server"
+    }
+  },
+  "commit": "9d025bd"
+}

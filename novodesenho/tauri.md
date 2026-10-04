@@ -140,6 +140,12 @@ Marque o que falhar aqui; é o que decide a F2.
 
 **Resultado (usuário, 2026-10-03, macOS arm64): o roteiro manual passou, "funciona bem".** Itens 3, 4, 5 e 10 da matriz verificados à mão.
 
+## 5d. F3: servidor empacotado (feito 2026-10-03, macOS arm64)
+
+`python build/build.py --shell tauri` gera `dist/<alvo>/ttwtools-server/` (spec com `TTW_SHELL=tauri`: sem `webview`, sem `.app`). **Rode com o Python do ambiente do projeto** (`~/miniconda3/envs/ttw314/bin/python build/build.py ...`): com o Python base (sem uvicorn) o PyInstaller termina "com sucesso" mas o pacote sai sem o servidor e o autoteste falha com `No module named 'uvicorn'` (o `collect_submodules` vazio não avisa). Resultado: autoteste ok (torch, Stanza, spaCy, API, interface), `check_macos_min` ok (436 Mach-O, nenhum acima de 12.3), **702 MB** (o `TTWtools.app` do pywebview tem 703 MB: o Tauri não muda o tamanho). `TTW_SERVER=<exe> ./src-tauri/target/debug/ttwtools-tauri` abre a janela com o servidor empacotado, a ponte IPC passa e não sobra processo órfão.
+
+Medido (mediana de 3; o pywebview da linha de base roda **do código-fonte**, então a comparação favorece-o um pouco): interface montada 1,60 s (pywebview 1,65 s); RSS em repouso 474 MB (+8 %; inclui o processo extra do carregador do PyInstaller); CPU em repouso 2,4 % (1,9 %). Falta medir o pywebview **empacotado** para uma comparação justa: `python build/build.py` (padrão) e `run --shell cmd` sobre o executável.
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).
