@@ -151,7 +151,9 @@ function openReader(v) { router.push(readerTarget(v)) }
             <div class="flex items-center gap-1">
               <h2 class="text-lg font-bold">{{ t('kfa.tag_texts', { feature: textsFeature }) }}</h2>
               <TagsetInfoButton v-if="effectiveLayer" :tagger="effectiveLayer" :corpus="props.corpus" :label="effectiveLayer" />
-              <button type="button" class="btn btn-sm btn-ghost ml-auto" autofocus data-testid="kfa-texts-back" @click="closeTexts">{{ t('kfa.back') }}</button>
+              <button type="button" class="btn btn-sm btn-square ml-auto" autofocus data-testid="kfa-texts-back" :aria-label="t('kfa.back')" :title="t('kfa.back')" @click="closeTexts">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg>
+              </button>
             </div>
             <p v-if="!detail || detail.name !== textsFeature" class="text-sm text-text-muted" role="status">{{ t('gallery.loading') }}</p>
             <template v-else>
