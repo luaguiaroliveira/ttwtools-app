@@ -156,7 +156,9 @@
 .reader-sheet-head h2 { font-size: calc(13pt * var(--z)); font-weight: 700; word-break: break-all; }
 .reader-sheet-head p { font-size: calc(9pt * var(--z)); color: #555; }
 .reader-text { white-space: pre-wrap; line-height: 2.2; text-align: left; user-select: text; -webkit-user-select: text; cursor: text; }
-.reader-text.is-justified { text-align: justify; hyphens: none; -webkit-hyphens: none; }   /* sem hifenizar: a palavra partida em duas linhas estragava a marcação */
+/* pre-line (e não pre-wrap) porque o WebKit antigo (Safari 17.6, macOS 12) só justifica texto
+   quando os espaços podem encolher; pre-line preserva as quebras de linha e permite justificar. */
+.reader-text.is-justified { white-space: pre-line; text-align: justify; hyphens: none; -webkit-hyphens: none; }   /* sem hifenizar: a palavra partida em duas linhas estragava a marcação */
 .reader-paper { overflow: hidden; }   /* nada que se desenhe sobre o texto passa da folha */
 .reader-tok { cursor: pointer; border-radius: 2px; position: relative; white-space: nowrap; }   /* palavra não parte em duas linhas (nem no hífen): a marcação é um retângulo só */
 .reader-tok svg.rn { position: absolute; left: -4px; top: -4px; overflow: visible; pointer-events: none; }

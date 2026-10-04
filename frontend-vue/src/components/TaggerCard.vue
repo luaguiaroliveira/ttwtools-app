@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../api/index.js'
 import OptionsForm from './OptionsForm.vue'
-import TagsetDrawer from './TagsetDrawer.vue'
+import TagsetInfoButton from './TagsetInfoButton.vue'
 import SpotlightCard from './vb/SpotlightCard.vue'
 import Collapsible from './Collapsible.vue'
 
@@ -19,7 +19,6 @@ const { t, locale } = useI18n()
 const descriptor = ref(null)
 const values = ref({})
 const preset = ref('recomendado')
-const showTags = ref(false)
 
 watch(() => [props.tagger.id, locale.value, props.corpus], async () => {
   descriptor.value = await api.taggers.options(props.tagger.id, locale.value, props.corpus).catch(() => null)
@@ -55,6 +54,7 @@ const already = computed(() => props.queued.some((s) => s.kind === 'tag' && s.ta
   <SpotlightCard tag="li" class="ttw-rise bg-base-100 rounded-box p-3 flex flex-col gap-2" :data-testid="`tagger-card-${tagger.id}`">
     <div class="flex flex-wrap items-center gap-2">
       <h4 class="font-bold">{{ descriptor?.name ?? tagger.id }}</h4>
+      <TagsetInfoButton :tagger="tagger.id" :corpus="corpus" :descriptor="descriptor" :values="values" :label="descriptor?.name ?? tagger.id" />
       <span v-if="!tagger.disponivel" class="badge badge-warning badge-sm">{{ t('tag.unavailable') }}</span>
       <button class="btn btn-sm btn-primary ml-auto" :disabled="!tagger.disponivel || already" :data-testid="`add-${tagger.id}`"
               @click="emit('add', step)">{{ already ? t('pipeline.in_list') : t('pipeline.add') }}</button>
@@ -77,11 +77,9 @@ const already = computed(() => props.queued.some((s) => s.kind === 'tag' && s.ta
           <OptionsForm v-if="descriptor" v-model="values" :descriptor="descriptor" />
           <div class="flex gap-2">
             <button class="btn btn-xs" @click="applyPreset('recomendado')">{{ t('tag.restore') }}</button>
-            <button class="btn btn-xs" @click="showTags = true">{{ t('tag.see_tags') }}</button>
           </div>
         </div>
       </Collapsible>
     </template>
-    <TagsetDrawer :open="showTags" :tagger="tagger.id" @close="showTags = false" />
   </SpotlightCard>
 </template>

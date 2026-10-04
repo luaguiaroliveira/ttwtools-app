@@ -15,7 +15,7 @@ const router = useRouter()
 const rowH = ref(14)   // altura de cada linha (px): menor = mais textos visíveis de uma vez
 const fontPx = computed(() => Math.max(8, Math.min(12, rowH.value - 3)))
 // clicar num texto abre o leitor nele (camada e corpus são os da sessão)
-const openInReader = (filename) => router.push({ path: '/explorar/leitor', query: { file: filename } })
+const openInReader = (filename) => router.push({ path: '/leitor', query: { file: filename } })
 const data = ref(null)
 const error = ref(null)
 const busy = ref(false)

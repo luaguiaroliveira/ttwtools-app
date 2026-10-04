@@ -32,7 +32,7 @@ async function load() {
 function submit(q) { query.value = q; offset.value = 0; load() }
 onMounted(() => { if (route.query.q) submit(String(route.query.q)) })
 function page(d) { offset.value = Math.max(0, offset.value + d * limit.value); load() }
-function open(line) { router.push({ path: '/explorar/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
+function open(line) { router.push({ path: '/leitor', query: { file: line.filename, pos: line.start_char, end: line.end_char } }) }
 // Cor da classe gramatical (tokens em style.css); UPOS e tags do Penn começam com a mesma letra
 const posBucket = (p) => {
   p = p || ''   // camadas sem UPOS/XPOS trazem null

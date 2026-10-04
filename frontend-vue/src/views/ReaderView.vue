@@ -7,19 +7,25 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import rough from 'roughjs/bundled/rough.esm.js'
-import { api } from '../../api/index.js'
-import MarkIcon from '../../components/MarkIcon.vue'
-import ColorPicker from '../../components/ColorPicker.vue'
-import TagDoc from '../../components/TagDoc.vue'
-import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
-import { findMatches } from '../../utils/wildcard.js'
+import { api } from '../api/index.js'
+import { useSession } from '../stores/session.js'
+import MarkIcon from '../components/MarkIcon.vue'
+import ColorPicker from '../components/ColorPicker.vue'
+import TagDoc from '../components/TagDoc.vue'
+import TagsetInfoButton from '../components/TagsetInfoButton.vue'
+import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../utils/tagInfo.js'
+import { findMatches } from '../utils/wildcard.js'
 
 const props = defineProps({ corpus: String, layer: String })
+// Seção própria (`/leitor`): sem `?corpus=`/`?layer=`, usa o corpus e a camada ativos do aplicativo.
 // Os gráficos de Comparar abrem textos de qualquer um dos lados: `?corpus=` e `?layer=` valem só nesta tela
 // (o corpus ativo do aplicativo não muda, e o botão voltar leva de volta ao gráfico).
-const rc = computed(() => (route.query.corpus ? String(route.query.corpus) : props.corpus))
-const rl = computed(() => (route.query.layer ? String(route.query.layer) : props.layer))
+const session = useSession()
+const { corpus: activeCorpus, layer: activeLayer, corpora } = storeToRefs(session)
+const rc = computed(() => (route.query.corpus ? String(route.query.corpus) : (props.corpus ?? activeCorpus.value)))
+const rl = computed(() => (route.query.layer ? String(route.query.layer) : (props.layer ?? activeLayer.value)))
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -83,11 +89,8 @@ const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf
   '#393b79', '#637939', '#8c6d31', '#843c39', '#7b4173', '#3182bd', '#e6550d']
 const MAX_ANNOTATIONS = 2500   // acima disso o SVG pesa: marca só as primeiras
 
-onMounted(async () => {
-  files.value = (await api.corpora.documents(rc.value, { limit: 1000 })).rows.map((r) => r.filename)
-  if (!file.value) file.value = files.value[0]
-  else if (!files.value.includes(file.value)) files.value = [file.value, ...files.value]   // a lista traz só os primeiros 1000
-})
+// A carga inicial (lista de documentos) é feita pelo `watch(rc, …, { immediate: true })` abaixo:
+// a seção própria aceita trocar de corpus com a tela aberta.
 watch(() => route.query.file, (f) => { if (f) file.value = String(f) })   // a Dispersão abre um texto aqui
 watch(() => [file.value, rl.value, rc.value], async () => {
   if (!file.value) return
@@ -123,12 +126,15 @@ async function loadTagset() {
 // descrição de uma etiqueta (própria ou inferida) — { text, source, inferred } ou null
 const info = (tag) => describeTag(tag, tagDefs.value, t)
 watch([colorBy, locale], loadTagset)
-watch(rc, async () => {
+watch(rc, async (now, before) => {
   countsKey = ''
   corpusCounts.value = {}
-  files.value = (await api.corpora.documents(rc.value, { limit: 1000 })).rows.map((r) => r.filename)
-  if (file.value && !files.value.includes(file.value)) files.value = [file.value, ...files.value]
-})
+  if (!now) { files.value = []; doc.value = null; return }
+  files.value = (await api.corpora.documents(now, { limit: 1000 })).rows.map((r) => r.filename)
+  if (before && before !== now) file.value = files.value[0] ?? ''          // trocou de corpus: recomeça pelo primeiro
+  else if (!file.value) file.value = files.value[0] ?? ''
+  else if (!files.value.includes(file.value)) files.value = [file.value, ...files.value]   // a lista traz só os primeiros 1000
+}, { immediate: true })
 const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
 const classes = computed(() => {
   const counts = {}
@@ -347,6 +353,16 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
 
 <template>
   <section class="flex flex-col gap-3">
+    <h1 class="text-xl font-bold print:hidden">{{ t('nav.reader') }}</h1>
+    <div v-if="!rc" class="flex flex-wrap items-center gap-2 opacity-90 print:hidden">
+      <span>{{ t('explore.need_corpus') }}</span>
+      <select v-if="corpora.length" class="select select-sm" data-testid="reader-corpus" :value="activeCorpus || ''"
+              :aria-label="t('header.active_corpus')" @change="session.setCorpus($event.target.value || null)">
+        <option value="">{{ t('header.select_corpus') }}</option>
+        <option v-for="c in corpora" :key="c.name" :value="c.name">{{ c.name }}</option>
+      </select>
+    </div>
+    <template v-else>
     <div class="ttw-form print:hidden">
       <div class="ttw-field" role="group" :aria-label="t('reader.history')"><span class="ttw-label">{{ t('reader.history') }}</span>
         <div class="flex gap-1">
@@ -360,6 +376,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
       <label class="ttw-field"><span class="ttw-label">{{ t('reader.color_by') }}</span>
         <select v-model="colorBy" class="select select-sm" @change="chosen = new Set()"><option value="upos">UPOS</option><option value="xpos">XPOS</option><option value="tags">tags</option></select></label>
       <span v-if="doc?.layer" class="badge badge-ghost h-8">{{ doc.layer.tool }} · {{ doc.layer.model }}</span>
+      <TagsetInfoButton v-if="doc?.layer" class="mb-0.5" :tagger="doc.layer.tool" :corpus="rc" :label="doc.layer.tool" />
       <div class="ttw-field" role="group" :aria-label="t('reader.sheet')"><span class="ttw-label">{{ t('reader.sheet') }}</span>
         <div class="flex items-center gap-1">
           <button type="button" class="btn btn-sm btn-square" :aria-label="t('reader.zoom_out')" :title="t('reader.zoom_out')" :disabled="zoom <= ZOOMS[0]" data-testid="reader-zoom-out" @click="stepZoom(-1)">−</button>
@@ -503,5 +520,6 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
         </ColorPicker>
       </div>
     </div>
+    </template>
   </section>
 </template>

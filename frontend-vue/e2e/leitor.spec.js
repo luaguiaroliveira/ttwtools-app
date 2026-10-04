@@ -29,8 +29,8 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
   const errors = []
   page.on('pageerror', (e) => errors.push(e.message))
   page.on('console', (m) => { if (m.type() === 'error' && /TypeError|ReferenceError/.test(m.text())) errors.push(m.text().slice(0, 200)) })   // erros de renderização do Vue
-  await page.goto('/#/explorar/leitor')
-  await page.getByTestId('explore-corpus').selectOption('corifa')
+  await page.goto('/#/leitor')
+  await page.getByTestId('reader-corpus').selectOption('corifa')
   await expect(page.getByTestId('reader-tag-list').locator('li').first()).toBeAttached({ timeout: 30_000 })
   const narrow = (page.viewportSize()?.width ?? 0) < 1024
   if (narrow) {   // tela estreita: a lista fica numa gaveta aberta pela alça
@@ -39,6 +39,11 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
     await expect(page.getByTestId('reader-tag-list')).toBeVisible()
   }
   const first = async () => (await page.getByTestId('reader-tag-list').locator('li').first().innerText()).split('\n')[0].trim()
+  // ícone de informação ao lado do etiquetador abre a tabela de tags
+  await page.getByTestId('tag-info-spacy').click()
+  await expect(page.getByTestId('tagset-table')).toBeVisible()
+  await page.getByTestId('tagset-close').click()
+  await expect(page.getByTestId('tagset-table')).toBeHidden()
   const byText = await first()
   await page.getByTestId('reader-sort').selectOption('alpha')
   const alpha = await first()
@@ -70,6 +75,9 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
 
   const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
   expect(r.violations.filter((v) => ['serious', 'critical'].includes(v.impact)).map((v) => `${v.id}: ${v.nodes.slice(0, 3).map((n) => n.target).join(' | ')}`)).toEqual([])
+  // rota antiga (#/explorar/leitor) redireciona para a seção própria, preservando a consulta
+  await page.goto('/#/explorar/leitor?corpus=corifa')
+  await expect(page).toHaveURL(/#\/leitor\?corpus=corifa/)
   // tag= cai para a classe em camadas sem tags (spaCy)
   await page.goto('/#/explorar/kwic')
   await page.getByTestId('query-input').fill('tag=NOUN')
@@ -93,7 +101,7 @@ test('dispersão: linhas compactas e clique abre o leitor', async ({ page, reque
   await expect.poll(async () => (await rows.first().boundingBox()).height).toBeLessThan(h0)
   const name = (await rows.first().getAttribute('title')).split(':')[0]
   await rows.first().click()
-  await expect(page).toHaveURL(/explorar\/leitor/)
+  await expect(page).toHaveURL(/#\/leitor/)
   await expect(page.getByTestId('reader-file')).toHaveValue(name, { timeout: 30_000 })
 })
 
@@ -150,6 +158,7 @@ test('ferramenta cujo arquivo sumiu mostra aviso em vez de área em branco; leit
   }
   // o arquivo da Frequência "some" (interface recompilada com a janela aberta)
   await page.route('**/assets/FrequencyTool-*.js', (r) => r.fulfill({ status: 404, body: 'nope' }))
+  await page.goto('/#/explorar/kwic')   // o Leitor agora é seção própria; volta ao Explorar para achar a aba
   await page.getByRole('tab', { name: /Frequência|Frequency/ }).click()
   await expect(page.getByTestId('tool-load-error')).toBeVisible({ timeout: 30_000 })
 })

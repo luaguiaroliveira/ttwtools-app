@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useSession } from '../stores/session.js'
 import { download } from '../utils/export.js'
 import { post } from '../api/client.js'
+import TagsetInfoButton from './TagsetInfoButton.vue'
 const props = defineProps({ corpus: { type: String, required: true }, title: { type: String, default: null } })
 const { t } = useI18n()
 const session = useSession()
@@ -22,6 +23,7 @@ defineExpose({ reload: () => session.loadLayers() })
       <li v-for="l in layers" :key="l.tool + l.config_hash" class="bg-base-200 rounded-box p-3 flex flex-wrap gap-2 items-center">
         <span class="layer-dot" :data-tool="l.tool" aria-hidden="true"></span>
         <span class="font-medium">{{ l.tool }}</span>
+        <TagsetInfoButton :tagger="l.tool" :corpus="corpus" :values="l.config ?? {}" :label="l.tool" />
         <span class="badge badge-ghost">{{ l.model }}</span>
         <span class="text-xs text-text-muted">v{{ l.tool_version }}</span>
         <span class="text-sm">{{ t('layers.coverage', { docs: l.documents, tokens: l.tokens }) }}</span>

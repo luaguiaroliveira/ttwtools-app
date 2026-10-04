@@ -38,6 +38,16 @@ defineProps({ name: { type: String, required: true }, size: { type: Number, defa
       <rect class="duo a-q3" x="3.500" y="13.500" width="7" height="7" rx="1.800" /><rect class="a-q3" x="3.500" y="13.500" width="7" height="7" rx="1.800" />
       <rect class="duo a-q4" x="13.500" y="13.500" width="7" height="7" rx="1.800" /><rect class="a-q4" x="13.500" y="13.500" width="7" height="7" rx="1.800" />
     </template>
+    <template v-else-if="name === 'reader'">
+      <g class="a-lens">
+        <path class="duo" d="M6 3h8l4 4v14H6z" />
+        <path d="M6 3h8l4 4v14H6z" />
+        <path d="M14 3v4h4" />
+        <path d="M9 10.500h6" />
+        <path class="acc" d="M8.400 16c1.100-1.500 2.300-2.200 3.600-2.200s2.500.700 3.600 2.200c-1.100 1.500-2.300 2.200-3.600 2.200S9.500 17.500 8.400 16z" />
+        <circle class="acc" cx="12" cy="16" r=".9" />
+      </g>
+    </template>
     <template v-else>
       <path class="duo" d="M2 9.500 12 5l10 4.500L12 14z" /><path d="M2 9.500 12 5l10 4.500L12 14z" />
       <path d="M6 11.500V16c0 1.200 2.700 2.500 6 2.500s6-1.300 6-2.500v-4.500" /><path class="acc a-tassel" d="M22 9.500V15" />

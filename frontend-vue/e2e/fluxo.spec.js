@@ -93,6 +93,9 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.goto('/#/comparar?tool=kfa')
   await page.getByTestId('kfa-run').click()
   await expect(page.getByRole('status').filter({ hasText: /atributos|features/ })).toBeVisible()
+  // a análise (visualizações, |d| mínimo e tabela) abre em rota própria
+  await page.getByTestId('kfa-view-analysis').click()
+  await expect(page).toHaveURL(/view=analise/)
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await expect(page.getByTestId('side-legend')).toContainText('corifa')
@@ -152,7 +155,7 @@ test('acessibilidade das demais telas, tema escuro e alto contraste', async ({ p
     await page.goto('/')
     await page.evaluate((t) => localStorage.setItem('ttw.theme', t), theme)
     for (const route of ['/', '/aprender', '/aprender/cohens_d', '/explorar/busca', '/explorar/frequencia',
-      '/explorar/colocados', '/explorar/dispersao', '/explorar/leitor', '/comparar', '/escrita', '/modulos', '/etiquetagem']) {
+      '/explorar/colocados', '/explorar/dispersao', '/leitor', '/comparar', '/escrita', '/modulos', '/etiquetagem']) {
       await page.goto(`/?t=${theme}#${route}`)
       await page.waitForLoadState('networkidle')
       await a11y(page, `${theme} ${route}`)

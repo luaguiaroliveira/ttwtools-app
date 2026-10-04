@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
@@ -12,6 +13,7 @@ import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import BusyModal from '../../components/BusyModal.vue'
 import FeatureSelect from '../../components/FeatureSelect.vue'
+import TagsetInfoButton from '../../components/TagsetInfoButton.vue'
 const props = defineProps({ corpus: String })
 const mem = kfaMemory.value?.corpus === props.corpus ? kfaMemory.value : null     // volta do Leitor: restaura
 const lastParams = ref(mem?.lastParams ?? null)
@@ -60,25 +62,31 @@ const shown = computed(() => (data.value ? { ...data.value, rows: data.value.row
 const copyParams = computed(() => (lastParams.value ? { ...lastParams.value, min_effect: minD.value } : null))
 const gallerySides = computed(() => (lastParams.value ? [{ corpus: lastParams.value.corpus, where: lastParams.value.where, label: lastParams.value.label1 }, { corpus: lastParams.value.corpus2, where: lastParams.value.where2, label: lastParams.value.label2 }] : cmp.sides(props.corpus)))
 const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(detail.value?.v2 ?? [])].map((v) => v.value)))
+// Linha de resumo do resultado (mostrada na configuração e na tela de análise)
+const resultLine = computed(() => (data.value
+  ? `${t('kfa.results', { n: shown.value.rows.length, n1: data.value.n1, n2: data.value.n2 })} · ${t('kfa.result_layer', { layer: lastParams.value?.layer })} · ${t('kfa.result_feature', { feature: data.value.feature })}`
+  : ''))
+
+// Tela de análise isolada, em rota própria (`/comparar?tool=kfa&view=analise`): o resultado
+// calculado fica em `kfaMemory`, então abrir a análise e voltar não recalcula nada.
+const route = useRoute()
+const router = useRouter()
+const analyzing = computed(() => route.query.view === 'analise')
+function openAnalysis() { if (data.value) router.push({ path: '/comparar', query: { ...route.query, tool: 'kfa', view: 'analise' } }) }
+function backToSetup() { const q = { ...route.query }; delete q.view; router.push({ path: '/comparar', query: q }) }
 </script>
 <template>
   <section class="flex flex-col gap-3">
     <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" :job="job" @cancel="jobId && api.jobs.cancel(jobId)" />
-    <p v-if="!layers.length" class="text-text-muted">{{ t('kfa.no_layer') }}</p>
-    <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
-      <FeatureSelect v-model="f.feature" :fields="layerFields" />
-      <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
-      <span class="badge badge-outline" data-testid="kfa-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
-      <HelpTip term="kfa" />
-    </form>
-    <div v-if="stale" role="alert" class="alert alert-warning text-sm flex flex-wrap items-center gap-2" data-testid="kfa-stale">
-      <span>{{ lastParams.setupSig !== setupSig ? t('kfa.setup_changed') : lastParams.layer !== effectiveLayer ? t('kfa.layer_changed', { old: lastParams.layer, new: effectiveLayer }) : t('kfa.feature_changed') }}</span>
-      <button class="btn btn-sm btn-primary" data-testid="kfa-recalc" @click="run">{{ t('kfa.recalc', { layer: effectiveLayer }) }}</button>
-      <button class="btn btn-sm btn-ghost" data-testid="kfa-keep" @click="keptFor = `${effectiveLayer}/${f.feature}/${setupSig}`">{{ t('kfa.keep') }}</button>
-    </div>
-    <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
-    <template v-if="data">
-      <p role="status" class="text-sm">{{ t('kfa.results', { n: shown.rows.length, n1: data.n1, n2: data.n2 }) }} · {{ t('kfa.result_layer', { layer: lastParams?.layer }) }} · {{ t('kfa.result_feature', { feature: data.feature }) }}</p>
+    <!-- Tela de análise isolada, em rota própria: só as visualizações, o |d| mínimo e a tabela. -->
+    <template v-if="analyzing && data">
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" class="btn btn-sm" data-testid="kfa-back" @click="backToSetup">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg>
+          {{ t('kfa.back_to_setup') }}
+        </button>
+        <p role="status" class="text-sm" data-testid="kfa-results">{{ resultLine }}</p>
+      </div>
       <div class="flex flex-wrap items-end gap-2">
       <label class="ttw-field w-28"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.01" min="0" :max="maxD" class="input input-sm" data-testid="kfa-min-effect" /></label>
       <label class="ttw-field w-56"><span class="ttw-label">{{ t('kfa.min_effect_slider') }}</span><input v-model.number="f.min_effect" type="range" min="0" :max="maxD" step="0.01" class="range range-xs range-primary" data-testid="kfa-min-effect-slider" :aria-label="t('kfa.min_effect_slider')" /></label>
@@ -96,13 +104,35 @@ const maxV = computed(() => Math.max(1, ...[...(detail.value?.v1 ?? []), ...(det
             <circle v-for="v in vals" :key="v.filename" :cx="10 + (v.value / maxV) * 580" cy="24" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
           </g>
         </svg>
-        <RouterLink class="link text-sm" :to="{ path: '/explorar/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
+        <RouterLink class="link text-sm" :to="{ path: '/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
       </section>
       <div class="ttw-scroll">
         <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
           <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="select(r.Feature)" @keydown.enter="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
             <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
       </div>
+    </template>
+
+    <!-- Configuração e execução: rodata a KFA e abre a análise. -->
+    <template v-else>
+    <p v-if="!layers.length" class="text-text-muted">{{ t('kfa.no_layer') }}</p>
+    <form v-else class="flex flex-wrap items-end gap-2" @submit.prevent="run">
+      <FeatureSelect v-model="f.feature" :fields="layerFields" />
+      <button class="btn btn-sm btn-primary" data-testid="kfa-run">{{ t('compare.run') }}</button>
+      <span class="badge badge-outline" data-testid="kfa-layer" :title="t('kfa.layer_hint')">{{ layer ? t('kfa.layer_used', { layer: effectiveLayer }) : t('kfa.layer_auto', { layer: effectiveLayer }) }}</span>
+      <TagsetInfoButton v-if="effectiveLayer" class="mb-0.5" :tagger="effectiveLayer" :corpus="props.corpus" :label="effectiveLayer" />
+      <HelpTip term="kfa" />
+    </form>
+    <div v-if="stale" role="alert" class="alert alert-warning text-sm flex flex-wrap items-center gap-2" data-testid="kfa-stale">
+      <span>{{ lastParams.setupSig !== setupSig ? t('kfa.setup_changed') : lastParams.layer !== effectiveLayer ? t('kfa.layer_changed', { old: lastParams.layer, new: effectiveLayer }) : t('kfa.feature_changed') }}</span>
+      <button class="btn btn-sm btn-primary" data-testid="kfa-recalc" @click="run">{{ t('kfa.recalc', { layer: effectiveLayer }) }}</button>
+      <button class="btn btn-sm btn-ghost" data-testid="kfa-keep" @click="keptFor = `${effectiveLayer}/${f.feature}/${setupSig}`">{{ t('kfa.keep') }}</button>
+    </div>
+    <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
+    <template v-if="data">
+      <p role="status" class="text-sm" data-testid="kfa-results">{{ resultLine }}</p>
+      <button type="button" class="btn btn-sm btn-primary w-fit" data-testid="kfa-view-analysis" @click="openAnalysis">{{ t('kfa.view_analysis') }}</button>
+    </template>
     </template>
   </section>
 </template>

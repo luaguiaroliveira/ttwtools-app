@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { describeTag, mergeTagsets, tagsetIdsFor } from '../utils/tagInfo.js'
+import { describeTag, mergeTagsets, tagsetIdsFor, tagsetIdsForConfig } from '../utils/tagInfo.js'
 
 const t = (key, p = {}) => `${key}:${p.tag ?? ''}:${p.desc ?? ''}`
 const sets = [
@@ -24,5 +24,17 @@ describe('tagInfo', () => {
     expect(tagsetIdsFor('mfte_ext', 'tags')).toEqual(['mfte', 'ptb', 'biber'])
     expect(tagsetIdsFor('biberplus')).toEqual(['biber'])
     expect(tagsetIdsFor('stanza', 'upos')).toEqual(['upos'])
+  })
+  it('repertórios seguem os componentes escolhidos na configuração', () => {
+    const spacy = { tagger: 'spacy', tagsets: { upos: 'upos', xpos: 'ptb' } }
+    expect(tagsetIdsForConfig(spacy, { components: ['lemma', 'morph', 'pos', 'tag'] })).toEqual(['ptb', 'upos'])
+    expect(tagsetIdsForConfig(spacy, { components: ['pos'] })).toEqual(['upos'])
+    expect(tagsetIdsForConfig(spacy, { components: [] })).toEqual([])
+    const stanza = { tagger: 'stanza', tagsets: { upos: 'upos', xpos: 'ptb' }, tagsets_by_lang: { pt: { upos: 'upos', xpos: null } } }
+    expect(tagsetIdsForConfig(stanza, { lang: 'en', components: ['morph', 'pos'] })).toEqual(['ptb', 'upos'])
+    expect(tagsetIdsForConfig(stanza, { lang: 'pt', components: ['morph', 'pos'] })).toEqual(['upos'])
+    const mfte = { tagger: 'mfte', tagsets: { tags: 'mfte', xpos: 'ptb', upos: 'upos' } }
+    expect(tagsetIdsForConfig(mfte, { components: ['mfte', 'morph', 'pos'] })).toEqual(['mfte', 'ptb', 'upos'])
+    expect(tagsetIdsForConfig({ tagger: 'biberplus', tagsets: { tags: 'biber' } }, {})).toEqual(['biber'])
   })
 })

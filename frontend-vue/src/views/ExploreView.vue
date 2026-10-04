@@ -13,7 +13,6 @@ const TOOLS = {
   frequencia: lazyTool(() => import('./explore/FrequencyTool.vue')),
   colocados: lazyTool(() => import('./explore/CollocatesTool.vue')),
   dispersao: lazyTool(() => import('./explore/DispersionTool.vue')),
-  leitor: lazyTool(() => import('./explore/ReaderTool.vue')),
 }
 const { t } = useI18n()
 const route = useRoute()

@@ -22,6 +22,32 @@ export function tagsetIdsFor(tool, field = null) {
   return ['upos', 'ptb', 'mfte', 'biber']
 }
 
+// Ids dos repertórios que a configuração atual do tagger produz. `descriptor` é o
+// descritor de /taggers/{id}/options e `values` são as opções correntes: só entram as
+// colunas cujos componentes estão selecionados (ex.: sem `tag`, não há xpos/ptb) e o
+// mapa `tagsets_by_lang` do idioma do corpus (no pt, xpos do Stanza é null → não entra).
+const COL_COMPONENTS = {   // componente que produz cada coluna, por tagger
+  spacy: { upos: ['pos'], xpos: ['tag'] },
+  stanza: { upos: ['pos'], xpos: ['pos'] },
+  mfte: { tags: ['morph', 'mfte'], xpos: ['pos'], upos: ['pos'] },
+}
+export function tagsetIdsForConfig(descriptor, values = {}) {
+  if (!descriptor) return []
+  const lang = values.lang || descriptor.corpus_lang
+  const tagsets = { ...(descriptor.tagsets ?? {}), ...((descriptor.tagsets_by_lang ?? {})[lang] ?? {}) }
+  const comps = values.components
+  const mapping = COL_COMPONENTS[descriptor.tagger]
+  const ids = []
+  for (const col of ['tags', 'xpos', 'upos']) {
+    const id = tagsets[col]
+    if (!id || ids.includes(id)) continue
+    if (Array.isArray(comps) && mapping?.[col] && !comps.some((c) => mapping[col].includes(c))) continue
+    ids.push(id)
+  }
+  if (!mapping) for (const id of Object.values(tagsets)) if (id && !ids.includes(id)) ids.push(id)
+  return ids
+}
+
 // Junta os repertórios: a primeira definição de cada etiqueta vence e guarda de qual repertório veio.
 export function mergeTagsets(sets) {
   const defs = {}

@@ -7,6 +7,7 @@ import { api } from '../api/index.js'
 import { markdown } from '../utils/markdown.js'
 import { startTour } from '../composables/useTour.js'
 import CohenDVisual from '../components/CohenDVisual.vue'
+import TaggerTags from '../components/TaggerTags.vue'
 const { t, locale } = useI18n()
 const route = useRoute()
 const q = ref('')
@@ -29,6 +30,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
       <p v-if="topic.fallback" class="alert alert-info text-sm py-1">{{ t('learn.fallback') }}</p>
       <CohenDVisual v-if="topic.id === 'cohens_d'" />
       <div class="help-body flex flex-col gap-2" v-html="markdown(topic.body)" />
+      <TaggerTags v-if="topic.id === 'tags_etiquetadores'" />
       <p v-if="topic.related.length" class="text-sm">{{ t('learn.related') }}:
         <RouterLink v-for="r in topic.related" :key="r" :to="`/aprender/${r}`" class="link mr-2">{{ r }}</RouterLink></p>
     </article>

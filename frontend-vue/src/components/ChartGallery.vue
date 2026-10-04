@@ -29,7 +29,7 @@ const router = useRouter()
 const CLICKABLE = ['strip', 'heatmap', 'parcoords', 'reduction', 'pca3d']
 function openText({ side, filename }) {
   const s = props.sides.find((x) => x.label === side) ?? props.sides[0]
-  router.push({ path: '/explorar/leitor', query: { file: filename, corpus: s.corpus, layer: props.layer || undefined, color: 'tags' } })
+  router.push({ path: '/leitor', query: { file: filename, corpus: s.corpus, layer: props.layer || undefined, color: 'tags' } })
 }
 // Uma linha só: ícones com dica (título) e nome acessível; grupos separados por um traço fino.
 const GROUPS = [['bars', 'means', 'bubble'], ['strip', 'violin', 'histogram'], ['heatmap', 'radar', 'parcoords', 'reduction', 'pca3d']]

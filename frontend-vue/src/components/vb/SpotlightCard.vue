@@ -2,7 +2,9 @@
 // Adaptado de Vue Bits (DavidHDev/vue-bits, SpotlightCard; MIT + Commons Clause): porte para JS,
 // sem dependências. Luz laranja que segue o mouse; `tag` permite usar como <li>.
 import { ref } from 'vue'
-defineProps({ tag: { type: String, default: 'div' }, color: { type: String, default: 'color-mix(in oklab, var(--ttw-orange-text) 32%, transparent)' } })
+// `in srgb` (e não `in oklab`): o WebKit antigo (Safari 17.6, macOS 12) pinta color-mix fora de srgb errado
+// (a mistura com transparente fica opaca). Para cor+transparente o resultado é idêntico.
+defineProps({ tag: { type: String, default: 'div' }, color: { type: String, default: 'color-mix(in srgb, var(--ttw-orange-text) 32%, transparent)' } })
 const el = ref(null)
 const pos = ref({ x: 0, y: 0 })
 const opacity = ref(0)
