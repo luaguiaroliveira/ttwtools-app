@@ -40,6 +40,7 @@ ao lado de `materiais_para_aprimoramentos/`). Regras em `AGENTS.md`.
   `?tool=kfa&view=analise&textos=<atributo>`; lista por lado, arquivo + por 1000 + absoluto;
   `feature_values` passou a devolver `count` (feito 2026-10-04).
 - [ ] **7. Por texto: abrir no Leitor e ver as sentenças** com o atributo (filtro `filename` no KWIC).
+  Abrir no Leitor **já funciona** (feito no passo 6, com volta); falta só o KWIC por arquivo.
 
 ## Trilha B — Aprender (`aprimoramentos.md`)
 

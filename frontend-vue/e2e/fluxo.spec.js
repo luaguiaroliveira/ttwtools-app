@@ -166,13 +166,23 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page).toHaveURL(/textos=/)
   const drawer = page.getByTestId('kfa-texts')
   await expect(drawer).toBeVisible()
-  const drawerRows = drawer.locator('section').first().locator('tbody tr')
+  // lista única (os dois lados juntos): 1º texto com frequência (por 1000) ≥ a do 2º
+  const drawerRows = drawer.locator('tbody tr')
   if ((await drawerRows.count()) > 1) {
     const per1 = Number((await drawerRows.nth(0).locator('td').nth(1).textContent()))
     const per2 = Number((await drawerRows.nth(1).locator('td').nth(1).textContent()))
     expect(per1).toBeGreaterThanOrEqual(per2)
   }
+  // o quadrado de cada texto tem a cor do lado no comparador e nomeia o corpus
+  const square = drawerRows.first().locator('td').first().locator('[role=img]')
+  await expect(square).toHaveAttribute('aria-label', /bawe|corifa|=/)
   await a11y(page, 'kfa-textos')
+  // clicar no texto abre o Leitor; o voltar do Leitor traz de volta a lista do atributo
+  await drawerRows.first().locator('a.link').click()
+  await expect(page).toHaveURL(/leitor.*corpus=.*file=/)
+  await expect(page.getByTestId('reader-back')).toBeEnabled()
+  await page.getByTestId('reader-back').click()
+  await expect(page.getByTestId('kfa-texts')).toBeVisible()
   await page.getByTestId('kfa-texts-back').click()
   await expect(drawer).toHaveCount(0)
   // clicar numa linha da tabela abre a mesma lista

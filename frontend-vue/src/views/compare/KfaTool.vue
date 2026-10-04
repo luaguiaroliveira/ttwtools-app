@@ -95,8 +95,23 @@ function openTexts(name) {
 }
 function closeTexts() { const q = { ...route.query }; delete q.textos; router.push({ path: '/comparar', query: q }) }
 watch(textsFeature, (name) => { if (name) loadDetail(name) })
-// Só os textos que têm o atributo, do maior para o menor valor por 1000 palavras, um grupo por lado.
-const textsSides = computed(() => (detail.value ? gallerySides.value.map((s, i) => ({ label: s.label, rows: (detail.value[i ? 'v2' : 'v1'] ?? []).filter((v) => v.count > 0 || v.value > 0).sort((a, b) => b.value - a.value) })) : []))
+// Lista única dos textos do atributo (os dois lados juntos), em ordem decrescente de frequência por
+// 1000 palavras. Cada linha traz o lado pelo quadrado na cor do comparador (o título nomeia o corpus).
+const texts = computed(() => {
+  if (!detail.value) return []
+  const all = []
+  gallerySides.value.forEach((s, i) => {
+    for (const v of (detail.value[i ? 'v2' : 'v1'] ?? [])) {
+      if (v.count > 0 || v.value > 0) all.push({ ...v, side: i, label: s.label, corpus: s.corpus })
+    }
+  })
+  return all.sort((a, b) => b.value - a.value)
+})
+// Clicar num texto abre-o no Leitor; o botão voltar do Leitor retorna à lista (o estado da gaveta fica na URL).
+function readerTarget(v) {
+  return { path: '/leitor', query: { corpus: v.corpus, layer: lastParams.value?.layer ?? effectiveLayer.value, file: v.filename, color: data.value?.feature ?? 'tags', highlight: textsFeature.value } }
+}
+function openReader(v) { router.push(readerTarget(v)) }
 </script>
 <template>
   <section class="flex flex-col gap-3">
@@ -133,23 +148,33 @@ const textsSides = computed(() => (detail.value ? gallerySides.value.map((s, i) 
              :aria-label="t('kfa.tag_texts', { feature: textsFeature })" @keydown.esc="closeTexts">
           <div class="absolute inset-0 bg-black/40" @click="closeTexts" />
           <aside class="relative bg-base-100 w-full max-w-xl h-full overflow-auto p-4 flex flex-col gap-3 shadow-xl" data-testid="kfa-texts">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <h2 class="text-lg font-bold">{{ t('kfa.tag_texts', { feature: textsFeature }) }}</h2>
+              <TagsetInfoButton v-if="effectiveLayer" :tagger="effectiveLayer" :corpus="props.corpus" :label="effectiveLayer" />
               <button type="button" class="btn btn-sm btn-ghost ml-auto" autofocus data-testid="kfa-texts-back" @click="closeTexts">{{ t('kfa.back') }}</button>
             </div>
             <p v-if="!detail || detail.name !== textsFeature" class="text-sm text-text-muted" role="status">{{ t('gallery.loading') }}</p>
             <template v-else>
               <p class="text-xs text-text-muted">{{ t('kfa.texts_hint') }}</p>
-              <p v-if="!textsSides.some((s) => s.rows.length)" class="text-text-muted">{{ t('kfa.no_texts') }}</p>
-              <section v-for="(s, i) in textsSides" v-show="s.rows.length" :key="i" class="flex flex-col gap-1">
-                <h3 class="font-semibold text-sm">{{ s.label }}</h3>
-                <div class="ttw-scroll" tabindex="0" role="region" :aria-label="s.label">
+              <p v-if="!texts.length" class="text-text-muted">{{ t('kfa.no_texts') }}</p>
+              <template v-else>
+                <div class="ttw-scroll" tabindex="0" role="region" :aria-label="t('kfa.tag_texts', { feature: textsFeature })">
                   <table class="table table-xs">
                     <thead><tr><th>{{ t('kfa.text_column') }}</th><th class="text-right">{{ t('kfa.freq_per_1000') }}</th><th class="text-right">{{ t('kfa.freq_abs') }}</th></tr></thead>
-                    <tbody><tr v-for="v in s.rows" :key="v.filename"><td class="break-all">{{ v.filename }}</td><td class="text-right tabular-nums">{{ v.value.toFixed(2) }}</td><td class="text-right tabular-nums">{{ v.count }}</td></tr></tbody>
+                    <tbody>
+                      <tr v-for="v in texts" :key="`${v.side}|${v.filename}`" class="hover cursor-pointer" @click="openReader(v)">
+                        <td class="break-all">
+                          <span class="inline-block w-2.5 h-2.5 rounded-sm mr-1.5 align-middle" :style="{ background: cmp.colors[v.side] }" :title="v.label" role="img" :aria-label="v.label" />
+                          <RouterLink class="link" :to="readerTarget(v)" @click.stop>{{ v.filename }}</RouterLink>
+                        </td>
+                        <td class="text-right tabular-nums">{{ v.value.toFixed(2) }}</td>
+                        <td class="text-right tabular-nums">{{ v.count }}</td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
-              </section>
+                <p class="text-xs text-text-muted">{{ t('kfa.open_text_hint') }}</p>
+              </template>
             </template>
           </aside>
         </div>
