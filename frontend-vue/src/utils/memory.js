@@ -2,4 +2,4 @@
 // precisa trazer a comparação como estava (resultado, filtros e gráfico escolhido), sem recalcular.
 // Fora do estado reativo de propósito: só é lida quando a tela nasce.
 export const kfaMemory = { value: null }
-export const galleryMemory = { order: 'asc', kind: 'bars', nFeatures: 10, method: 'pca2d', cache: new Map() }
+export const galleryMemory = { order: 'asc', kind: 'bars', nFeatures: 10, method: 'pca2d', cache: new Map(), split: 50, showChart: true, showTable: true }

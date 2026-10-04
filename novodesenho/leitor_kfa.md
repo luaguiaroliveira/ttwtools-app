@@ -14,8 +14,8 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Retomar aqui
 
-- **Estado:** Passos 1, 2 e 3 **feitos** (3/7).
-- **Próximo passo:** Passo 4 (gráfico à esquerda + tabela à direita, com divisória e botões de ocultar).
+- **Estado:** Passos 1, 2, 3 e 4 **feitos** (4/7).
+- **Próximo passo:** Passo 5 (realce da linha inteira no mouse-over da tabela da análise; 5 e 6 são independentes entre si).
 - **Decisões (tomadas em 2026-10-04):** Passo 2 = tela de análise como **rota própria**; Passo 7 = **filtro `filename` novo** no KWIC (reusar `kwic`/`search`, não criar função de sentenças).
 - **Ordem:** 1 → 2 → 3 → 4 → 5 → 6 → 7 (3, 4 e 5 são independentes entre si, mas ficam na tela do Passo 2).
 
@@ -90,7 +90,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 4 — Gráfico à esquerda, tabela à direita, com divisória e botões de ocultar
 
-- [ ] feito — Feito: _data / agente / commit / notas_
+- [x] feito — Feito: 2026-10-04, opencode; novo `components/SplitPane.vue` (grid com divisória arrastável por mouse/toque, `role="separator"`, `aria-orientation="vertical"`, `aria-valuenow` e ajuste por setas/Home/End); gráfico + detalhe à esquerda, tabela à direita; botões `analysis-toggle-chart`/`analysis-toggle-table`; estado em `galleryMemory` (`split`, `showChart`, `showTable`); i18n `analysis.*` (pt/en); empilha sem divisória em ≤1023px; teste `splitPane.test.js` (3 casos) e e2e do fluxo atualizado. `npm test` 45/45, `npm run e2e` 30/30, `pytest libs/ttwtools/tests` 268/268, `pytest tests` 63/63. **Falta conferir no Mac Intel** (visual).
 
 **Objetivo.** Na tela de análise (Passo 2), o gráfico fica à esquerda e a tabela à direita; uma divisória arrastável regula o espaço de cada lado e dá para ocultar um dos lados.
 

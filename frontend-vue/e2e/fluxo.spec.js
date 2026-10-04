@@ -96,6 +96,26 @@ test('fluxo completo', async ({ page, request }, info) => {
   // a análise (visualizações, |d| mínimo e tabela) abre em rota própria
   await page.getByTestId('kfa-view-analysis').click()
   await expect(page).toHaveURL(/view=analise/)
+  // gráfico à esquerda + tabela à direita: botões ocultam/mostram cada lado
+  await expect(page.getByTestId('kfa-table')).toBeVisible()
+  await page.getByTestId('analysis-toggle-table').click()
+  await expect(page.getByTestId('kfa-table')).toHaveCount(0)
+  await page.getByTestId('analysis-toggle-table').click()
+  await expect(page.getByTestId('kfa-table')).toBeVisible()
+  await page.getByTestId('analysis-toggle-chart').click()
+  await expect(page.getByTestId('gallery-chart')).toHaveCount(0)
+  await page.getByTestId('analysis-toggle-chart').click()
+  await expect(page.getByTestId('gallery-chart')).toBeVisible()
+  // divisória arrastável (teclado) só nas larguras largas; nas estreitas empilha sem divisória
+  if ((page.viewportSize()?.width ?? 0) >= 1024) {
+    const sep = page.getByTestId('split-divider')
+    await expect(sep).toBeVisible()
+    await sep.focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(sep).toHaveAttribute('aria-valuenow', '52')
+  } else {
+    await expect(page.getByTestId('split-divider')).toBeHidden()
+  }
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await expect(page.getByTestId('side-legend')).toContainText('corifa')

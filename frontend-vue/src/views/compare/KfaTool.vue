@@ -6,8 +6,9 @@ import { storeToRefs } from 'pinia'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
 import { useCompare } from '../../stores/compare.js'
-import { kfaMemory } from '../../utils/memory.js'
+import { galleryMemory, kfaMemory } from '../../utils/memory.js'
 import ChartGallery from '../../components/ChartGallery.vue'
+import SplitPane from '../../components/SplitPane.vue'
 import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
@@ -74,6 +75,13 @@ const router = useRouter()
 const analyzing = computed(() => route.query.view === 'analise')
 function openAnalysis() { if (data.value) router.push({ path: '/comparar', query: { ...route.query, tool: 'kfa', view: 'analise' } }) }
 function backToSetup() { const q = { ...route.query }; delete q.view; router.push({ path: '/comparar', query: q }) }
+
+// Gráfico à esquerda + tabela à direita: a divisória arrastável e os botões de ocultar ficam
+// guardados em `galleryMemory`, então voltar do Leitor restaura o arranjo escolhido.
+const showChart = ref(galleryMemory.showChart ?? true)
+const showTable = ref(galleryMemory.showTable ?? true)
+const split = ref(galleryMemory.split ?? 50)
+watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showChart: showChart.value, showTable: showTable.value, split: split.value }))
 </script>
 <template>
   <section class="flex flex-col gap-3">
@@ -91,26 +99,32 @@ function backToSetup() { const q = { ...route.query }; delete q.view; router.pus
       <label class="ttw-field w-28"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.01" min="0" :max="maxD" class="input input-sm" data-testid="kfa-min-effect" /></label>
       <label class="ttw-field w-56"><span class="ttw-label">{{ t('kfa.min_effect_slider') }}</span><input v-model.number="f.min_effect" type="range" min="0" :max="maxD" step="0.01" class="range range-xs range-primary" data-testid="kfa-min-effect-slider" :aria-label="t('kfa.min_effect_slider')" /></label>
         <span class="text-xs text-text-muted pb-2">{{ t('kfa.min_effect_filter') }}</span>
-        <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" /></div>
-      <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
-      <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
-        <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
-        <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
-        <p class="text-xs text-text-muted">{{ t('kfa.detail_hint') }}</p>
-        <svg viewBox="0 0 600 84" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
-          <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 40 + 4})`">
-            <text x="0" y="8" class="fill-current text-[10px]">{{ gallerySides[i].label }}</text>
-            <line x1="10" x2="590" y1="24" y2="24" class="stroke-current opacity-20" />
-            <circle v-for="v in vals" :key="v.filename" :cx="10 + (v.value / maxV) * 580" cy="24" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
-          </g>
-        </svg>
-        <RouterLink class="link text-sm" :to="{ path: '/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
-      </section>
-      <div class="ttw-scroll">
-        <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-          <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="select(r.Feature)" @keydown.enter="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
-            <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
-      </div>
+        <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" />
+        <button type="button" class="btn btn-sm" :aria-pressed="showChart" data-testid="analysis-toggle-chart" @click="showChart = !showChart">{{ showChart ? t('analysis.hide_chart') : t('analysis.show_chart') }}</button>
+        <button type="button" class="btn btn-sm" :aria-pressed="showTable" data-testid="analysis-toggle-table" @click="showTable = !showTable">{{ showTable ? t('analysis.hide_table') : t('analysis.show_table') }}</button></div>
+      <SplitPane v-model="split" :show-left="showChart" :show-right="showTable">
+        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="select" />
+        <section v-if="detail" class="bg-base-200 rounded-box p-3 flex flex-col gap-2" aria-live="polite">
+          <h3 class="font-bold">{{ t('kfa.detail', { feature: detail.name }) }}</h3>
+          <p class="text-sm">d = {{ detail.row.Effect_Size.toFixed(3) }} · {{ t('kfa.mean') }}: {{ detail.row.Mean_Corpus1.toFixed(2) }} × {{ detail.row.Mean_Corpus2.toFixed(2) }}</p>
+          <p class="text-xs text-text-muted">{{ t('kfa.detail_hint') }}</p>
+          <svg viewBox="0 0 600 84" class="w-full max-w-3xl" role="img" :aria-label="detail.name">
+            <g v-for="(vals, i) in [detail.v1, detail.v2]" :key="i" :transform="`translate(0 ${i * 40 + 4})`">
+              <text x="0" y="8" class="fill-current text-[10px]">{{ gallerySides[i].label }}</text>
+              <line x1="10" x2="590" y1="24" y2="24" class="stroke-current opacity-20" />
+              <circle v-for="v in vals" :key="v.filename" :cx="10 + (v.value / maxV) * 580" cy="24" r="4" :class="i ? 'fill-chart-2' : 'fill-chart-1'" opacity="0.7"><title>{{ v.filename }}: {{ v.value.toFixed(2) }}</title></circle>
+            </g>
+          </svg>
+          <RouterLink class="link text-sm" :to="{ path: '/leitor', query: { color: 'tags', highlight: detail.name } }">{{ t('kfa.open_reader') }}</RouterLink>
+        </section>
+        <template #right>
+          <div class="ttw-scroll" data-testid="kfa-table">
+            <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
+              <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="select(r.Feature)" @keydown.enter="select(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+                <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
+          </div>
+        </template>
+      </SplitPane>
     </template>
 
     <!-- Configuração e execução: rodata a KFA e abre a análise. -->
