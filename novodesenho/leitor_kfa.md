@@ -14,8 +14,8 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Retomar aqui
 
-- **Estado:** Passos 1 e 2 **feitos** (2/7).
-- **Próximo passo:** Passo 3 (barras da KFA em ordem crescente por padrão).
+- **Estado:** Passos 1, 2 e 3 **feitos** (3/7).
+- **Próximo passo:** Passo 4 (gráfico à esquerda + tabela à direita, com divisória e botões de ocultar).
 - **Decisões (tomadas em 2026-10-04):** Passo 2 = tela de análise como **rota própria**; Passo 7 = **filtro `filename` novo** no KWIC (reusar `kwic`/`search`, não criar função de sentenças).
 - **Ordem:** 1 → 2 → 3 → 4 → 5 → 6 → 7 (3, 4 e 5 são independentes entre si, mas ficam na tela do Passo 2).
 
@@ -73,7 +73,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 3 — Barras da KFA em ordem crescente por padrão
 
-- [ ] feito — Feito: _data / agente / commit / notas_
+- [x] feito — Feito: 2026-10-04, opencode; `memory.js` `galleryMemory.order` e o valor inicial de `ChartGallery.vue` passaram de `'abs'` para `'asc'` (rótulos i18n já corretos). e2e `fluxo.spec.js` agora confere o padrão `'asc'` e a troca para `desc`/`abs`; `npm test` 42/42, `npm run e2e` 30/30. **Falta conferir no Mac Intel** (visual).
 
 **Objetivo.** A visualização padrão (barras divergentes) abre em ordem **crescente** (mais negativo primeiro).
 

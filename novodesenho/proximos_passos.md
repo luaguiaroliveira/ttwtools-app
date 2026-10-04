@@ -6,10 +6,10 @@ ao lado de `materiais_para_aprimoramentos/`). Regras em `AGENTS.md`.
 
 ## Retomar aqui (2026-10-04)
 
-- **Feito:** Leitor/KFA **passos 1 e 2**; Aprender **item 3** (tags dos etiquetadores).
-- **Próximo recomendado:** Leitor/KFA **passo 3** (barras em ordem crescente) — é curto e fecha a
-  análise da KFA antes de mexer no conteúdo. Em seguida, passos 4–6 (layout, hover, atributo →
-  textos) e 7 (sentenças no KWIC).
+- **Feito:** Leitor/KFA **passos 1, 2 e 3**; Aprender **item 3** (tags dos etiquetadores).
+- **Próximo recomendado:** Leitor/KFA **passo 4** (gráfico à esquerda + tabela à direita, com
+  divisória arrastável e botões de ocultar). Em seguida, passos 5–6 (hover, atributo → textos) e
+  7 (sentenças no KWIC).
 - **Trilha paralela (Aprender):** itens 1 e 2 de `aprimoramentos.md` (conteúdo didático a partir
   dos PDFs). Podem ser feitos em sessões separadas; dependem de `materiais_para_aprimoramentos/`.
 - **Pendências transversais:** confirmar a correção visual no **Mac Intel** (color-mix/justificação)
@@ -32,7 +32,7 @@ ao lado de `materiais_para_aprimoramentos/`). Regras em `AGENTS.md`.
 
 - [x] **1. Leitor com ícone próprio** — `/leitor`, item `NAV`; `/explorar/leitor` redireciona.
 - [x] **2. KFA: "Ver análise" em rota própria** — `?tool=kfa&view=analise`; `kfaMemory` restaura.
-- [ ] **3. Barras em ordem crescente por padrão** — `galleryMemory.order` `'abs'` → `'asc'`.
+- [x] **3. Barras em ordem crescente por padrão** — `galleryMemory.order` `'abs'` → `'asc'` (feito 2026-10-04).
 - [ ] **4. Gráfico à esquerda + tabela à direita**, com divisória arrastável e botões de ocultar.
 - [ ] **5. Realce da linha inteira no mouse-over** da tabela da análise (3 temas).
 - [ ] **6. Clicar num atributo** abre a tela dos textos (decrescente, arquivo + frequência).

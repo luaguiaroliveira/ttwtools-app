@@ -91,7 +91,7 @@ const legend = computed(() => {
   return labels.value.map((text, index) => ({ index, shape: 'dot', text }))
 })
 // ordem das barras: maior módulo (padrão), crescente (mais negativo primeiro) ou decrescente (mais positivo primeiro)
-const order = ref(galleryMemory.order ?? 'abs')
+const order = ref(galleryMemory.order ?? 'asc')
 watch(order, (v) => { galleryMemory.order = v })
 const SORTERS = { abs: (a, b) => Math.abs(b.value) - Math.abs(a.value), asc: (a, b) => a.value - b.value, desc: (a, b) => b.value - a.value }
 const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value: r.Effect_Size })).sort(SORTERS[order.value]))
