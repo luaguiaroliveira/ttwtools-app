@@ -198,6 +198,21 @@ def pending_open():
     return {"path": path}
 
 
+class PendingOpenRequest(BaseModel):
+    path: str
+
+
+@router.post("/pending-open")
+def set_pending_open(req: PendingOpenRequest):
+    """Registra um arquivo para a interface abrir (casca Tauri: evento de abertura do sistema ou segunda
+    instância). Mesmo efeito do Apple Event do pywebview; a interface lê em GET /pending-open ao ganhar foco."""
+    path = Path(req.path)
+    if path.suffix.lower() not in {".ttwa", ".ttwl", ".ttwal", ".ttwc", ".ttwcl", ".ttwt"} or not path.is_file():
+        raise HTTPException(status_code=400, detail="arquivo inválido")
+    app_state.pending_open_path = str(path.resolve())
+    return {"path": app_state.pending_open_path}
+
+
 @router.get("/manifest")
 def project_manifest():
     """Returns a flat list of all exportable items in the project, grouped

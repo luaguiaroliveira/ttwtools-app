@@ -171,3 +171,12 @@ def test_salvar_e_salvar_como_com_ttwt(client, tmp_path):
     j = client.post("/api/project/saveas", json={"path": str(everything)}).json()
     assert wait_job(client, j["job_id"])["result"]["switched"] is False
     assert client.get("/api/project/info").json()["path"] == str(raw.resolve())
+
+
+def test_pending_open_post(client, v2_project, tmp_path):
+    """A casca Tauri entrega o arquivo aberto pelo sistema; a interface o lê e limpa."""
+    assert client.post("/api/project/pending-open", json={"path": str(tmp_path / "nao_existe.ttwa")}).status_code == 400
+    assert client.post("/api/project/pending-open", json={"path": str(tmp_path / "x.txt")}).status_code == 400
+    assert client.post("/api/project/pending-open", json={"path": str(v2_project)}).status_code == 200
+    assert client.get("/api/project/pending-open").json() == {"path": str(v2_project.resolve())}
+    assert client.get("/api/project/pending-open").json() == {"path": None}
