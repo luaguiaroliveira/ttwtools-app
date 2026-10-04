@@ -23,9 +23,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
-      "../dist/macos-arm64/ttwtools-server": "server"
-    },
     "macOS": {
       "minimumSystemVersion": "12.0",
       "signingIdentity": "-",
