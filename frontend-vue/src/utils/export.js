@@ -1,6 +1,9 @@
-// Exportar tabelas (CSV, TXT) e gráficos (SVG, PNG) pelo navegador.
+// Exportar tabelas (CSV, TXT) e gráficos (SVG, PNG) pelo navegador (ou, na casca Tauri, por diálogo de salvar).
+import { inShell, saveAs } from '../api/shell.js'
+
 export function download(filename, content, mime = 'text/plain;charset=utf-8') {
   const blob = content instanceof Blob ? content : new Blob([content], { type: mime })
+  if (inShell()) { saveAs(filename, blob).catch((err) => console.error('salvar:', err)); return }
   const url = URL.createObjectURL(blob)
   const a = Object.assign(document.createElement('a'), { href: url, download: filename })
   document.body.appendChild(a)

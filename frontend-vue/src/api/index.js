@@ -1,6 +1,7 @@
 // Endpoints usados pela interface (um lugar só para os caminhos).
 import { get, post, postJob } from './client.js'
 import { memoized } from './cache.js'
+import * as shell from './shell.js'
 
 const where = (w) => (w ? Object.entries(w).flatMap(([k, vs]) => [].concat(vs).map((v) => `${k}=${v}`)) : undefined)
 
@@ -35,9 +36,9 @@ export const api = {
     openUrl: (url) => post('/api/utils/open-url', { url }),
     diskUsage: () => get('/api/utils/disk-usage'),
     diskClear: () => post('/api/utils/disk-usage/clear'),
-    pickFolder: (default_location) => get('/api/utils/pick-folder', { default_location }),
-    pickFile: (default_location, kind) => get('/api/utils/pick-file', { default_location, kind }),
-    pickSave: (suggested, default_location) => get('/api/utils/pick-save', { suggested, default_location }),
+    pickFolder: (default_location) => shell.inShell() ? shell.pickFolder(default_location) : get('/api/utils/pick-folder', { default_location }),
+    pickFile: (default_location, kind) => shell.inShell() ? shell.pickFile(default_location, kind) : get('/api/utils/pick-file', { default_location, kind }),
+    pickSave: (suggested, default_location) => shell.inShell() ? shell.pickSave(suggested, default_location) : get('/api/utils/pick-save', { suggested, default_location }),
   },
   corpora: {
     list: () => get('/api/corpora'),
