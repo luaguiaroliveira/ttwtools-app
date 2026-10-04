@@ -21,8 +21,8 @@ import ParCoords from './charts/ParCoords.vue'
 import ReductionChart from './charts/ReductionChart.vue'
 const Pca3D = defineAsyncComponent(() => import('./charts/Pca3D.vue'))
 
-const props = defineProps({ kfa: Object, sides: Array, layer: String, feature: String })
-const emit = defineEmits(['select'])
+const props = defineProps({ kfa: Object, sides: Array, layer: String, feature: String, order: { type: String, default: 'asc' } })
+const emit = defineEmits(['select', 'update:order'])
 const { t } = useI18n()
 const router = useRouter()
 // clicar num texto (ponto, linha ou célula) abre o Leitor, no corpus do lado dele; o botão voltar do Leitor traz de volta
@@ -90,11 +90,9 @@ const legend = computed(() => {
   if (kind.value === 'heatmap') return [{ shape: 'heat-hi', text: t('legend.heat_hi') }, { shape: 'heat-lo', text: t('legend.heat_lo') }]
   return labels.value.map((text, index) => ({ index, shape: 'dot', text }))
 })
-// ordem das barras: maior módulo (padrão), crescente (mais negativo primeiro) ou decrescente (mais positivo primeiro)
-const order = ref(galleryMemory.order ?? 'asc')
-watch(order, (v) => { galleryMemory.order = v })
+// ordem das barras (e da tabela, que segue o mesmo seletor): maior módulo, crescente (mais negativo primeiro) ou decrescente (mais positivo primeiro)
 const SORTERS = { abs: (a, b) => Math.abs(b.value) - Math.abs(a.value), asc: (a, b) => a.value - b.value, desc: (a, b) => b.value - a.value }
-const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value: r.Effect_Size })).sort(SORTERS[order.value]))
+const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value: r.Effect_Size })).sort(SORTERS[props.order]))
 </script>
 <template>
   <section class="flex flex-col gap-2" :aria-label="t('gallery.title')">
@@ -111,7 +109,7 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
       <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="ttw-field w-24"><span class="ttw-label">{{ t('gallery.features_n') }}</span>
         <input v-model.number="nFeatures" type="number" min="2" max="40" class="input input-sm" /></label>
       <label v-if="kind === 'bars'" class="ttw-field"><span class="ttw-label">{{ t('gallery.order') }}</span>
-        <select v-model="order" class="select select-sm" data-testid="gallery-order">
+        <select :value="order" class="select select-sm" data-testid="gallery-order" @change="emit('update:order', $event.target.value)">
           <option value="abs">{{ t('gallery.order.abs') }}</option><option value="asc">{{ t('gallery.order.asc') }}</option><option value="desc">{{ t('gallery.order.desc') }}</option></select></label>
       <label v-if="kind === 'reduction'" class="ttw-field"><span class="ttw-label">{{ t('gallery.method') }}</span>
         <select v-model="method" class="select select-sm"><option value="pca2d">PCA</option><option value="tsne">t-SNE</option><option value="umap">UMAP</option><option value="mds">MDS</option></select></label>

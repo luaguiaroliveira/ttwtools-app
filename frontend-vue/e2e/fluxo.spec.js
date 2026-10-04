@@ -145,6 +145,9 @@ test('fluxo completo', async ({ page, request }, info) => {
   const asc = await firstLabel()
   await page.getByTestId('gallery-order').selectOption('desc')
   const desc = await firstLabel()
+  // a tabela segue a mesma ordenação do gráfico
+  const firstTableFeature = () => page.getByTestId('kfa-table').locator('tbody tr').first().locator('td').first().textContent()
+  expect((await firstTableFeature()).trim()).toBe(desc.trim())
   await page.getByTestId('gallery-order').selectOption('abs')
   const byAbs = await firstLabel()
   expect(new Set([asc, desc, byAbs]).size).toBeGreaterThan(1)
@@ -166,6 +169,10 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page).toHaveURL(/textos=/)
   const drawer = page.getByTestId('kfa-texts')
   await expect(drawer).toBeVisible()
+  // no alto: o etiquetador e a etiqueta; abaixo, os corpora comparados com as cores
+  await expect(drawer).toContainText(/Etiquetador|Tagger/)
+  await expect(drawer).toContainText('bawe')
+  await expect(drawer).toContainText('corifa')
   // lista única (os dois lados juntos): 1º texto com frequência (por 1000) ≥ a do 2º
   const drawerRows = drawer.locator('tbody tr')
   if ((await drawerRows.count()) > 1) {

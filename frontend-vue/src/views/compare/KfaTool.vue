@@ -75,7 +75,12 @@ function backToSetup() { const q = { ...route.query }; delete q.view; router.pus
 const showChart = ref(galleryMemory.showChart ?? true)
 const showTable = ref(galleryMemory.showTable ?? true)
 const split = ref(galleryMemory.split ?? 50)
+const order = ref(galleryMemory.order ?? 'asc')
 watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showChart: showChart.value, showTable: showTable.value, split: split.value }))
+watch(order, (v) => { galleryMemory.order = v })
+// A tabela segue a mesma ordem do gráfico (crescente, decrescente ou módulo).
+const EFFECT_SORTERS = { abs: (a, b) => Math.abs(b.Effect_Size) - Math.abs(a.Effect_Size), asc: (a, b) => a.Effect_Size - b.Effect_Size, desc: (a, b) => b.Effect_Size - a.Effect_Size }
+const tableRows = computed(() => (shown.value ? [...shown.value.rows].sort(EFFECT_SORTERS[order.value]) : []))
 
 // Clicar num atributo (barra do gráfico ou linha da tabela) abre a gaveta com os textos em que ele
 // ocorre, em ordem decrescente de frequência (arquivo + ocorrências por 1000 e absolutas). O atributo
@@ -129,15 +134,15 @@ function openReader(v) { router.push(readerTarget(v)) }
       <label class="ttw-field w-28"><span class="ttw-label flex items-center gap-1"><HelpTip term="cohens_d">{{ t('kfa.min_effect') }}</HelpTip></span><input v-model.number="f.min_effect" type="number" step="0.01" min="0" :max="maxD" class="input input-sm" data-testid="kfa-min-effect" /></label>
       <label class="ttw-field w-56"><span class="ttw-label">{{ t('kfa.min_effect_slider') }}</span><input v-model.number="f.min_effect" type="range" min="0" :max="maxD" step="0.01" class="range range-xs range-primary" data-testid="kfa-min-effect-slider" :aria-label="t('kfa.min_effect_slider')" /></label>
         <span class="text-xs text-text-muted pb-2">{{ t('kfa.min_effect_filter') }}</span>
-        <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="shown.rows" />
+        <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="tableRows" />
         <button type="button" class="btn btn-sm" :aria-pressed="showChart" data-testid="analysis-toggle-chart" @click="showChart = !showChart">{{ showChart ? t('analysis.hide_chart') : t('analysis.show_chart') }}</button>
         <button type="button" class="btn btn-sm" :aria-pressed="showTable" data-testid="analysis-toggle-table" @click="showTable = !showTable">{{ showTable ? t('analysis.hide_table') : t('analysis.show_table') }}</button></div>
       <SplitPane v-model="split" :show-left="showChart" :show-right="showTable">
-        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" @select="openTexts" />
+        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" v-model:order="order" @select="openTexts" />
         <template #right>
           <div class="ttw-scroll" data-testid="kfa-table">
             <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-              <tbody><tr v-for="r in shown.rows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+              <tbody><tr v-for="r in tableRows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
                 <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
           </div>
         </template>
@@ -148,12 +153,22 @@ function openReader(v) { router.push(readerTarget(v)) }
              :aria-label="t('kfa.tag_texts', { feature: textsFeature })" @keydown.esc="closeTexts">
           <div class="absolute inset-0 bg-black/40" @click="closeTexts" />
           <aside class="relative bg-base-100 w-full max-w-xl h-full overflow-auto p-4 flex flex-col gap-3 shadow-xl" data-testid="kfa-texts">
-            <div class="flex items-center gap-1">
-              <h2 class="text-lg font-bold">{{ t('kfa.tag_texts', { feature: textsFeature }) }}</h2>
+            <div class="flex items-start gap-1">
+              <div class="flex flex-col gap-0.5 min-w-0">
+                <h2 class="text-lg font-bold leading-tight truncate">{{ t('kfa.tag_texts', { feature: textsFeature }) }}</h2>
+                <p class="text-xs text-text-muted">{{ t('kfa.texts_tagger', { tagger: effectiveLayer }) }}</p>
+              </div>
               <TagsetInfoButton v-if="effectiveLayer" :tagger="effectiveLayer" :corpus="props.corpus" :label="effectiveLayer" />
               <button type="button" class="btn btn-sm btn-square ml-auto" autofocus data-testid="kfa-texts-back" :aria-label="t('kfa.back')" :title="t('kfa.back')" @click="closeTexts">
                 <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg>
               </button>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+              <span class="text-xs text-text-muted">{{ t('kfa.texts_compare') }}</span>
+              <span v-for="(s, i) in gallerySides" :key="i" class="flex items-center gap-1.5">
+                <span class="inline-block w-3 h-3 rounded-sm border border-base-content/20" :style="{ background: cmp.colors[i] }" aria-hidden="true" />
+                {{ s.label }}
+              </span>
             </div>
             <p v-if="!detail || detail.name !== textsFeature" class="text-sm text-text-muted" role="status">{{ t('gallery.loading') }}</p>
             <template v-else>
