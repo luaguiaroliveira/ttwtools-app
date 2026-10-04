@@ -102,6 +102,22 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page.getByTestId('kfa-table')).toHaveCount(0)
   await page.getByTestId('analysis-toggle-table').click()
   await expect(page.getByTestId('kfa-table')).toBeVisible()
+  // realce da linha inteira ao passar o mouse, inclusive a 1ª coluna fixa, nos três temas
+  {
+    const row = page.getByTestId('kfa-table').locator('tbody tr').first()
+    const firstCell = row.locator('td').first()
+    const bg = (loc) => loc.evaluate((el) => getComputedStyle(el).backgroundColor)
+    for (const theme of ['light', 'dark', 'contrast']) {
+      await page.evaluate((th) => document.documentElement.setAttribute('data-theme', th), theme)
+      await page.mouse.move(2, 2)
+      const rowBefore = await bg(row)
+      const cellBefore = await bg(firstCell)
+      await row.hover()
+      expect(await bg(row), `${theme}: linha`).not.toBe(rowBefore)
+      expect(await bg(firstCell), `${theme}: 1ª célula`).not.toBe(cellBefore)
+    }
+    await page.evaluate(() => { document.documentElement.removeAttribute('data-theme'); localStorage.removeItem('ttw.theme') })
+  }
   await page.getByTestId('analysis-toggle-chart').click()
   await expect(page.getByTestId('gallery-chart')).toHaveCount(0)
   await page.getByTestId('analysis-toggle-chart').click()

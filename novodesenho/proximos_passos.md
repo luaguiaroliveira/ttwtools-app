@@ -6,9 +6,9 @@ ao lado de `materiais_para_aprimoramentos/`). Regras em `AGENTS.md`.
 
 ## Retomar aqui (2026-10-04)
 
-- **Feito:** Leitor/KFA **passos 1, 2, 3 e 4**; Aprender **item 3** (tags dos etiquetadores).
-- **Próximo recomendado:** Leitor/KFA **passo 5** (realce da linha inteira no mouse-over da tabela
-  da análise). Em seguida, passo 6 (atributo → textos) e 7 (sentenças no KWIC).
+- **Feito:** Leitor/KFA **passos 1, 2, 3, 4 e 5**; Aprender **item 3** (tags dos etiquetadores).
+- **Próximo recomendado:** Leitor/KFA **passo 6** (clicar num atributo → tela dos textos, decrescente,
+  arquivo + frequência). Em seguida, passo 7 (sentenças no KWIC).
 - **Trilha paralela (Aprender):** itens 1 e 2 de `aprimoramentos.md` (conteúdo didático a partir
   dos PDFs). Podem ser feitos em sessões separadas; dependem de `materiais_para_aprimoramentos/`.
 - **Pendências transversais:** confirmar a correção visual no **Mac Intel** (color-mix/justificação)
@@ -34,7 +34,8 @@ ao lado de `materiais_para_aprimoramentos/`). Regras em `AGENTS.md`.
 - [x] **3. Barras em ordem crescente por padrão** — `galleryMemory.order` `'abs'` → `'asc'` (feito 2026-10-04).
 - [x] **4. Gráfico à esquerda + tabela à direita** (`SplitPane.vue`), com divisória arrastável
   (mouse/toque/teclado) e botões de ocultar; estado em `galleryMemory`; empilha em ≤1023px (feito 2026-10-04).
-- [ ] **5. Realce da linha inteira no mouse-over** da tabela da análise (3 temas).
+- [x] **5. Realce da linha inteira no mouse-over** da tabela da análise (3 temas) — a 1ª coluna fixa
+  bloqueava o realce; agora acompanha a linha (feito 2026-10-04).
 - [ ] **6. Clicar num atributo** abre a tela dos textos (decrescente, arquivo + frequência).
 - [ ] **7. Por texto: abrir no Leitor e ver as sentenças** com o atributo (filtro `filename` no KWIC).
 

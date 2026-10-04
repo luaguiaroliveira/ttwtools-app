@@ -14,8 +14,8 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Retomar aqui
 
-- **Estado:** Passos 1, 2, 3 e 4 **feitos** (4/7).
-- **Próximo passo:** Passo 5 (realce da linha inteira no mouse-over da tabela da análise; 5 e 6 são independentes entre si).
+- **Estado:** Passos 1, 2, 3, 4 e 5 **feitos** (5/7).
+- **Próximo passo:** Passo 6 (clicar num atributo abre a tela dos textos, em ordem decrescente com arquivo e frequência).
 - **Decisões (tomadas em 2026-10-04):** Passo 2 = tela de análise como **rota própria**; Passo 7 = **filtro `filename` novo** no KWIC (reusar `kwic`/`search`, não criar função de sentenças).
 - **Ordem:** 1 → 2 → 3 → 4 → 5 → 6 → 7 (3, 4 e 5 são independentes entre si, mas ficam na tela do Passo 2).
 
@@ -108,7 +108,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 5 — Realce da linha inteira ao passar o mouse na tabela
 
-- [ ] feito — Feito: _data / agente / commit / notas_
+- [x] feito — Feito: 2026-10-04, opencode; a 1ª coluna fixa (`.ttw-scroll .table tbody :first-child`) tinha fundo `--color-base-100` opaco com especificidade maior que `tbody tr:hover`, então bloqueava o realce só naquela célula. Agora a 1ª célula acompanha a zebra e o realce (fundo opaco próprio, pois é sticky); o `tr:hover` passou de 10 % para 12 % de `--color-primary`. Vale nos três temas (o build troca `oklab`→`srgb`). e2e `fluxo.spec.js` confere, nos temas claro/escuro/contraste, que o fundo da linha e o da 1ª célula mudam no mouse-over. `npm test` 45/45, `npm run e2e` 30/30 (sem mudança no pacote).
 
 **Objetivo.** Na tabela da análise (Passo 2), passar o mouse destaca a linha inteira.
 
