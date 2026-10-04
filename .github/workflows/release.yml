@@ -11,9 +11,17 @@ on:
     branches:
       - "release-test/**"
   workflow_dispatch:
+    inputs:
+      shell:
+        description: "Casca da janela: tauri (padrão desde a 0.7) ou pywebview (pacote antigo, para comparar)"
+        type: choice
+        options: [tauri, pywebview]
+        default: tauri
 
 env:
   PYTHONUTF8: "1"
+  SHELL_KIND: ${{ inputs.shell || 'tauri' }}
+  TAURI_CLI: "2.11.5"   # a 2.12 exige rustc 1.90; ver novodesenho/tauri.md
 
 jobs:
   validate:
@@ -75,10 +83,49 @@ jobs:
           path: build/_work
           key: pyinstaller-${{ matrix.name }}-${{ hashFiles('environment.yml', 'build/constraints-*.txt', 'build/ttwtools-app.spec') }}
 
+      # ── Casca Tauri (Rust): só quando SHELL_KIND = tauri ──────────────
+      - name: Rust
+        if: env.SHELL_KIND == 'tauri'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache do Rust (dependências e compilação)
+        if: env.SHELL_KIND == 'tauri'
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Dependências do Tauri no Linux
+        if: env.SHELL_KIND == 'tauri' && runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev patchelf
+
+      - name: Cache do tauri-cli
+        if: env.SHELL_KIND == 'tauri'
+        id: tauri-cli
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/cargo-tauri*
+          key: tauri-cli-${{ env.TAURI_CLI }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: tauri-cli
+        if: env.SHELL_KIND == 'tauri' && steps.tauri-cli.outputs.cache-hit != 'true'
+        run: cargo install tauri-cli --version =${{ env.TAURI_CLI }} --locked
+
       # build.py: dependências, frontend, PyInstaller, --selftest do binário,
       # check_macos_min (macOS) e pacote em dist/release/.
-      - name: Build
+      # Com Tauri: build.py faz só o servidor e tauri_app.py monta a janela + servidor e empacota.
+      - name: Build (pywebview)
+        if: env.SHELL_KIND != 'tauri'
         run: python build/build.py --install-deps
+
+      - name: Build do servidor (Tauri)
+        if: env.SHELL_KIND == 'tauri'
+        run: python build/build.py --install-deps --shell tauri
+
+      - name: Janela Tauri e pacote
+        if: env.SHELL_KIND == 'tauri'
+        run: python build/tauri_app.py --package
 
       # ── Assinatura (D4, pendente) ─────────────────────────────────────
       # macOS: precisa de conta Apple Developer, certificado "Developer ID

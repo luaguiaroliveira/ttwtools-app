@@ -56,8 +56,10 @@ fn resolve_server(app: &tauri::App) -> Option<PathBuf> {
         return Some(PathBuf::from(path));
     }
     let name = if cfg!(windows) { "ttwtools-server.exe" } else { "ttwtools-server" };
-    let packaged = app.path().resource_dir().ok()?.join("server").join(name);
-    packaged.is_file().then_some(packaged)
+    // macOS: Contents/Resources/server; Windows e Linux (pasta portátil): `server/` ao lado do executável
+    let beside = std::env::current_exe().ok().and_then(|exe| Some(exe.parent()?.join("server").join(name)));
+    let packaged = app.path().resource_dir().ok().map(|dir| dir.join("server").join(name));
+    [packaged, beside].into_iter().flatten().find(|path| path.is_file())
 }
 
 fn spawn_server(port: u16, open: Option<&str>, server: Option<PathBuf>) -> std::io::Result<Child> {
