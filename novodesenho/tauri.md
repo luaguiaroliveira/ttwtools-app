@@ -156,6 +156,10 @@ Medido (mediana de 3; o pywebview da linha de base roda **do código-fonte**, en
 **`.dmg` (2026-10-04):** `python build/tauri_app.py --dmg` gera `dist/release/TTWtools-tauri-macos-arm64.dmg` (294 MB, `hdiutil verify` ok) com `ditto` + `hdiutil` a partir do `.app` já corrigido; **não** use `--bundles dmg` do Tauri (reempacotaria os links como arquivos). Abrir o `.dmg` e arrastar para Applications: não verificado.
 **Problemas abertos:** (2) Falta: alvo Intel (12.0); Windows e Linux; CI com Rust. (3) O alvo `dist/macos-arm64/ttwtools-server` está fixo em `tauri.conf.json`: para outros alvos usar `--config` com sobreposição.
 
+## 5f. F4 pelo CI do GitHub (2026-10-04)
+
+Decisão: Windows, Linux e Mac Intel saem do `release.yml` (ver `plano.md` seção 1 para a montagem). `tauri_app.py` agora é multiplataforma (`--package`); no macOS a saída é `dist/<alvo>/TTWtools.app`, nos outros `dist/<alvo>/TTWtools/` (pasta portátil sem instalador: `cargo tauri build --no-bundle`, com `bundle.resources` e `bundle.macOS` anulados por `--config` com `null`). Primeiro teste do pipeline: branch `release-test/tauri-0.7` (run abaixo). **Estado do CI:** (preencher)
+
 ## 6. Riscos
 
 1. Downloads de `Blob` e diálogos em página `http://` dentro do WKWebView/Tauri (itens 3 e 4).
