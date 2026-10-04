@@ -92,10 +92,10 @@ test('fluxo completo', async ({ page, request }, info) => {
   // 6. KFA
   await page.goto('/#/comparar?tool=kfa')
   await page.getByTestId('kfa-run').click()
-  await expect(page.getByRole('status').filter({ hasText: /atributos|features/ })).toBeVisible()
-  // a análise (visualizações, |d| mínimo e tabela) abre em rota própria
-  await page.getByTestId('kfa-view-analysis').click()
+  // a análise (visualizações, |d| mínimo e tabela) abre em painel de tela cheia, deslizando da direita
   await expect(page).toHaveURL(/view=analise/)
+  await expect(page.getByTestId('kfa-analysis')).toBeVisible()
+  await expect(page.getByTestId('kfa-results')).toContainText(/atributos|features/)
   // gráfico à esquerda + tabela à direita: botões ocultam/mostram cada lado
   await expect(page.getByTestId('kfa-table')).toBeVisible()
   await page.getByTestId('analysis-toggle-table').click()

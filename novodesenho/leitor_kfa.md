@@ -54,7 +54,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 2 — KFA: botão "Ver análise" abre a tela de análise isolada
 
-- [x] feito — Feito: 2026-10-04, opencode; rota própria `?tool=kfa&view=analise`. Na tela de configuração ficam o formulário, o aviso de recálculo, o resumo e o botão **Ver análise** (`kfa-view-analysis`); a análise (|d| mínimo, `ChartGallery`, detalhe e tabela) só aparece com `view=analise`, com botão `kfa-back` (`kfa.back_to_setup`). `kfaMemory` restaura sem recalcular. i18n `kfa.view_analysis`/`kfa.back_to_setup`. e2e atualizado. **Falta conferir no Mac Intel.**
+- [x] feito — Feito: 2026-10-04, opencode; rota própria `?tool=kfa&view=analise`. Na tela de configuração ficam o formulário, o aviso de recálculo, o resumo e o botão **Ver análise** (`kfa-view-analysis`); a análise (|d| mínimo, `ChartGallery`, tabela) só aparece com `view=analise`, com botão `kfa-back` (`kfa.back_to_setup`). `kfaMemory` restaura sem recalcular. i18n `kfa.view_analysis`/`kfa.back_to_setup`. e2e atualizado. **Ampliado (2026-10-04):** a análise virou **painel de tela cheia que desliza da direita** e **abre sozinho quando a KFA termina de calcular** (o botão *Ver análise* continua para reabrir após voltar); a tabela segue a **mesma ordem** do gráfico (crescente/decrescente/módulo). **Falta conferir no Mac Intel.**
 
 **Objetivo.** Separar a configuração/execução da KFA da tela que mostra as visualizações. Clicar em **Ver análise** expande uma tela isolada (com botão de voltar) contendo o seletor de |d| mínimo, os ícones de tipo de visualização, o gráfico e a tabela.
 

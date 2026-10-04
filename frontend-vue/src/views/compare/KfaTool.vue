@@ -47,6 +47,7 @@ async function run() {
   try {
     data.value = await api.compare.kfa({ corpus1: s1.corpus, corpus2: s2.corpus, where1: s1.where, where2: s2.where,
       layer: effectiveLayer.value, feature: f.value.feature || undefined, metric: cmp.metric, min_effect: 0 }, { onJob: (j) => { job.value = j; jobId = j.id } })
+    openAnalysis()
   } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
 const maxD = computed(() => Math.max(1, Math.ceil(Math.max(0, ...(data.value?.rows ?? []).map((r) => Math.abs(r.Effect_Size))) * 10) / 10))
@@ -121,8 +122,12 @@ function openReader(v) { router.push(readerTarget(v)) }
 <template>
   <section class="flex flex-col gap-3">
     <BusyModal :open="busy" :delay="350" :title="t('compare.calculating')" :message="t('compare.calculating_hint')" :job="job" @cancel="jobId && api.jobs.cancel(jobId)" />
-    <!-- Tela de análise isolada, em rota própria: só as visualizações, o |d| mínimo e a tabela. -->
+    <!-- Análise isolada: painel de tela cheia que desliza da direita (abre ao calcular). -->
     <template v-if="analyzing && data">
+    <Transition name="ttw-slide">
+      <div class="fixed inset-0 z-30 bg-base-100 flex flex-col" role="region"
+           :aria-label="t('kfa.view_analysis')" data-testid="kfa-analysis">
+      <header class="shrink-0 flex flex-col gap-2 border-b border-base-300 p-3 bg-base-100">
       <div class="flex flex-wrap items-center gap-2">
         <button type="button" class="btn btn-sm" data-testid="kfa-back" @click="backToSetup">
           <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5" /></svg>
@@ -137,6 +142,8 @@ function openReader(v) { router.push(readerTarget(v)) }
         <CopyCode analysis="kfa" :params="copyParams" /><ExportMenu name="kfa" :rows="tableRows" />
         <button type="button" class="btn btn-sm" :aria-pressed="showChart" data-testid="analysis-toggle-chart" @click="showChart = !showChart">{{ showChart ? t('analysis.hide_chart') : t('analysis.show_chart') }}</button>
         <button type="button" class="btn btn-sm" :aria-pressed="showTable" data-testid="analysis-toggle-table" @click="showTable = !showTable">{{ showTable ? t('analysis.hide_table') : t('analysis.show_table') }}</button></div>
+      </header>
+      <div class="flex-1 min-h-0 overflow-auto p-3">
       <SplitPane v-model="split" :show-left="showChart" :show-right="showTable">
         <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" v-model:order="order" @select="openTexts" />
         <template #right>
@@ -147,6 +154,7 @@ function openReader(v) { router.push(readerTarget(v)) }
           </div>
         </template>
       </SplitPane>
+      </div>
       <!-- Gaveta dos textos do atributo: desliza à direita, sempre com botão de voltar (e Esc). -->
       <Transition name="ttw-texts">
         <div v-if="textsOpen" class="fixed inset-0 z-40 flex justify-end" role="dialog" aria-modal="true"
@@ -196,6 +204,8 @@ function openReader(v) { router.push(readerTarget(v)) }
           </aside>
         </div>
       </Transition>
+      </div>
+    </Transition>
     </template>
 
     <!-- Configuração e execução: rodata a KFA e abre a análise. -->
@@ -231,4 +241,8 @@ function openReader(v) { router.push(readerTarget(v)) }
   .ttw-texts-enter-active, .ttw-texts-leave-active,
   .ttw-texts-enter-active aside, .ttw-texts-leave-active aside { transition: none; }
 }
+/* A análise entra deslizando da direita (tela cheia, sem rolagem da página atrás). */
+.ttw-slide-enter-active, .ttw-slide-leave-active { transition: transform 0.22s ease; }
+.ttw-slide-enter-from, .ttw-slide-leave-to { transform: translateX(100%); }
+@media (prefers-reduced-motion: reduce) { .ttw-slide-enter-active, .ttw-slide-leave-active { transition: none; } }
 </style>
