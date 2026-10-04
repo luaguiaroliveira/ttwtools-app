@@ -4,6 +4,13 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+> Linha **0.7 (experimental)**: a janela do aplicativo passa de pywebview para **Tauri** (Rust), sem mudar a interface nem o servidor.
+
+### Alterado
+
+- **Casca Tauri** no lugar do pywebview: mesma interface (comparação visual idêntica), abertura da interface ≈13 % mais rápida e ≈6 % menos memória no macOS arm64 (`novodesenho/tauri.md`). Diálogos do sistema, exportação, duplo clique em arquivos do TTWtools (também com o aplicativo já aberto) e instância única funcionam como antes.
+- **Pacotes pelo CI nos 4 sistemas:** macOS (`.dmg`, arm64 e Intel/macOS 12), Windows (`.zip` portátil) e Linux (`.tar.gz`, precisa de `libwebkit2gtk-4.1` instalado). Sem assinatura nem notarização: no macOS use botão direito → Abrir; no Windows o SmartScreen avisa.
+
 ## [0.6.0] — 2026-09-30
 
 > Linha **0.6**: abrir arquivos grandes deixa de ser lento, o formato das camadas fica bem menor e Comparar ganha uma barra de comparação, mais gráficos interativos e ícones próprios para cada formato de arquivo.
