@@ -17,6 +17,7 @@ use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
 use tauri::{Manager, RunEvent, WebviewUrl, WebviewWindowBuilder};
+use tauri_plugin_dialog::DialogExt;
 
 const EXTENSIONS: [&str; 6] = ["ttwa", "ttwl", "ttwal", "ttwc", "ttwcl", "ttwt"];
 
@@ -87,6 +88,99 @@ fn stop(server: &Server) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Comandos chamados pela interface (window.__TAURI__.core.invoke) no lugar das rotas
+// /api/utils/pick-* e do download por Blob, que no pywebview dependiam da janela do pywebview.
+// Devolvem o caminho escolhido, ou None se o usuário cancelar (como a rota devolve 204).
+// ---------------------------------------------------------------------------
+
+fn path_text(path: tauri_plugin_dialog::FilePath) -> Option<String> {
+    path.into_path().ok().map(|p| p.display().to_string())
+}
+
+#[tauri::command]
+async fn pick_file(app: tauri::AppHandle, directory: Option<String>, extensions: Vec<String>) -> Option<String> {
+    let mut dialog = app.dialog().file();
+    if !extensions.is_empty() {
+        let exts: Vec<&str> = extensions.iter().map(String::as_str).collect();
+        dialog = dialog.add_filter("TTWtools", &exts);
+    }
+    if let Some(dir) = directory.filter(|d| !d.is_empty()) {
+        dialog = dialog.set_directory(dir);
+    }
+    dialog.blocking_pick_file().and_then(path_text)
+}
+
+#[tauri::command]
+async fn pick_save(app: tauri::AppHandle, directory: Option<String>, filename: String, extensions: Vec<String>) -> Option<String> {
+    let mut dialog = app.dialog().file().set_file_name(filename);
+    if !extensions.is_empty() {
+        let exts: Vec<&str> = extensions.iter().map(String::as_str).collect();
+        dialog = dialog.add_filter("TTWtools", &exts);
+    }
+    if let Some(dir) = directory.filter(|d| !d.is_empty()) {
+        dialog = dialog.set_directory(dir);
+    }
+    dialog.blocking_save_file().and_then(path_text)
+}
+
+#[tauri::command]
+async fn pick_folder(app: tauri::AppHandle, directory: Option<String>) -> Option<String> {
+    let mut dialog = app.dialog().file();
+    if let Some(dir) = directory.filter(|d| !d.is_empty()) {
+        dialog = dialog.set_directory(dir);
+    }
+    dialog.blocking_pick_folder().and_then(path_text)
+}
+
+/// Grava os bytes do corpo da chamada (binário, sem JSON) no caminho do cabeçalho `path` (percent-encoded).
+#[tauri::command]
+fn save_file(request: tauri::ipc::Request<'_>) -> Result<(), String> {
+    let tauri::ipc::InvokeBody::Raw(data) = request.body() else {
+        return Err("corpo binário esperado".into());
+    };
+    let raw = request.headers().get("path").and_then(|v| v.to_str().ok()).ok_or("cabeçalho path ausente")?;
+    let path = percent_encoding::percent_decode_str(raw).decode_utf8().map_err(|e| e.to_string())?;
+    std::fs::write(path.as_ref(), data).map_err(|e| format!("{path}: {e}"))
+}
+
+// ---------------------------------------------------------------------------
+// Autoteste da ponte (TTW_TAURI_SELFTEST=<pasta>): quando a página do servidor termina de carregar,
+// ela chama save_file e selftest_done pela origem http://127.0.0.1. O resultado vai para
+// <pasta>/selftest.txt e o processo sai com 0 (ok) ou 1. Prova que a permissão remota funciona.
+// ---------------------------------------------------------------------------
+
+const SELFTEST_BYTES: [u8; 4] = [1, 2, 3, 250];
+
+#[tauri::command]
+fn selftest_done(app: tauri::AppHandle, ok: bool, detail: String) {
+    let dir = std::env::var("TTW_TAURI_SELFTEST").unwrap_or_default();
+    let written = std::fs::read(format!("{dir}/selftest.bin")).unwrap_or_default();
+    let ok = ok && written == SELFTEST_BYTES;
+    let _ = std::fs::write(format!("{dir}/selftest.txt"), format!("{}: {detail}\n", if ok { "OK" } else { "FALHOU" }));
+    app.exit(if ok { 0 } else { 1 });
+}
+
+fn selftest_script(dir: &str) -> String {
+    let path = format!("{dir}/selftest.bin");
+    let beacon = std::env::var("TTW_TAURI_SELFTEST_BEACON").unwrap_or_default(); // porta de um listener de diagnóstico
+    format!(
+        r#"(async () => {{
+  const T = window.__TAURI__;
+  const beacon = (m) => {{ const p = {beacon:?}; if (p) new Image().src = 'http://127.0.0.1:' + p + '/?' + encodeURIComponent(m); }};
+  beacon('start tauri=' + typeof T + ' origin=' + location.origin);
+  try {{
+    if (!T) throw new Error('window.__TAURI__ ausente na origem ' + location.origin);
+    await T.core.invoke('save_file', new Uint8Array([1, 2, 3, 250]), {{ headers: {{ path: encodeURIComponent({path:?}) }} }});
+    await T.core.invoke('selftest_done', {{ ok: true, detail: 'save_file e IPC pela origem ' + location.origin }});
+  }} catch (e) {{
+    beacon('erro: ' + String(e));
+    try {{ await T.core.invoke('selftest_done', {{ ok: false, detail: String(e) }}); }} catch (_) {{}}
+  }}
+}})()"#
+    )
+}
+
 fn main() {
     let (arg_port, open) = parse_args();
     let port = arg_port
@@ -94,6 +188,21 @@ fn main() {
         .unwrap_or_else(free_port);
 
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
+        .invoke_handler(tauri::generate_handler![pick_file, pick_save, pick_folder, save_file, selftest_done])
+        .on_page_load(|webview, payload| {
+            if let Ok(dir) = std::env::var("TTW_TAURI_SELFTEST") {
+                use std::io::Write as _;
+                if let Ok(mut log) = std::fs::OpenOptions::new().create(true).append(true).open(format!("{dir}/pageload.log")) {
+                    let _ = writeln!(log, "{:?} {}", payload.event(), payload.url());
+                }
+            }
+            if let (Ok(dir), tauri::webview::PageLoadEvent::Finished) = (std::env::var("TTW_TAURI_SELFTEST"), payload.event()) {
+                if payload.url().host_str() == Some("127.0.0.1") {
+                    let _ = webview.eval(selftest_script(&dir));
+                }
+            }
+        })
         .setup(move |app| {
             let child = spawn_server(port, open.as_deref())?;
             app.manage(Server(Mutex::new(Some(child))));

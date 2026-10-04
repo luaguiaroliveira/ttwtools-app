@@ -1,7 +1,8 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Spike F1: a janela só carrega o servidor local; sem permissões extras ainda.",
+  "description": "A janela carrega a interface servida pelo app Python em http://127.0.0.1 (origem remota para o Tauri): só ela chama os comandos do app (diálogos e gravação de arquivo).",
   "windows": ["main"],
-  "permissions": []
+  "remote": { "urls": ["http://127.0.0.1:*", "http://localhost:*"] },
+  "permissions": ["allow-pick-file", "allow-pick-save", "allow-pick-folder", "allow-save-file", "allow-selftest-done"]
 }
