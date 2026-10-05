@@ -93,10 +93,11 @@ function compareRows(a, b) {
   return sortDir.value === 'asc' ? va - vb : vb - va
 }
 const tableRows = computed(() => (shown.value ? [...shown.value.rows].sort(compareRows) : []))
-// Clicar no cabeçalho escolhe a coluna e alterna ↑/↓; o controle no topo da galeria (↑/↓/módulo) também vale.
+// Clicar no cabeçalho escolhe a coluna e alterna a direção; em d, passa também pelo módulo (↑ → ↓ → |·|).
 function sortBy(key) {
-  if (sortKey.value === key) sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
-  else { sortKey.value = key; sortDir.value = 'asc' }
+  if (sortKey.value !== key) { sortKey.value = key; sortDir.value = 'asc'; return }
+  if (key === 'Effect_Size') sortDir.value = sortDir.value === 'asc' ? 'desc' : sortDir.value === 'desc' ? 'abs' : 'asc'
+  else sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
 }
 const arrow = (key) => (sortKey.value !== key ? '' : sortDir.value === 'asc' ? '↑' : sortDir.value === 'desc' ? '↓' : '|·|')
 function setOrder(dir) { sortKey.value = 'Effect_Size'; sortDir.value = dir }

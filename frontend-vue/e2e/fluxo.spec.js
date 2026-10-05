@@ -160,6 +160,11 @@ test('fluxo completo', async ({ page, request }, info) => {
   await countHeader.click()
   expect(await firstCount()).toBeGreaterThanOrEqual(c1)   // mesma coluna: asc → desc
   await page.getByTestId('gallery-order-asc').click()   // volta a ordenar por d
+  // no cabeçalho de d, o clique também passa pelo módulo (↑ → ↓ → |·|)
+  await page.getByTestId('kfa-sort-d').click()   // desc
+  await page.getByTestId('kfa-sort-d').click()   // módulo
+  await expect(page.getByTestId('kfa-sort-d')).toContainText('|·|')
+  await page.getByTestId('gallery-order-asc').click()
   // barras: a altura e a quantidade são controláveis e a área rola (nada de atributo cortado)
   const nBars = () => page.locator('[data-testid=bars-scroll] g[role=button]').count()
   const all = await nBars()
