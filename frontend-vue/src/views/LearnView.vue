@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { api } from '../api/index.js'
 import { markdown } from '../utils/markdown.js'
 import { startTour } from '../composables/useTour.js'
+import KfaWidget from '../components/KfaWidget.vue'
 import CohenDVisual from '../components/CohenDVisual.vue'
 import TaggerTags from '../components/TaggerTags.vue'
 const { t, locale } = useI18n()
@@ -18,6 +19,8 @@ watch([q, locale], async () => { topics.value = (await api.help.topics(locale.va
 watch(() => [route.params.topic, locale.value], async ([id]) => {
   topic.value = id ? await api.help.topic(id, locale.value).catch(() => null) : null
 }, { immediate: true })
+// O marcador "::cohen-widget::" no corpo do tópico vira o widget interativo da KFA.
+const parts = computed(() => (topic.value?.body || '').split(/^::cohen-widget::$/m))
 const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || 'outros'] ||= []).push(x); return acc }, {}))
 </script>
 <template>
@@ -29,7 +32,10 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
       <p class="opacity-80">{{ topic.summary }}</p>
       <p v-if="topic.fallback" class="alert alert-info text-sm py-1">{{ t('learn.fallback') }}</p>
       <CohenDVisual v-if="topic.id === 'cohens_d'" />
-      <div class="help-body flex flex-col gap-2" v-html="markdown(topic.body)" />
+      <template v-for="(part, i) in parts" :key="i">
+        <KfaWidget v-if="i > 0" />
+        <div class="help-body flex flex-col gap-2" v-html="markdown(part)" />
+      </template>
       <TaggerTags v-if="topic.id === 'tags_etiquetadores'" />
       <p v-if="topic.related.length" class="text-sm">{{ t('learn.related') }}:
         <RouterLink v-for="r in topic.related" :key="r" :to="`/aprender/${r}`" class="link mr-2">{{ r }}</RouterLink></p>
@@ -53,5 +59,14 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 <style scoped>
 .help-body :deep(h3) { font-weight: 700; margin-top: .5rem; }
 .help-body :deep(ul) { list-style: disc; padding-left: 1.25rem; }
+.help-body :deep(h2) { font-weight: 700; font-size: 1.15rem; margin-top: 1rem; }
+.help-body :deep(ol) { list-style: decimal; padding-left: 1.25rem; }
+.help-body :deep(blockquote) { border-left: 4px solid var(--color-primary); padding: .25rem .75rem; background: var(--color-base-200); border-radius: 0 .5rem .5rem 0; }
+.help-body :deep(table) { border-collapse: collapse; width: 100%; font-size: .9rem; }
+.help-body :deep(th), .help-body :deep(td) { border: 1px solid var(--color-base-300); padding: .3rem .5rem; text-align: left; }
+.help-body :deep(th) { background: var(--color-base-200); }
+.help-body :deep(details) { border: 1px solid var(--color-base-300); border-radius: .5rem; padding: .35rem .75rem; }
+.help-body :deep(summary) { cursor: pointer; }
+.help-body :deep(hr) { border-color: var(--color-base-300); }
 .help-body :deep(pre) { background: var(--color-base-200); padding: .5rem; border-radius: .5rem; overflow-x: auto; }
 </style>
