@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bandAlpha, bandCounts, clauseOf, combinedDensity, contribution, countsMatrix, density, queryColor, sortRows } from '../utils/dispersion.js'
+import { bandAlpha, bandCounts, clauseOf, combinedDensity, contribution, countsMatrix, density, queryColor, sortRows, tagOf } from '../utils/dispersion.js'
 
 describe('dispersion', () => {
   it('conta ocorrências por faixa e encaixa 1 na última', () => {
@@ -30,6 +30,12 @@ describe('dispersion', () => {
     expect(clauseOf('black cat &tag=NN')).toEqual({ kind: 'tag', value: 'NN' })
     expect(clauseOf('pos=NOUN')).toEqual({ kind: 'pos', value: 'NOUN' })
     expect(clauseOf('the')).toBeNull()
+  })
+  it('etiqueta única vira a cor da camada; `|` e texto livre não', () => {
+    expect(tagOf('pos=NOUN')).toBe('NOUN')
+    expect(tagOf('the&tag=NN')).toBe('NN')
+    expect(tagOf('tag=NN|JJ')).toBeNull()
+    expect(tagOf('the')).toBeNull()
   })
   it('cor categórica estável por consulta', () => {
     expect(queryColor(0)).toBe('#C2500C')

@@ -15,6 +15,13 @@ export function clauseOf(query) {
   return null
 }
 
+// Etiqueta de uma consulta quando ela é só a etiqueta (sem `|`, ou seja, uma etiqueta = uma camada);
+// consultas de texto livre ou com várias etiquetas devolvem `null` e mantêm a cor categórica própria.
+export function tagOf(query) {
+  const cl = clauseOf(query)
+  return cl && !cl.value.includes('|') ? cl.value : null
+}
+
 // Quantas ocorrências caem em cada faixa (posições relativas 0..1).
 export function bandCounts(positions, nBands) {
   const out = new Array(Math.max(0, nBands)).fill(0)

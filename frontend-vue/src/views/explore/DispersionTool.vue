@@ -9,7 +9,7 @@ import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import DispersionChart from '../../components/charts/DispersionChart.vue'
 import { useTagColors } from '../../stores/tagColors.js'
-import { clauseOf, queryColor } from '../../utils/dispersion.js'
+import { clauseOf, queryColor, tagOf } from '../../utils/dispersion.js'
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const router = useRouter()
@@ -76,7 +76,6 @@ const rows = computed(() => {
 })
 // Uma etiqueta = uma consulta/camada: quando a consulta é a etiqueta (sem `|`), a cor vem do
 // seletor de etiquetas; consultas de texto livre mantêm a cor categórica própria.
-const tagOf = (query) => { const cl = clauseOf(query); return cl && !cl.value.includes('|') ? cl.value : null }
 const colors = computed(() => queries.value.map((c) => { const tg = tagOf(c.q); return tg ? tagColors.color(tg) : c.color }))
 const tableColumns = computed(() => ['file', ...queries.value.map((c) => c.q), 'total'])
 const tableRows = computed(() => rows.value.map((r) => {
