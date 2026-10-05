@@ -8,10 +8,12 @@ import HelpTip from '../../components/HelpTip.vue'
 import CopyCode from '../../components/CopyCode.vue'
 import ExportMenu from '../../components/ExportMenu.vue'
 import DispersionChart from '../../components/charts/DispersionChart.vue'
+import { useTagColors } from '../../stores/tagColors.js'
 import { clauseOf, queryColor } from '../../utils/dispersion.js'
 const props = defineProps({ corpus: String, layer: String })
 const { t } = useI18n()
 const router = useRouter()
+const tagColors = useTagColors()
 const chart = ref(null)
 const rowH = ref(14)      // altura de cada linha (px): menor = mais textos visíveis de uma vez
 const nBands = ref(10)    // faixas de posição (5 a 20); 10 = deciles
@@ -72,7 +74,10 @@ const rows = computed(() => {
   return base.map((d) => ({ filename: d.filename, size: d.size,
     cells: maps.map((m) => m.get(d.filename) ?? { positions: [], freq: 0, size: d.size }) }))
 })
-const colors = computed(() => queries.value.map((c) => c.color))
+// Uma etiqueta = uma consulta/camada: quando a consulta é a etiqueta (sem `|`), a cor vem do
+// seletor de etiquetas; consultas de texto livre mantêm a cor categórica própria.
+const tagOf = (query) => { const cl = clauseOf(query); return cl && !cl.value.includes('|') ? cl.value : null }
+const colors = computed(() => queries.value.map((c) => { const tg = tagOf(c.q); return tg ? tagColors.color(tg) : c.color }))
 const tableColumns = computed(() => ['file', ...queries.value.map((c) => c.q), 'total'])
 const tableRows = computed(() => rows.value.map((r) => {
   const o = { file: r.filename }
@@ -90,7 +95,8 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
     <div v-if="queries.length" class="flex flex-wrap items-center gap-1 text-xs" data-testid="disp-queries">
       <span class="text-text-muted mr-1">{{ t('explore.disp_queries') }}:</span>
       <span v-for="(c, i) in queries" :key="`${c.q}-${i}`" class="badge badge-ghost gap-1 font-mono">
-        <input type="color" :value="c.color" class="h-4 w-4 shrink-0 cursor-pointer rounded border border-base-300 bg-transparent p-0" :aria-label="t('explore.disp_color', { query: c.q })" :data-testid="`disp-color-${i}`" @input="setColor(i, $event.target.value)" />{{ c.q }}
+        <input v-if="!tagOf(c.q)" type="color" :value="c.color" class="h-4 w-4 shrink-0 cursor-pointer rounded border border-base-300 bg-transparent p-0" :aria-label="t('explore.disp_color', { query: c.q })" :data-testid="`disp-color-${i}`" @input="setColor(i, $event.target.value)" />
+        <span v-else class="inline-block w-3.5 h-3.5 shrink-0 rounded-full border border-base-300" :style="{ background: colors[i] }" :title="t('reader.color')" :data-testid="`disp-dot-${i}`" />{{ c.q }}
         <button type="button" class="cursor-pointer text-text-muted hover:text-error" :aria-label="t('explore.disp_remove', { query: c.q })" :data-testid="`disp-remove-${i}`" @click="removeQuery(i)">×</button>
       </span>
       <button type="button" class="btn btn-xs btn-ghost" data-testid="disp-clear" @click="clearQueries">{{ t('explore.disp_clear') }}</button>
@@ -100,7 +106,7 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
     <template v-if="data && data.length">
       <div class="flex flex-col gap-0.5">
         <p v-for="(r, qi) in data" :key="`dp-${qi}`" role="status" class="font-medium flex items-center gap-1.5">
-          <span class="inline-block w-2.5 h-2.5 rounded-full" :style="{ background: queries[qi].color }" aria-hidden="true" />
+          <span class="inline-block w-2.5 h-2.5 rounded-full" :style="{ background: colors[qi] }" aria-hidden="true" />
           <span class="font-mono">{{ r.query }}</span>
           <span>{{ t('explore.dp', { dp: f3(r.dp), dp_norm: f3(r.dp_norm), range: r.range, documents: r.documents }) }}</span>
           <HelpTip v-if="qi === 0" topic="dispersao" />
@@ -124,7 +130,7 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
       <figure class="flex flex-col gap-1">
         <figcaption v-if="view === 'table'" class="text-sm">{{ t('explore.disp_table') }}</figcaption>
         <figcaption v-else class="text-sm">{{ view === 'heat' ? t('explore.disp_heat_caption') : t('explore.barcode') }}</figcaption>
-        <table v-if="view === 'table'" class="table table-xs"><thead><tr><th>{{ t('explore.file') }}</th><th v-for="r in data" :key="`h-${r.query}`" class="text-right"><span class="inline-block w-2 h-2 rounded-full mr-1" :style="{ background: queries[data.indexOf(r)].color }" aria-hidden="true" />{{ r.query }}</th><th class="text-right">{{ t('explore.total_label') }}</th></tr></thead>
+        <table v-if="view === 'table'" class="table table-xs"><thead><tr><th>{{ t('explore.file') }}</th><th v-for="r in data" :key="`h-${r.query}`" class="text-right"><span class="inline-block w-2 h-2 rounded-full mr-1" :style="{ background: colors[data.indexOf(r)] }" aria-hidden="true" />{{ r.query }}</th><th class="text-right">{{ t('explore.total_label') }}</th></tr></thead>
           <tbody><tr v-for="(r, i) in rows" :key="r.filename"><td>{{ r.filename }}</td><td v-for="(c, qi) in r.cells" :key="`c-${qi}`" class="text-right">{{ c.freq }}</td><td class="text-right">{{ tableRows[i].total }}</td></tr></tbody></table>
         <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" @open="openInReader" />
       </figure>

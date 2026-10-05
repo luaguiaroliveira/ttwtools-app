@@ -173,10 +173,20 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   // seletor de etiquetas em painel à direita (já visível): clicar numa etiqueta vira uma consulta própria colorida
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
   await expect(tagBtn).toBeVisible()
+  const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
   const chips = page.getByTestId('disp-queries').locator('.badge')
   await expect(chips).toHaveCount(2, { timeout: 30_000 })          // 'the' + a etiqueta
-  await expect(chips.nth(1).locator('input[type=color]')).toBeVisible()
+  // consulta de etiqueta: a cor vem do seletor de etiquetas (bolinha), sem o `<input type=color>` do texto livre
+  await expect(chips.nth(1).locator('[data-testid^="disp-dot-"]')).toBeVisible()
+  await expect(chips.nth(1).locator('input[type=color]')).toHaveCount(0)
+  // o menu da etiqueta oferece só a cor (seletor completo) e o Esc fecha só o menu, mantendo o painel
+  await page.getByTestId(`tag-color-${tag}`).click()
+  await expect(page.getByTestId('tag-color-menu')).toBeVisible()
+  await expect(page.getByTestId('color-picker')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByTestId('tag-color-menu')).toHaveCount(0)
+  await expect(page.getByTestId('tag-picker-list')).toBeVisible()
   expect(errors).toEqual([])
 })
 

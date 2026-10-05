@@ -1,12 +1,16 @@
 <script setup>
 // Etiquetas da camada ativa para montar a busca: as contagens vêm do corpus e a definição do
 // repertório (tagset). Clicar liga/desliga a etiqueta; a combinação (`key=A|B`, editável) volta
-// para o campo de consulta pelo evento `apply`.
-import { computed, ref, watch } from 'vue'
+// para o campo de consulta pelo evento `apply`. Cada etiqueta tem uma cor (uma etiqueta = uma
+// consulta/camada): o menu à direita troca só a cor, no mesmo visual do seletor do Leitor.
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
+import { useTagColors } from '../../stores/tagColors.js'
 import { isPlausibleTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
+import { PALETTES, readableOn as fg } from '../../utils/colorPalettes.js'
+import ColorPicker from '../../components/ColorPicker.vue'
 const props = defineProps({
   corpus: { type: String, required: true },
   layer: { type: String, default: null },   // ferramenta da camada ativa (null = automática)
@@ -14,9 +18,10 @@ const props = defineProps({
   mode: { type: String, default: 'query' }, // 'query' (monta tag=A|B no campo) | 'layers' (emite toggle por etiqueta)
   selected: { type: Array, default: () => [] },   // etiquetas já ativas (modo 'layers')
 })
-const emit = defineEmits(['apply', 'toggle'])
+const emit = defineEmits(['apply', 'toggle', 'color'])
 const { t, locale } = useI18n()
 const session = useSession()
+const tagColors = useTagColors()
 const FIELD_OF = { upos: 'upos', ptb: 'xpos', biber: 'tags', mfte: 'tags' }   // repertório → campo da consulta
 const KEY_OF = { tags: 'tag', upos: 'pos', xpos: 'pos' }                      // campo → palavra-chave da consulta
 const HAS = (l) => (l.fields ?? []).some((f) => f === 'tags' || f === 'upos' || f === 'xpos')
@@ -78,9 +83,33 @@ function toggle(tag) {
   values.has(tag) ? values.delete(tag) : values.add(tag)
   emit('apply', values.size ? `${key.value}=${[...values].join('|')}` : '')
 }
+
+// --- cor por etiqueta (menu à direita, só troca de cor) -------------------------------
+const colorOf = (tag) => tagColors.color(tag)
+const menu = ref(null)
+const menuPos = ref({ x: 0, y: 0 })
+function openMenu(tag, el) {
+  if (menu.value === tag) { menu.value = null; return }
+  const r = el.getBoundingClientRect()
+  menuPos.value = { x: Math.max(8, Math.min(r.left, globalThis.innerWidth - 232)), y: Math.min(r.bottom + 4, globalThis.innerHeight - 344) }
+  menu.value = tag
+}
+function setColor(tag, hex) { tagColors.set(tag, hex); emit('color', { tag, color: hex }) }
+function resetColor(tag) { tagColors.reset(tag); emit('color', { tag, color: colorOf(tag) }) }
+function onDocDown(e) { if (!e.target?.closest?.('[data-tag-color-menu]')) menu.value = null }
+const onEsc = (e) => { if (e.key === 'Escape' && menu.value) { menu.value = null; e.stopPropagation(); e.preventDefault() } }
+watch(menu, (v) => {
+  const m = v ? 'addEventListener' : 'removeEventListener'
+  globalThis[m]('pointerdown', onDocDown)
+  globalThis[m]('keydown', onEsc, true)
+})
+onBeforeUnmount(() => {
+  globalThis.removeEventListener('pointerdown', onDocDown)
+  globalThis.removeEventListener('keydown', onEsc, true)
+})
 </script>
 <template>
-  <div v-if="entry" class="flex flex-col gap-2">
+  <div v-if="entry" class="flex flex-col gap-2 min-h-0">
     <div class="flex flex-wrap items-center gap-2">
       <label v-if="sets.length > 1" class="flex items-center gap-2 text-xs">
         <span>{{ t('tagset.choose') }}</span>
@@ -95,14 +124,30 @@ function toggle(tag) {
       </select>
     </div>
     <p class="text-xs text-text-muted">{{ t(mode === 'layers' ? 'explore.tags_hint_layers' : 'explore.tags_hint') }}</p>
-    <ul class="flex flex-wrap gap-1 ttw-scroll max-h-40 overflow-y-auto" data-testid="tag-picker-list">
-      <li v-for="r in rows" :key="r.tag">
-        <button type="button" class="badge cursor-pointer font-mono" :class="chosen.has(r.tag) ? 'badge-primary' : 'badge-ghost'"
-                :title="[r.def, r.group ? groups[r.group] : ''].filter(Boolean).join(' — ')" :data-tag="r.tag"
-                :aria-pressed="chosen.has(r.tag)" @click="toggle(r.tag)">{{ r.tag }}<span v-if="r.count" class="ml-1 opacity-70">{{ r.count }}</span></button>
+    <ul class="flex flex-col gap-1 ttw-scroll max-h-56 overflow-y-auto pr-1" data-testid="tag-picker-list">
+      <li v-for="r in rows" :key="r.tag" class="flex items-center gap-2" data-tag-color-menu>
+        <span class="badge badge-lg p-0 gap-0 overflow-visible flex-1 justify-between min-w-0" :class="{ 'badge-outline': !chosen.has(r.tag) }"
+              :style="{ borderColor: colorOf(r.tag), borderWidth: '2px', color: chosen.has(r.tag) ? fg(colorOf(r.tag)) : 'var(--color-base-content)', background: chosen.has(r.tag) ? colorOf(r.tag) : '' }">
+          <button type="button" class="pl-2.5 pr-1.5 h-full cursor-pointer flex-1 text-left truncate" :data-tag="r.tag"
+                  :title="[r.def, r.group ? groups[r.group] : ''].filter(Boolean).join(' — ')" :aria-pressed="chosen.has(r.tag)" @click="toggle(r.tag)">
+            <span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 align-middle border" :style="{ background: colorOf(r.tag), borderColor: chosen.has(r.tag) ? fg(colorOf(r.tag)) : colorOf(r.tag) }" aria-hidden="true" />{{ r.tag }}<span v-if="r.count" class="ml-1 opacity-70">{{ r.count }}</span>
+          </button>
+          <button type="button" class="pr-2 pl-1 h-full cursor-pointer border-l border-current/30" :aria-label="`${t('reader.color')}: ${r.tag}`"
+                  :aria-expanded="menu === r.tag" :title="t('reader.color')" :data-testid="`tag-color-${r.tag}`"
+                  @click.stop="openMenu(r.tag, $event.currentTarget.parentElement)">
+            <span class="block w-3.5 h-3.5 rounded-full border border-current/40" :style="{ background: colorOf(r.tag) }" />
+          </button>
+        </span>
       </li>
       <li v-if="!rows.length" class="text-xs text-text-muted">{{ t('table.empty') }}</li>
     </ul>
+    <!-- menu da etiqueta: só a cor (o Leitor tem também os estilos de marcação) -->
+    <div v-if="menu" role="menu" data-tag-color-menu class="fixed z-50 flex flex-col gap-2 p-2 rounded-box bg-base-100 border border-base-300 shadow-lg text-base-content overflow-y-auto"
+         :style="{ left: `${menuPos.x}px`, top: `${menuPos.y}px`, maxHeight: `calc(100dvh - ${menuPos.y}px - 8px)` }" data-testid="tag-color-menu">
+      <ColorPicker :model-value="colorOf(menu)" :palettes="PALETTES" @update:model-value="setColor(menu, $event)">
+        <button type="button" class="btn btn-xs btn-ghost ml-auto" :disabled="!tagColors.custom[menu]" @click="resetColor(menu)">{{ t('reader.color_reset') }}</button>
+      </ColorPicker>
+    </div>
   </div>
   <p v-else class="text-xs text-text-muted">{{ t('explore.tags_none') }}</p>
 </template>

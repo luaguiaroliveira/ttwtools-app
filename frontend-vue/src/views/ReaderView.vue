@@ -17,6 +17,7 @@ import TagDoc from '../components/TagDoc.vue'
 import TagsetInfoButton from '../components/TagsetInfoButton.vue'
 import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../utils/tagInfo.js'
 import { findMatches } from '../utils/wildcard.js'
+import { PALETTE, PALETTES, readableOn as fg } from '../utils/colorPalettes.js'
 
 const props = defineProps({ corpus: String, layer: String })
 // Seção própria (`/leitor`): sem `?corpus=`/`?layer=`, usa o corpus e a camada ativos do aplicativo.
@@ -86,8 +87,6 @@ const sortedClasses = computed(() => {
 const groupLabel = (c) => groups.value.find((g) => g.id === tagGroup.value[c])?.label ?? t('reader.group_other')
 const fmtN = (n) => (n ?? 0).toLocaleString(locale.value === 'pt' ? 'pt-BR' : 'en')
 const article = ref(null)
-const PALETTE = ['#1f77b4', '#d62728', '#2ca02c', '#9467bd', '#ff7f0e', '#17becf', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22',
-  '#393b79', '#637939', '#8c6d31', '#843c39', '#7b4173', '#3182bd', '#e6550d']
 const MAX_ANNOTATIONS = 2500   // acima disso o SVG pesa: marca só as primeiras
 
 // A carga inicial (lista de documentos) é feita pelo `watch(rc, …, { immediate: true })` abaixo:
@@ -144,13 +143,6 @@ const classes = computed(() => {
 })
 const custom = ref({})   // etiqueta → cor escolhida pela pessoa
 const color = computed(() => Object.fromEntries(classes.value.map(([c], i) => [c, custom.value[c] || PALETTE[i % PALETTE.length]])))
-// texto legível (preto ou branco) sobre a cor da etiqueta
-const fg = (hex) => {
-  const n = parseInt(hex.slice(1), 16)
-  const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }
-  const L = 0.2126 * lin(n >> 16) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
-  return L > 0.4 ? '#111' : '#fff'
-}
 const palette = ref(false)   // seletor de cor aberto dentro do menu da etiqueta
 const menuPos = ref({ x: 0, y: 0 })   // menu e dica são `fixed`: a lista de etiquetas rola sem cortá-los
 const tip = ref(null)
@@ -282,11 +274,6 @@ const onKey = (e) => {
   if (menu.value) { menu.value = null; palette.value = false } else if (panelOpen.value) panelOpen.value = false
 }
 const closeMenu = (e) => { if (!e.target.closest?.('[data-mark-menu]')) menu.value = null }
-const PALETTES = [
-  { id: 'default', colors: PALETTE.slice(0, 12) },
-  { id: 'safe', colors: ['#000000', '#E69F00', '#56B4E9', '#009E73', '#F0E442', '#0072B2', '#D55E00', '#CC79A7'] },   // Okabe-Ito
-  { id: 'gray', colors: ['#111111', '#3B3936', '#5E5B57', '#8A8580', '#B5B0A9', '#D9D5CF', '#F2F0EC', '#FFFFFF'] },
-]
 const SVG_NS = 'http://www.w3.org/2000/svg'
 const PAD = 4
 function clearAnnotations() { article.value?.querySelectorAll('svg.rn').forEach((n) => n.remove()) }
