@@ -62,3 +62,18 @@ export function exportPng(svg, filename, scale = 2) {
   }
   img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString(svg))
 }
+
+// Empilha vários <canvas> (as faixas de cada texto) num único PNG (a visão em camadas/PNG).
+export function exportPngFromCanvases(canvases, filename) {
+  const list = [...(canvases ?? [])].filter((c) => c && c.width)
+  if (!list.length) return
+  const w = Math.max(...list.map((c) => c.width))
+  const h = list.reduce((s, c) => s + c.height, 0)
+  const out = Object.assign(document.createElement('canvas'), { width: w, height: h })
+  const ctx = out.getContext('2d')
+  ctx.fillStyle = getComputedStyle(document.body).backgroundColor
+  ctx.fillRect(0, 0, w, h)
+  let y = 0
+  for (const c of list) { ctx.drawImage(c, 0, y); y += c.height }
+  out.toBlob((blob) => download(filename, blob, 'image/png'))
+}

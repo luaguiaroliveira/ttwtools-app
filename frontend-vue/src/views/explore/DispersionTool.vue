@@ -44,12 +44,13 @@ async function load() {
   error.value = null
   busy.value = true
   try {
-    data.value = await Promise.all(queries.value.map(async (c) => {
-      if (cache.has(c.q)) return cache.get(c.q)
-      const r = await api.explore.dispersion({ corpus: props.corpus, layer: props.layer, query: c.q })
-      cache.set(c.q, r)
-      return r
-    }))
+    // uma só chamada, só com as consultas que faltam (o servidor abre o projeto e decodifica a camada uma vez)
+    const missing = queries.value.map((c) => c.q).filter((q) => !cache.has(q))
+    if (missing.length) {
+      const res = await api.explore.dispersionMulti({ corpus: props.corpus, layer: props.layer, queries: missing })
+      for (const r of res.queries) cache.set(r.query, r)
+    }
+    data.value = queries.value.map((c) => cache.get(c.q))
   } catch (err) { error.value = err.message; data.value = null }
   finally { busy.value = false }
 }
@@ -79,25 +80,34 @@ function applyTags() {
 }
 const selectedTags = computed(() => pending.value)
 
-// Linhas = textos (mesma ordem em todas as consultas); `cells` = o documento em cada consulta.
+// Linhas = textos (mesma ordem em todas as consultas); `cells` = o documento em cada consulta, com as
+// métricas "por texto" de Gries (esperado eᵢ, observado oᵢ e desvio |oᵢ−eᵢ|) calculadas no servidor.
 const rows = computed(() => {
   const base = data.value?.[0]?.per_document ?? []
   const maps = (data.value ?? []).map((r) => new Map(r.per_document.map((d) => [d.filename, d])))
   return base.map((d) => ({ filename: d.filename, size: d.size,
-    cells: maps.map((m) => m.get(d.filename) ?? { positions: [], freq: 0, size: d.size }) }))
+    cells: maps.map((m) => m.get(d.filename) ?? { positions: [], freq: 0, size: d.size, expected: 0, observed: 0, deviation: 0 }) }))
 })
 // Uma etiqueta = uma consulta/camada: quando a consulta é a etiqueta (sem `|`), a cor vem do
 // seletor de etiquetas; consultas de texto livre mantêm a cor categórica própria.
 const colors = computed(() => queries.value.map((c) => { const tg = tagOf(c.q); return tg ? tagColors.color(tg) : c.color }))
-const tableColumns = computed(() => ['file', ...queries.value.map((c) => c.q), 'total'])
+const tableColumns = computed(() => ['file', 'tokens',
+  ...queries.value.flatMap((c) => [`${c.q} freq`, `${c.q} esp.`, `${c.q} obs.`, `${c.q} |o-e|`]), 'total'])
 const tableRows = computed(() => rows.value.map((r) => {
-  const o = { file: r.filename }
-  r.cells.forEach((c, qi) => { o[queries.value[qi].q] = c.freq })
+  const o = { file: r.filename, tokens: r.size }
+  r.cells.forEach((c, qi) => {
+    const q = queries.value[qi].q
+    o[`${q} freq`] = c.freq
+    o[`${q} esp.`] = c.expected
+    o[`${q} obs.`] = c.observed
+    o[`${q} |o-e|`] = c.deviation
+  })
   o.total = r.cells.reduce((s, c) => s + c.freq, 0)
   return o
 }))
 const copyItems = computed(() => queries.value.map((c) => ({ label: c.q, params: { corpus: props.corpus, query: c.q, layer: props.layer } })))
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
+const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
 </script>
 <template>
   <section class="flex flex-col gap-3 h-full min-h-0">
@@ -137,13 +147,43 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
           <input v-model.number="rowH" type="range" min="6" max="30" step="1" class="range range-xs range-primary w-28" data-testid="disp-row-height" />
           <span class="text-text-muted tabular-nums w-8">{{ rowH }}px</span></label>
         <div class="flex items-center gap-1 ml-auto"><CopyCode analysis="dispersion" :items="copyItems" />
-          <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :svg-root="view === 'table' ? null : chart" /></div>
+          <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :canvas-root="view === 'table' ? null : chart" /></div>
       </div>
       <figure class="flex flex-col gap-1">
         <figcaption v-if="view === 'table'" class="text-sm">{{ t('explore.disp_table') }}</figcaption>
         <figcaption v-else class="text-sm">{{ view === 'heat' ? t('explore.disp_heat_caption') : t('explore.barcode') }}</figcaption>
-        <table v-if="view === 'table'" class="table table-xs"><thead><tr><th>{{ t('explore.file') }}</th><th v-for="r in data" :key="`h-${r.query}`" class="text-right"><span class="inline-block w-2 h-2 rounded-full mr-1" :style="{ background: colors[data.indexOf(r)] }" aria-hidden="true" />{{ r.query }}</th><th class="text-right">{{ t('explore.total_label') }}</th></tr></thead>
-          <tbody><tr v-for="(r, i) in rows" :key="r.filename"><td>{{ r.filename }}</td><td v-for="(c, qi) in r.cells" :key="`c-${qi}`" class="text-right">{{ c.freq }}</td><td class="text-right">{{ tableRows[i].total }}</td></tr></tbody></table>
+        <div v-if="view === 'table'" class="ttw-scroll overflow-x-auto">
+          <table class="table table-xs"><thead>
+            <tr>
+              <th rowspan="2" class="text-left align-bottom">{{ t('explore.file') }}</th>
+              <th rowspan="2" class="text-right align-bottom">{{ t('explore.tokens') }}</th>
+              <th v-for="(r, qi) in data" :key="`h-${r.query}`" colspan="4" class="text-center border-l">
+                <span class="inline-block w-2 h-2 rounded-full mr-1" :style="{ background: colors[qi] }" aria-hidden="true" />{{ r.query }}</th>
+              <th rowspan="2" class="text-right align-bottom">{{ t('explore.total_label') }}</th>
+            </tr>
+            <tr>
+              <template v-for="(r, qi) in data" :key="`m-${r.query}`">
+                <th class="text-right border-l">{{ t('explore.disp_freq') }}</th>
+                <th class="text-right" :title="t('explore.disp_expected')">{{ t('explore.disp_expected') }}</th>
+                <th class="text-right" :title="t('explore.disp_observed')">{{ t('explore.disp_observed') }}</th>
+                <th class="text-right" :title="t('explore.disp_deviation')">{{ t('explore.disp_deviation') }}</th>
+              </template>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, i) in rows" :key="row.filename">
+              <td>{{ row.filename }}</td>
+              <td class="text-right tabular-nums">{{ row.size }}</td>
+              <template v-for="(c, qi) in row.cells" :key="`c-${qi}`">
+                <td class="text-right border-l">{{ c.freq }}</td>
+                <td class="text-right tabular-nums">{{ f4(c.expected) }}</td>
+                <td class="text-right tabular-nums">{{ f4(c.observed) }}</td>
+                <td class="text-right tabular-nums">{{ f4(c.deviation) }}</td>
+              </template>
+              <td class="text-right">{{ tableRows[i].total }}</td>
+            </tr>
+          </tbody></table>
+        </div>
         <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" @open="openInReader" />
       </figure>
     </template>

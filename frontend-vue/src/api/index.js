@@ -65,6 +65,7 @@ export const api = {
     collocates: memoized('collocates', (p) => get('/api/explore/collocates', { ...p, where: where(p.where) })),
     collocateExamples: memoized('collocateExamples', (p) => get('/api/explore/collocate-examples', { ...p, where: where(p.where) })),
     dispersion: memoized('dispersion', (p) => get('/api/explore/dispersion', { ...p, where: where(p.where) })),
+    dispersionMulti: (body) => post('/api/explore/dispersion', body),   // lote: várias consultas numa chamada
   },
   compare: {
     // cálculos longos: tarefa com andamento (não uma requisição parada); `opts.onJob` recebe o andamento

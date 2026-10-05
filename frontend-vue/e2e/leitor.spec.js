@@ -103,9 +103,9 @@ test('dispersão: mapa de calor, várias consultas e clique abre o leitor', asyn
   await page.getByTestId('query-go').click()
   const rows = page.getByTestId('disp-rows').locator('button')
   await expect(rows.first()).toBeVisible({ timeout: 30_000 })
-  // mapa de calor é o padrão: faixas de densidade presentes
+  // camadas é o padrão: as faixas de cada texto são desenhadas em canvas (rápido)
   await expect(page.getByTestId('disp-view-heat')).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.locator('.disp-band:visible').first()).toBeAttached()
+  await expect(page.locator('canvas.disp-canvas').first()).toBeVisible()
   const h0 = (await rows.first().boundingBox()).height
   await page.getByTestId('disp-row-height').fill('8')
   await expect.poll(async () => (await rows.first().boundingBox()).height).toBeLessThan(h0)
@@ -114,12 +114,16 @@ test('dispersão: mapa de calor, várias consultas e clique abre o leitor', asyn
   await page.getByTestId('query-input').fill('of')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('disp-queries').locator('.badge')).toHaveCount(2, { timeout: 30_000 })
-  await expect(page.locator('.disp-tick:visible').first()).toBeAttached()
-  // código de barras (sem faixas) e tabela continuam disponíveis
+  await expect(page.locator('canvas.disp-canvas').first()).toBeVisible()
+  // código de barras (sem fundo) e tabela continuam disponíveis
   await page.getByTestId('disp-view-bars').click()
-  await expect(page.locator('.disp-band')).toHaveCount(0)
+  await expect(page.getByTestId('disp-view-bars')).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('canvas.disp-canvas').first()).toBeVisible()
   await page.getByTestId('disp-view-table').click()
   await expect(page.locator('table.table').first()).toBeVisible()
+  // métricas "por texto" de Gries na tabela (esperado/observado/desvio)
+  await expect(page.locator('table.table').first()).toContainText(/esperado|expected/)
+  await expect(page.locator('table.table').first()).toContainText(/\|o−e\|/)
   await page.getByTestId('disp-view-heat').click()
   const name = (await rows.first().getAttribute('title')).split(':')[0]
   await rows.first().click()
@@ -141,7 +145,7 @@ test('dispersão comparada: dois quadros, ordenação e clique abre o leitor', a
   const charts = page.getByTestId('disp-rows')
   await expect(charts).toHaveCount(2, { timeout: 30_000 })          // um quadro por lado
   await expect(charts.first().locator('button').first()).toBeVisible()
-  await expect(page.locator('.disp-band:visible').first()).toBeAttached()
+  await expect(page.locator('canvas.disp-canvas').first()).toBeVisible()
   await page.getByTestId('disp-compare-order').selectOption('freq')
   await page.getByTestId('disp-compare-order').selectOption('dp')
   // mesma lógica de etiquetas coloridas do Explorar: clicar numa etiqueta vira a consulta e os traços

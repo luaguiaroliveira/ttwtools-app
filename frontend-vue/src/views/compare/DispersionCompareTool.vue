@@ -86,7 +86,7 @@ function open(si, filename) {
     <template v-if="data">
       <div class="flex flex-wrap items-center gap-1">
         <CopyCode analysis="dispersion_compare" :params="{ corpus, query: data.query, layer, where: sides[0]?.where, reference: data.reference.corpus, reference_where: sides[1]?.where }" />
-        <ExportMenu name="dispersao_comparada" :rows="exportRows" :svg-root="charts[0]" />
+        <ExportMenu name="dispersao_comparada" :rows="exportRows" :canvas-root="charts[0]" />
       </div>
       <div class="grid gap-3 lg:grid-cols-2">
         <figure v-for="(side, si) in dataSides" :key="si" class="flex flex-col gap-1 rounded-box border border-base-300 p-2" :style="{ '--disp-band': cmp.colors[si] }">
