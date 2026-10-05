@@ -12,7 +12,8 @@ import TagPicker from './TagPicker.vue'
 import { useResizablePane } from '../../composables/useResizablePane.js'
 const props = defineProps({ initial: { type: String, default: '' }, label: { type: String, default: '' }, busy: Boolean,
   corpus: { type: String, default: '' }, layer: { type: String, default: null }, tags: Boolean,
-  tagMode: { type: String, default: 'query' }, selectedTags: { type: Array, default: () => [] } })
+  tagMode: { type: String, default: 'query' }, selectedTags: { type: Array, default: () => [] },
+  fit: Boolean })
 const emit = defineEmits(['submit', 'tag-toggle'])
 const { t } = useI18n()
 const q = ref(props.initial)
@@ -29,6 +30,14 @@ if (!wide.value) panelOpen.value = false
 const onMq = (e) => { wide.value = e.matches; if (!e.matches) panelOpen.value = false }
 onMounted(() => mq?.addEventListener?.('change', onMq))
 const split = computed(() => Boolean(props.tags && props.corpus && wide.value))
+// `fit`: a área de resultados preenche a altura disponível e não rola por conta própria — a ferramenta
+// decide o que rola (a Dispersão fixa o topo e deixa só a tabela/gráfico rolar). Sem `fit`, mantém o
+// comportamento antigo (o próprio painel rola, com teto de altura).
+const resultsClass = computed(() => {
+  const base = 'flex flex-col gap-3 pt-3'
+  if (!split.value && !props.fit) return 'contents'
+  return props.fit ? `${base} flex-1 min-h-0 overflow-hidden` : `ttw-scroll flex-1 min-h-0 overflow-y-auto ${base}`
+})
 const gridStyle = computed(() => ({
   gridTemplateColumns: panelOpen.value ? `minmax(0,1fr) .75rem ${panelW.value}px` : 'minmax(0,1fr) .75rem 0px',
 }))
@@ -66,7 +75,7 @@ function applyClause(clause) {
 <template>
   <div ref="root" class="min-w-0" :class="split ? 'grid h-full min-h-0' : 'contents'" :style="split ? gridStyle : {}">
     <div :class="split ? 'flex flex-col min-h-0 min-w-0' : 'contents'" :style="split ? { '--ttw-tag-width': `${panelW}px` } : {}">
-      <form class="ttw-sticky-form flex flex-col gap-2" :class="split ? 'shrink-0' : ''" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
+      <form class="ttw-sticky-form flex flex-col gap-2 shrink-0" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
         <div class="ttw-form">
           <label class="ttw-field flex-1 min-w-56 max-w-xl">
             <span class="ttw-label"><HelpTip term="query">{{ label || t('explore.query') }}</HelpTip></span>
@@ -84,7 +93,7 @@ function applyClause(clause) {
         </div>
         <BusyBar :busy="busy" />
       </form>
-      <div :class="split ? 'ttw-scroll flex-1 min-h-0 overflow-y-auto pt-3 flex flex-col gap-3' : 'contents'">
+      <div :class="resultsClass">
         <slot name="results" />
       </div>
     </div>

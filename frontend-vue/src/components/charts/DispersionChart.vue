@@ -13,6 +13,7 @@ const props = defineProps({
   bands: { type: Number, default: 10 },
   rowH: { type: Number, default: 14 },
   view: { type: String, default: 'heat' },   // 'heat' (camadas) | 'bars'
+  fit: Boolean,                              // preenche a altura do pai e rola sozinho (sem teto fixo)
 })
 const emit = defineEmits(['open'])
 const { t } = useI18n()
@@ -77,7 +78,7 @@ onBeforeUnmount(() => { ro?.disconnect(); globalThis.removeEventListener?.('resi
 watch(() => [props.rows, props.colors, props.bands, props.rowH, props.view], () => nextTick(drawAll), { deep: false })
 </script>
 <template>
-  <ul ref="listEl" class="ttw-scroll rounded-box border border-base-300 p-1" data-testid="disp-rows">
+  <ul ref="listEl" class="ttw-scroll rounded-box border border-base-300 p-1" :class="fit && 'ttw-scroll-fit flex-1 min-h-0'" data-testid="disp-rows">
     <li v-for="(d, i) in rows" :key="d.filename">
       <button type="button" class="disp-row" :style="{ height: `${rowH}px`, fontSize: `${Math.max(8, Math.min(12, rowH - 3))}px` }"
               :title="`${d.filename}: ${totalFreq(i)}`" :aria-label="`${t('explore.open_text')}: ${d.filename} (${totalFreq(i)})`" @click="emit('open', d.filename)">

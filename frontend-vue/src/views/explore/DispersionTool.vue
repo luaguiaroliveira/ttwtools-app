@@ -111,9 +111,10 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
 </script>
 <template>
   <section class="flex flex-col gap-3 h-full min-h-0">
-    <QueryBox class="flex-1 min-h-0" :busy="busy" :corpus="corpus" :layer="layer" tags tag-mode="layers" :selected-tags="selectedTags"
+    <QueryBox class="flex-1 min-h-0" fit :busy="busy" :corpus="corpus" :layer="layer" tags tag-mode="layers" :selected-tags="selectedTags"
               @submit="addQuery" @tag-toggle="toggleTag">
     <template #results>
+    <div class="flex flex-col gap-3 shrink-0">
     <div v-if="queries.length" class="flex flex-wrap items-center gap-1 text-xs" data-testid="disp-queries">
       <span class="text-text-muted mr-1">{{ t('explore.disp_queries') }}:</span>
       <span v-for="(c, i) in queries" :key="`${c.q}-${i}`" class="badge badge-ghost gap-1 font-mono">
@@ -149,10 +150,12 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
         <div class="flex items-center gap-1 ml-auto"><CopyCode analysis="dispersion" :items="copyItems" />
           <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :canvas-root="view === 'table' ? null : chart" /></div>
       </div>
-      <figure class="flex flex-col gap-1">
+      </template>
+    </div>
+    <figure v-if="data && data.length" class="flex flex-col gap-1 flex-1 min-h-0">
         <figcaption v-if="view === 'table'" class="text-sm">{{ t('explore.disp_table') }}</figcaption>
         <figcaption v-else class="text-sm">{{ view === 'heat' ? t('explore.disp_heat_caption') : t('explore.barcode') }}</figcaption>
-        <div v-if="view === 'table'" class="ttw-scroll overflow-x-auto">
+        <div v-if="view === 'table'" class="ttw-scroll ttw-scroll-fit flex-1 min-h-0">
           <table class="table table-xs"><thead>
             <tr>
               <th rowspan="2" class="text-left align-bottom">{{ t('explore.file') }}</th>
@@ -184,9 +187,8 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
             </tr>
           </tbody></table>
         </div>
-        <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" @open="openInReader" />
+        <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" fit @open="openInReader" />
       </figure>
-    </template>
     </template>
     <template #tag-actions>
       <button type="button" class="btn btn-sm btn-primary w-full" :disabled="busy" data-testid="disp-tag-search" @click="applyTags">

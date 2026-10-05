@@ -45,6 +45,25 @@ reler todo o histórico. Para o estado geral, ver `plano.md` seção 1.
 - `e2e/leitor.spec.js`: passou a checar `canvas.disp-canvas` (em vez de `.disp-band`/`.disp-tick`) e a
   presença das métricas na tabela.
 
+### Layout sem rolagem aninhada (2026-10-05, depois dos commits acima)
+
+- **Problema:** a Dispersão tinha rolagem dentro de rolagem — a área de resultados do `QueryBox` rolava
+  e, dentro dela, o gráfico/a tabela tinham o próprio `ttw-scroll` (com `max-height: min(70dvh,46rem)`).
+  A parte de cima (chips de consulta, métricas `DP`/`range` e controles de visão) rolava junto com o
+  gráfico e se escondia.
+- **Correção:** `QueryBox` ganhou a prop **`fit`** — a área de resultados preenche a altura disponível e
+  **não rola**; a ferramenta decide o que rola. A Dispersão passa `fit`: o topo (chips, métricas e
+  controles) fica **fixo** (`shrink-0`) e só a área de dados (`DispersionChart` ou tabela) rola, uma vez
+  só. `DispersionChart` ganhou a prop `fit` e a classe **`.ttw-scroll-fit`** (`max-height: none`), que
+  mantém a rolagem/`sticky` sem o teto fixo; ao montar, `DispersionChart` sem `fit` (Comparar) segue igual.
+  As demais ferramentas do Explorar (Busca, KWIC, Frequência, Colocados) **não** mudam (sem `fit`, o
+  `QueryBox` mantém o comportamento antigo).
+- **Como verificar:** rolar o gráfico/a tabela não move as consultas, as métricas nem os controles; a
+  página não rola (`#main` fica com `overflow-hidden` no Explorar) e só `[data-testid=disp-rows]`/a tabela
+  rolam. No celular o gráfico fica baixo (o topo fixo ocupa quase tudo), mas sem aninhamento.
+- Testes desta rodada: `npm run build`, frontend 57/57, e2e `leitor.spec.js` nas 3 larguras e a suíte
+  `--project=computador-1280` 11/11.
+
 ## Como retomar / corrigir
 
 - Subir o app: `python -m app --mode web` (servidor de trabalho em `http://127.0.0.1:8791`).
@@ -67,7 +86,8 @@ reler todo o histórico. Para o estado geral, ver `plano.md` seção 1.
   da primeira busca em lote e o pico de memória do `IdStore`. Se ainda travar, mover a rota para
   **tarefa** (`_maybe_async`, com andamento/cancelamento) em vez de requisição parada.
 - **Revisão visual do usuário**: sobreposição das cores das camadas, largura dos traços e leitura dos
-  rótulos.
+  rótulos; e agora o novo layout sem rolagem aninhada (topo fixo + área de dados rolando uma vez só) e o
+  aproveitamento da faixa superior (métricas e controles).
 - **Nome interna da visão**: mantido o id `heat` (rótulo "Camadas") para não mexer em
   `data-testid="disp-view-heat"` nem no `DispersionCompareTool`; se renomear para `layers`, atualizar
   esses pontos e o e2e.
