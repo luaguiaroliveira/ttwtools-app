@@ -4,6 +4,7 @@
 // Em telas estreitas (até 1023px) as áreas empilham — gráfico em cima, tabela embaixo — sem divisória.
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import SplitHandle from './SplitHandle.vue'
 
 const props = defineProps({
   modelValue: { type: Number, default: 50 },
@@ -57,9 +58,8 @@ onBeforeUnmount(onUp)
     <div v-if="showLeft" class="min-w-0 flex flex-col gap-3">
       <slot />
     </div>
-    <div v-if="both" class="ttw-split-divider" role="separator" aria-orientation="vertical" tabindex="0"
-         :aria-label="t('analysis.divider')" :aria-valuemin="min" :aria-valuemax="max" :aria-valuenow="Math.round(split)"
-         data-testid="split-divider" @pointerdown="onDown" @keydown="onKey" />
+    <SplitHandle v-if="both" :label="t('analysis.divider')" :now="split" :min="min" :max="max"
+                 @down="onDown" @key="onKey" />
     <div v-if="showRight" class="min-w-0 flex flex-col gap-3">
       <slot name="right" />
     </div>
@@ -67,11 +67,9 @@ onBeforeUnmount(onUp)
 </template>
 <style scoped>
 .ttw-split { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
-.ttw-split-divider { cursor: col-resize; touch-action: none; border-radius: 9999px; background: var(--ttw-border-strong, currentColor); opacity: 0.35; align-self: stretch; min-height: 8rem; }
-.ttw-split-divider:hover, .ttw-split-divider:focus-visible { opacity: 0.8; outline: 2px solid var(--color-primary); outline-offset: 2px; }
 @media (max-width: 1023px) {
   .ttw-split { grid-template-columns: minmax(0, 1fr) !important; }
-  .ttw-split-divider { display: none; }
+  .ttw-split-handle { display: none !important; }
 }
 @media (min-width: 1024px) {
   .ttw-split.is-fill { height: 100%; align-items: stretch; }

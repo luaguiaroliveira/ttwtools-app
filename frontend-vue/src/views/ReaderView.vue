@@ -15,6 +15,8 @@ import MarkIcon from '../components/MarkIcon.vue'
 import ColorPicker from '../components/ColorPicker.vue'
 import TagDoc from '../components/TagDoc.vue'
 import TagsetInfoButton from '../components/TagsetInfoButton.vue'
+import SplitHandle from '../components/SplitHandle.vue'
+import { useResizablePane } from '../composables/useResizablePane.js'
 import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../utils/tagInfo.js'
 import { findMatches } from '../utils/wildcard.js'
 import { PALETTE, PALETTES, readableOn as fg } from '../utils/colorPalettes.js'
@@ -43,11 +45,18 @@ const chosen = ref(new Set(highlights(route.query.highlight)))
 const selected = ref(null)
 const tagset = ref({})
 const window = globalThis
-// Telas estreitas ou baixas: o painel de etiquetas vira uma gaveta à direita, por cima do texto, aberta por uma alça
+// Telas estreitas ou baixas: o painel de etiquetas vira uma gaveta à direita, por cima do texto, aberta por uma alça.
+// Telas largas: o painel é uma divisão lateral redimensionável (largura persistida), que colapsa na borda.
 const mq = globalThis.matchMedia?.('(max-width: 1023px), (max-height: 700px)')
 const overlay = ref(mq?.matches ?? false)
-const panelOpen = ref(false)
-const onMq = (e) => { overlay.value = e.matches; if (!e.matches) panelOpen.value = false }
+const { width: panelW, open: panelOpen, onDown: onDrag, onKey: onResizeKey, min: panelMin, max: panelMax } = useResizablePane({
+  min: 200, max: 560, initial: 320, collapseAt: 120, storageKey: 'ttw.reader.tagsPanel',
+})
+if (overlay.value) panelOpen.value = false
+const paneRoot = ref(null)
+const split = computed(() => !overlay.value && classes.value.length > 0)
+const gridStyle = computed(() => ({ gridTemplateColumns: panelOpen.value ? `minmax(0,1fr) .5rem ${panelW.value}px` : 'minmax(0,1fr) .5rem 0px' }))
+const onMq = (e) => { overlay.value = e.matches; panelOpen.value = !e.matches }
 const pref = (() => { try { return JSON.parse(localStorage.getItem('ttw.reader.prefs') || '{}') } catch { return {} } })()
 const sortBy = ref(['text', 'corpus', 'alpha', 'group'].includes(pref.sort) ? pref.sort : 'text')
 // folha: zoom (largura, margens e fonte juntos), tamanho da fonte (pt) e justificação
@@ -341,8 +350,8 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
 </script>
 
 <template>
-  <section class="flex flex-col gap-3">
-    <h1 class="text-xl font-bold print:hidden">{{ t('nav.reader') }}</h1>
+  <section class="flex flex-col gap-3 h-full min-h-0">
+    <h1 class="text-xl font-bold shrink-0 print:hidden">{{ t('nav.reader') }}</h1>
     <div v-if="!rc" class="flex flex-wrap items-center gap-2 opacity-90 print:hidden">
       <span>{{ t('explore.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="reader-corpus" :value="activeCorpus || ''"
@@ -395,9 +404,9 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
     </div>
     <p v-if="doc && !doc.layer" class="text-sm text-text-muted print:hidden">{{ t('reader.no_layer') }}</p>
     <p v-if="doc && doc.text === null" role="alert" class="alert alert-warning text-sm">{{ t('reader.no_text') }}</p>
-    <div class="grid gap-4 items-start print:block" :class="overlay ? '' : 'grid-cols-[minmax(0,1fr)_20rem]'">
+    <div ref="paneRoot" class="flex-1 min-h-0 grid gap-2 items-stretch print:block" :style="overlay ? {} : gridStyle">
       <!-- A folha: mesma largura, tipografia e quebras de linha na tela e na impressão (A4, margens de 2 cm) -->
-      <div class="reader-stage print:overflow-visible" tabindex="0" role="region" :aria-label="t('reader.sheet')">
+      <div class="reader-stage h-full min-h-0 overflow-y-auto print:overflow-visible" tabindex="0" role="region" :aria-label="t('reader.sheet')">
         <div class="reader-paper" data-testid="reader-paper" :style="{ '--z': zoom, '--fs': `${fontPt}pt` }">
           <header class="reader-sheet-head">
             <h2>{{ file }}</h2>
@@ -416,14 +425,16 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </footer>
         </div>
       </div>
+      <SplitHandle v-if="split" :expanded="panelOpen" :label="t('reader.tags_title')" :now="panelW" :min="panelMin" :max="panelMax"
+                   @down="onDrag($event, paneRoot)" @key="onResizeKey" />
       <button v-if="overlay && classes.length" type="button" class="ttw-tag-handle print:hidden" :aria-expanded="panelOpen" aria-controls="reader-aside"
               data-testid="reader-panel-toggle" @click="panelOpen = !panelOpen">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3.500 12.500V4.500a1 1 0 0 1 1-1h8l8 8a1.500 1.500 0 0 1 0 2.100l-6.300 6.300a1.500 1.500 0 0 1-2.100 0z" /><circle cx="8" cy="8" r="1.300" /></svg>
         <span>{{ panelOpen ? t('reader.collapse') : t('reader.tags_title') }}</span>
       </button>
-      <aside id="reader-aside" class="flex flex-col gap-3 print:hidden" aria-live="polite"
-             :class="overlay ? ['ttw-tag-drawer', panelOpen ? 'is-open' : ''] : 'sticky top-16 max-h-[calc(100dvh-5rem)]'" :inert="overlay && !panelOpen">
+      <aside id="reader-aside" v-show="overlay || panelOpen" class="flex flex-col gap-3 print:hidden" aria-live="polite"
+             :class="overlay ? ['ttw-tag-drawer', panelOpen ? 'is-open' : ''] : 'ttw-scroll h-full min-h-0 overflow-y-auto'" :inert="overlay && !panelOpen">
         <div v-if="classes.length" class="bg-base-200 rounded-box p-3 flex flex-col gap-2 min-h-0 flex-1" role="group" :aria-label="t('reader.tags_title')">
           <div class="flex items-center gap-2">
             <h3 class="font-bold text-sm">{{ t('reader.tags_title') }}</h3>

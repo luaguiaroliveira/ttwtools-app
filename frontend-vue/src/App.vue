@@ -21,7 +21,7 @@ const { corpus, layer, layers, corpora, project, projectPath, unsaved } = storeT
 const route = useRoute()
 const section = computed(() => NAV.find((n) => n.name === route.name) ?? (route.name === 'home' ? { icon: 'learn', label: 'nav.info' } : null))
 // Telas com divisões (painéis que rolam sozinhos): a área principal não rola; só os painéis.
-const SPLIT_ROUTES = ['explore']
+const SPLIT_ROUTES = ['explore', 'reader']
 const isSplit = computed(() => SPLIT_ROUTES.includes(route.name))
 const theme = ref(initialTheme())
 const loadError = ref(null)

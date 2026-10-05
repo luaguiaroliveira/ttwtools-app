@@ -142,13 +142,13 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page.getByTestId('gallery-chart')).toBeVisible()
   // divisória arrastável (teclado) só nas larguras largas; nas estreitas empilha sem divisória
   if ((page.viewportSize()?.width ?? 0) >= 1024) {
-    const sep = page.getByTestId('split-divider')
+    const sep = page.getByTestId('split-handle')
     await expect(sep).toBeVisible()
     await sep.focus()
     await page.keyboard.press('ArrowRight')
     await expect(sep).toHaveAttribute('aria-valuenow', '52')
   } else {
-    await expect(page.getByTestId('split-divider')).toBeHidden()
+    await expect(page.getByTestId('split-handle')).toBeHidden()
   }
   // a legenda liga cada cor ao nome do corpus (nos três tipos de gráfico: sinal, por lado e mapa de calor)
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
