@@ -108,9 +108,13 @@ const tableRows = computed(() => rows.value.map((r) => {
 const copyItems = computed(() => queries.value.map((c) => ({ label: c.q, params: { corpus: props.corpus, query: c.q, layer: props.layer } })))
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
-// O DP normalizado só difere do DP quando há poucos textos grandes; com muitos textos os dois
-// coincidem nas 3 casas. A coluna "normalizado" só aparece quando acrescenta informação.
-const showNorm = computed(() => (data.value ?? []).some((r) => Math.abs((r.dp_norm ?? 0) - (r.dp ?? 0)) >= 0.001))
+// Exportação por visão: "DP de Gries" exporta o relatório por consulta; as demais, a tabela por texto (O/E).
+const dpColumns = computed(() => [t('explore.query'), t('explore.disp_dp'), t('explore.disp_range')])
+const dpRows = computed(() => (data.value ?? []).map((r) => ({
+  [t('explore.query')]: r.query, [t('explore.disp_dp')]: f3(r.dp), [t('explore.disp_range')]: `${r.range}/${r.documents}`,
+})))
+const exportRows = computed(() => (view.value === 'dp' ? dpRows.value : tableRows.value))
+const exportColumns = computed(() => (view.value === 'dp' ? dpColumns.value : tableColumns.value))
 </script>
 <template>
   <section class="flex flex-col gap-3 h-full min-h-0">
@@ -144,7 +148,7 @@ const showNorm = computed(() => (data.value ?? []).some((r) => Math.abs((r.dp_no
           <input v-model.number="rowH" type="range" min="6" max="30" step="1" class="range range-xs range-primary w-28" data-testid="disp-row-height" />
           <span class="text-text-muted tabular-nums w-8">{{ rowH }}px</span></label>
         <div class="flex items-center gap-1 ml-auto"><CopyCode analysis="dispersion" :items="copyItems" />
-          <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :canvas-root="view === 'heat' || view === 'bars' ? chart : null" /></div>
+          <ExportMenu :name="`dispersao_${view}`" :rows="exportRows" :columns="exportColumns" :canvas-root="view === 'heat' || view === 'bars' ? chart : null" /></div>
       </div>
       </template>
     </div>
@@ -189,14 +193,12 @@ const showNorm = computed(() => (data.value ?? []).some((r) => Math.abs((r.dp_no
             <thead><tr>
               <th class="text-left">{{ t('explore.query') }}</th>
               <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp') }} <HelpTip term="dp_gries" topic="dispersao" :label="t('explore.disp_dp')" /></th>
-              <th v-if="showNorm" class="text-right whitespace-nowrap">{{ t('explore.disp_dp_norm') }}</th>
               <th class="text-right whitespace-nowrap">{{ t('explore.disp_range') }}</th>
             </tr></thead>
             <tbody>
               <tr v-for="(r, qi) in data" :key="`dp-${qi}`">
                 <td class="text-left whitespace-nowrap max-w-[16rem] truncate" :title="r.query"><span class="inline-block w-2.5 h-2.5 rounded-full mr-1 align-middle" :style="{ background: colors[qi] }" aria-hidden="true" /><span class="font-mono">{{ r.query }}</span></td>
                 <td class="text-right tabular-nums">{{ f3(r.dp) }}</td>
-                <td v-if="showNorm" class="text-right tabular-nums">{{ f3(r.dp_norm) }}</td>
                 <td class="text-right tabular-nums">{{ r.range }}/{{ r.documents }}</td>
               </tr>
             </tbody>

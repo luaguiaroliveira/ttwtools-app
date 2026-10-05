@@ -124,6 +124,12 @@ test('dispersão: mapa de calor, várias consultas e clique abre o leitor', asyn
   await expect(page.getByTestId('disp-report')).toBeVisible()
   await expect(page.getByTestId('disp-report')).toContainText(/DP de Gries|Gries/)
   await expect(page.getByTestId('disp-report')).toContainText(/range/)
+  // a exportação acompanha a visão: em "DP de Gries" o CSV traz o relatório por consulta
+  await page.locator('details.dropdown').evaluateAll((els) => els.forEach((e) => { e.open = true }))
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-csv').click()])
+  const csv = fs.readFileSync(await dl.path(), 'utf8')
+  expect(csv).toContain('DP de Gries')
+  expect(csv).not.toContain('tokens')
   await page.getByTestId('disp-view-table').click()
   await expect(page.getByTestId('disp-table')).toBeVisible()
   // métricas "por texto" de Gries na tabela (esperado/observado/desvio)
