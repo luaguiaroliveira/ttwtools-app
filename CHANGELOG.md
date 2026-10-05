@@ -4,6 +4,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Alterado
+
+- **Versão estável da série 0.7:** mesmo conteúdo de `0.7.0-alpha.2`, publicada sem o sufixo `-alpha` para aparecer como release normal (não pre-release). A partir daqui a série avança por versões de correção (`0.7.1`, `0.7.2`, …, `0.7.10`, `0.7.11`, …).
+
 ## [0.7.0-alpha.2] — 2026-10-05
 
 ### Adicionado
