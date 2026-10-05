@@ -107,6 +107,7 @@ function applyClause(clause) {
         </div>
         <TagPicker :corpus="corpus" :layer="layer" :query="q" :mode="tagMode" :selected="selectedTags"
                    @apply="applyClause" @toggle="emit('tag-toggle', $event)" />
+        <slot name="tag-actions" />
       </aside>
     </template>
   </div>

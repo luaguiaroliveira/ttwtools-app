@@ -197,6 +197,9 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
   const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
+  // marcar não busca sozinho (a dispersão é lenta): só seleciona; a busca vem do botão
+  await expect(page.getByTestId('disp-queries').locator('.badge')).toHaveCount(1)
+  await page.getByTestId('disp-tag-search').click()
   const chips = page.getByTestId('disp-queries').locator('.badge')
   await expect(chips).toHaveCount(2, { timeout: 30_000 })          // 'the' + a etiqueta
   // consulta de etiqueta: a cor vem do seletor de etiquetas (bolinha), sem o `<input type=color>` do texto livre

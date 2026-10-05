@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { api } from '../../api/index.js'
@@ -37,13 +37,19 @@ const openInReader = (filename) => {
   router.push({ path: '/leitor', query: params })
 }
 
+const cache = new Map()   // consulta → resultado: só busca o que ainda não foi buscado
+watch(() => [props.corpus, props.layer], () => cache.clear())
 async function load() {
   if (!queries.value.length) { data.value = null; return }
   error.value = null
   busy.value = true
   try {
-    data.value = await Promise.all(queries.value.map((c) =>
-      api.explore.dispersion({ corpus: props.corpus, layer: props.layer, query: c.q })))
+    data.value = await Promise.all(queries.value.map(async (c) => {
+      if (cache.has(c.q)) return cache.get(c.q)
+      const r = await api.explore.dispersion({ corpus: props.corpus, layer: props.layer, query: c.q })
+      cache.set(c.q, r)
+      return r
+    }))
   } catch (err) { error.value = err.message; data.value = null }
   finally { busy.value = false }
 }
@@ -54,18 +60,24 @@ function addQuery(q) {
   load()
 }
 function removeQuery(i) { queries.value.splice(i, 1); load() }
-function clearQueries() { queries.value = []; data.value = null; error.value = null }
+function clearQueries() { queries.value = []; pending.value = []; data.value = null; error.value = null }
 function setColor(i, value) { queries.value[i].color = value }
-// Clicar numa etiqueta do painel liga/desliga ela como uma consulta própria (uma cor por etiqueta).
+// Etiquetas: marcar/desmarcar é só seleção; a busca roda ao clicar em "Buscar etiquetas". É proposital:
+// a dispersão de cada etiqueta varre o corpus (é lenta), diferente do Leitor, onde marcar é instantâneo.
+const pending = ref([])      // etiquetas marcadas, ainda sem buscar
+let pendingKey = 'pos'
 function toggleTag({ tag, key }) {
-  const q = `${key}=${tag}`
-  const i = queries.value.findIndex((c) => c.q === q)
-  if (i >= 0) removeQuery(i); else addQuery(q)
+  const i = pending.value.indexOf(tag)
+  if (i >= 0) pending.value.splice(i, 1); else pending.value.push(tag)
+  if (key) pendingKey = key
 }
-const selectedTags = computed(() => queries.value.flatMap((c) => {
-  const cl = clauseOf(c.q)
-  return cl ? cl.value.split('|').filter(Boolean) : []
-}))
+function applyTags() {
+  const wanted = pending.value.map((tag) => `${pendingKey}=${tag}`)
+  // reconstrói só as consultas de etiqueta; consultas de texto livre ficam
+  queries.value = [...queries.value.filter((c) => !tagOf(c.q)), ...wanted.map((q) => ({ q, color: queryColor(seq++) }))]
+  load()
+}
+const selectedTags = computed(() => pending.value)
 
 // Linhas = textos (mesma ordem em todas as consultas); `cells` = o documento em cada consulta.
 const rows = computed(() => {
@@ -135,6 +147,11 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
         <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" @open="openInReader" />
       </figure>
     </template>
+    </template>
+    <template #tag-actions>
+      <button type="button" class="btn btn-sm btn-primary w-full" :disabled="busy" data-testid="disp-tag-search" @click="applyTags">
+        <span v-if="busy" class="loading loading-spinner loading-xs" aria-hidden="true" />{{ t('explore.tags_search') }}
+      </button>
     </template>
     </QueryBox>
   </section>
