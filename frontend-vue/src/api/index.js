@@ -71,6 +71,7 @@ export const api = {
     keywords: (body, opts) => postJob('/api/compare/keywords', body, opts),
     bands: (body, opts) => postJob('/api/compare/bands', body, opts),
     kfa: (body, opts) => postJob('/api/compare/kfa', body, opts),
+    dispersion: (body) => post('/api/compare/dispersion', body),
     feature: (p) => get('/api/compare/feature', { ...p, where: where(p.where) }),
     references: () => get('/api/references'),
   },

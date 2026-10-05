@@ -745,6 +745,24 @@ def compare_bands(req: BandsRequest, async_: bool = _ASYNC):
     return _maybe_async("bands", async_, compute)
 
 
+class DispersionCompareRequest(BaseModel):
+    corpus: str
+    query: str
+    layer: str | None = None
+    where: dict[str, list[str]] | None = None
+    reference: str | None = None
+    reference_where: dict[str, list[str]] | None = None
+
+
+@router.post("/compare/dispersion", tags=["compare"])
+def compare_dispersion(req: DispersionCompareRequest):
+    """Dispersão de Gries da consulta nos dois lados (corpus 2 ou dois grupos do corpus ativo)."""
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.dispersion_compare, proj, req.corpus, req.query, req.layer,
+                     req.where, req.reference, req.reference_where)
+
+
 # ---------------------------------------------------------------------------
 # Ajuda e traduções
 # ---------------------------------------------------------------------------

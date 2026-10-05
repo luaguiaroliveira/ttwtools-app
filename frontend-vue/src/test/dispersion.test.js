@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bandAlpha, bandCounts, clauseOf, combinedDensity, countsMatrix, density, queryColor } from '../utils/dispersion.js'
+import { bandAlpha, bandCounts, clauseOf, combinedDensity, contribution, countsMatrix, density, queryColor, sortRows } from '../utils/dispersion.js'
 
 describe('dispersion', () => {
   it('conta ocorrências por faixa e encaixa 1 na última', () => {
@@ -35,5 +35,18 @@ describe('dispersion', () => {
     expect(queryColor(0)).toBe('var(--chart-1)')
     expect(queryColor(8)).toBe('var(--chart-1)')
     expect(queryColor(2)).toBe('var(--chart-3)')
+  })
+  it('contribuição do documento no DP e ordenação dos quadros', () => {
+    expect(contribution(1, 4, 10, 40)).toBeCloseTo(0)          // o = e
+    expect(contribution(3, 4, 10, 40)).toBeCloseTo(0.5)
+    const rows = [
+      { filename: 'b', size: 10, cells: [{ freq: 1 }] },
+      { filename: 'a', size: 30, cells: [{ freq: 5 }] },
+      { filename: 'c', size: 10, cells: [{ freq: 2 }] },
+    ]
+    expect(sortRows(rows, 'name').map((r) => r.filename)).toEqual(['a', 'b', 'c'])
+    expect(sortRows(rows, 'freq').map((r) => r.filename)).toEqual(['a', 'c', 'b'])
+    // DP contribuído: b 0,075 · c 0,05 · a 0,025 (decrescente)
+    expect(sortRows(rows, 'dp', 8, 50).map((r) => r.filename)).toEqual(['b', 'c', 'a'])
   })
 })

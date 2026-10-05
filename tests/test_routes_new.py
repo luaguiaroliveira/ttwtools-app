@@ -60,6 +60,21 @@ def test_explore(client, opened):
     assert client.get("/api/explore/search", params={"corpus": "bawe", "query": "nada=x"}).status_code == 422
 
 
+def test_compare_dispersion(client, opened):
+    r = client.post("/api/compare/dispersion", json={"corpus": "bawe", "reference": "corifa", "query": "the"}).json()
+    assert r["target"]["corpus"] == "bawe" and r["reference"]["corpus"] == "corifa"
+    assert r["target"]["range"] > 0 and 0 <= r["target"]["dp"] <= 1 and r["reference"]["range"] > 0
+    d = client.get("/api/explore/dispersion", params={"corpus": "bawe", "query": "the"}).json()
+    assert r["target"]["per_document"] == d["per_document"]      # mesmo cálculo do dispersion de um lado
+    # dois grupos do mesmo corpus (metadado `resto` derivado do nome do arquivo)
+    docs = client.get("/api/corpora/bawe/documents", params={"limit": 5}).json()["rows"]
+    g1, g2 = docs[0]["resto"], docs[1]["resto"]
+    g = client.post("/api/compare/dispersion", json={"corpus": "bawe", "query": "the",
+                                                     "where": {"resto": [g1]}, "reference_where": {"resto": [g2]}}).json()
+    assert {x["filename"] for x in g["target"]["per_document"]} == {docs[0]["filename"]}
+    assert {x["filename"] for x in g["reference"]["per_document"]} == {docs[1]["filename"]}
+
+
 def test_keywords_and_references(client, opened):
     r = client.post("/api/compare/keywords", json={"corpus": "corifa", "reference": "bawe", "min_freq": 3,
                                                     "lang": "en"}).json()

@@ -11,6 +11,7 @@ const TOOLS = {
   'palavras-chave': lazyTool(() => import('./compare/KeywordsTool.vue')),
   kfa: lazyTool(() => import('./compare/KfaTool.vue')),
   faixas: lazyTool(() => import('./compare/BandsTool.vue')),
+  dispersao: lazyTool(() => import('./compare/DispersionCompareTool.vue')),
   laboratorio: lazyTool(() => import('./compare/LabTool.vue')),
 }
 const { t } = useI18n()

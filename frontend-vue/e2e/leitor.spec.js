@@ -120,6 +120,28 @@ test('dispersão: mapa de calor, várias consultas e clique abre o leitor', asyn
   await expect(page.getByTestId('reader-file')).toHaveValue(name, { timeout: 30_000 })
 })
 
+test('dispersão comparada: dois quadros, ordenação e clique abre o leitor', async ({ page, request }, info) => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
+  expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
+  await request.post('/api/corpora/import', { data: { corpus_name: 'bawe', source: { kind: 'folder', path: path.join(CORPORA, 'essays_bawe_somentetexto_5') } } })
+  await request.post('/api/corpora/import', { data: { corpus_name: 'corifa', source: { kind: 'folder', path: path.join(CORPORA, 'CorIFAessaysNE_5') } } })
+  await page.goto('/#/comparar?tool=dispersao')
+  await page.getByTestId('active-corpus').selectOption('bawe')
+  await page.getByTestId('disp-compare-query').fill('the')
+  await page.getByTestId('disp-compare-run').click()
+  const charts = page.getByTestId('disp-rows')
+  await expect(charts).toHaveCount(2, { timeout: 30_000 })          // um quadro por lado
+  await expect(charts.first().locator('button').first()).toBeVisible()
+  await expect(page.locator('.disp-band:visible').first()).toBeAttached()
+  await page.getByTestId('disp-compare-order').selectOption('freq')
+  await page.getByTestId('disp-compare-order').selectOption('dp')
+  const first = charts.first().locator('button').first()
+  const name = (await first.getAttribute('title')).split(':')[0]
+  await first.click()
+  await expect(page).toHaveURL(/#\/leitor/)
+  await expect(page.getByTestId('reader-file')).toHaveValue(name, { timeout: 30_000 })
+})
+
 test('explorar com camada só de tags (biberplus) não quebra', async ({ page, request }, info) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
   expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()

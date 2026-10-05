@@ -52,3 +52,22 @@ export function bandAlpha(value, max) {
   if (!max || !value) return 0
   return Math.round(Math.sqrt(value / max) * 60) / 100
 }
+
+// Parte de um documento no DP de Gries: |o − e| (o = parte das ocorrências, e = parte dos tokens).
+export function contribution(freq, totalFreq, size, totalSize) {
+  const o = totalFreq ? freq / totalFreq : 0
+  const e = totalSize ? size / totalSize : 0
+  return Math.abs(o - e)
+}
+
+// Ordena as linhas do quadro por nome (`name`), frequência (`freq`) ou DP contribuído (`dp`, decrescente).
+// `rows` no formato do DispersionChart (uma consulta por linha: cells[0]).
+export function sortRows(rows, by, totalFreq, totalSize) {
+  const name = (a, b) => a.filename.localeCompare(b.filename, undefined, { numeric: true })
+  const arr = [...rows]
+  if (by === 'freq') return arr.sort((a, b) => (b.cells[0]?.freq ?? 0) - (a.cells[0]?.freq ?? 0) || name(a, b))
+  if (by === 'dp') return arr.sort((a, b) =>
+    contribution(b.cells[0]?.freq ?? 0, totalFreq, b.size, totalSize)
+    - contribution(a.cells[0]?.freq ?? 0, totalFreq, a.size, totalSize) || name(a, b))
+  return arr.sort(name)
+}
