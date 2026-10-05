@@ -86,7 +86,7 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
   expect(errors).toEqual([])
 })
 
-test('dispersão: linhas compactas e clique abre o leitor', async ({ page, request }, info) => {
+test('dispersão: mapa de calor, várias consultas e clique abre o leitor', async ({ page, request }, info) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
   expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
   await request.post('/api/corpora/import', { data: { corpus_name: 'corifa', source: { kind: 'folder', path: path.join(CORPORA, 'CorIFAessaysNE_5') } } })
@@ -96,9 +96,24 @@ test('dispersão: linhas compactas e clique abre o leitor', async ({ page, reque
   await page.getByTestId('query-go').click()
   const rows = page.getByTestId('disp-rows').locator('button')
   await expect(rows.first()).toBeVisible({ timeout: 30_000 })
+  // mapa de calor é o padrão: faixas de densidade presentes
+  await expect(page.getByTestId('disp-view-heat')).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.disp-band:visible').first()).toBeAttached()
   const h0 = (await rows.first().boundingBox()).height
   await page.getByTestId('disp-row-height').fill('8')
   await expect.poll(async () => (await rows.first().boundingBox()).height).toBeLessThan(h0)
+  await page.getByTestId('disp-bands').fill('20')   // faixas ajustáveis
+  // segunda consulta: entra como um chip com cor própria, no mesmo mapa
+  await page.getByTestId('query-input').fill('of')
+  await page.getByTestId('query-go').click()
+  await expect(page.getByTestId('disp-queries').locator('.badge')).toHaveCount(2, { timeout: 30_000 })
+  await expect(page.locator('.disp-tick:visible').first()).toBeAttached()
+  // código de barras (sem faixas) e tabela continuam disponíveis
+  await page.getByTestId('disp-view-bars').click()
+  await expect(page.locator('.disp-band')).toHaveCount(0)
+  await page.getByTestId('disp-view-table').click()
+  await expect(page.locator('table.table').first()).toBeVisible()
+  await page.getByTestId('disp-view-heat').click()
   const name = (await rows.first().getAttribute('title')).split(':')[0]
   await rows.first().click()
   await expect(page).toHaveURL(/#\/leitor/)

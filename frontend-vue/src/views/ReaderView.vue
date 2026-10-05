@@ -37,7 +37,8 @@ const files = ref([])
 const file = ref(route.query.file || '')
 const doc = ref(null)
 const colorBy = ref(route.query.color || 'tags')   // padrão: sempre tags, qualquer que seja a camada
-const chosen = ref(new Set(route.query.highlight ? [route.query.highlight] : []))
+const highlights = (v) => (Array.isArray(v) ? v : v ? [v] : [])
+const chosen = ref(new Set(highlights(route.query.highlight)))
 const selected = ref(null)
 const tagset = ref({})
 const window = globalThis
@@ -203,7 +204,8 @@ function step(dir) {
 
 // --- buscar no texto e copiar ---------------------------------------------------------
 // `*`, `?` e /regex/; várias palavras = sequência. Destaca todas as ocorrências e percorre com Enter / Shift+Enter.
-const findQ = ref('')
+const findQ = ref(Array.isArray(route.query.q) ? String(route.query.q[0] ?? '') : String(route.query.q ?? ''))
+watch(() => route.query.q, (v) => { findQ.value = Array.isArray(v) ? String(v[0] ?? '') : String(v ?? '') })
 const matches = computed(() => (doc.value ? findMatches(doc.value.tokens, findQ.value) : []))
 const foundPos = ref(0)
 const tokOf = (i) => doc.value.tokens[i]

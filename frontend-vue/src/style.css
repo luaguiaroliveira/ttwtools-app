@@ -348,5 +348,6 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .disp-row:hover .disp-label { color: var(--ttw-orange-text); text-decoration: underline; }
 .disp-label { flex: 0 0 13rem; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 .disp-strip { position: relative; flex: 1; height: 72%; min-height: 3px; background: var(--color-base-200); border-radius: 2px; }
-.disp-strip i { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ttw-orange-text); }
+.disp-strip .disp-band { position: absolute; top: 0; bottom: 0; background: var(--color-base-content); border-radius: 1px; pointer-events: none; }
+.disp-strip .disp-tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; border-radius: 1px; opacity: .85; pointer-events: none; }
 .disp-n { flex: 0 0 2.25rem; text-align: right; color: var(--ttw-text-muted); font-variant-numeric: tabular-nums; }
