@@ -108,9 +108,12 @@ const bars = computed(() => props.kfa.rows.map((r) => ({ label: r.Feature, value
           </template></div></div>
       <label v-if="['strip', 'violin', 'histogram', 'parcoords', 'heatmap', 'radar'].includes(kind)" class="ttw-field w-24"><span class="ttw-label">{{ t('gallery.features_n') }}</span>
         <input v-model.number="nFeatures" type="number" min="2" max="40" class="input input-sm" /></label>
-      <label v-if="kind === 'bars'" class="ttw-field"><span class="ttw-label">{{ t('gallery.order') }}</span>
-        <select :value="order" class="select select-sm" data-testid="gallery-order" @change="emit('update:order', $event.target.value)">
-          <option value="abs">{{ t('gallery.order.abs') }}</option><option value="asc">{{ t('gallery.order.asc') }}</option><option value="desc">{{ t('gallery.order.desc') }}</option></select></label>
+      <div class="ttw-field" role="group" :aria-label="t('kfa.sort')"><span class="ttw-label">{{ t('kfa.sort') }}</span>
+        <div class="flex items-center gap-1">
+          <button type="button" class="btn btn-sm btn-square" :class="{ 'btn-primary': order === 'asc' }" :aria-pressed="order === 'asc'" :title="t('kfa.sort_asc')" :aria-label="t('kfa.sort_asc')" data-testid="gallery-order-asc" @click="emit('update:order', 'asc')">↑</button>
+          <button type="button" class="btn btn-sm btn-square" :class="{ 'btn-primary': order === 'desc' }" :aria-pressed="order === 'desc'" :title="t('kfa.sort_desc')" :aria-label="t('kfa.sort_desc')" data-testid="gallery-order-desc" @click="emit('update:order', 'desc')">↓</button>
+          <button type="button" class="btn btn-sm btn-square" :class="{ 'btn-primary': order === 'abs' }" :aria-pressed="order === 'abs'" :title="t('kfa.sort_abs')" :aria-label="t('kfa.sort_abs')" data-testid="gallery-order-abs" @click="emit('update:order', 'abs')">|·|</button>
+        </div></div>
       <label v-if="kind === 'reduction'" class="ttw-field"><span class="ttw-label">{{ t('gallery.method') }}</span>
         <select v-model="method" class="select select-sm"><option value="pca2d">PCA</option><option value="tsne">t-SNE</option><option value="umap">UMAP</option><option value="mds">MDS</option></select></label>
       <ExportMenu v-if="kind !== 'pca3d'" :name="`kfa_${kind}`" :svg-root="box" class="ml-auto" />

@@ -73,7 +73,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 3 — Barras da KFA em ordem crescente por padrão
 
-- [x] feito — Feito: 2026-10-04, opencode; `memory.js` `galleryMemory.order` e o valor inicial de `ChartGallery.vue` passaram de `'abs'` para `'asc'` (rótulos i18n já corretos). e2e `fluxo.spec.js` agora confere o padrão `'asc'` e a troca para `desc`/`abs`; `npm test` 42/42, `npm run e2e` 30/30. **Falta conferir no Mac Intel** (visual).
+- [x] feito — Feito: 2026-10-04, opencode; `memory.js` `galleryMemory.order` e o valor inicial de `ChartGallery.vue` passaram de `'abs'` para `'asc'` (rótulos i18n já corretos). e2e `fluxo.spec.js` agora confere o padrão `'asc'` e a troca para `desc`/`abs`; `npm test` 42/42, `npm run e2e` 30/30. **Falta conferir no Mac Intel** (visual). **Ampliado (2026-10-04):** o dropdown de ordem virou **três botões (↑ crescente, ↓ decrescente, |·| módulo)** no topo da galeria, sempre visíveis (não somem ao trocar de visualização). A ordenação é **única** para gráfico e tabela (`galleryMemory.sortKey`/`sortDir`); os cabeçalhos das colunas da tabela são clicáveis (escolhem a coluna e alternam ↑/↓) e se afetam mutuamente com o controle da galeria.
 
 **Objetivo.** A visualização padrão (barras divergentes) abre em ordem **crescente** (mais negativo primeiro).
 
@@ -90,7 +90,7 @@ Não confundir "atributo" (feature) com "traço" (linha desenhada).
 
 ## Passo 4 — Gráfico à esquerda, tabela à direita, com divisória e botões de ocultar
 
-- [x] feito — Feito: 2026-10-04, opencode; novo `components/SplitPane.vue` (grid com divisória arrastável por mouse/toque, `role="separator"`, `aria-orientation="vertical"`, `aria-valuenow` e ajuste por setas/Home/End); gráfico + detalhe à esquerda, tabela à direita; botões `analysis-toggle-chart`/`analysis-toggle-table`; estado em `galleryMemory` (`split`, `showChart`, `showTable`); i18n `analysis.*` (pt/en); empilha sem divisória em ≤1023px; teste `splitPane.test.js` (3 casos) e e2e do fluxo atualizado. `npm test` 45/45, `npm run e2e` 30/30, `pytest libs/ttwtools/tests` 268/268, `pytest tests` 63/63. **Falta conferir no Mac Intel** (visual).
+- [x] feito — Feito: 2026-10-04, opencode; novo `components/SplitPane.vue` (grid com divisória arrastável por mouse/toque, `role="separator"`, `aria-orientation="vertical"`, `aria-valuenow` e ajuste por setas/Home/End); gráfico + detalhe à esquerda, tabela à direita; botões `analysis-toggle-chart`/`analysis-toggle-table`; estado em `galleryMemory` (`split`, `showChart`, `showTable`); i18n `analysis.*` (pt/en); empilha sem divisória em ≤1023px; teste `splitPane.test.js` (3 casos) e e2e do fluxo atualizado. `npm test` 45/45, `npm run e2e` 30/30, `pytest libs/ttwtools/tests` 268/268, `pytest tests` 63/63. **Falta conferir no Mac Intel** (visual). **Ampliado (2026-10-04):** `SplitPane` ganhou `fill` (em ≥1024px ocupa a altura toda e cada lado rola) e a **tabela da KFA ocupa todo o espaço vertical** do painel; as colunas dos lados passaram a trazer **contagem bruta e frequência por 1000** (o pacote devolve `Count_Corpus1/2`), com títulos objetivos.
 
 **Objetivo.** Na tela de análise (Passo 2), o gráfico fica à esquerda e a tabela à direita; uma divisória arrastável regula o espaço de cada lado e dá para ocultar um dos lados.
 

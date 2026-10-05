@@ -11,6 +11,7 @@ const props = defineProps({
   showRight: { type: Boolean, default: true },
   min: { type: Number, default: 20 },
   max: { type: Number, default: 80 },
+  fill: { type: Boolean, default: false },   // ocupa toda a altura e deixa cada lado rolar (telas largas)
 })
 const emit = defineEmits(['update:modelValue'])
 const { t } = useI18n()
@@ -52,7 +53,7 @@ function onKey(e) {
 onBeforeUnmount(onUp)
 </script>
 <template>
-  <div ref="root" class="ttw-split w-full" :style="style" data-testid="split-pane">
+  <div ref="root" class="ttw-split w-full" :class="{ 'is-fill': fill }" :style="style" data-testid="split-pane">
     <div v-if="showLeft" class="min-w-0 flex flex-col gap-3">
       <slot />
     </div>
@@ -71,5 +72,9 @@ onBeforeUnmount(onUp)
 @media (max-width: 1023px) {
   .ttw-split { grid-template-columns: minmax(0, 1fr) !important; }
   .ttw-split-divider { display: none; }
+}
+@media (min-width: 1024px) {
+  .ttw-split.is-fill { height: 100%; align-items: stretch; }
+  .ttw-split.is-fill > div { height: 100%; min-height: 0; overflow: auto; }
 }
 </style>

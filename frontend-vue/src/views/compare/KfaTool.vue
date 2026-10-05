@@ -76,12 +76,30 @@ function backToSetup() { const q = { ...route.query }; delete q.view; router.pus
 const showChart = ref(galleryMemory.showChart ?? true)
 const showTable = ref(galleryMemory.showTable ?? true)
 const split = ref(galleryMemory.split ?? 50)
-const order = ref(galleryMemory.order ?? 'asc')
+// Ordenação única (gráfico e tabela se afetam): a chave é a coluna; a direção vale para os dois.
+const sortKey = ref(galleryMemory.sortKey ?? 'Effect_Size')
+const sortDir = ref(galleryMemory.sortDir ?? galleryMemory.order ?? 'asc')
 watch([showChart, showTable, split], () => Object.assign(galleryMemory, { showChart: showChart.value, showTable: showTable.value, split: split.value }))
-watch(order, (v) => { galleryMemory.order = v })
-// A tabela segue a mesma ordem do gráfico (crescente, decrescente ou módulo).
-const EFFECT_SORTERS = { abs: (a, b) => Math.abs(b.Effect_Size) - Math.abs(a.Effect_Size), asc: (a, b) => a.Effect_Size - b.Effect_Size, desc: (a, b) => b.Effect_Size - a.Effect_Size }
-const tableRows = computed(() => (shown.value ? [...shown.value.rows].sort(EFFECT_SORTERS[order.value]) : []))
+watch([sortKey, sortDir], () => Object.assign(galleryMemory, { sortKey: sortKey.value, sortDir: sortDir.value, order: sortDir.value }))
+const ACCESSORS = {
+  Feature: (r) => r.Feature, Effect_Size: (r) => r.Effect_Size,
+  Count_Corpus1: (r) => r.Count_Corpus1, Count_Corpus2: (r) => r.Count_Corpus2,
+  Mean_Corpus1: (r) => r.Mean_Corpus1, Mean_Corpus2: (r) => r.Mean_Corpus2,
+}
+function compareRows(a, b) {
+  const va = ACCESSORS[sortKey.value](a) ?? 0; const vb = ACCESSORS[sortKey.value](b) ?? 0
+  if (typeof va === 'string' || typeof vb === 'string') return String(va).localeCompare(String(vb))
+  if (sortDir.value === 'abs') return Math.abs(vb) - Math.abs(va)
+  return sortDir.value === 'asc' ? va - vb : vb - va
+}
+const tableRows = computed(() => (shown.value ? [...shown.value.rows].sort(compareRows) : []))
+// Clicar no cabeçalho escolhe a coluna e alterna ↑/↓; o controle no topo da galeria (↑/↓/módulo) também vale.
+function sortBy(key) {
+  if (sortKey.value === key) sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  else { sortKey.value = key; sortDir.value = 'asc' }
+}
+const arrow = (key) => (sortKey.value !== key ? '' : sortDir.value === 'asc' ? '↑' : sortDir.value === 'desc' ? '↓' : '|·|')
+function setOrder(dir) { sortKey.value = 'Effect_Size'; sortDir.value = dir }
 
 // Clicar num atributo (barra do gráfico ou linha da tabela) abre a gaveta com os textos em que ele
 // ocorre, em ordem decrescente de frequência (arquivo + ocorrências por 1000 e absolutas). O atributo
@@ -143,14 +161,27 @@ function openReader(v) { router.push(readerTarget(v)) }
         <button type="button" class="btn btn-sm" :aria-pressed="showChart" data-testid="analysis-toggle-chart" @click="showChart = !showChart">{{ showChart ? t('analysis.hide_chart') : t('analysis.show_chart') }}</button>
         <button type="button" class="btn btn-sm" :aria-pressed="showTable" data-testid="analysis-toggle-table" @click="showTable = !showTable">{{ showTable ? t('analysis.hide_table') : t('analysis.show_table') }}</button></div>
       </header>
-      <div class="flex-1 min-h-0 overflow-auto p-3">
-      <SplitPane v-model="split" :show-left="showChart" :show-right="showTable">
-        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" v-model:order="order" @select="openTexts" />
+      <div class="flex-1 min-h-0 p-3 overflow-auto lg:overflow-hidden">
+      <SplitPane v-model="split" :show-left="showChart" :show-right="showTable" fill>
+        <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" :order="sortDir" @update:order="setOrder" @select="openTexts" />
         <template #right>
           <div class="ttw-scroll" data-testid="kfa-table">
-            <table class="table table-xs table-pin-rows"><thead><tr><th>{{ t('kfa.feature') }}</th><th class="text-right">d</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[0].label}`">{{ gallerySides[0].label }}</th><th class="text-right" :title="`${t('kfa.mean')}: ${gallerySides[1].label}`">{{ gallerySides[1].label }}</th></tr></thead>
-              <tbody><tr v-for="r in tableRows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)"><td>{{ r.Feature }}</td><td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
-                <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td><td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td></tr></tbody></table>
+            <table class="table table-xs table-pin-rows"><thead><tr>
+              <th class="text-left"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Feature')">{{ t('kfa.feature') }} {{ arrow('Feature') }}</button></th>
+              <th class="text-right"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Effect_Size')">d {{ arrow('Effect_Size') }}</button></th>
+              <th class="text-right whitespace-nowrap" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Count_Corpus1')">{{ gallerySides[0].label }} · {{ t('kfa.raw_count') }} {{ arrow('Count_Corpus1') }}</button></th>
+              <th class="text-right whitespace-nowrap" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Mean_Corpus1')">{{ gallerySides[0].label }} · {{ t('kfa.per_1000') }} {{ arrow('Mean_Corpus1') }}</button></th>
+              <th class="text-right whitespace-nowrap" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Count_Corpus2')">{{ gallerySides[1].label }} · {{ t('kfa.raw_count') }} {{ arrow('Count_Corpus2') }}</button></th>
+              <th class="text-right whitespace-nowrap" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Mean_Corpus2')">{{ gallerySides[1].label }} · {{ t('kfa.per_1000') }} {{ arrow('Mean_Corpus2') }}</button></th>
+              </tr></thead>
+              <tbody><tr v-for="r in tableRows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)">
+                <td>{{ r.Feature }}</td>
+                <td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
+                <td class="text-right tabular-nums">{{ r.Count_Corpus1 }}</td>
+                <td class="text-right tabular-nums">{{ r.Mean_Corpus1.toFixed(2) }}</td>
+                <td class="text-right tabular-nums">{{ r.Count_Corpus2 }}</td>
+                <td class="text-right tabular-nums">{{ r.Mean_Corpus2.toFixed(2) }}</td>
+              </tr></tbody></table>
           </div>
         </template>
       </SplitPane>
@@ -245,4 +276,6 @@ function openReader(v) { router.push(readerTarget(v)) }
 .ttw-slide-enter-active, .ttw-slide-leave-active { transition: transform 0.22s ease; }
 .ttw-slide-enter-from, .ttw-slide-leave-to { transform: translateX(100%); }
 @media (prefers-reduced-motion: reduce) { .ttw-slide-enter-active, .ttw-slide-leave-active { transition: none; } }
+/* Em telas largas a tabela ocupa a altura toda do painel (a coluna rola, sem cap de 70dvh). */
+@media (min-width: 1024px) { :deep([data-testid="kfa-table"]) { max-height: none; height: 100%; } }
 </style>

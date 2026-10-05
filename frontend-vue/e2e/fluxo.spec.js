@@ -138,20 +138,28 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.locator('[data-testid=gallery-kind] [data-kind=radar]').click()
   await expect(page.getByTestId('side-legend')).toContainText('bawe')
   await a11y(page, 'kfa')
-  // barras do d: ordem crescente por padrão; maior módulo e decrescente continuam
+  // barras do d: setas de ordenação (crescente, decrescente, módulo) sempre visíveis, sem dropdown
   await page.locator('[data-testid=gallery-kind] [data-kind=bars]').click()
   const firstLabel = () => page.locator('[data-testid=gallery-chart] svg text').first().textContent()
-  await expect(page.getByTestId('gallery-order')).toHaveValue('asc')
-  const asc = await firstLabel()
-  await page.getByTestId('gallery-order').selectOption('desc')
-  const desc = await firstLabel()
-  // a tabela segue a mesma ordenação do gráfico
   const firstTableFeature = () => page.getByTestId('kfa-table').locator('tbody tr').first().locator('td').first().textContent()
+  await expect(page.getByTestId('gallery-order-asc')).toHaveAttribute('aria-pressed', 'true')
+  const asc = await firstLabel()
+  await page.getByTestId('gallery-order-desc').click()
+  const desc = await firstLabel()
+  // gráfico e tabela se afetam: a 1ª linha da tabela é o 1º atributo das barras
   expect((await firstTableFeature()).trim()).toBe(desc.trim())
-  await page.getByTestId('gallery-order').selectOption('abs')
+  await page.getByTestId('gallery-order-abs').click()
   const byAbs = await firstLabel()
   expect(new Set([asc, desc, byAbs]).size).toBeGreaterThan(1)
-  await page.getByTestId('gallery-order').selectOption('asc')
+  await page.getByTestId('gallery-order-asc').click()
+  // ordenar a tabela por uma coluna de contagem também funciona (cabeçalho clicável)
+  const countHeader = page.getByTestId('kfa-table').locator('thead th').nth(2).locator('button')
+  await countHeader.click()
+  const firstCount = async () => Number((await page.getByTestId('kfa-table').locator('tbody tr').first().locator('td').nth(2).textContent()).trim())
+  const c1 = await firstCount()
+  await countHeader.click()
+  expect(await firstCount()).toBeGreaterThanOrEqual(c1)   // mesma coluna: asc → desc
+  await page.getByTestId('gallery-order-asc').click()   // volta a ordenar por d
   // barras: a altura e a quantidade são controláveis e a área rola (nada de atributo cortado)
   const nBars = () => page.locator('[data-testid=bars-scroll] g[role=button]').count()
   const all = await nBars()
