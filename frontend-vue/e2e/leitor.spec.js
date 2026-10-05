@@ -170,8 +170,7 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   await page.getByTestId('query-input').fill('the')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('disp-rows').locator('button').first()).toBeVisible({ timeout: 30_000 })
-  // seletor de etiquetas em painel à direita: clicar numa etiqueta vira uma consulta própria colorida
-  await page.getByTestId('tag-panel-toggle').click()
+  // seletor de etiquetas em painel à direita (já visível): clicar numa etiqueta vira uma consulta própria colorida
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
   await expect(tagBtn).toBeVisible()
   await tagBtn.click()

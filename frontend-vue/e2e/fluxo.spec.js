@@ -80,21 +80,20 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('query-input').fill('the')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
-  // etiquetas do etiquetador ativo: clicar monta a busca (`the&pos=...`), editável; clicar de novo desliga
-  await page.getByTestId('tag-panel-toggle').click()
+  // etiquetas do etiquetador ativo: o painel já abre visível; clicar monta a busca (`the&pos=...`), editável
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
   await expect(tagBtn).toBeVisible()
   const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
   await expect(page.getByTestId('query-input')).toHaveValue(`the&pos=${tag}`)
-  await page.getByTestId('tag-panel-toggle').click()          // fecha a gaveta para alcançar o Buscar
+  await page.getByTestId('tag-panel-close').click()           // fecha o painel para alcançar o Buscar
   await expect(page.getByTestId('tag-picker-list')).toBeHidden()
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
   await page.getByTestId('tag-panel-toggle').click()          // reabre para desligar a etiqueta
   await tagBtn.click()
   await expect(page.getByTestId('query-input')).toHaveValue('the')
-  await page.getByTestId('tag-panel-toggle').click()
+  await page.getByTestId('tag-panel-close').click()
   await a11y(page, 'kwic')
 
   // 5. palavras-chave contra o outro corpus

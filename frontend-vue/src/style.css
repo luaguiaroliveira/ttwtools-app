@@ -330,8 +330,9 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .ttw-menu-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
 .ttw-wordmark { min-width: 6.5rem; text-align: left; }
 
-/* Leitor: gaveta de etiquetas (telas estreitas ou baixas), aberta por uma alça na borda direita, por cima do texto */
-.ttw-tag-drawer { position: fixed; top: 3rem; bottom: 0; right: 0; z-index: 40; width: 21rem; max-width: 88vw; padding: .75rem; overflow-y: auto;
+/* Painel de etiquetas à direita (Explorar, já visível; Leitor em telas estreitas), aberto por uma alça na
+   borda direita, por cima do conteúdo. A largura vem de `--ttw-tag-width` (o Explorar a torna arrastável). */
+.ttw-tag-drawer { position: fixed; top: 3rem; bottom: 0; right: 0; z-index: 40; width: var(--ttw-tag-width, 21rem); max-width: 88vw; padding: .75rem; overflow-y: auto;
   background: var(--color-base-100); border-left: 1px solid var(--ttw-border-strong); box-shadow: var(--ttw-shadow-pop);
   transform: translateX(105%); visibility: hidden; transition: transform .28s cubic-bezier(.2, .8, .2, 1), visibility 0s .28s; }
 .ttw-tag-drawer.is-open { transform: none; visibility: visible; transition-delay: 0s; }
@@ -339,7 +340,9 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
   border-radius: var(--radius-box) 0 0 var(--radius-box); background: var(--color-neutral); color: var(--color-neutral-content); font-size: .75rem; font-weight: 600;
   box-shadow: var(--ttw-shadow-pop); cursor: pointer; }
 .ttw-tag-handle span { writing-mode: vertical-rl; }
-.ttw-tag-handle[aria-expanded="true"] { right: min(21rem, 88vw); }
+.ttw-tag-handle[aria-expanded="true"] { right: var(--ttw-tag-width, 21rem); }
+.ttw-tag-resizer { position: fixed; top: 3rem; bottom: 0; right: var(--ttw-tag-width, 21rem); z-index: 39; width: .5rem; cursor: col-resize; touch-action: none; border-radius: 9999px; }
+.ttw-tag-resizer:hover, .ttw-tag-resizer:focus-visible { background: color-mix(in srgb, var(--ttw-orange-text) 45%, transparent); outline: none; }
 @media (prefers-reduced-motion: reduce) { .ttw-tag-drawer { transition: none; } }
 
 /* Dispersão: uma linha por texto (clicável, abre o leitor); a altura vem do controle de densidade */
