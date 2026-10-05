@@ -26,7 +26,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 <template>
   <div class="flex flex-col gap-4 max-w-4xl">
     <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
-    <article v-if="topic" class="flex flex-col gap-3" data-testid="help-topic">
+    <article v-if="topic" class="flex flex-col gap-4" data-testid="help-topic">
       <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
       <h2 class="text-xl font-bold">{{ topic.title }}</h2>
       <p class="opacity-80">{{ topic.summary }}</p>
@@ -34,7 +34,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
       <CohenDVisual v-if="topic.id === 'cohens_d'" />
       <template v-for="(part, i) in parts" :key="i">
         <KfaWidget v-if="i > 0" />
-        <div class="help-body flex flex-col gap-2" v-html="markdown(part)" />
+        <div class="help-body" :lang="locale" v-html="markdown(part)" />
       </template>
       <TaggerTags v-if="topic.id === 'tags_etiquetadores'" />
       <p v-if="topic.related.length" class="text-sm">{{ t('learn.related') }}:
@@ -57,16 +57,29 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
   </div>
 </template>
 <style scoped>
-.help-body :deep(h3) { font-weight: 700; margin-top: .5rem; }
-.help-body :deep(ul) { list-style: disc; padding-left: 1.25rem; }
-.help-body :deep(h2) { font-weight: 700; font-size: 1.15rem; margin-top: 1rem; }
-.help-body :deep(ol) { list-style: decimal; padding-left: 1.25rem; }
-.help-body :deep(blockquote) { border-left: 4px solid var(--color-primary); padding: .25rem .75rem; background: var(--color-base-200); border-radius: 0 .5rem .5rem 0; }
-.help-body :deep(table) { border-collapse: collapse; width: 100%; font-size: .9rem; }
-.help-body :deep(th), .help-body :deep(td) { border: 1px solid var(--color-base-300); padding: .3rem .5rem; text-align: left; }
-.help-body :deep(th) { background: var(--color-base-200); }
-.help-body :deep(details) { border: 1px solid var(--color-base-300); border-radius: .5rem; padding: .35rem .75rem; }
-.help-body :deep(summary) { cursor: pointer; }
-.help-body :deep(hr) { border-color: var(--color-base-300); }
-.help-body :deep(pre) { background: var(--color-base-200); padding: .5rem; border-radius: .5rem; overflow-x: auto; }
+/* Corpo dos tópicos: leitura confortável (entrelinha, espaçamento, texto justificado com hifenização). */
+.help-body { line-height: 1.65; font-size: 1rem; max-width: 46rem; hyphens: auto; }
+.help-body :deep(> * + *) { margin-top: .85rem; }
+.help-body :deep(p), .help-body :deep(li) { text-align: justify; text-wrap: pretty; }
+.help-body :deep(strong) { font-weight: 650; }
+.help-body :deep(h2) { font-size: 1.3rem; font-weight: 700; margin-top: 2rem; padding-bottom: .25rem; border-bottom: 1px solid var(--color-base-300); text-align: left; }
+.help-body :deep(h3) { font-size: 1.1rem; font-weight: 700; margin-top: 1.4rem; }
+.help-body :deep(ul) { list-style: disc; padding-left: 1.5rem; }
+.help-body :deep(ol) { list-style: decimal; padding-left: 1.5rem; }
+.help-body :deep(li + li) { margin-top: .3rem; }
+.help-body :deep(blockquote) { border-left: 4px solid var(--color-primary); padding: .6rem 1rem; background: var(--color-base-200); border-radius: 0 .5rem .5rem 0; }
+.help-body :deep(blockquote p) { margin: 0; }
+.help-body :deep(table) { border-collapse: collapse; width: 100%; font-size: .92rem; line-height: 1.45; }
+.help-body :deep(th), .help-body :deep(td) { border: 1px solid var(--color-base-300); padding: .45rem .7rem; text-align: left; vertical-align: top; }
+.help-body :deep(th) { background: var(--color-base-200); font-weight: 650; }
+.help-body :deep(details) { border: 1px solid var(--color-base-300); border-radius: .6rem; padding: .55rem .95rem; background: var(--color-base-200); }
+.help-body :deep(details[open]) { background: color-mix(in srgb, var(--color-base-200) 70%, var(--color-base-100)); }
+.help-body :deep(details > :not(summary)) { margin-top: .6rem; }
+.help-body :deep(summary) { cursor: pointer; text-align: left; }
+.help-body :deep(summary:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 2px; }
+.help-body :deep(hr) { border: 0; border-top: 1px solid var(--color-base-300); margin: 1.75rem 0; }
+.help-body :deep(code) { background: var(--color-base-200); border-radius: .3rem; padding: .05rem .3rem; font-size: .92em; }
+.help-body :deep(pre) { background: var(--color-base-200); padding: .75rem 1rem; border-radius: .5rem; overflow-x: auto; text-align: left; hyphens: none; line-height: 1.5; }
+.help-body :deep(pre code) { padding: 0; background: none; }
+@media (max-width: 40rem) { .help-body :deep(p), .help-body :deep(li) { text-align: left; } }
 </style>
