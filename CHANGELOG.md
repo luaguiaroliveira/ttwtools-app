@@ -4,9 +4,13 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.7.1] — 2026-10-05
+
 ### Alterado
 
 - **Versão estável da série 0.7:** mesmo conteúdo de `0.7.0-alpha.2`, publicada sem o sufixo `-alpha` para aparecer como release normal (não pre-release). A partir daqui a série avança por versões de correção (`0.7.1`, `0.7.2`, …, `0.7.10`, `0.7.11`, …).
+
+- Pacote `ttwtools` 0.2.0 (commit `045c117`).
 
 ## [0.7.0-alpha.2] — 2026-10-05
 
@@ -267,7 +271,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...v0.7.1
 [0.7.0-alpha.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...v0.7.0-alpha.2
 [0.7.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...v0.7.0-alpha.1
 [0.6.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...v0.6.0
