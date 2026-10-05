@@ -4,6 +4,22 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Leitor e KFA** — o Leitor vira seção própria (`/leitor`); a análise da KFA abre num painel que desliza da direita, com gráfico à esquerda e tabela à direita (divisória arrastável e botões de ocultar), contagem bruta e por 1000 por lado, ordenação pelo cabeçalho e clique num atributo (barra ou linha) que abre a gaveta dos textos, com link para o Leitor. Passos 1 a 6 de `novodesenho/leitor_kfa.md` (Passo 7 pendente).
+- **Etiquetas do etiquetador ativo na busca** (Busca, KWIC e Dispersão): painel lateral com as etiquetas da camada e suas contagens; clicar liga/desliga e escreve na consulta, editável. Nova sintaxe **`|` = ou** (`tag=A|B`, `pos=A|B`, `palavra&tag=A`).
+- **Dispersão no Explorar:** mapa de calor (texto × faixa de posição) desenhado em `<canvas>` (rápido), com **várias consultas sobrepostas** coloridas (uma etiqueta = uma camada); código de barras e tabela de métricas de Gries por texto (esperado/observado/desvio); relatório de DP de Gries/range por consulta em tabela própria; **dispersão comparada** no Comparar (dois quadros, ordenação por nome/frequência/DP). Topo fixo com uma só rolagem e exportação (CSV/TXT/PNG) que acompanha a visão.
+- **Aprender: tags dos etiquetadores** — tópico com tabela Tag · Grupo · Definição · Exemplo por repertório, e ícone de informação ao lado do etiquetador no Leitor, na Etiquetagem, na lista de camadas e na KFA.
+
+### Alterado
+
+- **Dispersão em lote**: `query.dispersion_multi` (subcomando `dispersion-multi`, `POST /api/explore/dispersion`) roda as consultas numa só chamada, abrindo o projeto e decodificando a camada uma vez; a tela pede só o que falta e guarda em cache. Métricas de Gries "por texto" (`expected`, `observed`, `deviation`) em `idquery.finalize_dispersion`.
+- Correção de cor no **Safari 17.6 / macOS 12** (`color-mix()` reescrito para `srgb` no build) e justificação do Leitor com `white-space: pre-line`.
+
+### Verificação
+
+- Testes: 275 do pacote, 64 do servidor, 57 da interface e 33 de ponta a ponta (Playwright, três larguras). **Não testado** nesta versão: Mac Intel/macOS 12 em máquina real, Windows e Linux em máquina real (só o CI).
+
 ## [0.7.0-alpha.1] — 2026-10-04
 
 > Linha **0.7 (experimental)**: a janela do aplicativo passa de pywebview para **Tauri** (Rust), sem mudar a interface nem o servidor.
