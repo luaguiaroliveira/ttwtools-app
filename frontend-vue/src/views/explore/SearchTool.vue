@@ -29,18 +29,20 @@ const items = computed(() => (result.value?.per_group ?? result.value?.per_docum
   .map((r) => ({ label: r.group ?? r.filename, value: r.freq })))
 </script>
 <template>
-  <section class="flex flex-col gap-3">
-    <QueryBox :busy="busy" :corpus="corpus" :layer="layer" tags @submit="run">
+  <section class="flex flex-col gap-3 h-full min-h-0">
+    <QueryBox class="flex-1 min-h-0" :busy="busy" :corpus="corpus" :layer="layer" tags @submit="run">
       <label class="ttw-field"><span class="ttw-label">{{ t('explore.group_by') }}</span>
         <select v-model="groupBy" class="select select-sm"><option value="">{{ t('explore.by_document') }}</option>
           <option v-for="k in activeCorpus?.metadata_keys ?? []" :key="k" :value="k">{{ k }}</option></select></label>
+      <template #results>
+        <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
+        <template v-if="result">
+          <p role="status" class="font-medium">{{ t('explore.total', result) }}</p>
+          <div class="flex items-center gap-1"><CopyCode analysis="search" :params="{ corpus, query: lastQuery, layer, group_by: groupBy || null }" />
+            <ExportMenu :name="`busca_${lastQuery}`" :rows="result.per_group ?? result.per_document" :svg-root="chart" /></div>
+          <BarChart ref="chart" :title="groupBy || t('explore.by_document')" :items="items" value-label="freq" :max="30" />
+        </template>
+      </template>
     </QueryBox>
-    <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
-    <template v-if="result">
-      <p role="status" class="font-medium">{{ t('explore.total', result) }}</p>
-      <div class="flex items-center gap-1"><CopyCode analysis="search" :params="{ corpus, query: lastQuery, layer, group_by: groupBy || null }" />
-        <ExportMenu :name="`busca_${lastQuery}`" :rows="result.per_group ?? result.per_document" :svg-root="chart" /></div>
-      <BarChart ref="chart" :title="groupBy || t('explore.by_document')" :items="items" value-label="freq" :max="30" />
-    </template>
   </section>
 </template>

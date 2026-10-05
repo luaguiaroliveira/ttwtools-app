@@ -20,6 +20,9 @@ const session = useSession()
 const { corpus, layer, layers, corpora, project, projectPath, unsaved } = storeToRefs(session)
 const route = useRoute()
 const section = computed(() => NAV.find((n) => n.name === route.name) ?? (route.name === 'home' ? { icon: 'learn', label: 'nav.info' } : null))
+// Telas com divisões (painéis que rolam sozinhos): a área principal não rola; só os painéis.
+const SPLIT_ROUTES = ['explore']
+const isSplit = computed(() => SPLIT_ROUTES.includes(route.name))
 const theme = ref(initialTheme())
 const loadError = ref(null)
 const explaining = ref(false)
@@ -41,7 +44,7 @@ const changeLang = (value) => setLang(value)
 
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
-  <div class="min-h-dvh bg-base-100 text-base-content flex flex-col">
+  <div class="h-dvh overflow-hidden bg-base-100 text-base-content flex flex-col">
   <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
         <button type="button" class="ttw-wordmark shrink-0 text-lg tracking-tight px-1" data-testid="about-open"
                 :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
@@ -103,7 +106,7 @@ const changeLang = (value) => setLang(value)
           </template>
         </MenuButton>
   </header>
-    <div class="flex flex-1 flex-col md:flex-row min-w-0">
+    <div class="flex flex-1 min-h-0 flex-col md:flex-row min-w-0">
     <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
     <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-16 shrink-0 sticky top-12 self-start h-[calc(100dvh-3rem)] z-20"
          :aria-label="t('nav.label')">
@@ -118,9 +121,9 @@ const changeLang = (value) => setLang(value)
       </RouterLink>
     </nav>
 
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="flex-1 flex flex-col min-w-0 min-h-0">
 
-      <main id="main" class="flex-1 p-4 pb-24 md:pb-4" tabindex="-1">
+      <main id="main" class="flex-1 min-h-0 p-4 pb-24 md:pb-4" :class="isSplit ? 'overflow-hidden' : 'overflow-y-auto'" tabindex="-1">
         <div v-if="loadError" role="alert" class="alert alert-error mb-4">{{ t('api.error.network') }}</div>
         <RouterView />
       </main>

@@ -92,7 +92,9 @@ test('fluxo completo', async ({ page, request }, info) => {
   await expect(page.getByTestId('tag-picker-list')).toBeHidden()
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
-  await page.getByTestId('tag-panel-toggle').click()          // reabre para desligar a etiqueta
+  // reabre para desligar a etiqueta: alça da divisória (telas largas) ou botão da gaveta (estreitas)
+  if (await page.getByTestId('tag-panel-toggle').count()) await page.getByTestId('tag-panel-toggle').click()
+  else await page.getByTestId('split-handle').click()
   await tagBtn.click()
   await expect(page.getByTestId('query-input')).toHaveValue('the')
   await page.getByTestId('tag-panel-close').click()

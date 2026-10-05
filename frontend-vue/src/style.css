@@ -345,6 +345,14 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .ttw-tag-resizer:hover, .ttw-tag-resizer:focus-visible { background: color-mix(in srgb, var(--ttw-orange-text) 45%, transparent); outline: none; }
 @media (prefers-reduced-motion: reduce) { .ttw-tag-drawer { transition: none; } }
 
+/* Divisória arrastável entre duas áreas (painel de etiquetas, Leitor): alça discreta com três pontinhos */
+.ttw-split-handle { display: flex; align-items: center; justify-content: center; align-self: stretch; cursor: col-resize; touch-action: none; color: var(--ttw-text-muted); }
+.ttw-split-handle:hover, .ttw-split-handle:focus-visible { color: var(--ttw-orange-text); outline: none; }
+.ttw-split-grip { display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: .6rem .12rem; border-radius: 9999px;
+  background: var(--color-base-200); border: 1px solid var(--ttw-border-strong); }
+.ttw-split-handle:hover .ttw-split-grip, .ttw-split-handle:focus-visible .ttw-split-grip { background: color-mix(in srgb, var(--ttw-orange-text) 20%, var(--color-base-200)); border-color: var(--ttw-orange-text); }
+.ttw-split-grip i { display: block; width: 3px; height: 3px; border-radius: 9999px; background: currentColor; }
+
 /* Dispersão: uma linha por texto (clicável, abre o leitor); a altura vem do controle de densidade */
 .disp-row { display: flex; align-items: center; gap: .5rem; width: 100%; padding: 0 .25rem; border-radius: 3px; cursor: pointer; text-align: left; line-height: 1; }
 .disp-row:hover { background: color-mix(in oklab, var(--ttw-orange-text) 14%, transparent); }

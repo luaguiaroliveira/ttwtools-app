@@ -41,20 +41,20 @@ const posBucket = (p) => {
 }
 </script>
 <template>
-  <section id="busca-kwic" class="flex flex-col gap-3">
-    <div class="flex justify-end gap-1">
+  <section id="busca-kwic" class="flex flex-col gap-3 h-full min-h-0">
+    <div class="flex justify-end gap-1 shrink-0">
       <template v-if="data"><CopyCode analysis="kwic" :params="{ corpus, query, layer, context, limit, offset, sort }" />
         <ExportMenu :name="`kwic_${query}`" :rows="data.lines" :columns="['filename', 'start_char', 'left', 'match', 'right', 'pos', 'lemma']" /></template>
       <HelpTip topic="kwic" /></div>
-    <QueryBox :initial="String(route.query.q || '')" :busy="loading" :corpus="corpus" :layer="layer" tags @submit="submit">
+    <QueryBox class="flex-1 min-h-0" :initial="String(route.query.q || '')" :busy="loading" :corpus="corpus" :layer="layer" tags @submit="submit">
       <label class="ttw-field w-24"><span class="ttw-label">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>
       <label class="ttw-field"><span class="ttw-label">{{ t('explore.sort') }}</span>
         <select v-model="sort" class="select select-sm" @change="query && submit(query)">
           <option v-for="s in ['position', 'left', 'right']" :key="s" :value="s">{{ t(`explore.sort.${s}`) }}</option></select></label>
-    </QueryBox>
-    <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
-    <template v-if="data">
+      <template #results>
+      <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
+      <template v-if="data">
       <p role="status" class="text-sm" data-testid="kwic-total">{{ t('table.range', { from: data.total ? offset + 1 : 0, to: Math.min(offset + limit, data.total), total: data.total }) }}</p>
       <!-- computador e tablet: tabela alinhada no centro. A frase inteira (title) fica em todas as células menos a Classe, que tem a própria dica -->
       <div class="hidden sm:block ttw-scroll">
@@ -87,5 +87,7 @@ const posBucket = (p) => {
         <button class="btn btn-sm" :disabled="offset + limit >= data.total" data-testid="kwic-next" @click="page(1)">{{ t('table.next') }}</button>
       </div>
     </template>
+      </template>
+    </QueryBox>
   </section>
 </template>

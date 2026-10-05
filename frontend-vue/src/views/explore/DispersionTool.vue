@@ -88,9 +88,10 @@ const copyItems = computed(() => queries.value.map((c) => ({ label: c.q, params:
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 </script>
 <template>
-  <section class="flex flex-col gap-3">
-    <QueryBox :busy="busy" :corpus="corpus" :layer="layer" tags tag-mode="layers" :selected-tags="selectedTags"
-              @submit="addQuery" @tag-toggle="toggleTag" />
+  <section class="flex flex-col gap-3 h-full min-h-0">
+    <QueryBox class="flex-1 min-h-0" :busy="busy" :corpus="corpus" :layer="layer" tags tag-mode="layers" :selected-tags="selectedTags"
+              @submit="addQuery" @tag-toggle="toggleTag">
+    <template #results>
     <div v-if="queries.length" class="flex flex-wrap items-center gap-1 text-xs" data-testid="disp-queries">
       <span class="text-text-muted mr-1">{{ t('explore.disp_queries') }}:</span>
       <span v-for="(c, i) in queries" :key="`${c.q}-${i}`" class="badge badge-ghost gap-1 font-mono">
@@ -134,5 +135,7 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
         <DispersionChart v-else ref="chart" :rows="rows" :colors="colors" :bands="nBands" :row-h="rowH" :view="view" @open="openInReader" />
       </figure>
     </template>
+    </template>
+    </QueryBox>
   </section>
 </template>
