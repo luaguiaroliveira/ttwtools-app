@@ -1,10 +1,10 @@
 // Dispersão de Gries: faixas de posição (deciles ajustáveis) e densidade por 1000 tokens.
 // Cada texto vira uma matriz documento × faixa; várias consultas se sobrepõem somando as densidades
 // do fundo e desenhando os traços na cor de cada consulta.
-import { CHART_VARS } from './scale.js'
-
-// Cor categórica estável para cada consulta adicionada.
-export const queryColor = (i) => `var(${CHART_VARS[i % CHART_VARS.length]})`
+// Cores categóricas das consultas (mesmas do tema claro: `--chart-1..8`). Guardadas em hex porque
+// cada consulta tem um seletor de cor (`<input type="color">`) e a cor escolhida vale no gráfico.
+const QUERY_COLORS = ['#C2500C', '#3B3936', '#2F6F9F', '#7A5C99', '#2E8B57', '#B08900', '#A63D6B', '#8A8580']
+export const queryColor = (i) => QUERY_COLORS[i % QUERY_COLORS.length]
 
 // Cláusula de etiqueta ou classe dentro de uma consulta (para o Leitor destacar o que foi buscado).
 export function clauseOf(query) {

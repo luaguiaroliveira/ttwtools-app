@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { describeTag, mergeTagsets, tagsetIdsFor, tagsetIdsForConfig } from '../utils/tagInfo.js'
+import { describeTag, isPlausibleTag, mergeTagsets, tagsetIdsFor, tagsetIdsForConfig } from '../utils/tagInfo.js'
 
 const t = (key, p = {}) => `${key}:${p.tag ?? ''}:${p.desc ?? ''}`
 const sets = [
@@ -36,5 +36,12 @@ describe('tagInfo', () => {
     const mfte = { tagger: 'mfte', tagsets: { tags: 'mfte', xpos: 'ptb', upos: 'upos' } }
     expect(tagsetIdsForConfig(mfte, { components: ['mfte', 'morph', 'pos'] })).toEqual(['mfte', 'ptb', 'upos'])
     expect(tagsetIdsForConfig({ tagger: 'biberplus', tagsets: { tags: 'biber' } }, {})).toEqual(['biber'])
+  })
+  it('reconhece etiquetas plausíveis e esconde lixo da camada', () => {
+    for (const ok of ['NN', 'NNother', 'JJATDother', 'NNMention', 'WQ', 'VBDd', '_SP', 'PASS', 'URL'])
+      expect(isPlausibleTag(ok), ok).toBe(true)
+    for (const bad of ['', '/getamp/frames.htm?mapAction=gaz&gazName=p&gazString=Avebury_URL', 'cit_NN',
+                       'NNother=args._NN', 'a b', 'x'.repeat(21), 'foo/bar', 'a&b'])
+      expect(isPlausibleTag(bad), bad).toBe(false)
   })
 })

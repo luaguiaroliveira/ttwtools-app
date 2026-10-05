@@ -32,9 +32,9 @@ describe('dispersion', () => {
     expect(clauseOf('the')).toBeNull()
   })
   it('cor categórica estável por consulta', () => {
-    expect(queryColor(0)).toBe('var(--chart-1)')
-    expect(queryColor(8)).toBe('var(--chart-1)')
-    expect(queryColor(2)).toBe('var(--chart-3)')
+    expect(queryColor(0)).toBe('#C2500C')
+    expect(queryColor(8)).toBe('#C2500C')
+    expect(queryColor(2)).toBe('#2F6F9F')
   })
   it('contribuição do documento no DP e ordenação dos quadros', () => {
     expect(contribution(1, 4, 10, 40)).toBeCloseTo(0)          // o = e

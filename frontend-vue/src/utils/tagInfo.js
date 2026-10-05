@@ -69,3 +69,14 @@ export function describeTag(tag, defs, t) {
   }
   return null
 }
+
+// Algo com cara de etiqueta (para o seletor não listar lixo da camada, ex.: uma URL ou "palavra_TAG").
+// Rejeita espaços e caracteres impossíveis numa etiqueta e o padrão `<palavra>_<TAG>` (mas deixa passar `_SP`).
+export function isPlausibleTag(tag) {
+  const s = String(tag ?? '')
+  if (!s || s.length > 20) return false
+  if (/[\s/?&=<>"']/.test(s)) return false
+  const m = /^(.*)_([A-Za-z]{1,6})$/.exec(s)
+  if (m && m[1]) return false
+  return true
+}

@@ -6,13 +6,15 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { api } from '../../api/index.js'
 import { useSession } from '../../stores/session.js'
-import { loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
+import { isPlausibleTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../../utils/tagInfo.js'
 const props = defineProps({
   corpus: { type: String, required: true },
   layer: { type: String, default: null },   // ferramenta da camada ativa (null = automática)
   query: { type: String, default: '' },     // consulta atual, para marcar o que já está na combinação
+  mode: { type: String, default: 'query' }, // 'query' (monta tag=A|B no campo) | 'layers' (emite toggle por etiqueta)
+  selected: { type: Array, default: () => [] },   // etiquetas já ativas (modo 'layers')
 })
-const emit = defineEmits(['apply'])
+const emit = defineEmits(['apply', 'toggle'])
 const { t, locale } = useI18n()
 const session = useSession()
 const FIELD_OF = { upos: 'upos', ptb: 'xpos', biber: 'tags', mfte: 'tags' }   // repertório → campo da consulta
@@ -48,12 +50,15 @@ const active = computed(() => {
   const m = /(?:^|[\s&])(tag|pos)=([^\s&]+)/.exec(props.query || '')
   return m ? { key: m[1], values: m[2].split('|').filter(Boolean) } : { key: null, values: [] }
 })
-const chosen = computed(() => new Set(active.value.key ? active.value.values : []))
+const chosen = computed(() => props.mode === 'layers'
+  ? new Set(props.selected ?? [])
+  : new Set(active.value.key ? active.value.values : []))
 const rows = computed(() => {
   const defs = mergeTagsets(sets.value.map((s) => s.data).filter(Boolean))
   const out = (data.value?.tags ?? []).map((tg) => ({ tag: tg.tag, group: tg.group, def: defs[tg.tag]?.text ?? tg.definition ?? '', count: counts.value[tg.tag] ?? 0 }))
   for (const [tag, n] of Object.entries(counts.value)) if (!out.some((r) => r.tag === tag)) out.push({ tag, group: '', def: '', count: n })
-  return out.filter((r) => !group.value || r.group === group.value)
+  return out.filter((r) => isPlausibleTag(r.tag))      // esconde lixo da camada (URL, "palavra_TAG"...)
+    .filter((r) => !group.value || r.group === group.value)
     .filter((r) => !q.value || `${r.tag} ${r.def}`.toLowerCase().includes(q.value.toLowerCase()))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
 })
@@ -68,6 +73,7 @@ watch([field, () => props.corpus, () => props.layer], async () => {
   catch { counts.value = {} }
 }, { immediate: true })
 function toggle(tag) {
+  if (props.mode === 'layers') { emit('toggle', { tag, key: key.value, field: field.value }); return }
   const values = new Set(active.value.key ? active.value.values : [])
   values.has(tag) ? values.delete(tag) : values.add(tag)
   emit('apply', values.size ? `${key.value}=${[...values].join('|')}` : '')
@@ -88,7 +94,7 @@ function toggle(tag) {
         <option v-for="g in data.groups" :key="g.id" :value="g.id">{{ g.label }}</option>
       </select>
     </div>
-    <p class="text-xs text-text-muted">{{ t('explore.tags_hint') }}</p>
+    <p class="text-xs text-text-muted">{{ t(mode === 'layers' ? 'explore.tags_hint_layers' : 'explore.tags_hint') }}</p>
     <ul class="flex flex-wrap gap-1 ttw-scroll max-h-40 overflow-y-auto" data-testid="tag-picker-list">
       <li v-for="r in rows" :key="r.tag">
         <button type="button" class="badge cursor-pointer font-mono" :class="chosen.has(r.tag) ? 'badge-primary' : 'badge-ghost'"

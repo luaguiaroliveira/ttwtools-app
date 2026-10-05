@@ -53,6 +53,17 @@ function addQuery(q) {
 }
 function removeQuery(i) { queries.value.splice(i, 1); load() }
 function clearQueries() { queries.value = []; data.value = null; error.value = null }
+function setColor(i, value) { queries.value[i].color = value }
+// Clicar numa etiqueta do painel liga/desliga ela como uma consulta própria (uma cor por etiqueta).
+function toggleTag({ tag, key }) {
+  const q = `${key}=${tag}`
+  const i = queries.value.findIndex((c) => c.q === q)
+  if (i >= 0) removeQuery(i); else addQuery(q)
+}
+const selectedTags = computed(() => queries.value.flatMap((c) => {
+  const cl = clauseOf(c.q)
+  return cl ? cl.value.split('|').filter(Boolean) : []
+}))
 
 // Linhas = textos (mesma ordem em todas as consultas); `cells` = o documento em cada consulta.
 const rows = computed(() => {
@@ -74,11 +85,12 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <QueryBox :busy="busy" :corpus="corpus" :layer="layer" tags @submit="addQuery" />
+    <QueryBox :busy="busy" :corpus="corpus" :layer="layer" tags tag-mode="layers" :selected-tags="selectedTags"
+              @submit="addQuery" @tag-toggle="toggleTag" />
     <div v-if="queries.length" class="flex flex-wrap items-center gap-1 text-xs" data-testid="disp-queries">
       <span class="text-text-muted mr-1">{{ t('explore.disp_queries') }}:</span>
       <span v-for="(c, i) in queries" :key="`${c.q}-${i}`" class="badge badge-ghost gap-1 font-mono">
-        <span class="inline-block w-2.5 h-2.5 rounded-full border border-base-300" :style="{ background: c.color }" aria-hidden="true" />{{ c.q }}
+        <input type="color" :value="c.color" class="h-4 w-4 shrink-0 cursor-pointer rounded border border-base-300 bg-transparent p-0" :aria-label="t('explore.disp_color', { query: c.q })" :data-testid="`disp-color-${i}`" @input="setColor(i, $event.target.value)" />{{ c.q }}
         <button type="button" class="cursor-pointer text-text-muted hover:text-error" :aria-label="t('explore.disp_remove', { query: c.q })" :data-testid="`disp-remove-${i}`" @click="removeQuery(i)">×</button>
       </span>
       <button type="button" class="btn btn-xs btn-ghost" data-testid="disp-clear" @click="clearQueries">{{ t('explore.disp_clear') }}</button>
