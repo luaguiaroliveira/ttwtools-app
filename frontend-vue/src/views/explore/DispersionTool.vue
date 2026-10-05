@@ -127,28 +127,38 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
     </div>
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data && data.length">
-      <div class="flex flex-col gap-0.5">
-        <p v-for="(r, qi) in data" :key="`dp-${qi}`" role="status" class="font-medium flex items-center gap-1.5">
-          <span class="inline-block w-2.5 h-2.5 rounded-full" :style="{ background: colors[qi] }" aria-hidden="true" />
-          <span class="font-mono">{{ r.query }}</span>
-          <span>{{ t('explore.dp', { dp: f3(r.dp), dp_norm: f3(r.dp_norm), range: r.range, documents: r.documents }) }}</span>
-          <HelpTip v-if="qi === 0" topic="dispersao" />
-        </p>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <div class="join" role="group" :aria-label="t('explore.disp_view')">
-          <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'heat' }" :aria-pressed="view === 'heat'" data-testid="disp-view-heat" @click="view = 'heat'">{{ t('explore.disp_heat') }}</button>
-          <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'bars' }" :aria-pressed="view === 'bars'" data-testid="disp-view-bars" @click="view = 'bars'">{{ t('explore.disp_bars') }}</button>
-          <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'table' }" :aria-pressed="view === 'table'" data-testid="disp-view-table" @click="view = 'table'">{{ t('explore.disp_table') }}</button>
+      <div class="flex flex-wrap items-start gap-x-4 gap-y-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="join" role="group" :aria-label="t('explore.disp_view')">
+            <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'heat' }" :aria-pressed="view === 'heat'" data-testid="disp-view-heat" @click="view = 'heat'">{{ t('explore.disp_heat') }}</button>
+            <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'bars' }" :aria-pressed="view === 'bars'" data-testid="disp-view-bars" @click="view = 'bars'">{{ t('explore.disp_bars') }}</button>
+            <button type="button" class="btn btn-xs join-item" :class="{ 'btn-active': view === 'table' }" :aria-pressed="view === 'table'" data-testid="disp-view-table" @click="view = 'table'">{{ t('explore.disp_table') }}</button>
+          </div>
+          <label v-if="view !== 'table'" class="flex items-center gap-2 text-xs w-fit">{{ t('explore.disp_bands') }}
+            <input v-model.number="nBands" type="range" min="5" max="20" step="1" class="range range-xs range-primary w-28" data-testid="disp-bands" />
+            <span class="text-text-muted tabular-nums w-6">{{ nBands }}</span></label>
+          <label v-if="view !== 'table'" class="flex items-center gap-2 text-xs w-fit">{{ t('chart.row_height') }}
+            <input v-model.number="rowH" type="range" min="6" max="30" step="1" class="range range-xs range-primary w-28" data-testid="disp-row-height" />
+            <span class="text-text-muted tabular-nums w-8">{{ rowH }}px</span></label>
+          <div class="flex items-center gap-1"><CopyCode analysis="dispersion" :items="copyItems" />
+            <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :canvas-root="view === 'table' ? null : chart" /></div>
         </div>
-        <label v-if="view !== 'table'" class="flex items-center gap-2 text-xs w-fit">{{ t('explore.disp_bands') }}
-          <input v-model.number="nBands" type="range" min="5" max="20" step="1" class="range range-xs range-primary w-28" data-testid="disp-bands" />
-          <span class="text-text-muted tabular-nums w-6">{{ nBands }}</span></label>
-        <label v-if="view !== 'table'" class="flex items-center gap-2 text-xs w-fit">{{ t('chart.row_height') }}
-          <input v-model.number="rowH" type="range" min="6" max="30" step="1" class="range range-xs range-primary w-28" data-testid="disp-row-height" />
-          <span class="text-text-muted tabular-nums w-8">{{ rowH }}px</span></label>
-        <div class="flex items-center gap-1 ml-auto"><CopyCode analysis="dispersion" :items="copyItems" />
-          <ExportMenu :name="`dispersao_${queries[0]?.q ?? ''}`" :rows="tableRows" :columns="tableColumns" :canvas-root="view === 'table' ? null : chart" /></div>
+        <table class="table table-xs w-auto ml-auto" data-testid="disp-report" :aria-label="t('explore.disp_report')">
+          <thead><tr>
+            <th class="text-left">{{ t('explore.query') }}</th>
+            <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp') }} <HelpTip topic="dispersao" /></th>
+            <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp_norm') }}</th>
+            <th class="text-right whitespace-nowrap">{{ t('explore.disp_range') }}</th>
+          </tr></thead>
+          <tbody>
+            <tr v-for="(r, qi) in data" :key="`dp-${qi}`">
+              <td class="text-left whitespace-nowrap max-w-[12rem] truncate" :title="r.query"><span class="inline-block w-2.5 h-2.5 rounded-full mr-1 align-middle" :style="{ background: colors[qi] }" aria-hidden="true" /><span class="font-mono">{{ r.query }}</span></td>
+              <td class="text-right tabular-nums">{{ f3(r.dp) }}</td>
+              <td class="text-right tabular-nums">{{ f3(r.dp_norm) }}</td>
+              <td class="text-right tabular-nums">{{ r.range }}/{{ r.documents }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       </template>
     </div>
@@ -156,7 +166,7 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
         <figcaption v-if="view === 'table'" class="text-sm">{{ t('explore.disp_table') }}</figcaption>
         <figcaption v-else class="text-sm">{{ view === 'heat' ? t('explore.disp_heat_caption') : t('explore.barcode') }}</figcaption>
         <div v-if="view === 'table'" class="ttw-scroll ttw-scroll-fit flex-1 min-h-0">
-          <table class="table table-xs"><thead>
+          <table class="table table-xs" data-testid="disp-table"><thead>
             <tr>
               <th rowspan="2" class="text-left align-bottom">{{ t('explore.file') }}</th>
               <th rowspan="2" class="text-right align-bottom">{{ t('explore.tokens') }}</th>

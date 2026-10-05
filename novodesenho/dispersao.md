@@ -64,6 +64,25 @@ reler todo o histórico. Para o estado geral, ver `plano.md` seção 1.
 - Testes desta rodada: `npm run build`, frontend 57/57, e2e `leitor.spec.js` nas 3 larguras e a suíte
   `--project=computador-1280` 11/11.
 
+### Barra de consulta compacta e relatório de DP (2026-10-05, em seguida)
+
+- **Espaço em branco no alto:** vinha do `.ttw-sticky-form` com `top: 3rem`. Como a `main` do Explorar é
+  `overflow-hidden` e quem rola é o painel da ferramenta, o `sticky` empurrava o formulário 3 rem para
+  baixo. Passou a `top: 0`.
+- **Exemplos recolhidos:** a linha de exemplos (`casa · cas* · /regex/ …`) saiu de cena e é aberta por um
+  botão **“?”** (`data-testid="query-examples-toggle"`, `aria-expanded`/`aria-controls`, `#query-examples`)
+  dentro da barra de consulta, usável em todas as ferramentas do `QueryBox`. O formulário ficou mais
+  compacto (`gap-1.5`).
+- **Relatório de DP de Gries em tabela:** as linhas `DP de Gries … · normalizado … · range …` viraram uma
+  **tabela** (`data-testid="disp-report"`, colunas Consulta · DP de Gries · normalizado · range, com a cor
+  da consulta e o `HelpTip`), colocada na **mesma faixa dos controles de visão** (`ml-auto`), à direita.
+- **i18n (submódulo):** novas chaves `explore.disp_dp`, `explore.disp_dp_norm`, `explore.disp_range`,
+  `explore.disp_report`, `explore.examples_toggle` (pt/en). `explore.dp` continua no Comparar.
+- **e2e:** a tabela de métricas por texto ganhou `data-testid="disp-table"` e o `leitor.spec.js` passou a
+  apontar para ela (antes usava `table.table`, que agora casaria com o relatório).
+- Testes: frontend 57/57; e2e `leitor.spec.js` em 1280 e 390, suíte `--project=computador-1280` 11/11 e
+  acessibilidade (`fluxo.spec.js -g acessibilidade`) em 390.
+
 ## Como retomar / corrigir
 
 - Subir o app: `python -m app --mode web` (servidor de trabalho em `http://127.0.0.1:8791`).

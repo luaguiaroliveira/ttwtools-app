@@ -120,10 +120,10 @@ test('dispersão: mapa de calor, várias consultas e clique abre o leitor', asyn
   await expect(page.getByTestId('disp-view-bars')).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('canvas.disp-canvas').first()).toBeVisible()
   await page.getByTestId('disp-view-table').click()
-  await expect(page.locator('table.table').first()).toBeVisible()
+  await expect(page.getByTestId('disp-table')).toBeVisible()
   // métricas "por texto" de Gries na tabela (esperado/observado/desvio)
-  await expect(page.locator('table.table').first()).toContainText(/esperado|expected/)
-  await expect(page.locator('table.table').first()).toContainText(/\|o−e\|/)
+  await expect(page.getByTestId('disp-table')).toContainText(/esperado|expected/)
+  await expect(page.getByTestId('disp-table')).toContainText(/\|o−e\|/)
   await page.getByTestId('disp-view-heat').click()
   const name = (await rows.first().getAttribute('title')).split(':')[0]
   await rows.first().click()

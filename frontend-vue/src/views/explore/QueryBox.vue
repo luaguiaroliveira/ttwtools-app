@@ -19,6 +19,7 @@ const { t } = useI18n()
 const q = ref(props.initial)
 const input = ref(null)
 const root = ref(null)
+const showExamples = ref(false)   // barra compacta: os exemplos só aparecem quando pedidos
 
 // Telas largas: divisão lateral com alça arrastável (largura persistida); estreitas: gaveta por cima.
 const mq = globalThis.matchMedia?.('(min-width: 1024px)')
@@ -75,7 +76,7 @@ function applyClause(clause) {
 <template>
   <div ref="root" class="min-w-0" :class="split ? 'grid h-full min-h-0' : 'contents'" :style="split ? gridStyle : {}">
     <div :class="split ? 'flex flex-col min-h-0 min-w-0' : 'contents'" :style="split ? { '--ttw-tag-width': `${panelW}px` } : {}">
-      <form class="ttw-sticky-form flex flex-col gap-2 shrink-0" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
+      <form class="ttw-sticky-form flex flex-col gap-1.5 shrink-0" @submit.prevent="!busy && q.trim() && emit('submit', q.trim())">
         <div class="ttw-form">
           <label class="ttw-field flex-1 min-w-56 max-w-xl">
             <span class="ttw-label"><HelpTip term="query">{{ label || t('explore.query') }}</HelpTip></span>
@@ -85,8 +86,14 @@ function applyClause(clause) {
           <button class="btn btn-sm btn-primary" type="submit" :disabled="busy" data-testid="query-go">
             <span v-if="busy" class="loading loading-spinner loading-xs" aria-hidden="true" />{{ t('explore.go') }}
           </button>
+          <button type="button" class="btn btn-sm btn-ghost btn-square" :aria-expanded="showExamples" aria-controls="query-examples"
+                  :aria-label="t('explore.examples_toggle')" :title="t('explore.examples_toggle')" data-testid="query-examples-toggle"
+                  @click="showExamples = !showExamples">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01" /></svg>
+          </button>
         </div>
-        <div class="flex flex-wrap items-center gap-1 text-xs" :aria-label="t('explore.examples')">
+        <div v-show="showExamples" id="query-examples" class="flex flex-wrap items-center gap-1 text-xs" :aria-label="t('explore.examples')">
           <span class="text-text-muted mr-1">{{ t('explore.examples') }}:</span>
           <button v-for="e in examples" :key="e.shown" type="button" class="badge badge-ghost font-mono cursor-pointer hover:badge-primary"
                   @click="insert(e.value)">{{ e.shown }}</button>

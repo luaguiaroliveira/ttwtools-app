@@ -257,7 +257,8 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 /* ---- Layout (etapa 3) ---- */
 /* Barra de contexto fixa no alto; o formulário de consulta fica logo abaixo dela ao rolar o resultado */
 .ttw-context { border-bottom-color: var(--ttw-border-strong); }
-.ttw-sticky-form { position: sticky; top: 3rem; z-index: 10; background: var(--color-base-100); padding-block: .5rem; margin-block: -.5rem;
+/* Barra de consulta fixa no alto do próprio painel (a barra de contexto fica fora dele, então 0 basta). */
+.ttw-sticky-form { position: sticky; top: 0; z-index: 10; background: var(--color-base-100); padding-block: .5rem; margin-block: -.5rem;
   border-bottom: 1px solid var(--color-base-300); }
 @media (max-height: 640px) { .ttw-sticky-form { position: static; } }
 /* Menu lateral: ícone grande com o nome embaixo; ativo com fundo laranja suave e texto em orange-text */
