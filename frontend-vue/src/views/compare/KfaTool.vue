@@ -166,14 +166,20 @@ function openReader(v) { router.push(readerTarget(v)) }
         <ChartGallery :kfa="shown" :layer="lastParams?.layer ?? effectiveLayer" :feature="data.feature" :sides="gallerySides" :order="sortDir" @update:order="setOrder" @select="openTexts" />
         <template #right>
           <div class="ttw-scroll" data-testid="kfa-table">
-            <table class="table table-xs table-pin-rows"><thead><tr>
-              <th class="text-left"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Feature')">{{ t('kfa.feature') }} {{ arrow('Feature') }}</button></th>
-              <th class="text-right"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Effect_Size')">d {{ arrow('Effect_Size') }}</button></th>
-              <th class="text-right whitespace-nowrap" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Count_Corpus1')">{{ gallerySides[0].label }} · {{ t('kfa.raw_count') }} {{ arrow('Count_Corpus1') }}</button></th>
-              <th class="text-right whitespace-nowrap" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Mean_Corpus1')">{{ gallerySides[0].label }} · {{ t('kfa.per_1000') }} {{ arrow('Mean_Corpus1') }}</button></th>
-              <th class="text-right whitespace-nowrap" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Count_Corpus2')">{{ gallerySides[1].label }} · {{ t('kfa.raw_count') }} {{ arrow('Count_Corpus2') }}</button></th>
-              <th class="text-right whitespace-nowrap" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" @click="sortBy('Mean_Corpus2')">{{ gallerySides[1].label }} · {{ t('kfa.per_1000') }} {{ arrow('Mean_Corpus2') }}</button></th>
-              </tr></thead>
+            <table class="table table-xs table-pin-rows"><thead>
+              <tr>
+                <th rowspan="2" class="text-left align-bottom"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-feature" @click="sortBy('Feature')">{{ t('kfa.feature') }} {{ arrow('Feature') }}</button></th>
+                <th rowspan="2" class="text-right align-bottom"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-d" @click="sortBy('Effect_Size')">d {{ arrow('Effect_Size') }}</button></th>
+                <th colspan="2" class="text-center whitespace-nowrap">{{ gallerySides[0].label }}</th>
+                <th colspan="2" class="text-center whitespace-nowrap">{{ gallerySides[1].label }}</th>
+              </tr>
+              <tr>
+                <th class="text-right" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-count1" @click="sortBy('Count_Corpus1')">{{ t('kfa.col_raw') }} {{ arrow('Count_Corpus1') }}</button></th>
+                <th class="text-right" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-mean1" @click="sortBy('Mean_Corpus1')">{{ t('kfa.col_per1000') }} {{ arrow('Mean_Corpus1') }}</button></th>
+                <th class="text-right" :title="t('kfa.raw_count')"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-count2" @click="sortBy('Count_Corpus2')">{{ t('kfa.col_raw') }} {{ arrow('Count_Corpus2') }}</button></th>
+                <th class="text-right" :title="t('kfa.per_1000')"><button type="button" class="cursor-pointer font-bold" data-testid="kfa-sort-mean2" @click="sortBy('Mean_Corpus2')">{{ t('kfa.col_per1000') }} {{ arrow('Mean_Corpus2') }}</button></th>
+              </tr>
+              </thead>
               <tbody><tr v-for="r in tableRows" :key="r.Feature" class="hover cursor-pointer" tabindex="0" @click="openTexts(r.Feature)" @keydown.enter="openTexts(r.Feature)">
                 <td>{{ r.Feature }}</td>
                 <td class="text-right tabular-nums">{{ r.Effect_Size.toFixed(3) }}</td>
@@ -216,7 +222,7 @@ function openReader(v) { router.push(readerTarget(v)) }
               <template v-else>
                 <div class="ttw-scroll" tabindex="0" role="region" :aria-label="t('kfa.tag_texts', { feature: textsFeature })">
                   <table class="table table-xs">
-                    <thead><tr><th>{{ t('kfa.text_column') }}</th><th class="text-right">{{ t('kfa.freq_per_1000') }}</th><th class="text-right">{{ t('kfa.freq_abs') }}</th></tr></thead>
+                    <thead><tr><th>{{ t('kfa.text_column') }}</th><th class="text-right" :title="t('kfa.freq_per_1000')">{{ t('kfa.col_per1000') }}</th><th class="text-right" :title="t('kfa.freq_abs')">{{ t('kfa.col_raw') }}</th></tr></thead>
                     <tbody>
                       <tr v-for="v in texts" :key="`${v.side}|${v.filename}`" class="hover cursor-pointer" @click="openReader(v)">
                         <td class="break-all">

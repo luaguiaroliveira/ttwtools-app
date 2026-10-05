@@ -153,7 +153,7 @@ test('fluxo completo', async ({ page, request }, info) => {
   expect(new Set([asc, desc, byAbs]).size).toBeGreaterThan(1)
   await page.getByTestId('gallery-order-asc').click()
   // ordenar a tabela por uma coluna de contagem também funciona (cabeçalho clicável)
-  const countHeader = page.getByTestId('kfa-table').locator('thead th').nth(2).locator('button')
+  const countHeader = page.getByTestId('kfa-sort-count1')
   await countHeader.click()
   const firstCount = async () => Number((await page.getByTestId('kfa-table').locator('tbody tr').first().locator('td').nth(2).textContent()).trim())
   const c1 = await firstCount()
