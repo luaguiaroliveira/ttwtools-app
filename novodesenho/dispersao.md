@@ -74,12 +74,17 @@ reler todo o histórico. Para o estado geral, ver `plano.md` seção 1.
   dentro da barra de consulta, usável em todas as ferramentas do `QueryBox`. O formulário ficou mais
   compacto (`gap-1.5`).
 - **Relatório de DP de Gries em tabela:** as linhas `DP de Gries … · normalizado … · range …` viraram uma
-  **tabela** (`data-testid="disp-report"`, colunas Consulta · DP de Gries · normalizado · range, com a cor
-  da consulta e o `HelpTip`), colocada na **mesma faixa dos controles de visão** (`ml-auto`), à direita.
+  **tabela secundária** (`data-testid="disp-report"`, colunas Consulta · DP de Gries · normalizado · range,
+  com a cor da consulta e o `HelpTip`). Ela é uma **visão** do alternador, entre “Código de barras” e a
+  tabela por texto (`data-testid="disp-view-dp"`) — a antiga visão “Tabela” passou a se chamar **“O/E”**
+  (`explore.disp_table` = “O/E”). Faixas/altura só aparecem nas visões de gráfico (Camadas/Código de
+  barras).
 - **i18n (submódulo):** novas chaves `explore.disp_dp`, `explore.disp_dp_norm`, `explore.disp_range`,
-  `explore.disp_report`, `explore.examples_toggle` (pt/en). `explore.dp` continua no Comparar.
+  `explore.disp_report`, `explore.examples_toggle` (pt/en) e `explore.disp_table` = “O/E”. `explore.dp`
+  continua no Comparar.
 - **e2e:** a tabela de métricas por texto ganhou `data-testid="disp-table"` e o `leitor.spec.js` passou a
-  apontar para ela (antes usava `table.table`, que agora casaria com o relatório).
+  apontar para ela (antes usava `table.table`, que agora casaria com o relatório); o teste também abre a
+  visão `disp-view-dp` e confere a tabela `disp-report`.
 - Testes: frontend 57/57; e2e `leitor.spec.js` em 1280 e 390, suíte `--project=computador-1280` 11/11 e
   acessibilidade (`fluxo.spec.js -g acessibilidade`) em 390.
 
