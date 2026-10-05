@@ -455,6 +455,22 @@ def explore_dispersion(corpus: str, query: str, layer: str | None = None, where:
         return _call(ttwtools.dispersion, proj, corpus, query, layer, _where(where))
 
 
+class DispersionMultiRequest(BaseModel):
+    corpus: str
+    queries: list[str]
+    layer: str | None = None
+    where: dict[str, list[str]] | None = None
+
+
+@router.post("/explore/dispersion", tags=["explore"])
+def explore_dispersion_multi(req: DispersionMultiRequest):
+    """Dispersão de várias consultas numa só chamada (gráfico em camadas): o projeto abre uma vez e as
+    colunas da camada são decodificadas uma vez, compartilhadas entre as consultas."""
+    import ttwtools
+    with _project() as proj:
+        return _call(ttwtools.dispersion_multi, proj, req.corpus, req.queries, req.layer, req.where)
+
+
 # ---------------------------------------------------------------------------
 # Comparar
 # ---------------------------------------------------------------------------

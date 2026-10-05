@@ -55,6 +55,10 @@ def test_explore(client, opened):
     assert c["node_freq"] == s["total"] and c["rows"]
     d = client.get("/api/explore/dispersion", params={"corpus": "bawe", "query": "the"}).json()
     assert d["range"] == 5 and 0 <= d["dp"] <= 1
+    assert "expected" in d["per_document"][0] and "observed" in d["per_document"][0] and "deviation" in d["per_document"][0]
+    dm = client.post("/api/explore/dispersion", json={"corpus": "bawe", "queries": ["the", "of"]}).json()
+    assert [q["query"] for q in dm["queries"]] == ["the", "of"]
+    assert dm["queries"][0]["per_document"] == d["per_document"]   # lote = mesmo cálculo de uma consulta
     w = client.get("/api/explore/search", params=[("corpus", "bawe"), ("query", "the"), ("where", "area=AH")]).json()
     assert 0 < w["total"] <= s["total"]
     assert client.get("/api/explore/search", params={"corpus": "bawe", "query": "nada=x"}).status_code == 422
