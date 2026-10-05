@@ -108,6 +108,9 @@ const tableRows = computed(() => rows.value.map((r) => {
 const copyItems = computed(() => queries.value.map((c) => ({ label: c.q, params: { corpus: props.corpus, query: c.q, layer: props.layer } })))
 const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
+// O DP normalizado só difere do DP quando há poucos textos grandes; com muitos textos os dois
+// coincidem nas 3 casas. A coluna "normalizado" só aparece quando acrescenta informação.
+const showNorm = computed(() => (data.value ?? []).some((r) => Math.abs((r.dp_norm ?? 0) - (r.dp ?? 0)) >= 0.001))
 </script>
 <template>
   <section class="flex flex-col gap-3 h-full min-h-0">
@@ -185,15 +188,15 @@ const f4 = (v) => (v === null || v === undefined ? '—' : v.toFixed(4))
           <table class="table table-xs" data-testid="disp-report" :aria-label="t('explore.disp_report')">
             <thead><tr>
               <th class="text-left">{{ t('explore.query') }}</th>
-              <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp') }} <HelpTip topic="dispersao" /></th>
-              <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp_norm') }}</th>
+              <th class="text-right whitespace-nowrap">{{ t('explore.disp_dp') }} <HelpTip term="dp_gries" topic="dispersao" :label="t('explore.disp_dp')" /></th>
+              <th v-if="showNorm" class="text-right whitespace-nowrap">{{ t('explore.disp_dp_norm') }}</th>
               <th class="text-right whitespace-nowrap">{{ t('explore.disp_range') }}</th>
             </tr></thead>
             <tbody>
               <tr v-for="(r, qi) in data" :key="`dp-${qi}`">
                 <td class="text-left whitespace-nowrap max-w-[16rem] truncate" :title="r.query"><span class="inline-block w-2.5 h-2.5 rounded-full mr-1 align-middle" :style="{ background: colors[qi] }" aria-hidden="true" /><span class="font-mono">{{ r.query }}</span></td>
                 <td class="text-right tabular-nums">{{ f3(r.dp) }}</td>
-                <td class="text-right tabular-nums">{{ f3(r.dp_norm) }}</td>
+                <td v-if="showNorm" class="text-right tabular-nums">{{ f3(r.dp_norm) }}</td>
                 <td class="text-right tabular-nums">{{ r.range }}/{{ r.documents }}</td>
               </tr>
             </tbody>

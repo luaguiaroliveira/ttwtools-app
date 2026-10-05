@@ -85,6 +85,12 @@ reler todo o histórico. Para o estado geral, ver `plano.md` seção 1.
 - **e2e:** a tabela de métricas por texto ganhou `data-testid="disp-table"` e o `leitor.spec.js` passou a
   apontar para ela (antes usava `table.table`, que agora casaria com o relatório); o teste também abre a
   visão `disp-view-dp` e confere a tabela `disp-report`.
+- **Sem coluna duplicada:** o DP normalizado é `dp / (1 − min_e)`; com muitos textos o fator fica ~1 e as
+  duas colunas coincidem nas 3 casas (só difere com poucos textos grandes). A coluna **“normalizado” só
+  aparece quando difere do DP** em ≥0,001 (`showNorm`), para não repetir valores iguais.
+- **“?” do cabeçalho:** passou a mostrar o verbete do glossário (`term="dp_gries"`) e a linkar para
+  Aprender → Dispersão (DP de Gries e Range) (`topic="dispersao"`); o texto do link do `HelpTip` virou
+  **“Aprender →”** (`nav.learn`, era “Ajuda →”), já que é para lá que ele leva.
 - Testes: frontend 57/57; e2e `leitor.spec.js` em 1280 e 390, suíte `--project=computador-1280` 11/11 e
   acessibilidade (`fluxo.spec.js -g acessibilidade`) em 390.
 

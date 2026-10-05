@@ -35,7 +35,7 @@ function show() {
   place()
   open.value = true
   window.addEventListener('scroll', hide, { capture: true, passive: true })
-  if (props.topic && !topicText.value) api.help.topic(props.topic, locale.value).then((r) => { topicText.value = r.summary })
+  if (props.topic && !props.term && !topicText.value) api.help.topic(props.topic, locale.value).then((r) => { topicText.value = r.summary })
 }
 function hide() { open.value = false; window.removeEventListener('scroll', hide, { capture: true }) }
 function toggle() { open.value ? hide() : show() }
@@ -56,7 +56,7 @@ const style = computed(() => (pos.value.above != null
           :style="open ? style : undefined">
       {{ text || t('common.loading') }}
       <CohenDVisual v-if="open && topic === 'cohens_d'" compact class="mt-2" />
-      <RouterLink v-if="topic" :to="`/aprender/${topic}`" class="link block mt-1">{{ t('common.help') }} →</RouterLink>
+      <RouterLink v-if="topic" :to="`/aprender/${topic}`" class="link block mt-1">{{ t('nav.learn') }} →</RouterLink>
     </span>
   </span>
 </template>
