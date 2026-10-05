@@ -22,7 +22,8 @@ const PANEL_KEY = 'ttw.explore.tagsPanel'
 const MIN_W = 200, MAX_W = 560
 const clampW = (v) => Math.max(MIN_W, Math.min(MAX_W, Math.round(v)))
 const prefs = (() => { try { return JSON.parse(localStorage.getItem(PANEL_KEY) || '{}') } catch { return {} } })()
-const panelOpen = ref(true)                                             // abre já visível
+// Em telas largas o painel já abre visível; em telas estreitas fica fechado (aberto, cobriria a ferramenta).
+const panelOpen = ref(globalThis.matchMedia?.('(min-width: 1024px)').matches ?? true)
 const panelW = ref(clampW(Number(prefs.width) || 336))
 const root = ref(null)
 function save() { try { localStorage.setItem(PANEL_KEY, JSON.stringify({ width: panelW.value })) } catch { /* */ } }

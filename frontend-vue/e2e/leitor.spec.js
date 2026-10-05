@@ -19,6 +19,13 @@ async function waitJob(request, id) {
   throw new Error('tarefa não terminou')
 }
 
+// O painel de etiquetas abre visível em telas largas e fechado em telas estreitas; abre quando preciso.
+async function openTags(page) {
+  const list = page.getByTestId('tag-picker-list')
+  if (!(await list.isVisible())) await page.getByTestId('tag-panel-toggle').click()
+  await expect(list).toBeVisible()
+}
+
 test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
   expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
@@ -139,11 +146,12 @@ test('dispersão comparada: dois quadros, ordenação e clique abre o leitor', a
   await page.getByTestId('disp-compare-order').selectOption('dp')
   // mesma lógica de etiquetas coloridas do Explorar: clicar numa etiqueta vira a consulta e os traços
   // passam a usar a cor dela (o lado fica no fundo/rótulo)
+  await openTags(page)
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
-  await expect(tagBtn).toBeVisible()
   const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
   await expect(page.getByTestId('query-input')).toHaveValue(`the&pos=${tag}`)
+  await page.getByTestId('tag-panel-close').click()          // painel cobre o Buscar nas telas estreitas
   await page.getByTestId('query-go').click()
   await expect(charts.first().locator('button').first()).toBeVisible({ timeout: 30_000 })
   const bg = (loc) => loc.evaluate((el) => getComputedStyle(el).backgroundColor)
@@ -184,9 +192,9 @@ test('explorar com camada só de tags (biberplus) não quebra', async ({ page, r
   await page.getByTestId('query-input').fill('the')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('disp-rows').locator('button').first()).toBeVisible({ timeout: 30_000 })
-  // seletor de etiquetas em painel à direita (já visível): clicar numa etiqueta vira uma consulta própria colorida
+  // seletor de etiquetas em painel à direita: clicar numa etiqueta vira uma consulta própria colorida
+  await openTags(page)
   const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
-  await expect(tagBtn).toBeVisible()
   const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
   const chips = page.getByTestId('disp-queries').locator('.badge')

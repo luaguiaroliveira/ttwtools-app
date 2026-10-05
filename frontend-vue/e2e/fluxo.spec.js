@@ -80,8 +80,10 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('query-input').fill('the')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
-  // etiquetas do etiquetador ativo: o painel já abre visível; clicar monta a busca (`the&pos=...`), editável
-  const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
+  // etiquetas do etiquetador ativo: o painel já abre visível em telas largas; clicar monta a busca (`the&pos=...`)
+  const tagsList = page.getByTestId('tag-picker-list')
+  if (!(await tagsList.isVisible())) await page.getByTestId('tag-panel-toggle').click()
+  const tagBtn = tagsList.locator('button').first()
   await expect(tagBtn).toBeVisible()
   const tag = await tagBtn.getAttribute('data-tag')
   await tagBtn.click()
