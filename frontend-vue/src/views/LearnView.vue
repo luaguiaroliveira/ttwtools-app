@@ -77,6 +77,8 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 .help-body :deep(details > :not(summary)) { margin-top: .6rem; }
 .help-body :deep(summary) { cursor: pointer; text-align: left; }
 .help-body :deep(summary:focus-visible) { outline: 2px solid var(--color-primary); outline-offset: 2px; border-radius: 2px; }
+.help-body :deep(.math-block) { overflow-x: auto; overflow-y: hidden; text-align: center; padding: .25rem 0; }
+.help-body :deep(.katex-display) { margin: 0; }
 .help-body :deep(hr) { border: 0; border-top: 1px solid var(--color-base-300); margin: 1.75rem 0; }
 .help-body :deep(code) { background: var(--color-base-200); border-radius: .3rem; padding: .05rem .3rem; font-size: .92em; }
 .help-body :deep(pre) { background: var(--color-base-200); padding: .75rem 1rem; border-radius: .5rem; overflow-x: auto; text-align: left; hyphens: none; line-height: 1.5; }

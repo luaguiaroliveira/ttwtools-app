@@ -9,4 +9,11 @@ describe('markdown', () => {
     expect(html).toContain('<p>texto &lt;b&gt;x&lt;/b&gt;</p>')
     expect(html).toContain('<pre tabindex="0"><code>d = a / b</code></pre>')
   })
+  it('fórmulas KaTeX em linha e em bloco, sem tocar em código com $', () => {
+    const html = markdown('Vale $M_1 - M_2$ e `/^run$/`.\n\n$$d = \\frac{a}{b}$$')
+    expect(html).toContain('class="katex"')
+    expect(html).toContain('<code>/^run$/</code>')
+    expect(html).toContain('class="math-block"')
+    expect(html).toContain('katex-display')
+  })
 })

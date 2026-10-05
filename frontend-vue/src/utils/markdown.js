@@ -1,11 +1,24 @@
 // Markdown mínimo dos tópicos de ajuda: ## títulos, parágrafos, **negrito**, *itálico*,
 // `código`, listas "- " e "1. ", citações "> ", tabelas "| a | b |", linha "---", blocos recolhíveis
-// (":::details Título" ... ":::") e blocos indentados com 4 espaços. O HTML de entrada é escapado.
+// (":::details Título" ... ":::"), fórmulas KaTeX ($tex$ no texto; $$tex$$ sozinho na linha)
+// e blocos indentados com 4 espaços. O HTML de entrada é escapado.
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
+
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-const inline = (s) => esc(s)
-  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  .replace(/\*(.+?)\*/g, '<em>$1</em>')
-  .replace(/`(.+?)`/g, '<code>$1</code>')
+const tex = (src, display) => katex.renderToString(src, { displayMode: display, throwOnError: false, strict: 'ignore' })
+// Trechos `código` e fórmulas $tex$ saem antes do escape e do negrito/itálico e voltam no fim.
+const inline = (s) => {
+  const keep = []
+  const hold = (html) => `\u0000${keep.push(html) - 1}\u0000`
+  const out = s
+    .replace(/`(.+?)`/g, (_, c) => hold(`<code>${esc(c)}</code>`))
+    .replace(/\$([^\s$](?:[^$\n]*?[^\s$])?)\$(?!\d)/g, (_, m) => hold(tex(m, false)))
+  return esc(out)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\u0000(\d+)\u0000/g, (_, i) => keep[i])
+}
 
 export function markdown(src) {
   const out = []
@@ -40,6 +53,8 @@ export function markdown(src) {
     const bq = line.match(/^>\s?(.*)$/)
     if (bq) { flushPara(); flushList(); quote.push(bq[1]); continue }
     flushQuote()
+    const dm = line.match(/^\$\$(.+)\$\$\s*$/)
+    if (dm) { flushPara(); flushList(); out.push(`<div class="math-block">${tex(dm[1], true)}</div>`); continue }
     if (/^---+\s*$/.test(line)) { flushPara(); flushList(); out.push('<hr>'); continue }
     if (/^ {4}\S/.test(line)) { flushPara(); flushList(); code.push(line.slice(4)); continue }
     flushCode()
