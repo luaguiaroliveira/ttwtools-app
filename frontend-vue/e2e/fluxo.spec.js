@@ -80,6 +80,17 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('query-input').fill('the')
   await page.getByTestId('query-go').click()
   await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
+  // etiquetas do etiquetador ativo: clicar monta a busca (`the&pos=...`), editável; clicar de novo desliga
+  await page.getByTestId('tag-panel-summary').click()
+  const tagBtn = page.getByTestId('tag-picker-list').locator('button').first()
+  await expect(tagBtn).toBeVisible()
+  const tag = await tagBtn.getAttribute('data-tag')
+  await tagBtn.click()
+  await expect(page.getByTestId('query-input')).toHaveValue(`the&pos=${tag}`)
+  await page.getByTestId('query-go').click()
+  await expect(page.getByTestId('kwic-total')).toContainText(/de \d+|of \d+/)
+  await tagBtn.click()
+  await expect(page.getByTestId('query-input')).toHaveValue('the')
   await a11y(page, 'kwic')
 
   // 5. palavras-chave contra o outro corpus

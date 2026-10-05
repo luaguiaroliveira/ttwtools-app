@@ -5,7 +5,9 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import HelpTip from '../../components/HelpTip.vue'
 import BusyBar from '../../components/BusyBar.vue'
-const props = defineProps({ initial: { type: String, default: '' }, label: { type: String, default: '' }, busy: Boolean })
+import TagPicker from './TagPicker.vue'
+const props = defineProps({ initial: { type: String, default: '' }, label: { type: String, default: '' }, busy: Boolean,
+  corpus: { type: String, default: '' }, layer: { type: String, default: null }, tags: Boolean })
 const emit = defineEmits(['submit'])
 const { t } = useI18n()
 const q = ref(props.initial)
@@ -15,6 +17,14 @@ const examples = computed(() => t('explore.query_hint').split(' · ')
   .map((s) => ({ shown: s, value: s.replace(/\s*\([^)]*\)$/, '') })))
 function insert(value) {
   q.value = q.value.trim() ? `${q.value.trim()} ${value}` : value
+  input.value?.focus()
+}
+// A combinação das etiquetas substitui um trecho só (tag=/pos=) e vai para o campo, editável; o
+// `&` junta ao último token (palavra&tag=NN) e o `|` é o "ou" dentro do mesmo campo.
+const CLAUSE_RE = /(^|[\s&])(tag|pos)=[^\s&]+/g
+function applyClause(clause) {
+  let base = q.value.replace(CLAUSE_RE, ' ').replace(/\s+/g, ' ').replace(/&{2,}/g, '&').replace(/^&|&$/g, '').trim()
+  q.value = clause ? (base ? `${base}&${clause}` : clause) : base
   input.value?.focus()
 }
 </script>
@@ -35,6 +45,10 @@ function insert(value) {
       <button v-for="e in examples" :key="e.shown" type="button" class="badge badge-ghost font-mono cursor-pointer hover:badge-primary"
               @click="insert(e.value)">{{ e.shown }}</button>
     </div>
+    <details v-if="tags && corpus" class="rounded-box border border-base-300 p-2" data-testid="tag-panel">
+      <summary class="text-sm cursor-pointer" data-testid="tag-panel-summary">{{ t('explore.tags_panel') }}</summary>
+      <TagPicker class="mt-2" :corpus="corpus" :layer="layer" :query="q" @apply="applyClause" />
+    </details>
     <BusyBar :busy="busy" />
   </form>
 </template>

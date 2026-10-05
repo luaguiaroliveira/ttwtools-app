@@ -33,7 +33,7 @@ const f3 = (v) => (v === null || v === undefined ? '—' : v.toFixed(3))
 </script>
 <template>
   <section class="flex flex-col gap-3">
-    <QueryBox :busy="busy" @submit="run" />
+    <QueryBox :busy="busy" :corpus="corpus" :layer="layer" tags @submit="run" />
     <p v-if="error" role="alert" class="text-error text-sm">{{ error }}</p>
     <template v-if="data">
       <p role="status" class="font-medium">{{ t('explore.dp', { dp: f3(data.dp), dp_norm: f3(data.dp_norm), range: data.range, documents: data.documents }) }}

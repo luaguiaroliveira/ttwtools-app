@@ -46,7 +46,7 @@ const posBucket = (p) => {
       <template v-if="data"><CopyCode analysis="kwic" :params="{ corpus, query, layer, context, limit, offset, sort }" />
         <ExportMenu :name="`kwic_${query}`" :rows="data.lines" :columns="['filename', 'start_char', 'left', 'match', 'right', 'pos', 'lemma']" /></template>
       <HelpTip topic="kwic" /></div>
-    <QueryBox :initial="String(route.query.q || '')" :busy="loading" @submit="submit">
+    <QueryBox :initial="String(route.query.q || '')" :busy="loading" :corpus="corpus" :layer="layer" tags @submit="submit">
       <label class="ttw-field w-24"><span class="ttw-label">{{ t('explore.context') }}</span>
         <input v-model.number="context" type="number" min="1" max="30" class="input input-sm" @change="query && load()" /></label>
       <label class="ttw-field"><span class="ttw-label">{{ t('explore.sort') }}</span>
