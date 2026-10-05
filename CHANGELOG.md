@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.7.0-alpha.2] — 2026-10-05
+
 ### Adicionado
 
 - **Leitor e KFA** — o Leitor vira seção própria (`/leitor`); a análise da KFA abre num painel que desliza da direita, com gráfico à esquerda e tabela à direita (divisória arrastável e botões de ocultar), contagem bruta e por 1000 por lado, ordenação pelo cabeçalho e clique num atributo (barra ou linha) que abre a gaveta dos textos, com link para o Leitor. Passos 1 a 6 de `novodesenho/leitor_kfa.md` (Passo 7 pendente).
@@ -19,6 +21,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 ### Verificação
 
 - Testes: 275 do pacote, 64 do servidor, 57 da interface e 33 de ponta a ponta (Playwright, três larguras). **Não testado** nesta versão: Mac Intel/macOS 12 em máquina real, Windows e Linux em máquina real (só o CI).
+
+- Pacote `ttwtools` 0.2.0 (commit `045c117`).
 
 ## [0.7.0-alpha.1] — 2026-10-04
 
@@ -259,7 +263,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...HEAD
+[0.7.0-alpha.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...v0.7.0-alpha.2
 [0.7.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...v0.7.0-alpha.1
 [0.6.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0-alpha.1...v0.6.0
 [0.6.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.5.0...v0.6.0-alpha.1
