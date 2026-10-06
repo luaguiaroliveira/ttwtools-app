@@ -39,6 +39,11 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
   await page.goto('/#/leitor')
   await page.getByTestId('reader-corpus').selectOption('corifa')
   await expect(page.getByTestId('reader-tag-list').locator('li').first()).toBeAttached({ timeout: 30_000 })
+  // ícone de informação ao lado do etiquetador abre a tabela de tags (antes da gaveta: no celular ela cobre a barra do leitor)
+  await page.getByTestId('tag-info-spacy').click()
+  await expect(page.getByTestId('tagset-table')).toBeVisible()
+  await page.getByTestId('tagset-close').click()
+  await expect(page.getByTestId('tagset-table')).toBeHidden()
   const narrow = (page.viewportSize()?.width ?? 0) < 1024
   if (narrow) {   // tela estreita: a lista fica numa gaveta aberta pela alça
     await expect(page.getByTestId('reader-tag-list')).toBeHidden()
@@ -46,11 +51,6 @@ test('leitor: etiquetas, cor, folha e gaveta', async ({ page, request }, info) =
     await expect(page.getByTestId('reader-tag-list')).toBeVisible()
   }
   const first = async () => (await page.getByTestId('reader-tag-list').locator('li').first().innerText()).split('\n')[0].trim()
-  // ícone de informação ao lado do etiquetador abre a tabela de tags
-  await page.getByTestId('tag-info-spacy').click()
-  await expect(page.getByTestId('tagset-table')).toBeVisible()
-  await page.getByTestId('tagset-close').click()
-  await expect(page.getByTestId('tagset-table')).toBeHidden()
   const byText = await first()
   await page.getByTestId('reader-sort').selectOption('alpha')
   const alpha = await first()

@@ -288,7 +288,7 @@ test('arquivo compactado: cópia de trabalho, Salvar, "não salvo" e pergunta an
   expect((await waitJob(request, job.job_id)).status).toBe('done')
 
   await page.goto('/#/arquivo')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/TTWtools/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Arquivo|File/)
   await page.getByText(/Mais opções do projeto|More project options/).click()
   await page.getByTestId('project-path').fill(ttwt)
   await page.getByTestId('project-open').click()
