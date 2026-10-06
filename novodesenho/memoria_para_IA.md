@@ -73,3 +73,8 @@ Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrad
 - O markdown dos tópicos (`frontend-vue/src/utils/markdown.js`) é próprio e mínimo; recursos novos: `:::details`, tabelas, `$tex$`/`$$tex$$` (KaTeX) e o marcador `::cohen-widget::` tratado em `LearnView.vue`. Em tabelas, `|d|` precisa de `\|` ou de `$\lvert d\rvert$`.
 - Ao mexer em `ui.pt/en.json` **não reescreva o arquivo inteiro** (ordem e indentação originais): insira só as chaves novas.
 - A porta 8765 é ocupada por um servidor do ClaudeCodeBrowser que um host da extensão do Chrome recria; rode o app com `--port 8791`.
+
+## Temas (2026-10-05)
+- `frontend-vue/src/themes.js` é a fonte única de 20 temas (cores, fontes, raios, estilo de botão); `theme.js` aplica como variáveis CSS no `<html>`; os 4 básicos (system/light/dark/contrast) continuam no `style.css`. Galeria: `ThemeGallery.vue` (menu Tema → "Aparência…").
+- Fontes variáveis empacotadas em `src/fonts.css` (visual igual em qualquer sistema, offline). Contraste de cada tema é testado em `src/test/themes.test.js`: ao mudar cor, rode-o.
+- Estilos de botão (`[data-btn]`) só definem variáveis herdadas; seletor descendente vazava o estilo do tema ativo para os cartões de pré-visualização.

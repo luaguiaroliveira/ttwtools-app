@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts.css";
 @plugin "daisyui" {
   themes: false;
 }
@@ -294,7 +295,7 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
   --pos-fg-noun: #fff; --pos-fg-verb: #fff; --pos-fg-adj: #fff; --pos-fg-adv: #fff; --pos-fg-other: #fff;
   --chart-pos: 242 106 27; --chart-neg: 47 111 159;
 }
-:root[data-theme="dark"], :root[data-theme="contrast"] {
+:root[data-theme="dark"], :root[data-theme="contrast"], :root[data-scheme="dark"] {
   --chart-1: #FF8A3D; --chart-2: #C9C4BC; --chart-3: #6FA8DC; --chart-4: #B79AD6;
   --chart-5: #5FC28A; --chart-6: #E3B93C; --chart-7: #E07AA5; --chart-8: #8F8A83;
   --pos-noun: #78A9DC; --pos-verb: #4CC180; --pos-adj: #E8B03A; --pos-adv: #B79AD6; --pos-other: #A8A39C;
@@ -368,3 +369,44 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .disp-strip .disp-tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; border-radius: 1px; opacity: .85; pointer-events: none; }
 .disp-svg-band { fill: var(--disp-band, currentColor); }
 .disp-n { flex: 0 0 2.25rem; text-align: right; color: var(--ttw-text-muted); font-variant-numeric: tabular-nums; }
+
+/* ---- Aparência por tema (src/themes.js) ---- */
+/* Fonte de títulos própria do tema; o corpo usa --font-sans */
+h1, h2, h3, .page-title, .section-title, .ttw-wordmark { font-family: var(--ttw-font-display, var(--font-sans)); }
+
+/* Estilos de botão. [data-btn] fica no <html> (tema ativo) ou num cartão de pré-visualização e só define
+   variáveis herdadas (vale o ancestral mais próximo, então os cartões não sofrem o estilo do tema ativo).
+   Valem para .btn comum; ghost/link/outline do DaisyUI ficam como estão.
+   bt = forma (todos), ba = aparência de todos os botões, bp = só do botão primário. initial = usa o padrão do DaisyUI. */
+[data-btn] { --bt-radius: initial; --bt-tt: initial; --bt-ls: initial; --bt-fw: initial;
+  --ba-img: initial; --ba-bw: initial; --ba-bd: initial; --ba-sh: initial; --ba-sh-h: initial; --ba-sh-a: initial; --ba-tf-h: initial; --ba-tf-a: initial;
+  --bp-bg: initial; --bp-fg: initial; --bp-bd: initial; --bp-img: initial; --bp-sh: initial; --bp-sh-h: initial; --bp-bg-h: initial; --bp-fg-h: initial; --bp-bd-h: initial; --bp-filter-h: initial; }
+[data-btn="pill"] { --bt-radius: 999px; }
+[data-btn="soft"] { --bp-bg: color-mix(in oklab, var(--color-primary) 16%, var(--color-base-100)); --bp-fg: var(--ttw-orange-text);
+  --bp-bd: color-mix(in oklab, var(--color-primary) 35%, transparent); --bp-sh: none;
+  --bp-bg-h: var(--color-primary); --bp-fg-h: var(--color-primary-content); --bp-bd-h: var(--color-primary); }
+[data-btn="outline"] { --bp-bg: transparent; --bp-fg: var(--ttw-orange-text); --bp-bd: var(--ttw-orange-text); --bp-sh: none;
+  --bp-bg-h: var(--color-primary); --bp-fg-h: var(--color-primary-content); --bp-bd-h: var(--color-primary); }
+[data-btn="brutal"] { --bt-tt: uppercase; --bt-ls: .03em; --bt-fw: 800; --ba-bw: 2px; --ba-bd: var(--ttw-btn-shadow);
+  --ba-sh: 3px 3px 0 var(--ttw-btn-shadow); --ba-sh-h: 4px 4px 0 var(--ttw-btn-shadow); --ba-sh-a: 0 0 0 var(--ttw-btn-shadow);
+  --ba-tf-h: translate(-1px, -1px); --ba-tf-a: translate(3px, 3px); }
+[data-btn="gradient"] { --bp-img: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 62%, var(--color-secondary)));
+  --bp-bd: transparent; --bp-sh: 0 6px 16px -6px color-mix(in oklab, var(--color-primary) 70%, transparent); --bp-filter-h: brightness(1.08); }
+[data-btn="raised"] { --ba-img: linear-gradient(180deg, color-mix(in oklab, #fff 18%, transparent), transparent 55%);
+  --ba-sh: inset 0 1px 0 color-mix(in oklab, #fff 35%, transparent), 0 2px 0 color-mix(in oklab, #000 28%, transparent), 0 4px 8px -2px color-mix(in oklab, #000 25%, transparent);
+  --ba-sh-a: inset 0 2px 4px color-mix(in oklab, #000 30%, transparent); }
+[data-btn="glow"] { --bp-sh: 0 0 0 1px color-mix(in oklab, var(--color-primary) 60%, transparent), 0 0 18px color-mix(in oklab, var(--color-primary) 55%, transparent);
+  --bp-sh-h: 0 0 0 1px var(--color-primary), 0 0 28px color-mix(in oklab, var(--color-primary) 75%, transparent); }
+
+[data-btn] .btn { border-radius: var(--bt-radius, var(--radius-field)); text-transform: var(--bt-tt, none); letter-spacing: var(--bt-ls, normal);
+  font-weight: var(--bt-fw, 600); transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, filter .12s ease; }
+[data-btn] .btn:not(.btn-ghost):not(.btn-link):not(.btn-outline) { background-image: var(--ba-img, none); border-width: var(--ba-bw, var(--border));
+  border-color: var(--ba-bd, var(--btn-border)); box-shadow: var(--ba-sh, none); }
+[data-btn] .btn:not(.btn-ghost):not(.btn-link):not(.btn-outline):hover:not(:disabled) { box-shadow: var(--ba-sh-h, var(--ba-sh, none)); transform: var(--ba-tf-h, none); }
+[data-btn] .btn:not(.btn-ghost):not(.btn-link):not(.btn-outline):active:not(:disabled) { box-shadow: var(--ba-sh-a, var(--ba-sh, none)); transform: var(--ba-tf-a, translateY(1px)); }
+[data-btn] .btn.btn-primary:not(.btn-ghost):not(.btn-link):not(.btn-outline) { background-color: var(--bp-bg, var(--btn-bg)); color: var(--bp-fg, var(--btn-fg));
+  background-image: var(--bp-img, var(--ba-img, none)); border-color: var(--bp-bd, var(--ba-bd, var(--btn-border))); border-width: var(--bp-bw, var(--ba-bw, var(--border)));
+  box-shadow: var(--bp-sh, var(--ba-sh, none)); }
+[data-btn] .btn.btn-primary:not(.btn-ghost):not(.btn-link):not(.btn-outline):hover:not(:disabled) { background-color: var(--bp-bg-h, var(--bp-bg, var(--btn-bg)));
+  color: var(--bp-fg-h, var(--bp-fg, var(--btn-fg))); border-color: var(--bp-bd-h, var(--bp-bd, var(--ba-bd, var(--btn-border))));
+  box-shadow: var(--bp-sh-h, var(--ba-sh-h, var(--bp-sh, var(--ba-sh, none)))); filter: var(--bp-filter-h, none); }

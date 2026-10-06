@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
 import { LANG_NAMES, setLang } from './i18n.js'
-import { applyDensity, applyTheme, initialDensity, initialTheme } from './theme.js'
+import { applyDensity, applyTheme, initialDensity, initialTheme, isDarkTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TextType from './components/vb/TextType.vue'
 import MenuButton from './components/MenuButton.vue'
@@ -14,6 +14,7 @@ import TagTip from './components/TagTip.vue'
 import TourOverlay from './components/TourOverlay.vue'
 import ExplainOverlay from './components/ExplainOverlay.vue'
 import AboutDialog from './components/AboutDialog.vue'
+import ThemeGallery from './components/ThemeGallery.vue'
 
 const { t, locale } = useI18n()
 const session = useSession()
@@ -28,13 +29,14 @@ const loadError = ref(null)
 const explaining = ref(false)
 globalThis.addEventListener?.('ttw:explain', () => { explaining.value = true })
 const about = ref(false)
+const gallery = ref(false)
 
 onMounted(async () => {
   try { await session.load(); await session.checkPendingOpen() } catch (err) { loadError.value = err }
   window.addEventListener('focus', () => session.checkPendingOpen().catch(() => {}))
 })
 const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
-const isDark = computed(() => theme.value === 'dark' || theme.value === 'contrast' || (theme.value === 'system' && prefersDark))
+const isDark = computed(() => isDarkTheme(theme.value, prefersDark))
 const changeTheme = (value) => { theme.value = value; applyTheme(value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
@@ -117,6 +119,10 @@ const changeLang = (value) => setLang(value)
               <span class="w-5 text-orange-text">{{ theme === o ? '✓' : '' }}</span>{{ t(`theme.${o}`) }}
             </button>
             <div class="my-1 border-t border-base-300" role="separator" />
+            <button type="button" role="menuitem" class="ttw-menu-item" data-testid="theme-gallery-open" @click="gallery = true; close()">
+              <span class="w-5 text-orange-text">{{ THEME_OPTIONS.includes(theme) ? '' : '✓' }}</span>{{ t('theme.gallery_open') }}
+            </button>
+            <div class="my-1 border-t border-base-300" role="separator" />
             <label class="ttw-menu-item cursor-pointer">
               <input type="checkbox" class="checkbox checkbox-xs" data-testid="density-toggle" :checked="compact" @change="changeDensity($event.target.checked)" />{{ t('density.label') }}
             </label>
@@ -130,6 +136,7 @@ const changeLang = (value) => setLang(value)
       </main>
     </div>
     <AboutDialog :open="about" @close="about = false" />
+    <ThemeGallery :open="gallery" :current="theme" @close="gallery = false" @select="changeTheme" />
     <TagTip />
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />
