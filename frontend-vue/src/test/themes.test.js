@@ -32,3 +32,21 @@ describe('temas', () => {
     }
   })
 })
+
+describe('eixos independentes', () => {
+  const neon = THEME_DEFS.find((d) => d.id === 'neon')
+  it('"auto" segue o tema; escolha explícita vale sobre ele', async () => {
+    const { resolveLook, AUTO_LOOK } = await import('../themes.js')
+    expect(resolveLook(neon, AUTO_LOOK)).toMatchObject({ btn: 'glow', icons: 'colorido', font: { id: 'grotesk' }, shape: { id: 'suave' } })
+    const r = resolveLook(neon, { ...AUTO_LOOK, btn: 'pill', icons: 'line', font: 'mono', shape: 'nitido' })
+    expect(r).toMatchObject({ btn: 'pill', icons: 'line', font: { id: 'mono' }, shape: { id: 'nitido' } })
+  })
+  it('tema básico sem escolha não força fonte nem cantos', async () => {
+    const { resolveLook, AUTO_LOOK } = await import('../themes.js')
+    expect(resolveLook(null, AUTO_LOOK)).toEqual({ font: null, shape: null, btn: 'solid', icons: 'duotone' })
+  })
+  it('todo tema tem fonte e cantos correspondentes a uma escolha', async () => {
+    const { fontOf, shapeOf } = await import('../themes.js')
+    for (const d of THEME_DEFS) { expect(fontOf(d).font, d.id).toBe(d.font); expect(shapeOf(d).id).toBeTruthy() }
+  })
+})

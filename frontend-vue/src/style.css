@@ -181,15 +181,15 @@
 
 /* Menu lateral: item ativo e animações dos ícones (só ao passar o mouse/focar ou no item ativo) */
 .nav-item.nav-active { background: color-mix(in oklab, var(--color-primary) 16%, transparent); color: var(--color-base-content); box-shadow: inset 3px 0 0 var(--ttw-orange-text); }
-.nav-ico { overflow: visible; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); }
+.nav-ico { overflow: visible; transition: transform .35s cubic-bezier(.34, 1.56, .64, 1); stroke-width: var(--ic-sw, 1.6); stroke-linecap: var(--ic-cap, round); stroke-linejoin: var(--ic-join, round); }
 .nav-ico * { transform-box: fill-box; transform-origin: center; }
-.nav-ico .duo { fill: currentColor; fill-opacity: .13; stroke: none; }
-.nav-ico .duo-acc { fill: var(--ttw-orange-text); fill-opacity: .22; stroke: none; }
-.nav-ico .acc { stroke: var(--ttw-orange-text); }
-.nav-ico .a-dot { fill: var(--ttw-orange-text); fill-opacity: .35; }
+.nav-ico .duo { fill: currentColor; fill-opacity: var(--ic-duo, .13); stroke: none; }
+.nav-ico .duo-acc { fill: var(--ic-acc, var(--ttw-orange-text)); fill-opacity: var(--ic-duoacc, .22); stroke: none; }
+.nav-ico .acc { stroke: var(--ic-acc, var(--ttw-orange-text)); }
+.nav-ico .a-dot { fill: var(--ic-acc, var(--ttw-orange-text)); fill-opacity: .35; }
 .nav-item:hover .nav-ico, .nav-item:focus-visible .nav-ico { transform: translateY(-2px) scale(1.12); }
 .nav-item.nav-active .nav-ico { transform: scale(1.06); }
-.nav-item.nav-active .nav-ico .duo { fill-opacity: .2; }
+.nav-item.nav-active .nav-ico .duo { fill-opacity: calc(var(--ic-duo, .13) + .07); }
 .nav-item:hover .a-swing, .nav-item:focus-visible .a-swing { animation: ico-swing .8s ease-in-out; transform-origin: 30% 30%; }
 .nav-item:hover .a-flap, .nav-item:focus-visible .a-flap { animation: ico-flap .5s ease-out; }
 .nav-item:hover .a-lens, .nav-item:focus-visible .a-lens { animation: ico-lens 1s ease-in-out; }
@@ -410,3 +410,14 @@ h1, h2, h3, .page-title, .section-title, .ttw-wordmark { font-family: var(--ttw-
 [data-btn] .btn.btn-primary:not(.btn-ghost):not(.btn-link):not(.btn-outline):hover:not(:disabled) { background-color: var(--bp-bg-h, var(--bp-bg, var(--btn-bg)));
   color: var(--bp-fg-h, var(--bp-fg, var(--btn-fg))); border-color: var(--bp-bd-h, var(--bp-bd, var(--ba-bd, var(--btn-border))));
   box-shadow: var(--bp-sh-h, var(--ba-sh-h, var(--bp-sh, var(--ba-sh, none)))); filter: var(--bp-filter-h, none); }
+
+/* Estilos de ícone: [data-icons] no <html> ou num cartão; só variáveis herdadas (vale o ancestral mais próximo).
+   sw espessura, cap/join pontas, duo preenchimento suave, duoacc preenchimento do destaque, acc cor do destaque. */
+[data-icons] { --ic-sw: initial; --ic-cap: initial; --ic-join: initial; --ic-duo: initial; --ic-duoacc: initial; --ic-acc: initial; }
+[data-icons="line"] { --ic-duo: 0; --ic-duoacc: 0; }
+[data-icons="fina"] { --ic-sw: 1.1; --ic-duo: .08; --ic-duoacc: .14; }
+[data-icons="marcada"] { --ic-sw: 2.3; --ic-duo: .1; --ic-duoacc: .18; }
+[data-icons="tinta"] { --ic-sw: 1.5; --ic-duo: .3; --ic-duoacc: .42; }
+[data-icons="mono"] { --ic-acc: currentColor; --ic-duoacc: .13; }
+[data-icons="colorido"] { --ic-acc: var(--chart-3); --ic-duo: .16; --ic-duoacc: .3; }
+[data-icons="anguloso"] { --ic-cap: butt; --ic-join: miter; --ic-sw: 1.7; }

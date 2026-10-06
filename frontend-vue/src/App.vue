@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
 import { LANG_NAMES, setLang } from './i18n.js'
-import { applyDensity, applyTheme, initialDensity, initialTheme, isDarkTheme } from './theme.js'
+import { AUTO_LOOK, applyDensity, applyLook, initialDensity, initialLook, isDarkTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TextType from './components/vb/TextType.vue'
 import MenuButton from './components/MenuButton.vue'
@@ -24,7 +24,8 @@ const section = computed(() => NAV.find((n) => n.name === route.name) ?? (route.
 // Telas com divisões (painéis que rolam sozinhos): a área principal não rola; só os painéis.
 const SPLIT_ROUTES = ['explore', 'reader']
 const isSplit = computed(() => SPLIT_ROUTES.includes(route.name))
-const theme = ref(initialTheme())
+const look = ref(initialLook())
+const theme = computed(() => look.value.colors)
 const loadError = ref(null)
 const explaining = ref(false)
 globalThis.addEventListener?.('ttw:explain', () => { explaining.value = true })
@@ -37,7 +38,9 @@ onMounted(async () => {
 })
 const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
 const isDark = computed(() => isDarkTheme(theme.value, prefersDark))
-const changeTheme = (value) => { theme.value = value; applyTheme(value) }
+const setLook = (patch) => { look.value = { ...look.value, ...patch }; applyLook(look.value) }
+const changeTheme = (value) => setLook({ colors: value })
+const resetLook = () => { look.value = { ...AUTO_LOOK, colors: look.value.colors }; applyLook(look.value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
 const THEME_OPTIONS = ['system', 'light', 'dark', 'contrast']
@@ -136,7 +139,7 @@ const changeLang = (value) => setLang(value)
       </main>
     </div>
     <AboutDialog :open="about" @close="about = false" />
-    <ThemeGallery :open="gallery" :current="theme" @close="gallery = false" @select="changeTheme" />
+    <ThemeGallery :open="gallery" :look="look" @close="gallery = false" @select="(axis, id) => setLook({ [axis]: id })" @reset="resetLook" />
     <TagTip />
     <TourOverlay />
     <ExplainOverlay v-if="explaining" @close="explaining = false" />

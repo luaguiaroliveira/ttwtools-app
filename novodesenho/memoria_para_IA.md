@@ -77,4 +77,5 @@ Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrad
 ## Temas (2026-10-05)
 - `frontend-vue/src/themes.js` é a fonte única de 20 temas (cores, fontes, raios, estilo de botão); `theme.js` aplica como variáveis CSS no `<html>`; os 4 básicos (system/light/dark/contrast) continuam no `style.css`. Galeria: `ThemeGallery.vue` (menu Tema → "Aparência…").
 - Fontes variáveis empacotadas em `src/fonts.css` (visual igual em qualquer sistema, offline). Contraste de cada tema é testado em `src/test/themes.test.js`: ao mudar cor, rode-o.
+- Aparência tem 5 eixos independentes (`look`: colors, font, shape, btn, icons; `auto` = o que o tema sugere): `themes.js` (resolveLook), `theme.js` (applyLook; `ttw.theme` guarda as cores, `ttw.look` o resto). Ícones por `[data-icons]` em variáveis `--ic-*` usadas por `.nav-ico`; ícones SVG inline fora do `NavIcon` ainda não seguem o estilo.
 - Estilos de botão (`[data-btn]`) só definem variáveis herdadas; seletor descendente vazava o estilo do tema ativo para os cartões de pré-visualização.
