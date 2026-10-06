@@ -9,15 +9,19 @@ import { startTour } from '../composables/useTour.js'
 import KfaWidget from '../components/KfaWidget.vue'
 import CohenDVisual from '../components/CohenDVisual.vue'
 import TaggerTags from '../components/TaggerTags.vue'
+import { useHighlights } from '../composables/useHighlights.js'
 const { t, locale } = useI18n()
 const route = useRoute()
 const q = ref('')
 const topics = ref([])
 const topic = ref(null)
 const TOURS = ['primeiro_corpus']
+const bodyEl = ref(null)
+const hl = useHighlights(bodyEl)
 watch([q, locale], async () => { topics.value = (await api.help.topics(locale.value, q.value || undefined)).topics }, { immediate: true })
 watch(() => [route.params.topic, locale.value], async ([id]) => {
   topic.value = id ? await api.help.topic(id, locale.value).catch(() => null) : null
+  if (topic.value) hl.start()
 }, { immediate: true })
 // O marcador "::cohen-widget::" no corpo do tópico vira o widget interativo da KFA.
 const parts = computed(() => (topic.value?.body || '').split(/^::cohen-widget::$/m))
@@ -27,15 +31,28 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
   <div class="flex flex-col gap-4" :class="topic ? 'max-w-5xl' : 'max-w-4xl'">
     <h1 class="sr-only"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
     <article v-if="topic" class="flex flex-col gap-4" data-testid="help-topic">
-      <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
+      <div class="flex items-center gap-3">
+        <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
+        <!-- olho: mostra/oculta os destaques animados do verbete (só aparece se o verbete tiver destaques) -->
+        <button v-if="hl.count.value" type="button" class="btn btn-ghost btn-sm ml-auto gap-2" data-testid="hl-toggle" :aria-pressed="hl.on.value"
+                :title="t(hl.on.value ? 'learn.hl_hide' : 'learn.hl_show')" @click="hl.on.value = !hl.on.value">
+          <svg v-if="hl.on.value" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></svg>
+          <svg v-else viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3l18 18M10.6 5.1A10.700 10.700 0 0 1 12 5c6.400 0 10 7 10 7a17 17 0 0 1-3.200 4.200M6.600 6.600A16.500 16.500 0 0 0 2 12s3.600 7 10 7a10 10 0 0 0 4.300-1M9.900 9.900a3 3 0 0 0 4.200 4.200" /></svg>
+          <span class="text-sm">{{ t(hl.on.value ? 'learn.hl_hide' : 'learn.hl_show') }}</span>
+        </button>
+      </div>
       <h2 class="text-xl font-bold">{{ topic.title }}</h2>
       <p class="opacity-80">{{ topic.summary }}</p>
       <p v-if="topic.fallback" class="alert alert-info text-sm py-1">{{ t('learn.fallback') }}</p>
       <CohenDVisual v-if="topic.id === 'cohens_d'" />
-      <template v-for="(part, i) in parts" :key="i">
-        <KfaWidget v-if="i > 0" />
-        <div class="help-body" :lang="locale" v-html="markdown(part)" />
-      </template>
+      <div ref="bodyEl" class="flex flex-col gap-4">
+        <template v-for="(part, i) in parts" :key="i">
+          <KfaWidget v-if="i > 0" />
+          <div class="help-body" :lang="locale" v-html="markdown(part)" />
+        </template>
+      </div>
       <TaggerTags v-if="topic.id === 'tags_etiquetadores'" />
       <p v-if="topic.related.length" class="text-sm">{{ t('learn.related') }}:
         <RouterLink v-for="r in topic.related" :key="r" :to="`/aprender/${r}`" class="link mr-2">{{ r }}</RouterLink></p>
@@ -80,6 +97,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 .help-body :deep(.math-block) { overflow-x: auto; overflow-y: hidden; text-align: center; padding: .25rem 0; }
 .help-body :deep(.katex-display) { margin: 0; }
 .help-body :deep(hr) { border: 0; border-top: 1px solid var(--color-base-300); margin: 1.75rem 0; }
+.help-body :deep(.hl) { position: relative; }
 .help-body :deep(code) { background: var(--color-base-200); border-radius: .3rem; padding: .05rem .3rem; font-size: .92em; }
 .help-body :deep(pre) { background: var(--color-base-200); padding: .75rem 1rem; border-radius: .5rem; overflow-x: auto; text-align: left; hyphens: none; line-height: 1.5; }
 .help-body :deep(pre code) { padding: 0; background: none; }

@@ -79,3 +79,7 @@ Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrad
 - Fontes variáveis empacotadas em `src/fonts.css` (visual igual em qualquer sistema, offline). Contraste de cada tema é testado em `src/test/themes.test.js`: ao mudar cor, rode-o.
 - Aparência tem 5 eixos independentes (`look`: colors, font, shape, btn, icons; `auto` = o que o tema sugere): `themes.js` (resolveLook), `theme.js` (applyLook; `ttw.theme` guarda as cores, `ttw.look` o resto). Ícones por `[data-icons]` em variáveis `--ic-*` usadas por `.nav-ico`; ícones SVG inline fora do `NavIcon` ainda não seguem o estilo.
 - Estilos de botão (`[data-btn]`) só definem variáveis herdadas; seletor descendente vazava o estilo do tema ativo para os cartões de pré-visualização.
+
+## Verbetes de Aprender: destaques (2026-10-05)
+- Textos em `libs/ttwtools/ttwtools/data/help/<idioma>/<área>/<id>.md`; guia de edição em `data/help/COMO_EDITAR.md`. Edição de verbete existente aparece ao recarregar (get() lê o arquivo a cada vez); verbete novo pede reiniciar.
+- Destaques: `[texto]{circulo azul}` ou `==texto==` → `<span class="hl">` (utils/markdown.js, utils/highlights.js); desenhados por `rough-notation` em `composables/useHighlights.js` (ao entrar na tela; olho liga/desliga, guardado em `ttw.highlights`). Tipos/cores existem em dois lugares (highlights.js e help.py): manter iguais. `python -m ttwtools help --check` valida.
