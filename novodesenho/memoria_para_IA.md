@@ -68,3 +68,8 @@ Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrad
 ## Documentos removidos em 2026-09-30 (recuperáveis no Git)
 
 `novodesenho/{pendencias, desempenho_e_formatos, plano_armazenamento, plano_implementacao, plano_escrita, ferramentaescrita, plano_redesign_ui, relatorio_usabilidade, roteiro_verificacao}.md`, `novodesenho/verificacao/{linux, windows, macos-arm64, macos12-intel, modelo, relatorio_intel_20260930, macos-intel-armazenamento, LEIA}.md`, `plano_visualizacoes.md`, `docs/ui-componentes.md`. Recuperar: `git log --diff-filter=D --name-only -- novodesenho docs plano_visualizacoes.md` e `git show <commit>^:<caminho>`.
+
+## 2026-10-05 — tópicos do Aprender com KaTeX e widget
+- O markdown dos tópicos (`frontend-vue/src/utils/markdown.js`) é próprio e mínimo; recursos novos: `:::details`, tabelas, `$tex$`/`$$tex$$` (KaTeX) e o marcador `::cohen-widget::` tratado em `LearnView.vue`. Em tabelas, `|d|` precisa de `\|` ou de `$\lvert d\rvert$`.
+- Ao mexer em `ui.pt/en.json` **não reescreva o arquivo inteiro** (ordem e indentação originais): insira só as chaves novas.
+- A porta 8765 é ocupada por um servidor do ClaudeCodeBrowser que um host da extensão do Chrome recria; rode o app com `--port 8791`.
