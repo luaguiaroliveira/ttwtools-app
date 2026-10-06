@@ -4,9 +4,13 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.8.3] — 2026-10-06
+
 ### Corrigido
 
 - **Botões inativos no macOS 12 (Safari 17.6):** o DaisyUI pintava o fundo do botão desabilitado com `base-content` sólido quando não há `color-mix()`, deixando-o preto (Histórico, Buscar no texto e Copiar no Leitor). O CSS passou a usar um véu neutro do tema (`--ttw-hover-strong`), com borda e conteúdo apagados, em todos os estilos de botão.
+
+- Pacote `ttwtools` 0.3.1 (commit `a6f1de7`, tag `v0.3.1`).
 
 ## [0.8.2] — 2026-10-06
 
@@ -305,7 +309,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.2...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.3...HEAD
+[0.8.3]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.0...v0.8.2
 [0.8.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...v0.7.1
