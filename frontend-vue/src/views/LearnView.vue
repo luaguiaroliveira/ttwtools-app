@@ -24,7 +24,7 @@ const parts = computed(() => (topic.value?.body || '').split(/^::cohen-widget::$
 const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || 'outros'] ||= []).push(x); return acc }, {}))
 </script>
 <template>
-  <div class="flex flex-col gap-4 max-w-4xl">
+  <div class="flex flex-col gap-4" :class="topic ? 'max-w-5xl' : 'max-w-4xl'">
     <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
     <article v-if="topic" class="flex flex-col gap-4" data-testid="help-topic">
       <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
@@ -58,7 +58,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 </template>
 <style scoped>
 /* Corpo dos tópicos: leitura confortável (entrelinha, espaçamento, texto justificado com hifenização). */
-.help-body { line-height: 1.65; font-size: 1rem; max-width: 46rem; hyphens: auto; }
+.help-body { line-height: 1.7; font-size: 1.0625rem; hyphens: auto; }
 .help-body :deep(> * + *) { margin-top: .85rem; }
 .help-body :deep(p), .help-body :deep(li) { text-align: justify; text-wrap: pretty; }
 .help-body :deep(strong) { font-weight: 650; }
@@ -70,7 +70,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 .help-body :deep(blockquote) { border-left: 4px solid var(--color-primary); padding: .6rem 1rem; background: var(--color-base-200); border-radius: 0 .5rem .5rem 0; }
 .help-body :deep(blockquote p) { margin: 0; }
 .help-body :deep(table) { border-collapse: collapse; width: 100%; font-size: .92rem; line-height: 1.45; }
-.help-body :deep(th), .help-body :deep(td) { border: 1px solid var(--color-base-300); padding: .45rem .7rem; text-align: left; vertical-align: top; }
+.help-body :deep(th), .help-body :deep(td) { border: 1px solid var(--color-base-300); padding: .45rem .7rem; text-align: left; vertical-align: top; hyphens: manual; text-align: left; }
 .help-body :deep(th) { background: var(--color-base-200); font-weight: 650; }
 .help-body :deep(details) { border: 1px solid var(--color-base-300); border-radius: .6rem; padding: .55rem .95rem; background: var(--color-base-200); }
 .help-body :deep(details[open]) { background: color-mix(in srgb, var(--color-base-200) 70%, var(--color-base-100)); }
