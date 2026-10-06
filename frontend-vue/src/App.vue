@@ -45,11 +45,11 @@ const changeLang = (value) => setLang(value)
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
   <div class="h-dvh overflow-hidden bg-base-100 text-base-content flex flex-col">
-  <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
-        <button type="button" class="ttw-wordmark shrink-0 text-lg tracking-tight px-1" data-testid="about-open"
+  <header class="ttw-context navbar border-b border-base-300 gap-2 pl-0 pr-3 min-h-14 sticky top-0 z-30 bg-base-200">
+        <button type="button" class="ttw-wordmark shrink-0 text-xl tracking-tight" data-testid="about-open"
                 :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
-        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 text-lg font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
-          <NavIcon :name="section.icon" :size="24" />{{ t(section.label) }}</span>
+        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 text-2xl font-semibold pl-3 border-l border-base-300" data-testid="header-section">
+          <NavIcon :name="section.icon" :size="30" />{{ t(section.label) }}</span>
         <div class="flex-1" />
         <!-- camada ativa e corpus ativo, como chips com ícone; o seletor fica dentro do chip -->
         <label class="ttw-chip hidden sm:inline-flex" :title="t('header.layer_hint')">
@@ -108,7 +108,7 @@ const changeLang = (value) => setLang(value)
   </header>
     <div class="flex flex-1 min-h-0 flex-col md:flex-row min-w-0">
     <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
-    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-16 shrink-0 sticky top-12 self-start h-[calc(100dvh-3rem)] z-20"
+    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-24 shrink-0 sticky top-14 self-start h-[calc(100dvh-3.5rem)] z-20"
          :aria-label="t('nav.label')">
       <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active" :aria-label="t(item.label)">
         <NavIcon :name="item.icon" :size="30" />

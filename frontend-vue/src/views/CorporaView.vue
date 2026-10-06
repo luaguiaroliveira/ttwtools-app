@@ -31,7 +31,7 @@ function startAdd() { wizardKey.value++; adding.value = true }
 
 <template>
   <div class="flex flex-col gap-4 max-w-5xl">
-    <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('app.title'), class: '' }]" /></h1>
+    <h1 class="sr-only">{{ t('nav.corpora') }}</h1>
     <ProjectBar />
     <template v-if="hasProject">
       <div class="flex items-center gap-2" data-explain="explain.corpora.library">

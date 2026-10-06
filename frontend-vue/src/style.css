@@ -332,11 +332,11 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .ttw-menu-item { display: flex; align-items: center; gap: .25rem; width: 100%; padding: .4rem .625rem; border-radius: var(--radius-field);
   font-size: .875rem; text-align: left; white-space: nowrap; }
 .ttw-menu-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
-.ttw-wordmark { min-width: 6.5rem; text-align: left; }
+.ttw-wordmark { width: 6rem; text-align: center; }  /* mesma largura do menu lateral: o nome fica centrado sobre os ícones */
 
 /* Painel de etiquetas à direita (Explorar, já visível; Leitor em telas estreitas), aberto por uma alça na
    borda direita, por cima do conteúdo. A largura vem de `--ttw-tag-width` (o Explorar a torna arrastável). */
-.ttw-tag-drawer { position: fixed; top: 3rem; bottom: 0; right: 0; z-index: 40; width: var(--ttw-tag-width, 21rem); max-width: 88vw; padding: .75rem; overflow-y: auto;
+.ttw-tag-drawer { position: fixed; top: 3.5rem; bottom: 0; right: 0; z-index: 40; width: var(--ttw-tag-width, 21rem); max-width: 88vw; padding: .75rem; overflow-y: auto;
   background: var(--color-base-100); border-left: 1px solid var(--ttw-border-strong); box-shadow: var(--ttw-shadow-pop);
   transform: translateX(105%); visibility: hidden; transition: transform .28s cubic-bezier(.2, .8, .2, 1), visibility 0s .28s; }
 .ttw-tag-drawer.is-open { transform: none; visibility: visible; transition-delay: 0s; }
@@ -345,7 +345,7 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
   box-shadow: var(--ttw-shadow-pop); cursor: pointer; }
 .ttw-tag-handle span { writing-mode: vertical-rl; }
 .ttw-tag-handle[aria-expanded="true"] { right: var(--ttw-tag-width, 21rem); }
-.ttw-tag-resizer { position: fixed; top: 3rem; bottom: 0; right: var(--ttw-tag-width, 21rem); z-index: 39; width: .5rem; cursor: col-resize; touch-action: none; border-radius: 9999px; }
+.ttw-tag-resizer { position: fixed; top: 3.5rem; bottom: 0; right: var(--ttw-tag-width, 21rem); z-index: 39; width: .5rem; cursor: col-resize; touch-action: none; border-radius: 9999px; }
 .ttw-tag-resizer:hover, .ttw-tag-resizer:focus-visible { background: color-mix(in srgb, var(--ttw-orange-text) 45%, transparent); outline: none; }
 @media (prefers-reduced-motion: reduce) { .ttw-tag-drawer { transition: none; } }
 
