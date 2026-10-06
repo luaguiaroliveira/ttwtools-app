@@ -44,11 +44,28 @@ const changeLang = (value) => setLang(value)
 
 <template>
   <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-2 btn btn-sm">{{ t('app.skip') }}</a>
-  <div class="h-dvh overflow-hidden bg-base-100 text-base-content flex flex-col">
-  <header class="ttw-context navbar border-b border-base-300 gap-2 pl-0 pr-3 min-h-14 sticky top-0 z-30 bg-base-200">
-        <button type="button" class="ttw-wordmark shrink-0 text-xl tracking-tight" data-testid="about-open"
+  <div class="h-dvh overflow-hidden bg-base-100 text-base-content flex flex-col md:flex-row">
+    <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
+    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 pb-2 px-2 w-32 shrink-0 h-full z-20"
+         :aria-label="t('nav.label')">
+        <button type="button" class="ttw-wordmark shrink-0 text-xl tracking-tight h-14 -mx-2 mb-1 border-b border-base-300 flex items-center justify-center" data-testid="about-open"
                 :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
-        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 text-2xl font-semibold pl-3 border-l border-base-300" data-testid="header-section">
+      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active" :aria-label="t(item.label)">
+        <NavIcon :name="item.icon" :size="30" />
+        <span class="rail-tip" aria-hidden="true">{{ t(item.label) }}</span>
+      </RouterLink>
+      <RouterLink to="/inicio" class="nav-item rail-item mt-auto" active-class="nav-active" :aria-label="t('nav.info')">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
+        <span class="rail-tip" aria-hidden="true">{{ t('nav.info') }}</span>
+      </RouterLink>
+    </nav>
+
+    <div class="flex-1 flex flex-col min-w-0 min-h-0">
+  <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-14 shrink-0 sticky top-0 z-30 bg-base-200">
+        <button type="button" class="ttw-wordmark md:hidden shrink-0 text-xl tracking-tight" data-testid="about-open-mobile"
+                :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
+        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 text-2xl font-semibold md:pl-0 pl-3 md:border-l-0 border-l border-base-300" data-testid="header-section">
           <NavIcon :name="section.icon" :size="30" />{{ t(section.label) }}</span>
         <div class="flex-1" />
         <!-- camada ativa e corpus ativo, como chips com ícone; o seletor fica dentro do chip -->
@@ -106,29 +123,11 @@ const changeLang = (value) => setLang(value)
           </template>
         </MenuButton>
   </header>
-    <div class="flex flex-1 min-h-0 flex-col md:flex-row min-w-0">
-    <!-- menu lateral: ícone grande com o nome embaixo; o item ativo fica em destaque -->
-    <nav class="ttw-rail hidden md:flex flex-col items-stretch gap-1 border-r border-base-300 bg-base-200 py-2 px-2 w-24 shrink-0 sticky top-14 self-start h-[calc(100dvh-3.5rem)] z-20"
-         :aria-label="t('nav.label')">
-      <RouterLink v-for="item in NAV" :key="item.name" :to="item.path" class="nav-item rail-item" active-class="nav-active" :aria-label="t(item.label)">
-        <NavIcon :name="item.icon" :size="30" />
-        <span class="rail-tip" aria-hidden="true">{{ t(item.label) }}</span>
-      </RouterLink>
-      <RouterLink to="/inicio" class="nav-item rail-item mt-auto" active-class="nav-active" :aria-label="t('nav.info')">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" /><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700M12 17h.01" /></svg>
-        <span class="rail-tip" aria-hidden="true">{{ t('nav.info') }}</span>
-      </RouterLink>
-    </nav>
-
-    <div class="flex-1 flex flex-col min-w-0 min-h-0">
 
       <main id="main" class="flex-1 min-h-0 p-4 pb-24 md:pb-4" :class="isSplit ? 'overflow-hidden' : 'overflow-y-auto'" tabindex="-1">
         <div v-if="loadError" role="alert" class="alert alert-error mb-4">{{ t('api.error.network') }}</div>
         <RouterView />
       </main>
-    </div>
-
     </div>
     <AboutDialog :open="about" @close="about = false" />
     <TagTip />

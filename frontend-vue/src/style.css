@@ -332,7 +332,7 @@ html { scroll-padding-top: 7rem; scroll-padding-bottom: 5rem; }
 .ttw-menu-item { display: flex; align-items: center; gap: .25rem; width: 100%; padding: .4rem .625rem; border-radius: var(--radius-field);
   font-size: .875rem; text-align: left; white-space: nowrap; }
 .ttw-menu-item:hover { background: color-mix(in oklab, var(--color-base-content) 8%, transparent); }
-.ttw-wordmark { width: 6rem; text-align: center; }  /* mesma largura do menu lateral: o nome fica centrado sobre os ícones */
+.ttw-wordmark { min-width: 5rem; text-align: center; }  /* mesma largura do menu lateral: o nome fica centrado sobre os ícones */
 
 /* Painel de etiquetas à direita (Explorar, já visível; Leitor em telas estreitas), aberto por uma alça na
    borda direita, por cima do conteúdo. A largura vem de `--ttw-tag-width` (o Explorar a torna arrastável). */
