@@ -4,6 +4,18 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Imagens nos verbetes de Aprender:** o Markdown dos tópicos aceita `![descrição](/api/help/assets/nome.png)`; o tópico da KFA ganhou as figuras do material (visão geral, desvio-padrão e leitura do *d*). Nova rota `GET /api/help/assets/{name}` (função `help.asset_path` no pacote) serve os arquivos de `data/help/assets/`.
+
+### Corrigido
+
+- **Aprender visível no macOS 12 (Safari 17.6):** o separador de células das tabelas usava lookbehind em regex, que o WebKit antigo recusa e deixava a tela em branco; reescrito sem lookbehind. Contornos de *hover* ganharam um véu de fallback para quando `color-mix()` não existe (`--ttw-hover`, `--ttw-hover-strong`).
+
+### Alterado
+
+- Textos de Aprender da KFA (pt/en) revisados com o material atualizado: imagens, exemplo do "por que dividir pela dispersão", passo a passo do desvio-padrão e avisos ampliados; mantido o nome **wkfa** (no português, **atributo**).
+
 ## [0.8.0] — 2026-10-05
 
 ### Adicionado
