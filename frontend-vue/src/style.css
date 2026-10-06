@@ -242,6 +242,18 @@ code, kbd, pre, .font-mono { font-family: var(--font-mono); }
 .btn-outline.btn-primary, .btn-ghost.btn-primary { color: var(--ttw-orange-text); border-color: var(--ttw-orange-text); }
 .btn-outline.btn-primary:hover { background: var(--ttw-orange-text); color: var(--color-base-100); }
 .btn:not(.btn-primary):not(.btn-ghost):not(.btn-error):not(.btn-warning):not(.btn-success):not(.btn-info) { border-color: var(--ttw-border-strong); }
+/* Botões inativos: o DaisyUI cai em `background-color: var(--color-base-content)` (sólido, escuro)
+   quando o `color-mix()` do véu translúcido não existe — era o que deixava os botões preto no WebKit
+   do macOS 12. Um véu neutro do tema (--ttw-hover-strong) mantém o estado inativo legível nos dois
+   casos e em todos os temas. */
+.btn:is(:disabled,[disabled],[aria-disabled="true"]):not(.btn-link,.btn-ghost):not(.btn-outline),
+html[data-btn] .btn:is(:disabled,[disabled],[aria-disabled="true"]):not(.btn-link,.btn-ghost):not(.btn-outline) {
+  background-color: var(--ttw-hover-strong); background-image: none; border-color: var(--color-base-300);
+  box-shadow: none; color: var(--ttw-text-muted); }
+.btn:is(:disabled,[disabled],[aria-disabled="true"]).btn-outline,
+html[data-btn] .btn:is(:disabled,[disabled],[aria-disabled="true"]).btn-outline {
+  background-color: transparent; color: var(--ttw-text-muted); border-color: var(--color-base-300); box-shadow: none; }
+.btn:is(:disabled,[disabled],[aria-disabled="true"]) { cursor: not-allowed; }
 /* Campos: borda forte (3:1) e realce ao focar */
 .input:focus, .input:focus-within, .select:focus, .textarea:focus { border-color: var(--ttw-orange-text); }
 .checkbox:checked, .toggle:checked { --input-color: var(--color-primary); }

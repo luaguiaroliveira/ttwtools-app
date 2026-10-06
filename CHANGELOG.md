@@ -4,6 +4,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Corrigido
+
+- **Botões inativos no macOS 12 (Safari 17.6):** o DaisyUI pintava o fundo do botão desabilitado com `base-content` sólido quando não há `color-mix()`, deixando-o preto (Histórico, Buscar no texto e Copiar no Leitor). O CSS passou a usar um véu neutro do tema (`--ttw-hover-strong`), com borda e conteúdo apagados, em todos os estilos de botão.
+
 ## [0.8.2] — 2026-10-06
 
 ### Adicionado
