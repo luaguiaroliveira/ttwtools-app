@@ -50,3 +50,8 @@ describe('eixos independentes', () => {
     for (const d of THEME_DEFS) { expect(fontOf(d).font, d.id).toBe(d.font); expect(shapeOf(d).id).toBeTruthy() }
   })
 })
+
+it('padrão do aplicativo', async () => {
+  const { DEFAULT_LOOK } = await import('../themes.js')
+  expect(DEFAULT_LOOK).toEqual({ colors: 'light', font: 'manrope', shape: 'nitido', btn: 'brutal', icons: 'fina' })
+})

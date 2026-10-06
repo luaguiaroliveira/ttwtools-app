@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router'
 import { NAV } from './router.js'
 import { useSession } from './stores/session.js'
 import { LANG_NAMES, setLang } from './i18n.js'
-import { AUTO_LOOK, applyDensity, applyLook, initialDensity, initialLook, isDarkTheme } from './theme.js'
+import { DEFAULT_LOOK, applyDensity, applyLook, initialDensity, initialLook, isDarkTheme } from './theme.js'
 import NavIcon from './components/NavIcon.vue'
 import TextType from './components/vb/TextType.vue'
 import MenuButton from './components/MenuButton.vue'
@@ -40,7 +40,7 @@ const prefersDark = globalThis.matchMedia?.('(prefers-color-scheme: dark)').matc
 const isDark = computed(() => isDarkTheme(theme.value, prefersDark))
 const setLook = (patch) => { look.value = { ...look.value, ...patch }; applyLook(look.value) }
 const changeTheme = (value) => setLook({ colors: value })
-const resetLook = () => { look.value = { ...AUTO_LOOK, colors: look.value.colors }; applyLook(look.value) }
+const resetLook = () => { look.value = { ...DEFAULT_LOOK }; applyLook(look.value) }
 const compact = ref(initialDensity() === 'compact')
 const changeDensity = (on) => { compact.value = on; applyDensity(on ? 'compact' : 'comfortable') }
 const THEME_OPTIONS = ['system', 'light', 'dark', 'contrast']

@@ -123,6 +123,8 @@ export const SHAPES = [
 // Ícones (CSS em style.css, por [data-icons])
 export const ICON_STYLES = ['duotone', 'line', 'fina', 'marcada', 'tinta', 'mono', 'colorido', 'anguloso']
 export const AXES = ['colors', 'font', 'shape', 'btn', 'icons']
+// Padrão do aplicativo (primeira abertura e "Restaurar padrões")
+export const DEFAULT_LOOK = { colors: 'light', font: 'manrope', shape: 'nitido', btn: 'brutal', icons: 'fina' }
 export const AUTO_LOOK = { colors: 'system', font: 'auto', shape: 'auto', btn: 'auto', icons: 'auto' }
 
 export function fontOf(d) {

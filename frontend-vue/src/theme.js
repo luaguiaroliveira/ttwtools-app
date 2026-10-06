@@ -1,9 +1,9 @@
 // Temas. Os 4 básicos (`system`, `light`, `dark`, `contrast`) vêm do CSS (style.css);
 // os demais vêm do registro abaixo (themes.js) e são aplicados como variáveis CSS no <html>.
 // As fontes são empacotadas (fonts.css): o visual é o mesmo em qualquer sistema.
-import { AUTO_LOOK, AXES, FONT_CHOICES, ICON_STYLES, SHAPES, BUTTON_STYLES, THEME_DEFS, paletteVars, resolveLook, shapeFontVars } from './themes.js'
+import { AUTO_LOOK, AXES, DEFAULT_LOOK, FONT_CHOICES, ICON_STYLES, SHAPES, BUTTON_STYLES, THEME_DEFS, paletteVars, resolveLook, shapeFontVars } from './themes.js'
 
-export { THEME_DEFS, AUTO_LOOK, AXES }
+export { THEME_DEFS, AUTO_LOOK, AXES, DEFAULT_LOOK }
 export const BASIC_THEMES = ['system', 'light', 'dark', 'contrast']
 export const THEMES = [...BASIC_THEMES, ...THEME_DEFS.map((d) => d.id)]
 const STORAGE = 'ttw.theme'          // cores (como antes: guarda só o id)
@@ -25,7 +25,7 @@ export function isDarkTheme(id, prefersDark = false) {
 }
 
 export function initialLook() {
-  const look = { ...AUTO_LOOK }
+  const look = { ...DEFAULT_LOOK }
   try {
     const saved = JSON.parse(localStorage.getItem(LOOK_STORAGE) || '{}')
     for (const k of AXES.slice(1)) if (VALID[k].includes(saved[k])) look[k] = saved[k]
