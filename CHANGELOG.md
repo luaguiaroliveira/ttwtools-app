@@ -4,8 +4,14 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Aparência em cinco escolhas independentes** (menu Tema → "Aparência…"): cores (4 básicos + 20 temas), fontes (11, empacotadas: visual igual em qualquer sistema), cantos, botões (8 estilos) e ícones (8 estilos). Padrão: Claro, Manrope, cantos retos, botão marcado, ícone fino. Contraste de cada tema verificado por teste.
+- **Verbetes de Aprender com destaques** de marca-texto e caneta (animados, desenhados à mão), com o **olho** no alto para mostrar ou ocultar (começa oculto). Todos os verbetes revisados em pt e en, com fórmulas em KaTeX e as mesmas cores nos dois idiomas. Guia de edição em `libs/ttwtools/ttwtools/data/help/COMO_EDITAR.md`; `python -m ttwtools help --check` confere os textos.
+
 ### Alterado
 
+- Controles deslizantes na cor dominante do tema.
 - **`kfa2` passou a se chamar `wkfa`** (*weighted key feature analysis*, a KFA ponderada) no pacote (`metric="wkfa"`, `ttwtools.wkfa`, `--metric wkfa`), na API, na interface e nos textos de Aprender. O nome antigo `kfa2` ainda é aceito na entrada (API, linha de comando, preferência guardada no navegador), e projetos salvos são migrados ao abrir (a coluna `metric` passa de `kfa2` para `wkfa`).
 
 ## [0.7.1] — 2026-10-05
