@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.8.2] — 2026-10-06
+
 ### Adicionado
 
 - **Imagens nos verbetes de Aprender:** o Markdown dos tópicos aceita `![descrição](/api/help/assets/nome.png)`; o tópico da KFA ganhou as figuras do material (visão geral, desvio-padrão e leitura do *d*). Nova rota `GET /api/help/assets/{name}` (função `help.asset_path` no pacote) serve os arquivos de `data/help/assets/`.
@@ -15,6 +17,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 ### Alterado
 
 - Textos de Aprender da KFA (pt/en) revisados com o material atualizado: imagens, exemplo do "por que dividir pela dispersão", passo a passo do desvio-padrão e avisos ampliados; mantido o nome **wkfa** (no português, **atributo**).
+
+- Pacote `ttwtools` 0.3.1 (commit `a6f1de7`, tag `v0.3.1`).
 
 ## [0.8.0] — 2026-10-05
 
@@ -297,7 +301,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.0...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.2...HEAD
+[0.8.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.0...v0.8.2
 [0.8.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...v0.7.1
 [0.7.0-alpha.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...v0.7.0-alpha.2
