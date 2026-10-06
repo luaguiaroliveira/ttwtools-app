@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-10-05
+
 ### Adicionado
 
 - **Aparência em cinco escolhas independentes** (menu Tema → "Aparência…"): cores (4 básicos + 20 temas), fontes (11, empacotadas: visual igual em qualquer sistema), cantos, botões (8 estilos) e ícones (8 estilos). Padrão: Claro, Manrope, cantos retos, botão marcado, ícone fino. Contraste de cada tema verificado por teste.
@@ -13,6 +15,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 - Controles deslizantes na cor dominante do tema.
 - **`kfa2` passou a se chamar `wkfa`** (*weighted key feature analysis*, a KFA ponderada) no pacote (`metric="wkfa"`, `ttwtools.wkfa`, `--metric wkfa`), na API, na interface e nos textos de Aprender. O nome antigo `kfa2` ainda é aceito na entrada (API, linha de comando, preferência guardada no navegador), e projetos salvos são migrados ao abrir (a coluna `metric` passa de `kfa2` para `wkfa`).
+
+- Pacote `ttwtools` 0.3.0 (commit `babcf8d`, tag `v0.3.0`).
 
 ## [0.7.1] — 2026-10-05
 
@@ -281,7 +285,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.1...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.2...v0.7.1
 [0.7.0-alpha.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.7.0-alpha.1...v0.7.0-alpha.2
 [0.7.0-alpha.1]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.6.0...v0.7.0-alpha.1
