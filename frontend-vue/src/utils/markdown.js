@@ -1,12 +1,14 @@
 // Markdown mínimo dos tópicos de ajuda: ## títulos, parágrafos, **negrito**, *itálico*,
 // `código`, listas "- " e "1. ", citações "> ", tabelas "| a | b |", linha "---", blocos recolhíveis
-// (":::details Título" ... ":::"), fórmulas KaTeX ($tex$ no texto; $$tex$$ sozinho na linha)
-// destaques `[texto]{circulo azul}` e `==texto==` (utils/highlights.js) e blocos indentados com 4 espaços. O HTML de entrada é escapado.
+// (":::details Título" ... ":::"), fórmulas KaTeX ($tex$ no texto; $$tex$$ sozinho na linha),
+// imagens "![alt](url)", destaques `[texto]{circulo azul}` e `==texto==` (utils/highlights.js) e
+// blocos indentados com 4 espaços. O HTML de entrada é escapado.
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import { parseSpec } from './highlights.js'
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const attr = (s) => esc(s).replace(/"/g, '&quot;')
 const tex = (src, display) => katex.renderToString(src, { displayMode: display, throwOnError: false, strict: 'ignore' })
 // Trechos `código` e fórmulas $tex$ saem antes do escape e do negrito/itálico e voltam no fim.
 // Destaque: o <span> leva tipo e cor; quem desenha (rough-notation) é a tela. Especificação inválida fica como texto.
@@ -16,6 +18,7 @@ const inline = (s) => {
   const hold = (html) => `\u0000${keep.push(html) - 1}\u0000`
   const out = s
     .replace(/`(.+?)`/g, (_, c) => hold(`<code>${esc(c)}</code>`))
+    .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, (_, alt, src) => hold(`<img src="${attr(src)}" alt="${attr(alt)}" loading="lazy">`))
     .replace(/\$([^\s$](?:[^$\n]*?[^\s$])?)\$(?!\d)/g, (_, m) => hold(tex(m, false)))
   return esc(out)
     .replace(/\[([^\[\]]+?)\]\{([^{}]*)\}/g, (all, text, spec) => span(all, text, parseSpec(spec)))

@@ -4,6 +4,8 @@ npm-debug.log
 yarn-error.log
 .npm
 
+textos_para_secao_aprender/
+
 # Python
 __pycache__/
 *.py[cod]

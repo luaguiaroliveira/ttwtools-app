@@ -93,6 +93,9 @@ def test_help_and_i18n(client):
     assert client.get("/api/help/nada").status_code == 404
     assert client.get("/api/help/tours/primeiro_corpus?lang=pt").json()["steps"]
     assert client.get("/api/help?q=desvio&lang=pt").json()["topics"]
+    img = client.get("/api/help/assets/kfa_big_picture.png")
+    assert img.status_code == 200 and img.headers["content-type"] == "image/png"
+    assert client.get("/api/help/assets/nada.png").status_code == 404
     msgs = client.get("/api/i18n/en").json()
     assert msgs["tagger.affects.yes"] == "changes the result"
     assert client.get("/api/i18n/fr").status_code == 422

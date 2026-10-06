@@ -25,4 +25,9 @@ describe('markdown', () => {
     expect(html).toContain('<td>z</td>')
     expect(html).toContain('<details><summary><strong>Título</strong></summary>')
   })
+  it('imagem com src/alt e escape do restante', () => {
+    const html = markdown('![Uma figura](/api/help/assets/kfa.png) e <b>x</b>')
+    expect(html).toContain('<img src="/api/help/assets/kfa.png" alt="Uma figura" loading="lazy">')
+    expect(html).toContain('&lt;b&gt;x&lt;/b&gt;')
+  })
 })

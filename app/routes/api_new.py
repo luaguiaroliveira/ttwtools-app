@@ -16,6 +16,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, field_validator
 
 from app import jobs
@@ -805,6 +806,15 @@ def help_tour(tour_id: str, lang: str | None = None):
     if tour_id not in h.tours():
         raise HTTPException(status_code=404, detail="Tour não encontrado.")
     return h.tour(tour_id, lang)
+
+
+@router.get("/help/assets/{name}", tags=["help"])
+def help_asset(name: str):
+    from ttwtools import help as h
+    path = h.asset_path(name)
+    if path is None:
+        raise HTTPException(status_code=404, detail="Imagem não encontrada.")
+    return FileResponse(path)
 
 
 @router.get("/help/{topic}", tags=["help"])
