@@ -56,11 +56,15 @@
 
 /* Tokens próprios por tema. `primary` é preenchimento: texto/link laranja usa orange-text;
    bordas de campos usam border-strong (≥3:1); `text-muted` é o texto secundário. */
-:root { --ttw-btn-shadow: var(--color-base-content); --ttw-orange-text: #B8460A; --ttw-border-strong: #8A8580; --ttw-text-muted: #5E5B57; }
-:root[data-theme="dark"] { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C; }
-:root[data-theme="contrast"] { --ttw-orange-text: #FFA35C; --ttw-border-strong: #9A9A9A; --ttw-text-muted: #D6D6D6; }
+:root { --ttw-btn-shadow: var(--color-base-content); --ttw-orange-text: #B8460A; --ttw-border-strong: #8A8580; --ttw-text-muted: #5E5B57;
+  --ttw-hover: rgba(0, 0, 0, .06); --ttw-hover-strong: rgba(0, 0, 0, .1); }
+:root[data-theme="dark"] { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C;
+  --ttw-hover: rgba(255, 255, 255, .08); --ttw-hover-strong: rgba(255, 255, 255, .13); }
+:root[data-theme="contrast"] { --ttw-orange-text: #FFA35C; --ttw-border-strong: #9A9A9A; --ttw-text-muted: #D6D6D6;
+  --ttw-hover: rgba(255, 255, 255, .1); --ttw-hover-strong: rgba(255, 255, 255, .16); }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C; }
+  :root:not([data-theme]) { --ttw-orange-text: #FF9A55; --ttw-border-strong: #7A756E; --ttw-text-muted: #A8A39C;
+    --ttw-hover: rgba(255, 255, 255, .08); --ttw-hover-strong: rgba(255, 255, 255, .13); }
 }
 @theme inline {
   --color-chart-1: var(--chart-1); --color-chart-2: var(--chart-2); --color-chart-3: var(--chart-3); --color-chart-4: var(--chart-4);
@@ -429,3 +433,16 @@ h1, h2, h3, .page-title, .section-title, .ttw-wordmark { font-family: var(--ttw-
 @keyframes ttw-hl-draw { to { stroke-dashoffset: 0; } }
 .rough-annotation path { mix-blend-mode: multiply; }
 :root[data-scheme="dark"] .rough-annotation path, :root[data-theme="dark"] .rough-annotation path, :root[data-theme="contrast"] .rough-annotation path { mix-blend-mode: normal; }
+
+/* Este WebKit (macOS 12, Safari 17.6) NÃO tem color-mix() (CSS.supports = false): o build cai no
+   fallback SÓLIDO das regras (hover preto com `base-content` cheio, célula fixa laranja). Onde o
+   efeito pretendido era um véu translúcido, devolvemos `--ttw-hover` (claro/escuro por tema).
+   No Chrome, que tem color-mix(), este bloco é ignorado. */
+@supports not (color: color-mix(in srgb, red, red)) {
+  .pbtn:hover:not(:disabled), .rail-item:hover, .ttw-menu-item:hover, .disp-row:hover { background-color: var(--ttw-hover); }
+  .btn-ghost:hover:not(:disabled) { background-color: var(--ttw-hover); }
+  .panel { border-color: var(--color-base-300); }
+  .table :where(tbody tr:hover) { background-color: var(--ttw-hover); }
+  .table :where(tbody tr:nth-child(even)) { background-color: transparent; }
+  .ttw-scroll .table :where(tbody tr:hover) :where(th:first-child, td:first-child) { background-color: var(--color-base-300); }
+}

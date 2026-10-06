@@ -16,4 +16,13 @@ describe('markdown', () => {
     expect(html).toContain('class="math-block"')
     expect(html).toContain('katex-display')
   })
+  // O split das células não pode usar lookbehind `(?<!`)`: o WebKit do macOS 12 (Safari 17.6)
+  // recusa a expressão e a tela do tópico fica em branco (por isso a KFA sumia no Tauri).
+  it('tabela com pipe escapado e bloco recolhível', () => {
+    const html = markdown('| A | B |\n| --- | --- |\n| x \\| y | z |\n\n:::details Título\ncorpo\n:::')
+    expect(html).toContain('<table>')
+    expect(html).toContain('<td>x | y</td>')
+    expect(html).toContain('<td>z</td>')
+    expect(html).toContain('<details><summary><strong>Título</strong></summary>')
+  })
 })

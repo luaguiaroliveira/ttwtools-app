@@ -37,7 +37,9 @@ export function markdown(src) {
   const flushPara = () => { if (para.length) { out.push(`<p>${inline(para.join(' '))}</p>`); para = [] } }
   const flushList = () => { if (list) { out.push(ordered ? '</ol>' : '</ul>'); list = false } }
   const flushQuote = () => { if (quote.length) { out.push(`<blockquote>${markdown(quote.join('\n'))}</blockquote>`); quote = [] } }
-  const cells = (l) => l.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, '|'))
+  // Sem lookbehind (o WebKit do macOS 12 não aceita `(?<!...)`): o pipe escapado vira um
+  // marcador antes de dividir e volta a `|` em cada célula.
+  const cells = (l) => l.trim().replace(/^\||\|$/g, '').replace(/\\\|/g, '\u0000').split('|').map((c) => c.trim().replace(/\u0000/g, '|'))
   const flushTable = () => {
     if (!table.length) return
     const [head, , ...rows] = table

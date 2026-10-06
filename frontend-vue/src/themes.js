@@ -149,6 +149,9 @@ export function paletteVars(d) {
     '--border': d.bw, '--depth': '0', '--noise': '0',
     '--ttw-orange-text': d.ink, '--ttw-border-strong': d.bd, '--ttw-text-muted': d.mu,
     '--ttw-btn-shadow': d.sh ?? d.tx,
+    // Véu de hover/realce para quando color-mix() não existe (WebKit do macOS 12): ver style.css.
+    '--ttw-hover': d.dark ? 'rgba(255, 255, 255, .08)' : 'rgba(0, 0, 0, .06)',
+    '--ttw-hover-strong': d.dark ? 'rgba(255, 255, 255, .13)' : 'rgba(0, 0, 0, .1)',
     '--chart-1': chart, '--chart-pos': rgb(chart),
   }
   for (const [k, [fill, content]] of Object.entries(st)) {
