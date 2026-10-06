@@ -14,7 +14,7 @@ export const useCompare = defineStore('compare', {
       corpus2: '',              // nome do corpus 2, ou '__groups__' = dois grupos do corpus ativo
       groupKey: '', group1: '', group2: '',
       groups: [],               // valores do metadado escolhido (para os seletores de grupo)
-      metric: saved.metric === 'kfa2' ? 'kfa2' : 'kfa',
+      metric: saved.metric === 'wkfa' || saved.metric === 'kfa2' ? 'wkfa' : 'kfa',   // 'kfa2' = nome antigo de 'wkfa'
       colors: Array.isArray(saved.colors) && saved.colors.length === 2 ? saved.colors : [...DEFAULT_COLORS],
     }
   },

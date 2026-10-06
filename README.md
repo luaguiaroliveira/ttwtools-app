@@ -55,7 +55,7 @@ On any screen: the **?** next to a metric explains what it measures; **Explain t
 - **Explore:** Search (totals per document or group), KWIC (sorting, context, export), Frequency (form, lemma, word+class, class, n-grams; hide function words), Collocates (LL, MI, T-score), Dispersion (Gries's DP, Range, per-text plot) and Reader (text with tags, printing).
 - **Compare:**
   - **Keywords:** LL, log ratio, %DIFF, log-odds; Bonferroni or FDR correction; dispersion filter; warnings when corpora are not comparable (different tagger, small size).
-  - **KFA:** Cohen's d per feature (Biber & Egbert's `kfa` and the size-weighted `kfa2`), with a chart gallery (diverging bars, means, radar, heatmap, PCA, t-SNE, MDS, optional UMAP).
+  - **KFA:** Cohen's d per feature (Biber & Egbert's `kfa` and the size-weighted `wkfa`), with a chart gallery (diverging bars, means, radar, heatmap, PCA, t-SNE, MDS, optional UMAP).
   - **Frequency bands:** how much of the text is among a reference's 1,000, 2,000… most frequent words.
   - **Lab** *(experimental)*: N groups — one against all, pairwise, Kruskal-Wallis, profile space, dendrogram and "my text against references".
 - **Learn:** help topics, tours and the interactive Cohen's d figure.

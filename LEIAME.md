@@ -55,7 +55,7 @@ Em qualquer tela: o **?** ao lado de uma métrica explica o que ela mede; **Expl
 - **Explorar:** Busca (total por documento ou grupo), KWIC (ordenação, contexto, exportar), Frequência (forma, lema, palavra+classe, classe, n-gramas; ocultar palavras funcionais), Colocados (LL, MI, T-score), Dispersão (DP de Gries, Range, gráfico por texto) e Leitor (texto com as etiquetas, impressão).
 - **Comparar:**
   - **Palavras-chave:** LL, log ratio, %DIFF, log-odds; correção de Bonferroni ou FDR; filtro de dispersão; avisos quando os corpora não são comparáveis (tagger diferente, tamanho pequeno).
-  - **KFA:** d de Cohen por atributo (métricas `kfa` de Biber & Egbert e `kfa2` ponderada), com galeria de gráficos (barras divergentes, médias, radar, mapa de calor, PCA, t-SNE, MDS, UMAP opcional).
+  - **KFA:** d de Cohen por atributo (métricas `kfa` de Biber & Egbert e `wkfa` ponderada), com galeria de gráficos (barras divergentes, médias, radar, mapa de calor, PCA, t-SNE, MDS, UMAP opcional).
   - **Faixas de frequência:** quanto do texto está entre as 1.000, 2.000… palavras mais frequentes de uma referência.
   - **Laboratório** *(experimental)*: N grupos — um contra todos, par a par, Kruskal-Wallis, espaço de perfis, dendrograma e "meu texto contra referências".
 - **Aprender:** tópicos de ajuda, tours e a figura interativa do d de Cohen.

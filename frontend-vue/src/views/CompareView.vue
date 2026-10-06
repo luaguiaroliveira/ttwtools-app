@@ -55,7 +55,7 @@ const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palav
         </template>
         <label v-if="usesMetric" class="ttw-field"><span class="ttw-label">{{ t('kfa.metric') }}</span>
           <select :value="cmp.metric" class="select select-sm" data-testid="kfa-metric" @change="cmp.setMetric($event.target.value)">
-            <option value="kfa" :title="t('kfa.metric_kfa_hint')">{{ t('kfa.metric_kfa') }}</option><option value="kfa2" :title="t('kfa.metric_kfa2_hint')">{{ t('kfa.metric_kfa2') }}</option></select></label>
+            <option value="kfa" :title="t('kfa.metric_kfa_hint')">{{ t('kfa.metric_kfa') }}</option><option value="wkfa" :title="t('kfa.metric_wkfa_hint')">{{ t('kfa.metric_wkfa') }}</option></select></label>
         <button type="button" class="btn btn-xs btn-ghost" @click="cmp.resetColors()">{{ t('compare.reset_colors') }}</button>
         <p class="basis-full text-xs text-text-muted">{{ t('compare.setup_hint') }}</p>
       </section>

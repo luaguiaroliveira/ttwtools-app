@@ -4,6 +4,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Alterado
+
+- **`kfa2` passou a se chamar `wkfa`** (*weighted key feature analysis*, a KFA ponderada) no pacote (`metric="wkfa"`, `ttwtools.wkfa`, `--metric wkfa`), na API, na interface e nos textos de Aprender. O nome antigo `kfa2` ainda é aceito na entrada (API, linha de comando, preferência guardada no navegador), e projetos salvos são migrados ao abrir (a coluna `metric` passa de `kfa2` para `wkfa`).
+
 ## [0.7.1] — 2026-10-05
 
 ### Alterado

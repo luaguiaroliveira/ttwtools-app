@@ -16,7 +16,7 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from fastapi import APIRouter, HTTPException, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from app import jobs
 from app import state as app_state
@@ -629,11 +629,16 @@ class KfaRequest(BaseModel):
     corpus2: str
     layer: str
     feature: Literal["tags", "upos", "xpos"] | None = None
-    metric: Literal["kfa", "kfa2"] = "kfa"
+    metric: Literal["kfa", "wkfa"] = "kfa"
     min_effect: float = 0.0
     join: Literal["union", "intersection"] = "union"
     where1: dict[str, list[str]] | None = None
     where2: dict[str, list[str]] | None = None
+
+    @field_validator("metric", mode="before")
+    @classmethod
+    def _legacy_metric(cls, v):      # "kfa2" é o nome antigo de "wkfa"
+        return "wkfa" if v == "kfa2" else v
 
 
 @router.post("/compare/kfa", tags=["compare"])
@@ -714,10 +719,15 @@ class LabRequest(BaseModel):
     layer: str
     method: Literal["one_vs_rest", "pairwise", "anova", "profile", "dendrogram", "nearest"] = "one_vs_rest"
     feature: Literal["tags", "upos", "xpos"] | None = None
-    metric: Literal["kfa", "kfa2"] = "kfa"
+    metric: Literal["kfa", "wkfa"] = "kfa"
     top: int = 10
     correction: Literal["fdr", "bonferroni", "none"] = "fdr"
     lang: str | None = None
+
+    @field_validator("metric", mode="before")
+    @classmethod
+    def _legacy_metric(cls, v):      # "kfa2" é o nome antigo de "wkfa"
+        return "wkfa" if v == "kfa2" else v
 
 
 @router.post("/lab/compare", tags=["lab"])

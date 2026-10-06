@@ -31,12 +31,19 @@ def _n_kfa(path):
 def test_kfa_async_matches_sync_and_reports_progress(client, tmp_path):
     path = _open(client, tmp_path)
     sync = client.post("/api/compare/kfa", json=BODY).json()
-    started = client.post("/api/compare/kfa?async=1", json={**BODY, "metric": "kfa2"}).json()     # outro pedido: não é cache
+    started = client.post("/api/compare/kfa?async=1", json={**BODY, "metric": "wkfa"}).json()     # outro pedido: não é cache
     job = wait_job(client, started["job_id"])
     assert job["status"] == "done" and job["kind"] == "kfa" and job["total"] == 10 and job["done"] == 10
-    assert job["stage"] == "kfa_calc" and job["result"]["metric"] == "kfa2" and job["result"]["rows"]
+    assert job["stage"] == "kfa_calc" and job["result"]["metric"] == "wkfa" and job["result"]["rows"]
     again = wait_job(client, client.post("/api/compare/kfa?async=1", json=BODY).json()["job_id"])["result"]
     assert again["rows"] == sync["rows"] and again["cached"] is True and "cached" not in sync
+
+
+def test_kfa_accepts_legacy_metric_name_kfa2(client, tmp_path):
+    _open(client, tmp_path)
+    new = client.post("/api/compare/kfa", json={**BODY, "metric": "wkfa"}).json()
+    old = client.post("/api/compare/kfa", json={**BODY, "metric": "kfa2"}).json()      # nome antigo de wkfa
+    assert old["metric"] == "wkfa" and old["rows"] == new["rows"]
 
 
 def test_kfa_repeated_request_reuses_saved_result_until_layers_change(client, tmp_path):

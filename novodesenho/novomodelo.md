@@ -6,7 +6,7 @@ Rascunho de 2026-09-26. Serve para ser complementado.
 
 Três camadas:
 
-1. **Pacote Python `ttwtools`:** tagging (BiberPlus com spaCy, MFTE com Stanza, spaCy e Stanza puros), contagens brutas e normalizadas por 1000 palavras, estatística descritiva e KFA (Cohen's d, mais a variante `kfa2`).
+1. **Pacote Python `ttwtools`:** tagging (BiberPlus com spaCy, MFTE com Stanza, spaCy e Stanza puros), contagens brutas e normalizadas por 1000 palavras, estatística descritiva e KFA (Cohen's d, mais a variante `wkfa`).
 2. **App `TTWtools`:** backend FastAPI, GUI em Vite, D3 e Tailwind, empacotado com pywebview e PyInstaller. Serve como desktop ou como web.
 3. **Arquivo de projeto `.ttwa`:** SQLite com textos, camadas de anotação e análises.
 
@@ -430,7 +430,7 @@ Toda comparação parte da mesma matriz: **textos × features** (contagem normal
 ### 14.3 Cuidados metodológicos (a explicar na própria interface)
 
 - comparações múltiplas: com muitas features e muitos pares, é preciso corrigir os p-valores (Bonferroni ou FDR) ou apresentar só tamanhos de efeito;
-- grupos de tamanhos muito diferentes: a variante `kfa2` já trata disso para dois grupos, e o mesmo cuidado vale para N;
+- grupos de tamanhos muito diferentes: a variante `wkfa` já trata disso para dois grupos, e o mesmo cuidado vale para N;
 - poucos documentos por grupo deixam qualquer estimativa instável, e a tela deve avisar;
 - descrever o que é resultado exploratório e o que é evidência.
 
