@@ -421,3 +421,6 @@ h1, h2, h3, .page-title, .section-title, .ttw-wordmark { font-family: var(--ttw-
 [data-icons="mono"] { --ic-acc: currentColor; --ic-duoacc: .13; }
 [data-icons="colorido"] { --ic-acc: var(--chart-3); --ic-duo: .16; --ic-duoacc: .3; }
 [data-icons="anguloso"] { --ic-cap: butt; --ic-join: miter; --ic-sw: 1.7; }
+
+/* Controles deslizantes: cor dominante do tema (o DaisyUI usa a cor neutra por padrão) */
+.range { color: var(--color-primary); }
