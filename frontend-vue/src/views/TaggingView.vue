@@ -53,7 +53,7 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
 <template>
   <div class="flex flex-col gap-6 max-w-5xl">
     <div>
-      <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('pipeline.title'), class: '' }]" /></h1>
+      <h1 class="sr-only"><TextType :parts="[{ text: t('pipeline.title'), class: '' }]" /></h1>
       <p class="opacity-80">{{ t('pipeline.intro') }}</p>
     </div>
     <p v-if="!hasProject || !corpora.length" class="text-text-muted">{{ t('pipeline.need_corpus') }}

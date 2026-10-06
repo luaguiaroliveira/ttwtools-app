@@ -83,10 +83,11 @@ function seeInCorpus(item) {
 </script>
 <template>
   <div class="page max-w-6xl">
-    <h1 class="page-title flex items-center gap-2"><TextType :parts="[{ text: t('writing.title'), class: '' }]" />
+    <h1 class="sr-only">{{ t('writing.title') }}</h1>
+    <div class="flex items-center gap-2">
       <span class="badge badge-warning badge-sm">{{ t('writing.experimental') }}</span>
       <HelpTip topic="keyness" />
-    </h1>
+    </div>
     <p class="opacity-80 prose-read">{{ t('writing.subtitle') }}</p>
 
     <div v-if="!hasProject" class="alert">

@@ -23,7 +23,7 @@ const tool = computed(() => (TOOLS[route.params.tool] ? route.params.tool : 'kwi
 
 <template>
   <div class="flex flex-col gap-3 h-full min-h-0 max-w-[96rem] print:max-w-none">
-    <h1 class="text-xl font-bold shrink-0 print:hidden"><TextType :parts="[{ text: t('explore.title'), class: '' }]" /></h1>
+    <h1 class="sr-only"><TextType :parts="[{ text: t('explore.title'), class: '' }]" /></h1>
     <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
       <span>{{ t('explore.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="explore-corpus" :value="corpus || ''"

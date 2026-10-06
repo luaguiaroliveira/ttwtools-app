@@ -351,7 +351,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
 
 <template>
   <section class="flex flex-col gap-3 h-full min-h-0">
-    <h1 class="text-xl font-bold shrink-0 print:hidden">{{ t('nav.reader') }}</h1>
+    <h1 class="sr-only">{{ t('nav.reader') }}</h1>
     <div v-if="!rc" class="flex flex-wrap items-center gap-2 opacity-90 print:hidden">
       <span>{{ t('explore.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="reader-corpus" :value="activeCorpus || ''"

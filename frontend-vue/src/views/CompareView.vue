@@ -27,7 +27,7 @@ const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palav
 </script>
 <template>
   <div class="flex flex-col gap-3 max-w-[96rem]" :style="cmp.cssVars">
-    <h1 class="text-xl font-bold"><TextType :parts="[{ text: t('compare.title'), class: '' }]" /></h1>
+    <h1 class="sr-only"><TextType :parts="[{ text: t('compare.title'), class: '' }]" /></h1>
     <div v-if="!corpus" class="flex flex-wrap items-center gap-2 opacity-90">
       <span>{{ t('compare.need_corpus') }}</span>
       <select v-if="corpora.length" class="select select-sm" data-testid="compare-corpus" :value="corpus || ''"

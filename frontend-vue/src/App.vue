@@ -48,8 +48,8 @@ const changeLang = (value) => setLang(value)
   <header class="ttw-context navbar border-b border-base-300 gap-2 px-3 min-h-12 sticky top-0 z-30 bg-base-200">
         <button type="button" class="ttw-wordmark shrink-0 text-lg tracking-tight px-1" data-testid="about-open"
                 :aria-label="`${t('app.title')} — ${t('about.authors')}`" :title="t('about.authors')" @click="about = true"><TextType :parts="[{ text: 'TTW', class: 'text-orange-text font-black' }, { text: 'tools', class: 'text-base-content font-normal' }]" /></button>
-        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
-          <NavIcon :name="section.icon" :size="20" />{{ t(section.label) }}</span>
+        <span v-if="section" class="hidden sm:inline-flex items-center gap-2 text-lg font-semibold pl-3 ml-1 border-l border-base-300" data-testid="header-section">
+          <NavIcon :name="section.icon" :size="24" />{{ t(section.label) }}</span>
         <div class="flex-1" />
         <!-- camada ativa e corpus ativo, como chips com ícone; o seletor fica dentro do chip -->
         <label class="ttw-chip hidden sm:inline-flex" :title="t('header.layer_hint')">

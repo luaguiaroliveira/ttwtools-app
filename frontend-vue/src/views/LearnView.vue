@@ -25,7 +25,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 </script>
 <template>
   <div class="flex flex-col gap-4" :class="topic ? 'max-w-5xl' : 'max-w-4xl'">
-    <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
+    <h1 class="sr-only"><TextType :parts="[{ text: t('learn.title'), class: '' }]" /></h1>
     <article v-if="topic" class="flex flex-col gap-4" data-testid="help-topic">
       <RouterLink to="/aprender" class="link text-sm">← {{ t('learn.back') }}</RouterLink>
       <h2 class="text-xl font-bold">{{ topic.title }}</h2>

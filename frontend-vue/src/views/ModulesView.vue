@@ -12,7 +12,7 @@ const { t } = useI18n()
 <template>
   <div class="flex flex-col gap-6 max-w-5xl" data-explain="explain.modules">
     <div>
-      <h1 class="text-2xl font-bold"><TextType :parts="[{ text: t('modules.title'), class: '' }]" /></h1>
+      <h1 class="sr-only"><TextType :parts="[{ text: t('modules.title'), class: '' }]" /></h1>
       <p class="opacity-80">{{ t('modules.intro') }}</p>
     </div>
     <section class="flex flex-col gap-2" data-testid="modules-models">
