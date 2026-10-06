@@ -3,7 +3,7 @@
 // ou trocar o tema, tudo é redesenhado sem animação. O olho (on) liga/desliga; a escolha fica guardada.
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { annotate } from 'rough-notation'
-import { HL_COLORS } from '../utils/highlights.js'
+import { HEX, HL_COLORS } from '../utils/highlights.js'
 
 const STORAGE = 'ttw.highlights'
 
@@ -28,7 +28,7 @@ export function useHighlights(container) {
   const reduced = () => globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
   const color = (name, type) => {
     const css = getComputedStyle(document.documentElement)
-    const raw = css.getPropertyValue(name ? HL_COLORS[name] : '--ttw-orange-text').trim() || '#B8460A'
+    const raw = HEX.test(name) ? name : css.getPropertyValue(name ? HL_COLORS[name] : '--ttw-orange-text').trim() || '#B8460A'
     return type === 'highlight' ? hexToRgba(raw, 0.38) : raw
   }
   const clear = () => {

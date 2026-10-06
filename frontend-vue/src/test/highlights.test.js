@@ -8,6 +8,7 @@ describe('destaques dos verbetes', () => {
     expect(parseSpec('circulo')).toEqual({ type: 'circle', color: '' })
     expect(parseSpec('azul sublinhado')).toEqual({ type: 'underline', color: 'azul' })
     expect(parseSpec('Box, green')).toEqual({ type: 'box', color: 'green' })
+    expect(parseSpec('marca #E11D48')).toEqual({ type: 'highlight', color: '#e11d48' })
     expect(parseSpec('azul')).toBeNull()
     expect(parseSpec('rodopio')).toBeNull()
   })

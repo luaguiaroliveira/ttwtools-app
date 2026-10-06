@@ -75,7 +75,7 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 </template>
 <style scoped>
 /* Corpo dos tópicos: leitura confortável (entrelinha, espaçamento, texto justificado com hifenização). */
-.help-body { line-height: 1.7; font-size: 1.0625rem; hyphens: auto; }
+.help-body { position: relative; /* âncora dos destaques (SVG absolutos): sem ela não acompanham a rolagem */ line-height: 1.7; font-size: 1.0625rem; hyphens: auto; }
 .help-body :deep(> * + *) { margin-top: .85rem; }
 .help-body :deep(p), .help-body :deep(li) { text-align: justify; text-wrap: pretty; }
 .help-body :deep(strong) { font-weight: 650; }
@@ -97,7 +97,6 @@ const byArea = computed(() => topics.value.reduce((acc, x) => { (acc[x.area || '
 .help-body :deep(.math-block) { overflow-x: auto; overflow-y: hidden; text-align: center; padding: .25rem 0; }
 .help-body :deep(.katex-display) { margin: 0; }
 .help-body :deep(hr) { border: 0; border-top: 1px solid var(--color-base-300); margin: 1.75rem 0; }
-.help-body :deep(.hl) { position: relative; }
 .help-body :deep(code) { background: var(--color-base-200); border-radius: .3rem; padding: .05rem .3rem; font-size: .92em; }
 .help-body :deep(pre) { background: var(--color-base-200); padding: .75rem 1rem; border-radius: .5rem; overflow-x: auto; text-align: left; hyphens: none; line-height: 1.5; }
 .help-body :deep(pre code) { padding: 0; background: none; }

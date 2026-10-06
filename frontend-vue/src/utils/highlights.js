@@ -15,14 +15,16 @@ export const HL_COLORS = {
   laranja: '--chart-1', orange: '--chart-1', azul: '--chart-3', blue: '--chart-3', roxo: '--chart-4', purple: '--chart-4',
   verde: '--chart-5', green: '--chart-5', amarelo: '--chart-6', yellow: '--chart-6', rosa: '--chart-7', pink: '--chart-7',
 }
+// Também vale cor em hexadecimal: `{marca #e11d48}`
+export const HEX = /^#[0-9a-f]{6}$/i
 
-// "marca azul" → { type: 'highlight', color: 'azul' }; null se algum termo for desconhecido
+// "marca azul" ou "sublinhado #e11d48" → { type: 'highlight', color: 'azul' }; null se algum termo for desconhecido
 export function parseSpec(spec) {
   let type = null
   let color = ''
   for (const w of spec.toLowerCase().split(/[\s,]+/).filter(Boolean)) {
     if (HL_TYPES[w]) type = HL_TYPES[w]
-    else if (HL_COLORS[w]) color = w
+    else if (HL_COLORS[w] || HEX.test(w)) color = w
     else return null
   }
   return type ? { type, color } : null
