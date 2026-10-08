@@ -106,6 +106,7 @@ def test_import_route_graf_and_tei_formats(client, tmp_path):
 
 def test_til_ao_criar_e_abrir(client, tmp_path, monkeypatch):
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))   # Windows: expanduser usa USERPROFILE
     r = client.post("/api/project/create", json={"path": "~/proj.ttwa"})
     assert r.status_code == 200 and r.json()["path"] == str((tmp_path / "proj.ttwa").resolve())
     assert client.post("/api/project/open", json={"path": "~/proj.ttwa"}).status_code == 200
