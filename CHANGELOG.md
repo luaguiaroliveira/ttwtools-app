@@ -4,6 +4,22 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Windows:** instalador `.msi` (`build/make_msi.py`, WiX 3.14): instala por usuário, sem administrador, em `%LOCALAPPDATA%\Programs\TTWtools`, com atalho no Menu Iniciar e associação dos formatos `.ttwa`, `.ttwl`, `.ttwal`, `.ttwc`, `.ttwcl` e `.ttwt`; atualiza a versão anterior e desinstala sem restos. O pacote `.zip` já traz o `en_core_web_sm` e roda sem Python instalado.
+- **MFTE estendido como camada ativa ao abrir:** se o corpus tem uma camada `mfte` estendida (`mfte_ext`) e nenhuma camada foi escolhida, ela passa a ser a ativa; "automática" continua disponível depois.
+
+### Corrigido
+
+- **BiberPlus no Windows:** o BiberPlus 0.4.0 separava os nomes das listas de palavras com `/`, e a etiquetagem falhava com `KeyError: 'quantifiers'`; contorno em `ttwtools/_biberplus_compat.py` (só no Windows).
+- **Modelo Stanza recém-baixado** só era reconhecido depois de reiniciar o aplicativo; `download_stanza` agora ativa a pasta de modelos ao terminar.
+- **Versões dos etiquetadores no pacote:** `spacy`, `biberplus`, `mfte` e `stanza` saíam como `unknown` no executável (faltava o metadado), o que não casava com as camadas feitas em desenvolvimento.
+- Testes no Windows: `~` usa `USERPROFILE` e os verbetes de Aprender chegam com CRLF.
+
+### Alterado
+
+- Pacote `ttwtools` 0.3.1 (commit `70f5aaf`).
+
 ## [0.8.3] — 2026-10-06
 
 ### Corrigido
