@@ -40,7 +40,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
 
-    pep440 = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]["version"]
+    pep440 = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
     version = _semver()(pep440)
     errors = []
     if args.tag != f"v{version}":

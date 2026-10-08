@@ -90,11 +90,13 @@ def submodule_info() -> dict:
     git("fetch", "--quiet", "origin", cwd=SUB, check=False)
     published = bool(git("branch", "-r", "--contains", sha, cwd=SUB, check=False))
     tag = git("describe", "--tags", "--exact-match", sha, cwd=SUB, check=False)
-    version = tomllib.loads((SUB / "pyproject.toml").read_text())["project"]["version"]
+    version = tomllib.loads((SUB / "pyproject.toml").read_text(encoding="utf-8"))["project"]["version"]
     return {"sha": sha[:7], "published": published, "tag": tag or None, "version": version}
 
 
 def main() -> int:
+    for stream in (sys.stdout, sys.stderr):      # console do Windows (cp1252) não imprime "→"
+        stream.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--version", required=True, help="X.Y.Z ou X.Y.Z-alpha|beta|rc.N")
     ap.add_argument("--dry-run", action="store_true", help="só mostra o que faria, sem alterar nada")
@@ -122,9 +124,9 @@ def main() -> int:
         problems.append(f"submódulo libs/ttwtools em {sub['sha']}, commit ainda não enviado ao GitHub (faça push nele)")
 
     pyproject = ROOT / "pyproject.toml"
-    old = tomllib.loads(pyproject.read_text())["project"]["version"]
+    old = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]["version"]
     sub_line = f"- Pacote `ttwtools` {sub['version']} (commit `{sub['sha']}`" + (f", tag `{sub['tag']}`" if sub["tag"] else "") + ")."
-    new_changelog = release_changelog((ROOT / "CHANGELOG.md").read_text(), semver, today, [sub_line])
+    new_changelog = release_changelog((ROOT / "CHANGELOG.md").read_text(encoding="utf-8"), semver, today, [sub_line])
 
     plan += [
         f"versão: {old} → {pep} (pyproject.toml) · tag {tag}",
@@ -146,9 +148,9 @@ def main() -> int:
         print("== abortado: resolva os problemas acima")
         return 1
 
-    text = pyproject.read_text()
-    pyproject.write_text(re.sub(r'^version = ".*"$', f'version = "{pep}"', text, count=1, flags=re.M))
-    (ROOT / "CHANGELOG.md").write_text(new_changelog)
+    text = pyproject.read_text(encoding="utf-8")
+    pyproject.write_text(re.sub(r'^version = ".*"$', f'version = "{pep}"', text, count=1, flags=re.M), encoding="utf-8")
+    (ROOT / "CHANGELOG.md").write_text(new_changelog, encoding="utf-8")
     check = subprocess.run([sys.executable, str(ROOT / "build" / "release_notes.py"), tag], capture_output=True, text=True)
     if check.returncode != 0:
         git("checkout", "--", "pyproject.toml", "CHANGELOG.md")
