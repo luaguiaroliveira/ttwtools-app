@@ -32,6 +32,7 @@ export const useSession = defineStore('session', {
         await this.refresh()
         this.restoreSaved()
         await this.loadLayers()
+        this.preferExtendedMfte()
       }
     },
     async refresh() {
@@ -64,6 +65,7 @@ export const useSession = defineStore('session', {
         await this.refresh()
         if (!this.restoreSaved() && this.corpora.length === 1) this.corpus = this.corpora[0].name   // um corpus só: já fica ativo
         await this.loadLayers()
+        this.preferExtendedMfte()
         this.save()
       } finally {
         this.opening = null
@@ -74,6 +76,11 @@ export const useSession = defineStore('session', {
     async loadLayers() {
       this.layers = this.corpus ? (await api.corpora.layers(this.corpus)).layers : []
       if (this.layer && !this.layers.some((l) => l.tool === this.layer)) this.layer = null
+    },
+    /** Ao abrir um arquivo: sem camada escolhida e com camada MFTE estendida (`mfte_ext`), ela vira a ativa.
+     * Só na abertura: depois o usuário pode voltar para "automática". */
+    preferExtendedMfte() {
+      if (!this.layer && this.layers.some((l) => l.tool === 'mfte' && l.config?.extended)) this.layer = 'mfte'
     },
     /** Corpus/camada guardados para este mesmo projeto (por `display_path`), se ainda existirem. */
     restoreSaved() {

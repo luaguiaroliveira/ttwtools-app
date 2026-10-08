@@ -53,7 +53,10 @@ Rode os testes do que mexeu. O teste do fluxo em português exige `ttwtools cata
 ```bash
 python build/build.py                     # pacote do sistema atual em dist/release/
 python build/build.py --arch x86_64       # macOS Intel, num Mac Apple Silicon (sob Rosetta)
+python build/make_msi.py --wix <pasta do WiX 3.14>   # Windows: instalador .msi a partir do pacote já gerado
 ```
+
+Windows: no `venv`/conda use Python 3.14 e `python build/build.py --install-deps --deps-only --python <python>`. O `.msi` (`make_msi.py`, WiX 3.14 portátil de `github.com/wixtoolset/wix3/releases`, `wix314-binaries.zip`) instala **por usuário, sem administrador**, em `%LOCALAPPDATA%\Programs\TTWtools`, com atalho no Menu Iniciar e associação dos seis formatos; atualiza a versão anterior e desinstala sem deixar restos. O `en_core_web_sm` já vai dentro do pacote.
 
 O `build.py` fixa as versões do alvo, compila a interface, roda o PyInstaller, testa o binário (`--selftest`) e, no macOS, confere a versão mínima do sistema (12.0 Intel, 12.3 Apple Silicon). Um build completo leva de 20 a 30 min por sistema (o torch pesa ~2 GB). **Sem assinatura** por enquanto: o macOS avisa ao abrir; contornar com botão direito → Abrir ou `xattr -dr com.apple.quarantine /Applications/TTWtools.app`. Assinar exige certificado Developer ID e os segredos `MACOS_CERT_P12` e `MACOS_CERT_PASSWORD` (comentário em `release.yml`; decisão D4).
 

@@ -96,3 +96,36 @@ describe('useSession — camadas do corpus ativo', () => {
     expect(s.layer).toBeNull()
   })
 })
+
+describe('useSession — MFTE estendido como camada padrão ao abrir', () => {
+  const EXT = { tool: 'mfte', config: { extended: true } }
+  const STD = { tool: 'mfte', config: { extended: false } }
+  const SPACY = { tool: 'spacy', config: {} }
+
+  async function abrir(layers) {
+    api.health.mockResolvedValue({ project: '/tmp/ttw_work_aaa/meu.ttwa' })
+    api.project.info.mockResolvedValue(infoFor('/tmp/ttw_work_aaa/meu.ttwa'))
+    api.corpora.list.mockResolvedValue({ corpora: [CORPORA[0]] })
+    api.corpora.layers.mockResolvedValue({ layers })
+    const s = useSession()
+    s.corpus = 'a'
+    await s.load()
+    return s
+  }
+
+  it('há camada mfte_ext: ela vira a ativa', async () => {
+    expect((await abrir([SPACY, EXT])).layer).toBe('mfte')
+  })
+
+  it('só mfte padrão ou outras camadas: segue automática', async () => {
+    expect((await abrir([SPACY, STD])).layer).toBeNull()
+    expect((await abrir([SPACY])).layer).toBeNull()
+  })
+
+  it('recarregar as camadas depois não impõe de novo (dá para voltar para automática)', async () => {
+    const s = await abrir([EXT])
+    s.setLayer(null)
+    await s.loadLayers()
+    expect(s.layer).toBeNull()
+  })
+})

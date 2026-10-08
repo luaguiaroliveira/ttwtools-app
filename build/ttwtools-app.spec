@@ -47,7 +47,8 @@ for _f in TTWTOOLS_SRC.rglob('*'):
         datas += [(str(_f), str(Path('ttwtools') / _f.parent.relative_to(TTWTOOLS_SRC)))]
 
 # Metadados de pacotes lidos por importlib.metadata no app (GET /api/version)
-for _dist in ['ttwtools']:
+# (as versões entram no registro das camadas: sem o metadado viram "unknown" e o cache de camadas não casa com o do desenvolvimento)
+for _dist in ['ttwtools', 'spacy', 'biberplus', 'mfte', 'stanza', 'en-core-web-sm']:
     try:
         datas += copy_metadata(_dist)
     except Exception:
