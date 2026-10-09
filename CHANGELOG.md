@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.8.5] — 2026-10-08
+
 ### Corrigido
 
 - **Detalhe de um atributo na KFA (lista dos textos que o têm) muito lento**, sobretudo em máquinas antigas: a tela contava os tokens de todos os documentos dos dois corpora a cada clique, porque a contagem bruta e a "por 1000 palavras" eram guardadas à parte. Agora só a contagem bruta é guardada e a outra sai dela; depois da KFA, o clique reaproveita a contagem.
@@ -12,6 +14,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 ### Alterado
 
 - Ao entrar em **Comparar**, a ferramenta aberta é a KFA (antes, Palavras-chave).
+- Pacote `ttwtools` 0.3.1 (commit `16dfa18`).
 
 ## [0.8.4] — 2026-10-08
 
@@ -338,7 +341,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.4...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.5...HEAD
+[0.8.5]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.4...v0.8.5
 [0.8.4]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.2...v0.8.3
 [0.8.2]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.0...v0.8.2
