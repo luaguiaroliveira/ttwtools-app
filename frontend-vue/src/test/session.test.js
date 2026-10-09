@@ -117,9 +117,21 @@ describe('useSession — MFTE estendido como camada padrão ao abrir', () => {
     expect((await abrir([SPACY, EXT])).layer).toBe('mfte')
   })
 
+  it('projeto migrado: ferramenta mfte_ext vira a ativa', async () => {
+    expect((await abrir([SPACY, { tool: 'mfte', config: {} }, { tool: 'mfte_ext', config: {} }])).layer).toBe('mfte_ext')
+  })
+
   it('só mfte padrão ou outras camadas: segue automática', async () => {
     expect((await abrir([SPACY, STD])).layer).toBeNull()
     expect((await abrir([SPACY])).layer).toBeNull()
+  })
+
+  it('escolher o corpus depois de abrir (vários corpora): a camada vira mfte_ext', async () => {
+    const s = await abrir([SPACY, EXT])
+    s.corpus = null
+    s.layer = null
+    await s.setCorpus('a')
+    expect(s.layer).toBe('mfte')
   })
 
   it('recarregar as camadas depois não impõe de novo (dá para voltar para automática)', async () => {

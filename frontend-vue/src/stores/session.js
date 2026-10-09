@@ -77,10 +77,13 @@ export const useSession = defineStore('session', {
       this.layers = this.corpus ? (await api.corpora.layers(this.corpus)).layers : []
       if (this.layer && !this.layers.some((l) => l.tool === this.layer)) this.layer = null
     },
-    /** Ao abrir um arquivo: sem camada escolhida e com camada MFTE estendida (`mfte_ext`), ela vira a ativa.
+    /** Ao abrir um arquivo: sem camada escolhida e com camada MFTE estendida, ela vira a ativa. A estendida é a
+     * ferramenta `mfte_ext` (projetos migrados do formato antigo) ou `mfte` com `config.extended` (camadas novas).
      * Só na abertura: depois o usuário pode voltar para "automática". */
     preferExtendedMfte() {
-      if (!this.layer && this.layers.some((l) => l.tool === 'mfte' && l.config?.extended)) this.layer = 'mfte'
+      if (this.layer) return
+      if (this.layers.some((l) => l.tool === 'mfte_ext')) this.layer = 'mfte_ext'
+      else if (this.layers.some((l) => l.tool === 'mfte' && l.config?.extended)) this.layer = 'mfte'
     },
     /** Corpus/camada guardados para este mesmo projeto (por `display_path`), se ainda existirem. */
     restoreSaved() {
@@ -112,11 +115,13 @@ export const useSession = defineStore('session', {
         try { this.unsaved = (await api.project.unsaved()).unsaved } catch { /* */ }
       }, 3000)
     },
+    /** Troca o corpus ativo (projeto com vários corpora: é a primeira escolha depois de abrir); a camada volta
+     * a "automática" ou, havendo MFTE estendido, a ele. Devolve a promessa do carregamento das camadas. */
     setCorpus(corpus) {
       this.corpus = corpus
       this.layer = null
       this.save()
-      this.loadLayers()
+      return this.loadLayers().then(() => { this.preferExtendedMfte(); this.save() })
     },
     setLayer(layer) {
       this.layer = layer

@@ -4,6 +4,15 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Corrigido
+
+- **Detalhe de um atributo na KFA (lista dos textos que o têm) muito lento**, sobretudo em máquinas antigas: a tela contava os tokens de todos os documentos dos dois corpora a cada clique, porque a contagem bruta e a "por 1000 palavras" eram guardadas à parte. Agora só a contagem bruta é guardada e a outra sai dela; depois da KFA, o clique reaproveita a contagem.
+- **MFTE estendido como camada padrão** também em projetos migrados do formato antigo (ferramenta `mfte_ext`) e em projetos com vários corpora, em que o corpus é escolhido depois de abrir o arquivo.
+
+### Alterado
+
+- Ao entrar em **Comparar**, a ferramenta aberta é a KFA (antes, Palavras-chave).
+
 ## [0.8.4] — 2026-10-08
 
 ### Adicionado

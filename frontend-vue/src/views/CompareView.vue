@@ -23,7 +23,7 @@ const keys = computed(() => activeCorpus.value?.metadata_keys ?? [])
 watch([corpus, corpora, keys], () => { if (corpus.value) cmp.ensure(corpus.value, corpora.value, keys.value) }, { immediate: true, deep: true })
 watch(() => [cmp.corpus2, cmp.groupKey, corpus.value], () => { if (cmp.sameCorpus && corpus.value) cmp.loadGroups(corpus.value) }, { immediate: true })
 const usesMetric = computed(() => ['kfa', 'laboratorio'].includes(route.query.tool))
-const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'palavras-chave'))
+const tool = computed(() => (TOOLS[route.query.tool] ? route.query.tool : 'kfa'))       // ao entrar em Comparar, abre a KFA
 </script>
 <template>
   <div class="flex flex-col gap-3 max-w-[96rem]" :style="cmp.cssVars">
