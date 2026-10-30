@@ -2,6 +2,8 @@
 
 Só para agentes; o usuário não precisa ler. Mais recente primeiro; uma entrada = o que mudou, por quê, e o que não repetir. Detalhe de código: `git log --grep '\[passo\]'` e `git log -p -- <arquivo>`. Estado e próximos passos: `plano.md` seção 1.
 
+**Tese (Capítulo 4):** estado editorial, decisões e regeneração do `.docx` em `tese/memoria_para_agente.md`.
+
 ## Percurso
 
 - **2026-10-04 (Leitor/KFA, Passo 4)** Gráfico à esquerda + tabela à direita na análise da KFA com `components/SplitPane.vue` (grid, divisória arrastável por mouse/toque/teclado com `role="separator"`, `aria-valuenow` e setas/Home/End; empilha em ≤1023px) e botões que ocultam/mostram cada lado. Estado em `galleryMemory` (`split`, `showChart`, `showTable`); i18n `analysis.*`. Armadilhas: (1) esqueci de **importar `galleryMemory`** em `KfaTool.vue` — o erro só apareceu em runtime (`ReferenceError`) e o `lazyTool` não mostrou o `ToolLoadError`, deixando a aba muda; um spec de depuração com `page.on('pageerror')` achou em segundos. (2) No Playwright, `toHaveCount(0)` conta elementos **no DOM**, então um elemento com `display:none` (divisória empilhada no celular) ainda conta como 1 — usar `toBeHidden()`. `npm test` 45/45, `npm run e2e` 30/30, `pytest libs/ttwtools/tests` 268/268, `pytest tests` 63/63. Falta conferir no Mac Intel.
