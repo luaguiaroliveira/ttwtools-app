@@ -284,20 +284,32 @@ def _selftest_checks(emit) -> int:
         if not passed and essential:
             ok = False
 
+    torch_ok = stanza_ok = False
     try:
         import torch
         import numpy as np
         _prewarm_torch()
         torch.from_numpy(np.arange(3.0))  # falha com numpy 2 no torch 2.2 (Intel)
+        torch_ok = True
         report("torch", True, f"{torch.__version__}, numpy {np.__version__}", essential=False)
     except Exception as exc:
         report("torch", False, f"{type(exc).__name__}: {exc}", essential=False)
 
     try:
         import stanza
+        stanza_ok = True
         report("stanza", True, stanza.__version__, essential=False)
     except Exception as exc:
         report("stanza", False, f"{type(exc).__name__}: {exc}", essential=False)
+
+    # MFTE é importado dentro de função nos backends; se torch e Stanza existem, o
+    # pacote precisa tê-lo (senão o etiquetador fica indisponível). Onde não há torch,
+    # a ausência é esperada e vira aviso.
+    try:
+        import MFTE
+        report("mfte", True, getattr(MFTE, "__version__", ""), essential=False)
+    except Exception as exc:
+        report("mfte", False, f"{type(exc).__name__}: {exc}", essential=torch_ok and stanza_ok)
 
     try:
         import spacy

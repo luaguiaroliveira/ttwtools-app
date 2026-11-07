@@ -4,6 +4,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Corrigido
+
+- **MFTE ausente no pacote do macOS Intel:** builds locais feitos num ambiente sem o pacote `mfte` saíam com o etiquetador MFTE indisponível; o build agora exige o `MFTE` quando torch e Stanza estão presentes, o PyInstaller o inclui explicitamente e o autoteste confere a importação.
+
 ## [0.8.5] — 2026-10-08
 
 ### Corrigido

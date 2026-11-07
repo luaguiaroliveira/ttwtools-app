@@ -9,6 +9,7 @@
 # Pré-requisito: python -m spacy download en_core_web_sm
 # Só o en_core_web_sm é embutido; modelos grandes são baixados depois (passo 4.2).
 
+import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -103,6 +104,15 @@ hidden += ['spacy', 'thinc', 'blis', 'murmurhash', 'cymem', 'preshed',
            'srsly', 'catalogue', 'wasabi', 'typer', 'click']
 hidden += ['en_core_web_sm', 'en_core_web_sm.about']
 hidden += model_hidden
+# MFTE é Python puro e importado dentro de função; inclua explicitamente para não
+# depender da análise estática (sem isso o etiquetador sai indisponível no pacote).
+# `Constituency_tags` é importado por MFTE como módulo de topo.
+for _mod in ['MFTE', 'Constituency_tags']:
+    try:
+        if importlib.util.find_spec(_mod) is not None:
+            hidden.append(_mod)
+    except Exception:
+        pass
 # stdlib modules needed by torch.distributed.distributed_c10d at runtime
 hidden += ['unittest', 'unittest.case', 'unittest.mock']
 

@@ -159,7 +159,16 @@ def check_build_modules(target: Target, shell: str) -> None:
     """Falha cedo se o Python do alvo não tem o que o spec empacota: sem isso o PyInstaller termina
     "com sucesso" (collect_submodules vazio não avisa) e só o autoteste do final acusa o erro."""
     needed = ["uvicorn", "fastapi", "starlette", "spacy", "ttwtools"] + (["webview"] if shell == "pywebview" else [])
-    code = "import importlib.util as u; print(' '.join(m for m in %r if u.find_spec(m) is None))" % (needed,)
+    # MFTE é Python puro e é importado dentro de função; um ambiente sem ele gera um pacote em que o
+    # etiquetador MFTE fica sempre indisponível. Só é exigido onde torch e Stanza também estão presentes
+    # (nos alvos sem torch, Stanza e MFTE ficam indisponíveis com aviso).
+    code = (
+        "import importlib.util as u\n"
+        "needed = %r\n"
+        "if u.find_spec('torch') is not None and u.find_spec('stanza') is not None:\n"
+        "    needed.append('MFTE')\n"
+        "print(' '.join(m for m in needed if u.find_spec(m) is None))\n"
+    ) % (needed,)
     out = subprocess.run(target.py("-c", code), capture_output=True, text=True)
     missing = out.stdout.split()
     if out.returncode != 0 or missing:
