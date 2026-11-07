@@ -6,6 +6,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Corrigido
 
+- **Leitor com BiberPlus/MFTE:** a lista de etiquetas e as marcações usavam só a primeira tag do token; agora todas as tags do token aparecem, podem ser marcadas e contam no corpus (corrige, por exemplo, a tag `TO` aberta pela KFA).
 - **MFTE ausente no pacote do macOS Intel:** builds locais feitos num ambiente sem o pacote `mfte` saíam com o etiquetador MFTE indisponível; o build agora exige o `MFTE` quando torch e Stanza estão presentes, o PyInstaller o inclui explicitamente e o autoteste confere a importação.
 
 ## [0.8.5] — 2026-10-08

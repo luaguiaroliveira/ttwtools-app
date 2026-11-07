@@ -1,6 +1,6 @@
 <script setup>
 // Leitor de texto com etiquetas: texto à esquerda e, à direita, a coluna de etiquetas
-// (classes UPOS/XPOS ou primeira tag) com seleção múltipla; cada etiqueta marcada é
+// (classes UPOS/XPOS ou todas as tags do token) com seleção múltipla; cada etiqueta marcada é
 // marcada no texto com traço à mão (roughjs, o motor do rough-notation), no estilo e na cor
 // escolhidos ao lado de cada etiqueta (botão direito também abre o menu). Clicar num
 // token mostra etiquetas, lema, atributos e a definição do tagset.
@@ -18,6 +18,7 @@ import TagsetInfoButton from '../components/TagsetInfoButton.vue'
 import SplitHandle from '../components/SplitHandle.vue'
 import { useResizablePane } from '../composables/useResizablePane.js'
 import { describeTag, loadTagsetData, mergeTagsets, tagsetIdsFor } from '../utils/tagInfo.js'
+import { chosenTag, tokenLabel, tokenTags } from '../utils/readerTags.js'
 import { findMatches } from '../utils/wildcard.js'
 import { PALETTE, PALETTES, readableOn as fg } from '../utils/colorPalettes.js'
 
@@ -144,12 +145,18 @@ watch(rc, async (now, before) => {
   else if (!file.value) file.value = files.value[0] ?? ''
   else if (!files.value.includes(file.value)) files.value = [file.value, ...files.value]   // a lista traz só os primeiros 1000
 }, { immediate: true })
-const label = (tok) => (colorBy.value === 'upos' ? tok.upos : colorBy.value === 'xpos' ? tok.xpos : tok.tags?.[0]) || null
+// `labels` traz TODAS as tags do token (BiberPlus e MFTE podem ter várias); `label` é a primeira,
+// usada só onde a interface mostra um valor único. `drawn` escolhe qual tag selecionada marcar.
+const labels = (tok) => tokenTags(tok, colorBy.value)
+const label = (tok) => tokenLabel(tok, colorBy.value)
+const drawn = (tok) => chosenTag(tok, colorBy.value, chosen.value)
 const classes = computed(() => {
   const counts = {}
-  for (const tok of doc.value?.tokens ?? []) { const l = label(tok); if (l) counts[l] = (counts[l] || 0) + 1 }
+  for (const tok of doc.value?.tokens ?? []) for (const l of labels(tok)) counts[l] = (counts[l] || 0) + 1
   return Object.entries(counts).sort((a, b) => b[1] - a[1])
 })
+const selectedTags = computed(() => (selected.value ? labels(selected.value) : []))
+const selectedTag = computed(() => (selected.value ? drawn(selected.value) || label(selected.value) : null))
 const custom = ref({})   // etiqueta → cor escolhida pela pessoa
 const color = computed(() => Object.fromEntries(classes.value.map(([c], i) => [c, custom.value[c] || PALETTE[i % PALETTE.length]])))
 const palette = ref(false)   // seletor de cor aberto dentro do menu da etiqueta
@@ -189,7 +196,7 @@ const pieces = computed(() => {
   return out
 })
 const hit = (tok) => route.query.pos && tok.start_char >= Number(route.query.pos) && tok.end_char <= Number(route.query.end || route.query.pos)
-const isOn = (tok) => chosen.value.has(label(tok))
+const isOn = (tok) => Boolean(drawn(tok))
 function toggle(c) {
   const next = new Set(chosen.value)
   if (next.has(c)) next.delete(c); else next.add(c)
@@ -253,13 +260,15 @@ const pick1 = (tok) => { if (!selectedText()) selected.value = tok }
 function markTok(tok) {
   globalThis.getSelection?.()?.removeAllRanges()
   selected.value = tok
-  if (label(tok)) toggle(label(tok))
+  const c = drawn(tok) || label(tok)
+  if (c) toggle(c)
 }
 function tokMenu(e, tok) {                  // botão direito: com texto selecionado, deixa o menu normal (Copiar)
-  if (selectedText() || !label(tok)) return
+  const c = drawn(tok) || label(tok)
+  if (selectedText() || !c) return
   e.preventDefault()
   selected.value = tok
-  openMenu(label(tok), null, true)
+  openMenu(c, null, true)
 }
 
 // --- marcações à mão ---------------------------------------------------------------
@@ -322,8 +331,8 @@ function draw() {
   const todo = []
   let count = 0
   for (const el of root.querySelectorAll('[data-idx]')) {   // primeiro só leituras (um único layout)
-    const c = el.dataset.cls
-    if (!chosen.value.has(c) || count >= MAX_ANNOTATIONS) {
+    const c = (el.dataset.cls || '').split(' ').filter(Boolean).find((x) => chosen.value.has(x))
+    if (!c || count >= MAX_ANNOTATIONS) {
       if (el.dataset.sig) { el.querySelector(':scope > svg.rn')?.remove(); delete el.dataset.sig }
       continue
     }
@@ -414,7 +423,7 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
           </header>
           <article ref="article" class="reader-text ttw-annot" :class="{ 'is-justified': justify }" data-testid="reader-text">
             <template v-for="(p, i) in pieces" :key="i"><span v-if="!p.tok">{{ p.text }}</span><span v-else :data-idx="p.tok.idx"
-                :data-start="p.tok.start_char" :data-cls="label(p.tok)" class="reader-tok"
+                :data-start="p.tok.start_char" :data-cls="labels(p.tok).join(' ')" class="reader-tok"
                 :class="{ 'is-selected': selected?.idx === p.tok.idx, 'is-hit': hit(p.tok), 'is-found': foundSet.has(p.tok.idx), 'is-found-now': currentSet.has(p.tok.idx) }"
                 @click="pick1(p.tok)" @dblclick="markTok(p.tok)" @contextmenu="tokMenu($event, p.tok)">{{ p.text }}</span></template>
           </article>
@@ -482,13 +491,16 @@ onBeforeUnmount(() => { globalThis.removeEventListener?.('beforeprint', beforePr
             <dt>word</dt><dd class="font-bold">{{ selected.word }}</dd>
             <template v-for="k in ['lemma', 'upos', 'xpos', 'feats']" :key="k"><template v-if="selected[k]"><dt>{{ k }}</dt><dd class="break-all" :data-tag="k === 'upos' || k === 'xpos' ? selected[k] : null">{{ selected[k] }}</dd></template></template>
             <template v-if="selected.tags?.length"><dt>tags</dt><dd>{{ selected.tags.join(' ') }}</dd></template>
-            <dt>def.</dt><dd>{{ info(label(selected))?.text || '—' }}<span v-if="info(label(selected))?.inferred" class="block text-xs text-text-muted italic">{{ t('taginfo.inferred') }}</span></dd>
+            <dt>def.</dt><dd>{{ info(selectedTag)?.text || '—' }}<span v-if="info(selectedTag)?.inferred" class="block text-xs text-text-muted italic">{{ t('taginfo.inferred') }}</span></dd>
           </dl>
-          <label v-if="selected && label(selected)" class="ttw-check mt-2" data-testid="reader-mark-tag">
-            <input type="checkbox" class="checkbox checkbox-sm" :checked="chosen.has(label(selected))" @change="toggle(label(selected))" />
-            <span>{{ t('reader.mark_tag', { tag: label(selected) }) }}</span></label>
-          <p v-if="selected && label(selected)" class="text-xs text-text-muted">{{ t('reader.mark_hint') }}</p>
-          <TagDoc v-if="selected" :doc="tagDoc[label(selected)]" :version="docVersion" />
+          <div v-if="selected && selectedTags.length" class="mt-2 flex flex-col gap-1" data-testid="reader-mark-tags">
+            <label v-for="(c, i) in selectedTags" :key="c" class="ttw-check"
+                   :data-testid="i === 0 ? 'reader-mark-tag' : 'reader-mark-tag-' + c">
+              <input type="checkbox" class="checkbox checkbox-sm" :checked="chosen.has(c)" @change="toggle(c)" />
+              <span>{{ t('reader.mark_tag', { tag: c }) }}</span></label>
+          </div>
+          <p v-if="selected && selectedTags.length" class="text-xs text-text-muted">{{ t('reader.mark_hint') }}</p>
+          <TagDoc v-if="selected" :doc="tagDoc[selectedTag]" :version="docVersion" />
         </div>
       </aside>
       <!-- dica da etiqueta (passar o mouse ou focar): definição segundo o repertório do etiquetador -->
