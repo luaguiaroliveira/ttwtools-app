@@ -256,3 +256,38 @@ test('ferramenta cujo arquivo sumiu mostra aviso em vez de área em branco; leit
   await page.getByRole('tab', { name: /Frequência|Frequency/ }).click()
   await expect(page.getByTestId('tool-load-error')).toBeVisible({ timeout: 30_000 })
 })
+
+test('leitor: trocar a etiquetagem no cabeçalho atualiza o texto e limpa as marcações', async ({ page, request }, info) => {
+  test.skip((page.viewportSize()?.width ?? 0) < 640, 'seletor de camada fica no cabeçalho, oculto no celular')
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ttw-e2e-'))
+  expect((await request.post('/api/project/create', { data: { path: path.join(dir, `${info.project.name}.ttwa`) } })).ok()).toBeTruthy()
+  await request.post('/api/corpora/import', { data: { corpus_name: 'corifa', source: { kind: 'folder', path: path.join(CORPORA, 'CorIFAessaysNE_5') } } })
+  for (const tagger of ['spacy', 'biberplus']) {
+    const job = await (await request.post('/api/tagging/layers', { data: { corpus: 'corifa', tagger, preset: 'rapido' } })).json()
+    expect((await waitJob(request, job.job_id)).status).toBe('done')
+  }
+  const docs = await (await request.get('/api/corpora/corifa/documents')).json()
+  const filename = docs.rows[0].filename
+  await page.goto('/#/leitor')
+  await page.getByTestId('reader-corpus').selectOption('corifa')
+  // abre noutra rota (como o KFA faz) para o Leitor montar já com a camada e a marcação da URL
+  await page.goto('/#/inicio')
+  await page.goto(`/#/leitor?corpus=corifa&layer=spacy&file=${encodeURIComponent(filename)}&color=upos&highlight=NOUN`)
+  const list = page.getByTestId('reader-tag-list')
+  await expect(list.locator('li').first()).toBeAttached({ timeout: 30_000 })
+  if ((page.viewportSize()?.width ?? 0) < 1024) {   // telas estreitas: a lista fica na gaveta
+    await page.getByTestId('reader-panel-toggle').click()
+    await expect(list).toBeVisible()
+  }
+  await expect(list.getByRole('button', { name: 'NOUN', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('svg.rn').first()).toBeAttached()
+  // trocar no menu superior: a camada da rota muda, a marcação antiga sai e a lista acompanha
+  await expect(page.getByTestId('header-layer').locator('option[value="biberplus"]')).toHaveCount(1, { timeout: 30_000 })
+  await page.getByTestId('header-layer').selectOption('biberplus')
+  await expect(page).toHaveURL(/layer=biberplus/)
+  await expect(page).not.toHaveURL(/highlight=/)
+  await expect(page.getByTestId('reader-paper')).toContainText('biberplus')
+  await expect(list.getByRole('button', { name: 'NOUN', exact: true })).toHaveCount(0, { timeout: 30_000 })
+  await expect(page.locator('svg.rn')).toHaveCount(0, { timeout: 30_000 })
+  await expect(list.locator('li').first()).toBeAttached({ timeout: 30_000 })
+})

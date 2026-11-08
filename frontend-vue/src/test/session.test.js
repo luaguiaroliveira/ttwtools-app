@@ -95,6 +95,18 @@ describe('useSession — camadas do corpus ativo', () => {
     await s.loadLayers()
     expect(s.layer).toBeNull()
   })
+
+  it('setLayer sinaliza a troca explícita para as telas abertas acompanharem', async () => {
+    api.health.mockResolvedValue({ project: '/tmp/ttw_work_aaa/meu.ttwa' })
+    api.project.info.mockResolvedValue(infoFor('/tmp/ttw_work_aaa/meu.ttwa'))
+    const s = useSession()
+    await s.load()
+    const before = s.layerEpoch
+    s.setLayer('spacy')
+    expect(s.layerEpoch).toBe(before + 1)
+    await s.loadLayers()                 // restaurar/recarregar camadas não conta como troca do usuário
+    expect(s.layerEpoch).toBe(before + 1)
+  })
 })
 
 describe('useSession — MFTE estendido como camada padrão ao abrir', () => {

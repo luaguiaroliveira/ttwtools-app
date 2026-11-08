@@ -13,6 +13,7 @@ export const useSession = defineStore('session', {
     corpora: [],            // /api/corpora
     corpus: null,           // corpus ativo
     layer: null,            // ferramenta da camada ativa (null = automática, ver `loadLayers`)
+    layerEpoch: 0,          // sobe quando o usuário troca a camada no menu/LayersList (telas abertas acompanham)
     layers: [],             // camadas do corpus ativo (/api/corpora/{c}/layers)
     opening: null,          // progresso ao abrir um arquivo compactado ou antigo
     unsaved: false,         // arquivo compactado com alterações ainda não gravadas
@@ -125,6 +126,7 @@ export const useSession = defineStore('session', {
     },
     setLayer(layer) {
       this.layer = layer
+      this.layerEpoch += 1
       this.save()
     },
     save() {

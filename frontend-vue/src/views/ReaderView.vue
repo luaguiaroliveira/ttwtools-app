@@ -27,7 +27,7 @@ const props = defineProps({ corpus: String, layer: String })
 // Os gráficos de Comparar abrem textos de qualquer um dos lados: `?corpus=` e `?layer=` valem só nesta tela
 // (o corpus ativo do aplicativo não muda, e o botão voltar leva de volta ao gráfico).
 const session = useSession()
-const { corpus: activeCorpus, layer: activeLayer, corpora } = storeToRefs(session)
+const { corpus: activeCorpus, layer: activeLayer, layerEpoch, corpora } = storeToRefs(session)
 const rc = computed(() => (route.query.corpus ? String(route.query.corpus) : (props.corpus ?? activeCorpus.value)))
 const rl = computed(() => (route.query.layer ? String(route.query.layer) : (props.layer ?? activeLayer.value)))
 const { t, locale } = useI18n()
@@ -102,12 +102,34 @@ const MAX_ANNOTATIONS = 2500   // acima disso o SVG pesa: marca só as primeiras
 // A carga inicial (lista de documentos) é feita pelo `watch(rc, …, { immediate: true })` abaixo:
 // a seção própria aceita trocar de corpus com a tela aberta.
 watch(() => route.query.file, (f) => { if (f) file.value = String(f) })   // a Dispersão abre um texto aqui
+// KFA/Dispersão podem trocar a marcação/coluna sem remontar o Leitor: a URL manda.
+watch(() => route.query.highlight, (v) => { chosen.value = new Set(highlights(v)) })
+watch(() => route.query.color, (v) => { if (v) colorBy.value = String(v) })
+// Trocar a etiquetagem no menu superior (ou na lista de camadas) atualiza o texto aberto:
+// a camada da rota passa a ser a escolhida e as marcações do etiquetador anterior são limpas.
+// `layerEpoch` só sobe em `session.setLayer` — não na restauração do projeto ao abrir.
+watch(layerEpoch, () => {
+  const q = { ...route.query }
+  if (activeLayer.value) q.layer = activeLayer.value
+  else delete q.layer
+  delete q.highlight
+  delete q.color
+  chosen.value = new Set()
+  selected.value = null
+  router.replace({ path: '/leitor', query: q })
+})
 watch(() => [file.value, rl.value, rc.value], async () => {
   if (!file.value) return
   doc.value = await api.corpora.text(rc.value, file.value, rl.value)
   selected.value = null
-  // camada sem `tags` (ex.: só UPOS): cai para UPOS para a lista não ficar vazia
-  if (!route.query.color && colorBy.value === 'tags' && !doc.value.tokens.some((x) => x.tags?.length)) colorBy.value = 'upos'
+  // O "Colorir por" precisa existir na camada aberta: ao trocar de etiquetador, cai para
+  // tags/UPOS/XPOS conforme os campos disponíveis (ex.: spaCy não tem tags).
+  const toks = doc.value.tokens
+  const has = { tags: toks.some((x) => x.tags?.length), upos: toks.some((x) => x.upos), xpos: toks.some((x) => x.xpos) }
+  if (!has[colorBy.value]) {
+    colorBy.value = has.tags ? 'tags' : has.upos ? 'upos' : has.xpos ? 'xpos' : 'tags'
+    chosen.value = new Set()
+  }
   await loadTagset()
   await nextTick()
   if (route.query.pos) document.querySelector(`[data-start="${route.query.pos}"]`)?.scrollIntoView({ block: 'center' })
