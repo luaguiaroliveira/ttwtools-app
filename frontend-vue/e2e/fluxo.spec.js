@@ -247,6 +247,10 @@ test('fluxo completo', async ({ page, request }, info) => {
   await page.getByTestId('reader-back').click()
   await expect(page).toHaveURL(/comparar\?tool=kfa/)
   await expect(page.getByTestId('parcoords-alpha')).toBeVisible()
+  // extremo do |d| mínimo: o controle para no maior |d| do resultado e a tabela não zera
+  await page.getByTestId('kfa-min-effect').fill('99')
+  await expect(page.getByTestId('kfa-min-effect')).not.toHaveValue('99')
+  await expect(page.getByTestId('kfa-table').locator('tbody tr').first()).toBeVisible()
 
   // navegação principal visível na largura certa
   const width = page.viewportSize().width

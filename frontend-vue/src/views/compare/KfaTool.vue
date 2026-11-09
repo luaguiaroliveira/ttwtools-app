@@ -50,7 +50,15 @@ async function run() {
     openAnalysis()
   } catch (err) { if (err?.name !== 'AbortError') error.value = err.message } finally { busy.value = false; job.value = null; jobId = null }
 }
-const maxD = computed(() => Math.max(1, Math.ceil(Math.max(0, ...(data.value?.rows ?? []).map((r) => Math.abs(r.Effect_Size))) * 10) / 10))
+const maxD = computed(() => {
+  const m = Math.max(0, ...(data.value?.rows ?? []).map((r) => Math.abs(r.Effect_Size)))
+  // O máximo do controle é o maior |d| do resultado. Arredondar para cima fazia o extremo do
+  // slider esconder até o atributo mais forte (ex.: máximo real 1,422 e slider em 1,5).
+  return m >= 0.01 ? Math.floor(m * 100) / 100 : 0.01
+})
+watch([maxD, () => f.value.min_effect], ([m, v]) => {
+  if (Number(v) > m) f.value.min_effect = m       // valor antigo/typed acima do máximo: limita ao maior |d|
+})
 watch([data, lastParams, f, detail, keptFor], () => { kfaMemory.value = { corpus: props.corpus, data: data.value, lastParams: lastParams.value, f: f.value, detail: detail.value, keptFor: keptFor.value } }, { deep: false })
 watch(f, () => { if (kfaMemory.value) kfaMemory.value.f = f.value }, { deep: true })
 const minD = computed(() => Number(f.value.min_effect) || 0)

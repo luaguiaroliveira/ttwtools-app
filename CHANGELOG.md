@@ -6,6 +6,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Corrigido
 
+- **KFA:** o máximo do filtro |d| mínimo passa a ser o maior |d| do resultado (sem arredondar para cima) e o valor anterior é limitado a ele; arrastar o controle até o fim não zera mais a tabela.
 - **Leitor:** trocar a etiquetagem no menu superior (ou na lista de camadas) atualiza o texto aberto, inclusive quando veio da KFA; a lista passa para a nova camada e as marcações do etiquetador anterior são limpas.
 - **Leitor com BiberPlus/MFTE:** a lista de etiquetas e as marcações usavam só a primeira tag do token; agora todas as tags do token aparecem, podem ser marcadas e contam no corpus (corrige, por exemplo, a tag `TO` aberta pela KFA).
 - **MFTE ausente no pacote do macOS Intel:** builds locais feitos num ambiente sem o pacote `mfte` saíam com o etiquetador MFTE indisponível; o build agora exige o `MFTE` quando torch e Stanza estão presentes, o PyInstaller o inclui explicitamente e o autoteste confere a importação.
