@@ -275,3 +275,21 @@ def test_lista_a_executar(client, tmp_path):
     assert client.get("/api/corpora/c/pipeline").json()["steps"] == []
     client.post("/api/corpora/c/pipeline", json={"kind": "stats"})
     assert client.delete("/api/corpora/c/pipeline/0").json()["steps"] == []
+
+
+def test_fila_unificada_multicorpus(client, opened):
+    r = client.post("/api/pipeline/add", json={"step": {"kind": "stats"}, "all_corpora": True}).json()
+    assert [(s["corpus"], s["kind"]) for s in r["steps"]] == [("bawe", "stats"), ("corifa", "stats")]
+    assert [s["corpus"] for s in client.get("/api/pipeline").json()["steps"]] == ["bawe", "corifa"]
+    client.post("/api/pipeline/add", json={"step": {"kind": "tag", "tagger": "biberplus"}, "corpora": ["bawe"]})
+    assert [(s["corpus"], s["kind"]) for s in client.get("/api/pipeline").json()["steps"]] == \
+        [("bawe", "tag"), ("bawe", "stats"), ("corifa", "stats")]
+    client.delete("/api/corpora/bawe/pipeline/0")                       # cada fila tem os seus índices
+    assert [s["corpus"] for s in client.get("/api/pipeline").json()["steps"]] == ["bawe", "corifa"]
+
+    job = wait_job(client, client.post("/api/pipeline/run", json={}).json()["job_id"])
+    assert job["status"] == "done"
+    assert [(d["corpus"], d["step"]["kind"]) for d in job["result"]["done"]] == [("bawe", "stats"), ("corifa", "stats")]
+    assert [(s["corpus"], s["status"]) for s in job["steps"]] == [("bawe", "done"), ("corifa", "done")]
+    assert job["done"] == job["total"] == 1000
+    assert client.get("/api/pipeline").json()["steps"] == []

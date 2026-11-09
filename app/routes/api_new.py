@@ -354,6 +354,81 @@ def pipeline_run(corpus: str):
     return {"job_id": jobs.start("pipeline", work, corpus=corpus)}
 
 
+# --- fila unificada: todos os corpora numa tarefa só -----------------------
+
+class PipelineAddRequest(BaseModel):
+    step: StepRequest
+    corpora: list[str] | None = None
+    all_corpora: bool = False
+
+
+class PipelineRunRequest(BaseModel):
+    corpora: list[str] | None = None
+
+
+def _steps_all(proj) -> list[dict]:
+    from ttwtools import pipeline
+    return [{"corpus": name, **item}
+            for name, _steps in pipeline.pending_steps_all(proj).items()
+            for item in _steps_with_plan(proj, name)]
+
+
+def _pipeline_states(proj, corpora: list[str] | None = None) -> list[dict]:
+    """Um estado por passo de todos os corpora, na mesma ordem em que `pipeline.run_all` executa."""
+    from ttwtools import pipeline
+    return [{"corpus": name, "kind": s["kind"], "tagger": s.get("tagger"), "options": s.get("options") or {},
+             "status": "queued", "done": 0, "total": None, "item": None}
+            for name, steps in pipeline.pending_steps_all(proj, corpora).items()
+            for s in pipeline._ordered(steps)]
+
+
+@router.get("/pipeline", tags=["corpora"])
+def pipeline_all_list():
+    """Passos "a executar" de todos os corpora, cada um com o campo `corpus`, com o plano de cada etiquetagem."""
+    with _project() as proj:
+        return {"steps": _steps_all(proj)}
+
+
+@router.post("/pipeline/add", tags=["corpora"])
+def pipeline_add_all(req: PipelineAddRequest):
+    """Acrescenta o passo a todos os corpora (`all_corpora`) ou aos indicados (`corpora`)."""
+    from ttwtools import pipeline
+    step = req.step.model_dump(exclude_none=True)
+    names = None if req.all_corpora else (req.corpora or None)
+    with _project() as proj:
+        _call(pipeline.add_step_all, proj, step, names)
+        return {"steps": _steps_all(proj)}
+
+
+@router.post("/pipeline/run", tags=["corpora"])
+def pipeline_run_all(req: PipelineRunRequest | None = None):
+    """Executa, numa tarefa só, as listas de todos os corpora pendentes; acompanhe em /api/jobs/{id}."""
+    path = app_state.current_project_path
+    if not path:
+        raise HTTPException(status_code=400, detail="Nenhum projeto aberto.")
+    names = list(req.corpora) if req and req.corpora else None
+
+    def work(job, names=names, path=path):
+        import ttwtools
+        from ttwtools import pipeline
+        with ttwtools.open_project(path) as proj:
+            states = _pipeline_states(proj, names)
+            job.update(steps=states)
+
+            def on_step(i, state):
+                states[i].update(state)
+                finished = sum(1 for s in states if s["status"] == "done")
+                cur = states[i]
+                frac = (cur["done"] or 0) / cur["total"] if cur["status"] == "running" and cur["total"] else 0
+                job.update(steps=[dict(s) for s in states])
+                message = f"{cur['corpus']} · {cur['item']}" if cur.get("item") else cur["corpus"]
+                job.progress(round(1000 * (finished + frac) / max(len(states), 1)), 1000, message)
+
+            return pipeline.run_all(proj, names, on_step=on_step)
+
+    return {"job_id": jobs.start("pipeline", work, corpora=names)}
+
+
 # ---------------------------------------------------------------------------
 # Visão geral do corpus
 # ---------------------------------------------------------------------------
