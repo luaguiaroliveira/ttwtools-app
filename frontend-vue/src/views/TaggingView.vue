@@ -135,7 +135,7 @@ const optionsText = (o) => Object.entries(o ?? {}).map(([k, v]) => `${k}=${Array
             <li data-testid="queue-item" v-for="(s, i) in steps" :key="s.corpus + '|' + i" class="bg-base-100 rounded-box p-2 flex flex-wrap items-center gap-2">
               <span class="badge badge-neutral badge-sm" aria-hidden="true">{{ i + 1 }}</span>
               <span v-if="corpora.length > 1" class="badge badge-outline badge-sm" data-testid="queue-corpus">{{ s.corpus }}</span>
-              <span class="font-medium">{{ s.kind === 'stats' ? t('pipeline.stats_title') : tagName(s.tagger) }}</span>
+              <span class="font-medium">{{ s.kind === 'stats' ? t('pipeline.stats_title') : tagName(s.plan?.tool ?? s.tagger) }}</span>
               <span v-if="s.kind === 'tag' && optionsText(s.options)" class="text-xs text-text-muted">{{ optionsText(s.options) }}</span>
               <span v-if="s.plan" class="text-xs">{{ s.plan.to_tag || s.plan.clonable ? t('pipeline.to_process', { n: s.plan.to_tag + (s.plan.clonable || 0), total: s.plan.documents }) : t('pipeline.already') }}</span>
               <span v-if="s.kind === 'stats'" class="text-xs text-text-muted">{{ t('pipeline.stats_last') }}</span>

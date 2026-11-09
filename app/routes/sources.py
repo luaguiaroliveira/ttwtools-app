@@ -36,11 +36,27 @@ class ImportRequest(BaseModel):
     text_column: str = "text"
 
 
+class SubfoldersImportRequest(BaseModel):
+    source: CorpusSource
+    filename_fields: list[str] | None = None
+    delimiter: str = "_"
+    metadata_csv: str | None = None
+    glob: str = "*.txt"
+    names: list[str] | None = None
+
+
 @router.get("/preview-names")
 def preview_names(path: str, delimiter: str = "_", fields: str | None = None):
     """Como os nomes dos arquivos da pasta viram metadados (ttwtools.preview_filenames), sem importar."""
     import ttwtools
     return ttwtools.preview_filenames(path, delimiter, fields.split(",") if fields else None)
+
+
+@router.get("/subfolders")
+def list_subfolders(path: str, glob: str = "*.txt"):
+    """Subpastas com arquivos que casam com `glob` (ttwtools.subfolders), uma por corpus."""
+    import ttwtools
+    return {"folders": ttwtools.subfolders(path, glob)}
 
 
 @router.post("/import")
@@ -75,3 +91,20 @@ def import_corpus(req: ImportRequest):
         except (FileNotFoundError, NotADirectoryError, ValueError) as exc:
             raise HTTPException(status_code=422, detail=str(exc)) from exc
     return report
+
+
+@router.post("/import-subfolders")
+def import_subfolders(req: SubfoldersImportRequest):
+    """Importa cada subpasta da pasta escolhida como um corpus com o nome da subpasta."""
+    if not app_state.current_project_path:
+        raise HTTPException(status_code=400, detail="Nenhum projeto aberto.")
+    if req.source.kind != "folder" or not req.source.path:
+        raise HTTPException(status_code=422, detail="A importação por subpastas precisa de uma pasta.")
+    import ttwtools
+    with ttwtools.open_project(app_state.current_project_path) as proj:
+        try:
+            return ttwtools.import_subfolders(
+                proj, req.source.path, glob=req.glob, filename_fields=req.filename_fields,
+                delimiter=req.delimiter, metadata_csv=req.metadata_csv, names=req.names)
+        except (FileNotFoundError, NotADirectoryError, ValueError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from exc

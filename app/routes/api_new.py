@@ -292,6 +292,17 @@ def _steps_with_plan(proj, corpus: str) -> list[dict]:
     return out
 
 
+def _step_tool(step: dict) -> str | None:
+    """Ferramenta que identifica a camada do passo (mfte_ext no modo estendido), para a interface."""
+    if step.get("kind") != "tag":
+        return None
+    from ttwtools.annotate import build_request
+    try:
+        return build_request(step["tagger"], step.get("options"), step.get("components"), step.get("preset"))["tool"]
+    except Exception:  # noqa: BLE001 — etiquetador indisponível: mostra o nome pedido
+        return step.get("tagger")
+
+
 class StepRequest(BaseModel):
     kind: Literal["tag", "stats"]
     tagger: str | None = None
@@ -337,7 +348,7 @@ def pipeline_run(corpus: str):
         from ttwtools import pipeline
         with ttwtools.open_project(path) as proj:
             order = pipeline._ordered(pipeline.pending_steps(proj, corpus))
-            states = [{"kind": s["kind"], "tagger": s.get("tagger"), "options": s.get("options") or {},
+            states = [{"kind": s["kind"], "tagger": _step_tool(s), "options": s.get("options") or {},
                        "status": "queued", "done": 0, "total": None, "item": None} for s in order]
             job.update(steps=states)
 
@@ -376,7 +387,7 @@ def _steps_all(proj) -> list[dict]:
 def _pipeline_states(proj, corpora: list[str] | None = None) -> list[dict]:
     """Um estado por passo de todos os corpora, na mesma ordem em que `pipeline.run_all` executa."""
     from ttwtools import pipeline
-    return [{"corpus": name, "kind": s["kind"], "tagger": s.get("tagger"), "options": s.get("options") or {},
+    return [{"corpus": name, "kind": s["kind"], "tagger": _step_tool(s), "options": s.get("options") or {},
              "status": "queued", "done": 0, "total": None, "item": None}
             for name, steps in pipeline.pending_steps_all(proj, corpora).items()
             for s in pipeline._ordered(steps)]

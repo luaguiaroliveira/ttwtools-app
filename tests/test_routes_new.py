@@ -22,6 +22,27 @@ def opened(client, tmp_path):
     return path
 
 
+def test_importar_cada_subpasta(client, tmp_path):
+    import ttwtools
+    path = tmp_path / "turmas.ttwa"
+    ttwtools.create_project(path).close()
+    assert client.post("/api/project/open", json={"path": str(path)}).status_code == 200
+    parent = tmp_path / "turmas"
+    for name in ("A", "B"):
+        (parent / name).mkdir(parents=True)
+        (parent / name / f"{name}_01.txt").write_text("The cat sat on the mat.", encoding="utf-8")
+    found = client.get("/api/corpora/subfolders", params={"path": str(parent)}).json()["folders"]
+    assert [(f["name"], f["files"]) for f in found] == [("A", 1), ("B", 1)]
+    r = client.post("/api/corpora/import-subfolders", json={
+        "source": {"kind": "folder", "path": str(parent)}, "filename_fields": ["grupo", "texto"]})
+    assert r.status_code == 200
+    body = r.json()
+    assert [c["corpus"] for c in body["corpora"]] == ["A", "B"] and body["imported"] == 2
+    assert {c["name"] for c in client.get("/api/corpora").json()["corpora"]} == {"A", "B"}
+    assert client.post("/api/corpora/import-subfolders", json={
+        "source": {"kind": "folder", "path": str(tmp_path / "nada")}}).status_code == 422
+
+
 def test_taggers(client):
     t = {x["id"]: x for x in client.get("/api/taggers?lang=en").json()["taggers"]}
     assert set(t) == {"spacy", "stanza", "mfte", "biberplus"} and isinstance(t["spacy"]["disponivel"], bool)

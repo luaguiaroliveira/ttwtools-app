@@ -12,6 +12,8 @@ const { t } = useI18n()
 const step = ref(1)
 const form = reactive({ customName: '', kind: 'folder', format: 'txt', path: '', text: '', delimiter: '_', pieces: [], metaCsv: '' })
 const preview = ref(null)
+const subfolders = ref([])       // subpastas com .txt: uma por corpus, se a pessoa quiser
+const eachSubfolder = ref(false)
 const result = ref(null)
 const error = ref(null)
 const busy = ref(false)
@@ -28,23 +30,35 @@ async function chooseCsv() {
 const defaultName = computed(() => (form.kind === 'text' ? 'texto_colado'
   : (form.path.split(/[\\/]/).filter(Boolean).pop() || '').replace(/\.[^.]+$/, '')))
 const name = computed(() => form.customName.trim() || defaultName.value)
-const canImport = computed(() => name.value && (form.kind === 'folder' ? form.path : form.kind === 'text' ? form.text : false))
+const canImport = computed(() => eachSubfolder.value ? subfolders.value.length > 0
+  : name.value && (form.kind === 'folder' ? form.path : form.kind === 'text' ? form.text : false))
 const usesNames = computed(() => form.kind === 'folder' && form.format === 'txt')
+const firstCorpus = computed(() => result.value?.corpora?.[0]?.corpus ?? name.value)
 
 // um nome por pedaço (a lista inteira, para cada nome valer só para o seu pedaço); vazio = ignorar
 const fields = computed(() => {
   const f = form.pieces.map((s) => (s || '').trim())
   return f.some(Boolean) ? f : null
 })
+// "cada subpasta" com arquivos: o assistente mostra a opção e usa a primeira como exemplo
+async function loadSubfolders() {
+  subfolders.value = []
+  eachSubfolder.value = false
+  if (!usesNames.value || !form.path) return
+  try { subfolders.value = (await api.corpora.subfolders(form.path)).folders } catch { subfolders.value = [] }
+}
+const previewPath = computed(() => eachSubfolder.value ? (subfolders.value[0]?.path ?? '') : form.path)
 async function loadPreview() {
   preview.value = null
-  if (!usesNames.value || !form.path) return
+  if (!usesNames.value || !previewPath.value) return
   try {
-    preview.value = await api.corpora.previewNames(form.path, form.delimiter, fields.value?.join(','))
+    preview.value = await api.corpora.previewNames(previewPath.value, form.delimiter, fields.value?.join(','))
     if (form.pieces.length !== preview.value.parts) form.pieces = Array.from({ length: preview.value.parts }, (_, i) => form.pieces[i] ?? '')
   } catch { preview.value = null }
 }
-watch(() => [form.path, form.delimiter, form.format], () => { form.pieces = []; loadPreview() })
+watch(() => [form.path, form.format], () => { form.pieces = []; loadSubfolders(); loadPreview() })
+watch(() => form.delimiter, () => { form.pieces = []; loadPreview() })
+watch(previewPath, loadPreview)
 let timer = null
 watch(fields, () => { clearTimeout(timer); timer = setTimeout(loadPreview, 250) })
 const example = computed(() => preview.value?.examples?.[0])
@@ -53,15 +67,24 @@ async function doImport() {
   error.value = null
   busy.value = true
   try {
-    result.value = await api.corpora.import({
-      corpus_name: name.value,
-      source: form.kind === 'folder' ? { kind: 'folder', path: form.path, format: form.format } : { kind: 'text', text: form.text },
-      filename_fields: usesNames.value ? fields.value : null,
-      delimiter: form.delimiter,
-      metadata_csv: form.metaCsv || null,
-    })
+    if (eachSubfolder.value) {
+      result.value = await api.corpora.importSubfolders({
+        source: { kind: 'folder', path: form.path, format: form.format },
+        filename_fields: usesNames.value ? fields.value : null,
+        delimiter: form.delimiter,
+        metadata_csv: form.metaCsv || null,
+      })
+    } else {
+      result.value = await api.corpora.import({
+        corpus_name: name.value,
+        source: form.kind === 'folder' ? { kind: 'folder', path: form.path, format: form.format } : { kind: 'text', text: form.text },
+        filename_fields: usesNames.value ? fields.value : null,
+        delimiter: form.delimiter,
+        metadata_csv: form.metaCsv || null,
+      })
+    }
     step.value = 2
-    emit('done', name.value)
+    emit('done', firstCorpus.value)
   } catch (err) {
     error.value = err.message
   } finally {
@@ -92,9 +115,29 @@ async function doImport() {
           <option v-for="fm in ['txt', 'conllu', 'nltk', 'tei', 'graf']" :key="fm" :value="fm">{{ t(`wizard.format.${fm}`) }}</option></select>
       </div>
       <textarea v-if="form.kind === 'text'" v-model="form.text" class="textarea h-32" :aria-label="t('wizard.text')" />
-      <p v-if="name" class="text-sm" data-testid="wizard-final-name">{{ t('wizard.will_be_called') }} <strong>{{ name }}</strong></p>
 
-      <Collapsible :title="t('wizard.rename_title')" data-testid="wizard-rename">
+      <fieldset v-if="usesNames && subfolders.length" class="flex flex-col gap-2 border border-base-300 rounded-box p-3"
+                data-testid="wizard-subfolders">
+        <legend class="text-sm font-medium px-1">{{ t('wizard.subfolders_title') }}</legend>
+        <label class="flex items-start gap-2 cursor-pointer text-sm">
+          <input v-model="eachSubfolder" type="checkbox" class="checkbox checkbox-sm checkbox-primary mt-0.5"
+                 data-testid="wizard-each-subfolder" />
+          <span>{{ t('wizard.each_subfolder', { n: subfolders.length }) }}</span>
+        </label>
+        <ul v-if="eachSubfolder" class="text-sm flex flex-col gap-1 pl-6" data-testid="wizard-subfolder-list">
+          <li v-for="f in subfolders" :key="f.name" class="flex flex-wrap gap-x-2">
+            <span class="font-medium">{{ f.name }}</span>
+            <span class="text-text-muted">{{ t('corpora.documents', { n: f.files }) }}</span>
+          </li>
+        </ul>
+        <p v-else class="text-xs text-text-muted">{{ t('wizard.subfolders_hint') }}</p>
+      </fieldset>
+
+      <p v-if="eachSubfolder" class="text-sm" data-testid="wizard-final-name">
+        {{ t('wizard.each_subfolder_names', { names: subfolders.map((f) => f.name).join(', ') }) }}</p>
+      <p v-else-if="name" class="text-sm" data-testid="wizard-final-name">{{ t('wizard.will_be_called') }} <strong>{{ name }}</strong></p>
+
+      <Collapsible v-if="!eachSubfolder" :title="t('wizard.rename_title')" data-testid="wizard-rename">
         <label class="flex flex-col gap-1 max-w-md"><span class="ttw-label">{{ t('wizard.name') }}</span>
           <input v-model="form.customName" class="input input-sm w-full" :placeholder="defaultName" data-testid="wizard-name" />
           <span class="text-xs text-text-muted">{{ t('wizard.rename_hint') }}</span></label>
@@ -157,10 +200,12 @@ joao_C1_2023.txt,C1,2023</pre>
     </div>
 
     <div v-else class="flex flex-col gap-2">
-      <p role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied ?? 0 }) }}</p>
+      <p v-if="result.corpora" role="status" data-testid="wizard-imported-many">
+        {{ t('wizard.imported_many', { n: result.corpora.length, m: result.imported }) }}</p>
+      <p v-else role="status">{{ t('wizard.imported', { n: result.imported, m: result.metadata_applied ?? 0 }) }}</p>
       <div class="flex gap-2">
-        <button class="btn btn-sm btn-primary" data-testid="wizard-tag" @click="emit('tag', name)">{{ t('wizard.tag_now') }}</button>
-        <button class="btn btn-sm" data-testid="wizard-overview" @click="emit('overview', name)">{{ t('wizard.see_overview') }}</button>
+        <button class="btn btn-sm btn-primary" data-testid="wizard-tag" @click="emit('tag', firstCorpus)">{{ t('wizard.tag_now') }}</button>
+        <button class="btn btn-sm" data-testid="wizard-overview" @click="emit('overview', firstCorpus)">{{ t('wizard.see_overview') }}</button>
       </div>
     </div>
   </section>
