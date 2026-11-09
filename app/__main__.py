@@ -128,7 +128,12 @@ def main() -> None:
     parser.add_argument("--selftest", action="store_true",
                         help="Sobe o servidor numa porta livre, confere /api/version e sai (0 = OK).")
     parser.add_argument("--host", default="127.0.0.1", help="Host do servidor HTTP.")
-    parser.add_argument("--port", type=int, default=8765, help="Porta do servidor HTTP.")
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=None,
+        help="Porta do servidor HTTP (padrão: 8765, ou porta livre se ocupada no modo desktop).",
+    )
     parser.add_argument(
         "--open",
         metavar="FILE",
@@ -136,6 +141,10 @@ def main() -> None:
         help="Abre um arquivo .ttwa, .ttwl, .ttwal, .ttwc, .ttwcl ou .ttwt ao iniciar.",
     )
     args = parser.parse_args()
+
+    port = args.port
+    if port is None:
+        port = 8765 if args.mode == "web" else _find_free_port(args.host, 8765)
 
     # Prefer --open flag; fall back to bare positional sys.argv (CLI / dev use).
     open_file = args.open
@@ -150,9 +159,9 @@ def main() -> None:
     fastapi_app = build_app(open_file=open_file)
 
     if args.mode == "web":
-        _run_server_foreground(fastapi_app, args.host, args.port)
+        _run_server_foreground(fastapi_app, args.host, port)
     else:
-        _run_desktop(fastapi_app, args.host, args.port)
+        _run_desktop(fastapi_app, args.host, port)
 
 
 # ---------------------------------------------------------------------------
@@ -411,19 +420,46 @@ def _run_desktop(fastapi_app, host: str, port: int) -> None:
     webview.start(debug=False, localization=localization)
 
 
-def _wait_for_server(host: str, port: int, timeout: float = 10.0) -> None:
-    """Aguarda o servidor HTTP responder antes de abrir a janela."""
+def _port_is_free(host: str, port: int) -> bool:
+    """Verifica se a porta está livre para bind no host."""
     import socket
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((host, port))
+            return True
+    except OSError:
+        return False
+
+
+def _find_free_port(host: str, preferred: int = 8765) -> int:
+    """Retorna a porta preferida se estiver livre; caso contrário, uma porta efêmera disponível."""
+    if _port_is_free(host, preferred):
+        return preferred
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((host, 0))
+        return s.getsockname()[1]
+
+
+def _wait_for_server(host: str, port: int, timeout: float = 10.0) -> None:
+    """Aguarda o servidor HTTP do TTWtools responder com status ok antes de abrir a janela."""
+    import json
     import time
+    import urllib.request
 
     deadline = time.time() + timeout
     while time.time() < deadline:
         try:
-            with socket.create_connection((host, port), timeout=0.5):
-                return
-        except OSError:
+            req = urllib.request.Request(f"http://{host}:{port}/api/health")
+            with urllib.request.urlopen(req, timeout=0.5) as resp:
+                if resp.status == 200:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    if data.get("status") == "ok":
+                        return
+        except Exception:
             time.sleep(0.1)
-    raise RuntimeError(f"Servidor não respondeu em {timeout}s em {host}:{port}.")
+    raise RuntimeError(f"Servidor TTWtools não respondeu em {timeout}s em {host}:{port}.")
 
 
 if __name__ == "__main__":
