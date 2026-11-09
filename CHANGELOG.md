@@ -4,8 +4,18 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Etiquetagem multi-corpus numa fila só:** com mais de um corpus no projeto, a opção "Acrescentar a todos os corpora (n)" põe o mesmo passo (estatísticas ou etiquetador) na lista de cada corpus; a fila "A executar" mostra os passos de todos, cada um com o selo do corpus, e "Executar análise e etiquetagem" roda tudo numa tarefa só, com andamento por corpus. Na linha de comando, `ttwtools pipeline ... --all` (listar, acrescentar, limpar e executar; `remove` continua exigindo `--corpus`).
+- **Importar cada subpasta como um corpus:** quando a pasta escolhida tem subpastas com `.txt`, o assistente oferece "Tratar cada subpasta como um corpus separado (n)"; marcada, cada subpasta entra com o nome da pasta e os metadados dos nomes de arquivo (ou da planilha) valem para todas. Na linha de comando: `ttwtools import PROJETO PASTA --each-subfolder`.
+
+### Alterado
+
+- **MFTE usual e estendido em camadas separadas:** o modo passa a identificar a camada — `mfte` (usual) e `mfte_ext` (estendido) convivem no mesmo corpus, aparecem separadas na lista e no seletor de camada, e a fila e o andamento mostram o modo. Camadas antigas gravadas só como `mfte` continuam sendo aproveitadas, sem reetiquetar.
+
 ### Corrigido
 
+- **Janela nativa quando a porta 8765 está ocupada:** o modo desktop escolhe uma porta livre do sistema e só abre a janela quando `GET /api/health` confirma que o próprio TTWtools respondeu (antes podia abrir a página de outro servidor).
 - **KFA:** o máximo do filtro |d| mínimo passa a ser o maior |d| do resultado (sem arredondar para cima) e o valor anterior é limitado a ele; arrastar o controle até o fim não zera mais a tabela.
 - **Leitor:** trocar a etiquetagem no menu superior (ou na lista de camadas) atualiza o texto aberto, inclusive quando veio da KFA; a lista passa para a nova camada e as marcações do etiquetador anterior são limpas.
 - **Leitor com BiberPlus/MFTE:** a lista de etiquetas e as marcações usavam só a primeira tag do token; agora todas as tags do token aparecem, podem ser marcadas e contam no corpus (corrige, por exemplo, a tag `TO` aberta pela KFA).
