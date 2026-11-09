@@ -4,6 +4,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+## [0.8.6] — 2026-11-08
+
 ### Adicionado
 
 - **Etiquetagem multi-corpus numa fila só:** com mais de um corpus no projeto, a opção "Acrescentar a todos os corpora (n)" põe o mesmo passo (estatísticas ou etiquetador) na lista de cada corpus; a fila "A executar" mostra os passos de todos, cada um com o selo do corpus, e "Executar análise e etiquetagem" roda tudo numa tarefa só, com andamento por corpus. Na linha de comando, `ttwtools pipeline ... --all` (listar, acrescentar, limpar e executar; `remove` continua exigindo `--corpus`).
@@ -21,6 +23,8 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 - **Leitor:** trocar a etiquetagem no menu superior (ou na lista de camadas) atualiza o texto aberto, inclusive quando veio da KFA; a lista passa para a nova camada e as marcações do etiquetador anterior são limpas.
 - **Leitor com BiberPlus/MFTE:** a lista de etiquetas e as marcações usavam só a primeira tag do token; agora todas as tags do token aparecem, podem ser marcadas e contam no corpus (corrige, por exemplo, a tag `TO` aberta pela KFA).
 - **MFTE ausente no pacote do macOS Intel:** builds locais feitos num ambiente sem o pacote `mfte` saíam com o etiquetador MFTE indisponível; o build agora exige o `MFTE` quando torch e Stanza estão presentes, o PyInstaller o inclui explicitamente e o autoteste confere a importação.
+
+- Pacote `ttwtools` 0.3.1 (commit `ae382a4`).
 
 ## [0.8.5] — 2026-10-08
 
@@ -359,7 +363,8 @@ _Mudanças feitas em 2026-05-01 e publicadas na primeira tag da série 0.3._
 | `frontend-src/index.html` | Remoção de selects de tagger; botão "Escolher pasta" |
 | `frontend/` | Rebuild (assets atualizados: `index-C44bMuvf.js`, `index-Dv9u83w3.css`) |
 
-[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.5...HEAD
+[Unreleased]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.6...HEAD
+[0.8.6]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.5...v0.8.6
 [0.8.5]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.4...v0.8.5
 [0.8.4]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.3...v0.8.4
 [0.8.3]: https://github.com/luaguiaroliveira/ttwtools-app/compare/v0.8.2...v0.8.3
