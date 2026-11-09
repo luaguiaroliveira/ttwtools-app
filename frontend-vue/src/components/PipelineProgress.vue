@@ -81,6 +81,7 @@ const counter = (s) => (s.status === 'running' && s.total
           <span v-else-if="s.status === 'running'" class="loading loading-spinner loading-xs" /><span v-else>{{ i + 1 }}</span>
         </span>
         <div class="flex flex-wrap items-baseline gap-x-2 min-w-0">
+          <span v-if="s.corpus" class="badge badge-sm badge-neutral" data-testid="progress-corpus">{{ s.corpus }}</span>
           <span class="font-medium">{{ name(s) }}</span>
           <span class="text-xs text-text-muted">{{ counter(s) }}</span>
           <span class="ml-auto text-sm font-medium tabular-nums">{{ stepPct(s) }}%</span>
