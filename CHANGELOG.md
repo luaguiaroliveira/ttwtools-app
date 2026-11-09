@@ -15,6 +15,7 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ### Corrigido
 
+- **Leitor aberto com `layer` e `highlight` na URL** não perde mais a marcação quando a resposta do texto de uma camada anterior chega fora de ordem: a resposta velha é descartada e a marcação que ainda existe na coluna escolhida é preservada.
 - **Janela nativa quando a porta 8765 está ocupada:** o modo desktop escolhe uma porta livre do sistema e só abre a janela quando `GET /api/health` confirma que o próprio TTWtools respondeu (antes podia abrir a página de outro servidor).
 - **KFA:** o máximo do filtro |d| mínimo passa a ser o maior |d| do resultado (sem arredondar para cima) e o valor anterior é limitado a ele; arrastar o controle até o fim não zera mais a tabela.
 - **Leitor:** trocar a etiquetagem no menu superior (ou na lista de camadas) atualiza o texto aberto, inclusive quando veio da KFA; a lista passa para a nova camada e as marcações do etiquetador anterior são limpas.

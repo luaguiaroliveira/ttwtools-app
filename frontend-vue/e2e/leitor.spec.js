@@ -274,6 +274,9 @@ test('leitor: trocar a etiquetagem no cabeçalho atualiza o texto e limpa as mar
   await page.goto('/#/inicio')
   await page.goto(`/#/leitor?corpus=corifa&layer=spacy&file=${encodeURIComponent(filename)}&color=upos&highlight=NOUN`)
   const list = page.getByTestId('reader-tag-list')
+  // espera o texto carregar já com a camada da URL: sem isso, a lista pode nascer com a camada
+  // automática (sem `upos`), o Leitor cair para "tags" e limpar a marcação antes da conferência
+  await expect(page.getByTestId('reader-paper')).toContainText('spacy', { timeout: 30_000 })
   await expect(list.locator('li').first()).toBeAttached({ timeout: 30_000 })
   if ((page.viewportSize()?.width ?? 0) < 1024) {   // telas estreitas: a lista fica na gaveta
     await page.getByTestId('reader-panel-toggle').click()

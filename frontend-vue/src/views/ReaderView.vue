@@ -120,7 +120,12 @@ watch(layerEpoch, () => {
 })
 watch(() => [file.value, rl.value, rc.value], async () => {
   if (!file.value) return
-  doc.value = await api.corpora.text(rc.value, file.value, rl.value)
+  const req = { corpus: rc.value, file: file.value, layer: rl.value }
+  const loaded = await api.corpora.text(req.corpus, req.file, req.layer)
+  // A URL pode mudar enquanto o texto carrega (ex.: abrir `?layer=spacy` logo depois de outro endereço):
+  // aplicar a resposta velha trocaria a camada e apagaria a marcação que veio da URL.
+  if (req.file !== file.value || req.layer !== rl.value || req.corpus !== rc.value) return
+  doc.value = loaded
   selected.value = null
   // O "Colorir por" precisa existir na camada aberta: ao trocar de etiquetador, cai para
   // tags/UPOS/XPOS conforme os campos disponíveis (ex.: spaCy não tem tags).
@@ -128,7 +133,10 @@ watch(() => [file.value, rl.value, rc.value], async () => {
   const has = { tags: toks.some((x) => x.tags?.length), upos: toks.some((x) => x.upos), xpos: toks.some((x) => x.xpos) }
   if (!has[colorBy.value]) {
     colorBy.value = has.tags ? 'tags' : has.upos ? 'upos' : has.xpos ? 'xpos' : 'tags'
-    chosen.value = new Set()
+    // A marcação que veio da URL continua valendo se a etiqueta existe na coluna nova (ex.: `highlight=NOUN`
+    // com `color=upos` enquanto a camada carrega); só o que não aparece mais é que sai.
+    const present = new Set(toks.flatMap((x) => tokenTags(x, colorBy.value)))
+    chosen.value = new Set([...chosen.value].filter((c) => present.has(c)))
   }
   await loadTagset()
   await nextTick()
