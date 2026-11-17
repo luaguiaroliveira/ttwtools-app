@@ -28,6 +28,8 @@ build/**
 !build/fileicons/*
 !build/assoc/
 !build/assoc/*
+!build/linux/
+!build/linux/*
 !build/*.py
 !build/*.txt
 !build/*.md

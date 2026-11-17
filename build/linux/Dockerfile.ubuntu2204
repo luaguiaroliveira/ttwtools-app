@@ -1,0 +1,25 @@
+# Ubuntu 22.04 (glibc 2.35): base do AppImage, que precisa da glibc mais antiga que ainda se queira atender.
+# O Python 3.10 do sistema não serve (numpy 2.4 exige 3.11+): vem do deadsnakes.
+FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y --no-install-recommends \
+      build-essential file git pkg-config xz-utils zstd \
+      python3.11 python3.11-dev python3.11-venv \
+      libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev patchelf \
+      desktop-file-utils shared-mime-info librsvg2-bin \
+    && rm -rf /var/lib/apt/lists/*
+ENV RUSTUP_HOME=/opt/rust CARGO_HOME=/opt/cargo PATH=/opt/cargo/bin:$PATH
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+ARG TAURI_CLI=2.11.5
+RUN cargo install tauri-cli --version =${TAURI_CLI} --locked && rm -rf /opt/cargo/registry
+# appimagetool extraído (sem FUSE dentro do contêiner)
+RUN curl -fsSL -o /tmp/appimagetool.AppImage \
+      https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage \
+    && chmod +x /tmp/appimagetool.AppImage \
+    && cd /opt && /tmp/appimagetool.AppImage --appimage-extract >/dev/null \
+    && mv squashfs-root appimagetool && rm /tmp/appimagetool.AppImage \
+    && printf '#!/bin/sh\nexport APPIMAGE_EXTRACT_AND_RUN=1\nexec /opt/appimagetool/AppRun "$@"\n' > /usr/local/bin/appimagetool \
+    && chmod +x /usr/local/bin/appimagetool
+ENV APPIMAGE_EXTRACT_AND_RUN=1

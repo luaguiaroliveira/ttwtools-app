@@ -63,7 +63,11 @@ Onde `<versão>` é o número da versão sem o prefixo `v` (ex.: `0.8.6`).
 | macOS Intel | `x86_64` | `TTWtools-<versão>-macos-x86_64.dmg` | Imagem de disco UDZO |
 | Windows (portátil) | `x86_64` | `TTWtools-<versão>-windows-x86_64.zip` | ZIP portátil autossuficiente |
 | Windows (instalador) | `x86_64` | `TTWtools-<versão>-windows-x86_64.msi` | Instalador MSI por usuário |
-| Linux | `x86_64` | `TTWtools-<versão>-linux-x86_64.tar.gz` | Tarball com binário e scripts |
+| Linux (Debian/Ubuntu) | `x86_64` | `TTWtools-<versão>-linux-x86_64.deb` | Pacote dpkg |
+| Linux (Fedora/openSUSE) | `x86_64` | `TTWtools-<versão>-linux-x86_64.rpm` | Pacote RPM |
+| Linux (Arch/Manjaro) | `x86_64` | `TTWtools-<versão>-linux-x86_64.pkg.tar.zst` | Pacote pacman |
+| Linux (qualquer distro) | `x86_64` | `TTWtools-<versão>-linux-x86_64.AppImage` | Executável único, WebKit embutido |
+| Linux (portátil) | `x86_64` | `TTWtools-<versão>-linux-x86_64.tar.gz` | Tarball com binário e scripts |
 
 ### Licença e arquivos obrigatórios no pacote
 
@@ -115,20 +119,47 @@ python build\make_msi.py --wix <pasta_do_wix_3.14>
 Saída: `dist\release\TTWtools-<versão>-windows-x86_64.msi`.
 
 #### Linux (`x86_64`)
-No Ubuntu 22.04/24.04 ou Debian:
+
+No Linux a casca é o **Tauri** (janela nativa sobre o `webkit2gtk-4.1` do sistema), não o pywebview; do mesmo
+build saem cinco pacotes: `.deb`, `.rpm`, `.pkg.tar.zst`, `.AppImage` e o `.tar.gz` portátil.
+
+**O pacote só roda em distribuições com glibc igual ou mais nova que a da máquina que o compilou.** Por isso
+cada formato é compilado no contêiner Docker da distribuição que ele atende; só o do Arch/Manjaro sai do build
+nativo (o Arch é rolling release e acompanha a glibc da máquina).
+
+| Formato | Onde é compilado | Roda a partir de | Depende de |
+|---|---|---|---|
+| `.pkg.tar.zst` | máquina Arch/Manjaro (nativo) | a glibc da máquina do build | `webkit2gtk-4.1`, `gtk3` |
+| `.deb` | contêiner `debian:12` | Debian 12, Ubuntu 24.04 (glibc 2.36) | `libwebkit2gtk-4.1-0`, `libgtk-3-0` |
+| `.rpm` | contêiner `fedora:41` | Fedora 41 (glibc 2.40) | `webkit2gtk4.1`, `gtk3` |
+| `.AppImage`, `.tar.gz` | contêiner `ubuntu:22.04` | glibc 2.35 (Ubuntu 22.04) | nada (WebKit embutido no AppImage) |
+
+1. **Build nativo** (para testar na máquina e gerar o pacote do Arch):
 ```bash
-# 1. Dependências do sistema (Python, compilação e WebKit)
-sudo apt-get update && sudo apt-get install -y python3-dev build-essential libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev patchelf
-
-# 2. Frontend e pacote Python
+# Arch/Manjaro: sudo pacman -S --needed base-devel webkit2gtk-4.1 gtk3 rust
+# Debian/Ubuntu: sudo apt-get install -y python3-dev build-essential libwebkit2gtk-4.1-dev libgtk-3-dev \
+#                librsvg2-dev libxdo-dev libssl-dev patchelf
+cargo install tauri-cli --version =2.11.5 --locked
 cd frontend-vue && npm ci && npm run build && cd ..
-python build/build.py --install-deps
-# Ou com Tauri (exige cargo install tauri-cli --version =2.11.5 --locked):
-# python build/build.py --install-deps --shell tauri && python build/tauri_app.py --package
+python build/build.py --shell tauri      # servidor (PyInstaller) + autoteste do binário
+python build/tauri_app.py                # janela Tauri → dist/linux-x86_64/TTWtools/
+python build/linux_packages.py --formats arch        # tar, deb, rpm, arch, appimage (o que a máquina souber fazer)
 ```
-Saída: `dist/release/TTWtools-<versão>-linux-x86_64.tar.gz`.
+2. **Pacotes das outras distribuições** (precisa de Docker, sem sudo):
+```bash
+build/linux/empacotar.sh                 # deb (debian:12), rpm (fedora:41), AppImage + tar.gz (ubuntu:22.04)
+build/linux/empacotar.sh deb             # só um formato
+```
+Cada contêiner copia o repositório, instala as dependências, compila o servidor e a casca e gera o pacote em
+`dist/release/`; a imagem (Rust, `tauri-cli`, WebKit, `appimagetool`) fica em cache entre as rodadas.
 
-O `.tar.gz` contém o executável `TTWtools`, `LEIAME.md`, `LICENSE.txt`, `icon.png` e os scripts `instalar-associacoes.sh` / `desinstalar-associacoes.sh`.
+Os pacotes de distribuição instalam a pasta em `/opt/ttwtools` e acrescentam `/usr/bin/ttwtools`, entrada no
+menu, ícone e os tipos MIME dos formatos (`.ttwa`, `.ttwl`, `.ttwal`, `.ttwc`, `.ttwcl`, `.ttwt`). O `.tar.gz`
+é portátil e traz `instalar-associacoes.sh`, que registra os formatos só para o usuário atual.
+
+**Armadilha do `LD_LIBRARY_PATH`:** se a máquina do build tiver outra `libtorch` nele (projetos de áudio, CUDA),
+o servidor empacotado carrega a biblioteca errada e morre com `undefined symbol`. Compile e rode com
+`env -u LD_LIBRARY_PATH -u CMAKE_PREFIX_PATH -u PKG_CONFIG_PATH -u LIBTORCH_PATH`.
 
 ## Versão e changelog
 

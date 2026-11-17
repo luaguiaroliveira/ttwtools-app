@@ -152,7 +152,10 @@ def install_deps(target: Target) -> None:
         run(target.pip("install", torch, "--index-url", TORCH_CPU_INDEX))
     run(target.pip("install", *reqs))
     run(target.pip("install", "--no-deps", "-e", ROOT / "libs" / "ttwtools", "-e", ROOT))
-    run(target.py("-m", "spacy", "download", "en_core_web_sm"))
+    # O `spacy download` instala com `sys.executable -m pip`, mas só depois de achar um `pip` no PATH
+    # (shutil.which): numa máquina sem pip no PATH, como um contêiner enxuto, ele falharia por isso.
+    run(target.py("-m", "spacy", "download", "en_core_web_sm"),
+        env=dict(os.environ, PATH=os.pathsep.join([str(target.python.parent), os.environ.get("PATH", "")])))
 
 
 def check_build_modules(target: Target, shell: str) -> None:

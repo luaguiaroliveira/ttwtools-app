@@ -4,6 +4,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/). Versões: 
 
 ## [Unreleased]
 
+### Adicionado
+
+- **Pacotes Linux nativos:** além do `.tar.gz` portátil, a release Linux passa a trazer `.deb` (Debian/Ubuntu), `.rpm` (Fedora/openSUSE), `.pkg.tar.zst` (Arch/Manjaro) e `.AppImage` (qualquer distro, WebKit embutido), todos com entrada no menu, ícone e os tipos MIME dos formatos do TTWtools. A casca no Linux passa a ser o Tauri (antes só experimental). `build/linux_packages.py` gera os pacotes a partir da pasta compilada; `build/linux/empacotar.sh` compila `.deb`/`.rpm`/`.AppImage` em contêineres Docker (cada um na distribuição de glibc mínima que atende), documentado em `CONTRIBUTING.md`. Pacotes da 0.8.6 enviados à release.
+
 ## [0.8.6] — 2026-11-08
 
 ### Adicionado
