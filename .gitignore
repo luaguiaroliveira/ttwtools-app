@@ -30,6 +30,7 @@ build/**
 !build/assoc/*
 !build/*.py
 !build/*.txt
+!build/*.md
 !build/hooks/
 !build/hooks/**
 build/hooks/__pycache__/

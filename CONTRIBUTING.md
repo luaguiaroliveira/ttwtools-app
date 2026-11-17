@@ -48,17 +48,87 @@ Rode os testes do que mexeu. O teste do fluxo em português exige `ttwtools cata
 
 `app/` servidor FastAPI (rotas, tarefas em segundo plano, janela) · `frontend-vue/` interface (Vue 3, Vite, Tailwind/daisyUI; testes em `src/test` e `e2e/`) · `libs/ttwtools/` pacote (projeto, camadas, taggers, consultas, estatísticas, catálogo) · `tools/corpora/` preparo de corpora do catálogo · `build/` e `.github/workflows/` empacotamento e CI · `novodesenho/` desenho, plano e memória.
 
-## Pacotes do aplicativo
+## Pacotes do aplicativo e distribuição
 
+### Nomenclatura oficial dos pacotes
+
+Todo pacote de distribuição gerado para uma release segue rigorosamente o padrão:
+`TTWtools-<versão>-<sistema>-<arquitetura>.<extensão>`
+
+Onde `<versão>` é o número da versão sem o prefixo `v` (ex.: `0.8.6`).
+
+| Plataforma | Arquitetura | Arquivo Final | Tipo |
+|---|---|---|---|
+| macOS Apple Silicon | `arm64` | `TTWtools-<versão>-macos-arm64.dmg` | Imagem de disco UDZO |
+| macOS Intel | `x86_64` | `TTWtools-<versão>-macos-x86_64.dmg` | Imagem de disco UDZO |
+| Windows (portátil) | `x86_64` | `TTWtools-<versão>-windows-x86_64.zip` | ZIP portátil autossuficiente |
+| Windows (instalador) | `x86_64` | `TTWtools-<versão>-windows-x86_64.msi` | Instalador MSI por usuário |
+| Linux | `x86_64` | `TTWtools-<versão>-linux-x86_64.tar.gz` | Tarball com binário e scripts |
+
+### Licença e arquivos obrigatórios no pacote
+
+- **Licença do aplicativo (`ttwtools-app`):** **GNU GPL v3.0 ou posterior (GPL-3.0-or-later)**.
+  - O aplicativo executável agrega os etiquetadores **MFTE** (GPL 3.0), **BiberPlus** modificado (MIT) e **Stanza** (Apache 2.0). A combinação binária distribuída é regida pela GPL 3.0.
+- **Licença do pacote Python (`ttwtools` em `libs/ttwtools`):** **MIT License**.
+  - O código-fonte da biblioteca permanece permissivo e independente.
+- **Conteúdo obrigatório dentro de cada pacote (`.dmg`, `.zip`, `.msi`, `.tar.gz`):**
+  1. `TTWtools` / `TTWtools.app` / `TTWtools.exe` com modelo básico spaCy (`en_core_web_sm`) embutido;
+  2. `LEIAME.md`: instruções didáticas de instalação, autorização do Gatekeeper no macOS (`xattr -cr /Applications/TTWtools.app`) e notas de licença/código-fonte;
+  3. `LICENSE.txt`: texto integral da licença GNU GPL v3.0.
+  *(Os scripts `build/build.py` e `build/tauri_app.py` copiam `build/LEIAME.md` e `LICENSE` automaticamente para o staging do DMG e pasta de saída de cada plataforma).*
+
+### Como gerar o build em cada sistema
+
+#### macOS Apple Silicon (`arm64`)
 ```bash
-python build/build.py                     # pacote do sistema atual em dist/release/
-python build/build.py --arch x86_64       # macOS Intel, num Mac Apple Silicon (sob Rosetta)
-python build/make_msi.py --wix <pasta do WiX 3.14>   # Windows: instalador .msi a partir do pacote já gerado
+conda activate ttw314
+cd frontend-vue && npm ci && npm run build && cd ..
+python build/build.py --install-deps
+# Ou com a casca Tauri (se configurada):
+# python build/build.py --install-deps --shell tauri && python build/tauri_app.py --package
 ```
+Saída: `dist/release/TTWtools-<versão>-macos-arm64.dmg`.
 
-Windows: no `venv`/conda use Python 3.14 e `python build/build.py --install-deps --deps-only --python <python>`. O `.msi` (`make_msi.py`, WiX 3.14 portátil de `github.com/wixtoolset/wix3/releases`, `wix314-binaries.zip`) instala **por usuário, sem administrador**, em `%LOCALAPPDATA%\Programs\TTWtools`, com atalho no Menu Iniciar e associação dos seis formatos; atualiza a versão anterior e desinstala sem deixar restos. O `en_core_web_sm` já vai dentro do pacote.
+#### macOS Intel (`x86_64`)
+No Mac Intel (macOS 12, Python 3.11, `torch==2.2.2`, `numpy==1.26.4`):
+```bash
+conda activate ttw311
+cd frontend-vue && npm ci && npm run build && cd ..
+python build/build.py --install-deps
+```
+Em Mac Apple Silicon (compilando sob Rosetta com o Python x86_64 do `CONDA_X86`):
+```bash
+python build/build.py --arch x86_64
+```
+Saída: `dist/release/TTWtools-<versão>-macos-x86_64.dmg`.
 
-O `build.py` fixa as versões do alvo, compila a interface, roda o PyInstaller, testa o binário (`--selftest`) e, no macOS, confere a versão mínima do sistema (12.0 Intel, 12.3 Apple Silicon). Um build completo leva de 20 a 30 min por sistema (o torch pesa ~2 GB). **Sem assinatura** por enquanto: o macOS avisa ao abrir; contornar com botão direito → Abrir ou `xattr -dr com.apple.quarantine /Applications/TTWtools.app`. Assinar exige certificado Developer ID e os segredos `MACOS_CERT_P12` e `MACOS_CERT_PASSWORD` (comentário em `release.yml`; decisão D4).
+#### Windows (`x86_64`)
+No Windows 10/11 64-bit (Python 3.14 ou 3.11):
+```cmd
+cd frontend-vue && npm ci && npm run build && cd ..
+python build\build.py --install-deps
+```
+Gera `dist\release\TTWtools-<versão>-windows-x86_64.zip`. Para gerar o `.msi` (instalador por usuário, atalho e associações de arquivos):
+```cmd
+python build\make_msi.py --wix <pasta_do_wix_3.14>
+```
+Saída: `dist\release\TTWtools-<versão>-windows-x86_64.msi`.
+
+#### Linux (`x86_64`)
+No Ubuntu 22.04/24.04 ou Debian:
+```bash
+# 1. Dependências do sistema (Python, compilação e WebKit)
+sudo apt-get update && sudo apt-get install -y python3-dev build-essential libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev libxdo-dev libssl-dev patchelf
+
+# 2. Frontend e pacote Python
+cd frontend-vue && npm ci && npm run build && cd ..
+python build/build.py --install-deps
+# Ou com Tauri (exige cargo install tauri-cli --version =2.11.5 --locked):
+# python build/build.py --install-deps --shell tauri && python build/tauri_app.py --package
+```
+Saída: `dist/release/TTWtools-<versão>-linux-x86_64.tar.gz`.
+
+O `.tar.gz` contém o executável `TTWtools`, `LEIAME.md`, `LICENSE.txt`, `icon.png` e os scripts `instalar-associacoes.sh` / `desinstalar-associacoes.sh`.
 
 ## Versão e changelog
 

@@ -156,5 +156,12 @@ On an Intel Mac with macOS 12, use Python 3.11 and `torch==2.2.2` (see [`CONTRIB
 
 ## Licence, citation and contributing
 
-- Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md). The design is in [`novodesenho/novomodelo.md`](novodesenho/novomodelo.md) and progress in [`novodesenho/plano.md`](novodesenho/plano.md) (in Portuguese).
-- Catalog corpora have their own licences, recorded in each record card; respect them when publishing results.
+- **TTWtools App:** distributed under the **GNU General Public License v3.0 or later** ([`LICENSE`](LICENSE)).
+- **`ttwtools` Python package:** the underlying core package (`libs/ttwtools`) remains independent and is licensed under the permissive **MIT License** ([`libs/ttwtools/LICENSE`](libs/ttwtools/LICENSE)).
+- **Third-party libraries & binary distribution:**
+  - [Biberplus](https://github.com/davidjurgens/biberplus) (modified): MIT
+  - [Stanza](https://github.com/stanfordnlp/stanza): Apache 2.0
+  - [MFTE](https://github.com/mshakirDr/MFTE): GPL 3.0
+  - Binary bundles and packages combining these tools are governed by the GPL 3.0.
+- **Corpora:** Catalog corpora have their own licences, recorded in each record card; respect them when publishing results.
+- **Contributing:** see [`CONTRIBUTING.md`](CONTRIBUTING.md). The design is in [`novodesenho/novomodelo.md`](novodesenho/novomodelo.md) and progress in [`novodesenho/plano.md`](novodesenho/plano.md) (in Portuguese).

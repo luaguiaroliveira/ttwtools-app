@@ -321,12 +321,20 @@ def package(target: Target, dist_dir: Path, version: str) -> Path:
         staging.mkdir(parents=True)
         run(["ditto", dist_dir / "TTWtools.app", staging / "TTWtools.app"])
         (staging / "Applications").symlink_to("/Applications")
+        if (BUILD / "LEIAME.md").exists():
+            shutil.copy2(BUILD / "LEIAME.md", staging / "LEIAME.md")
+        if (ROOT / "LICENSE").exists():
+            shutil.copy2(ROOT / "LICENSE", staging / "LICENSE.txt")
         dmg.unlink(missing_ok=True)
         run(["hdiutil", "create", "-volname", f"TTWtools {semver(version)}", "-srcfolder", staging,
              "-ov", "-format", "UDZO", dmg])
         shutil.rmtree(staging, ignore_errors=True)
         return dmg
     add_file_associations(target, dist_dir)
+    if (BUILD / "LEIAME.md").exists():
+        shutil.copy2(BUILD / "LEIAME.md", dist_dir / "TTWtools" / "LEIAME.md")
+    if (ROOT / "LICENSE").exists():
+        shutil.copy2(ROOT / "LICENSE", dist_dir / "TTWtools" / "LICENSE.txt")
     if target.os == "windows":
         return Path(shutil.make_archive(str(out_dir / base), "zip", dist_dir, "TTWtools"))
     shutil.copy2(BUILD / "icon.png", dist_dir / "TTWtools" / "icon.png")

@@ -98,6 +98,10 @@ def main() -> int:
         staging.mkdir(parents=True)
         run(["ditto", dist_dir / "TTWtools.app", staging / "TTWtools.app"])
         (staging / "Applications").symlink_to("/Applications")
+        if (BUILD / "LEIAME.md").exists():
+            shutil.copy2(BUILD / "LEIAME.md", staging / "LEIAME.md")
+        if (ROOT / "LICENSE").exists():
+            shutil.copy2(ROOT / "LICENSE", staging / "LICENSE.txt")
         out = ROOT / "dist" / "release"
         out.mkdir(parents=True, exist_ok=True)
         pkg = out / f"TTWtools-tauri-{args.target}.dmg"
