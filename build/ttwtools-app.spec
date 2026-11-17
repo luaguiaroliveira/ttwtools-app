@@ -61,6 +61,12 @@ if not (FRONTEND_DIR / 'index.html').is_file():
     raise SystemExit(f"frontend não encontrado em {FRONTEND_DIR} — compile a interface antes")
 datas += [(str(FRONTEND_DIR), 'frontend')]
 
+# Licença e Leiame
+if (ROOT / 'LICENSE').is_file():
+    datas += [(str(ROOT / 'LICENSE'), '.')]
+if (ROOT / 'build' / 'LEIAME.md').is_file():
+    datas += [(str(ROOT / 'build' / 'LEIAME.md'), '.')]
+
 # Ícones dos formatos de arquivo: no macOS vão para Contents/Resources (o Finder os lê de lá); no Windows e no Linux
 # o build.py os copia para a pasta do pacote, com os scripts de associação (build/assoc).
 if sys.platform == 'darwin' and SHELL == 'pywebview':
@@ -97,6 +103,7 @@ hidden += collect_submodules('fastapi')
 hidden += collect_submodules('uvicorn')
 hidden += collect_submodules('starlette')
 hidden += collect_submodules('anyio')
+hidden += ['app._build_info']
 if SHELL == 'pywebview':
     hidden += ['webview', 'webview.platforms.cocoa', 'webview.platforms.winforms',
                'webview.platforms.gtk', 'webview.platforms.qt']

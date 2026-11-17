@@ -107,6 +107,23 @@ def main() -> None:
         from app._version import version_info
         info = version_info()
         print(f"TTWtools {info['app']} (ttwtools {info['ttwtools']}, commit {info['commit']})")
+        print("Licença: GNU GPL v3.0 ou posterior <https://www.gnu.org/licenses/gpl-3.0.html>")
+        print("Este é um software livre: você é livre para alterá-lo e redistribuí-lo.")
+        print("NÃO HÁ QUALQUER GARANTIA, nos termos da lei.")
+        return
+    if "--license" in sys.argv[1:]:
+        from app._version import version_info
+        info = version_info()
+        print(f"TTWtools {info['app']} — Licença GNU General Public License v3.0 ou posterior")
+        print("Código-fonte: https://github.com/luaguiaroliveira/ttwtools-app")
+        print("Texto completo da licença: https://www.gnu.org/licenses/gpl-3.0.html\n")
+        lic_file = Path(__file__).resolve().parent.parent / "LICENSE"
+        if not lic_file.is_file() and hasattr(sys, "_MEIPASS"):
+            lic_file = Path(sys._MEIPASS) / "LICENSE.txt"
+        if not lic_file.is_file():
+            lic_file = Path(sys.executable).parent / "LICENSE.txt"
+        if lic_file.is_file():
+            print(lic_file.read_text(encoding="utf-8"))
         return
     if "--selftest" in sys.argv[1:]:
         sys.exit(_selftest())
@@ -125,6 +142,7 @@ def main() -> None:
         help="'desktop' abre janela nativa (pywebview); 'web' inicia apenas o servidor.",
     )
     parser.add_argument("--version", action="store_true", help="Mostra a versão e sai.")
+    parser.add_argument("--license", action="store_true", help="Mostra a licença do aplicativo (GNU GPL v3.0) e sai.")
     parser.add_argument("--selftest", action="store_true",
                         help="Sobe o servidor numa porta livre, confere /api/version e sai (0 = OK).")
     parser.add_argument("--host", default="127.0.0.1", help="Host do servidor HTTP.")
